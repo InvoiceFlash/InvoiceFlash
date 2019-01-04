@@ -8,39 +8,6 @@
 
 SET sql_mode = '';
 
-CREATE TABLE `if_product_profile` (
-  `product_id` int(11) NOT NULL,
-  `profile_id` int(11) NOT NULL,
-  `customer_group_id` int(11) NOT NULL,
-  PRIMARY KEY (`product_id`,`profile_id`,`customer_group_id`)
-) ENGINE=MyISAM COLLATE=utf8_general_ci;
-
-
-
-CREATE TABLE `if_profile` (
-  `profile_id` int(11) NOT NULL AUTO_INCREMENT,
-  `sort_order` int(11) NOT NULL,
-  `status` tinyint(4) NOT NULL,
-  `price` decimal(10,4) NOT NULL,
-  `frequency` enum('day','week','semi_month','month','year') NOT NULL,
-  `duration` int(10) unsigned NOT NULL,
-  `cycle` int(10) unsigned NOT NULL,
-  `trial_status` tinyint(4) NOT NULL,
-  `trial_price` decimal(10,4) NOT NULL,
-  `trial_frequency` enum('day','week','semi_month','month','year') NOT NULL,
-  `trial_duration` int(10) unsigned NOT NULL,
-  `trial_cycle` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`profile_id`)
-) ENGINE=MyISAM COLLATE=utf8_general_ci;
-
-
-CREATE TABLE `if_profile_description` (
-  `profile_id` int(11) NOT NULL,
-  `language_id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  PRIMARY KEY (`profile_id`,`language_id`)
-) ENGINE=MyISAM COLLATE=utf8_general_ci;
-
 --
 -- Table structure for table `if_order_recurring`
 --
