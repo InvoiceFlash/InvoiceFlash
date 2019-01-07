@@ -3,7 +3,5 @@ config.php
 system/cache/index.php
 system/logs/index.php
 image/data/index.html
-system/logs/index.html
-download/index.html
 image/cache/index.html
 system/cache/index.htm
