@@ -13,10 +13,4 @@ To use InvoiceFlash application you should have already installed:
 *   **_PHP_** >=5.0 
 *   **_MySQL_** >=4.1 server 
 
-## Task List
-- [ ] Port 3306 on install
-- [ ] Installer OpenSSL
-- [ ] Installer Zlib
-- [ ] language en-gb
-
 
