@@ -14,6 +14,9 @@ To use InvoiceFlash application you should have already installed:
 *   **_MySQL_** >=4.1 server 
 
 ## Task List
-- [x] Finish my changes
-- [ ] Push my commits to GitHub
+- [ ] Port 3306 on install
+- [ ] Installer OpenSSL
+- [ ] Installer Zlib
+- [ ] language en-gb
+
 
