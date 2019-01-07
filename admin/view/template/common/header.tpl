@@ -15,7 +15,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
 	<link type="text/css" href="view/stylesheet/main.css" rel="stylesheet"/>
 	<link type="text/css" href="view/javascript/datepicker/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
-	<link type="text/css" href="view/javascript/font-awesome/css/fontawesome-all.css" rel="stylesheet"/>
+	<link type="text/css" href="view/javascript/font-awesome/css/all.min.css" rel="stylesheet"/>
 	<script type="text/javascript" src="view/javascript/jquery/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="view/javascript/moment.js"></script>
 	<script type="text/javascript" src="view/javascript/popper.min.js"></script>
@@ -63,26 +63,16 @@
 							<div class="dropdown-menu">
 								<a href="<?php echo $customer; ?>" class="dropdown-item"><?php echo $text_customer; ?></a>
 								<a href="<?php echo $customer_group; ?>" class="dropdown-item"><?php echo $text_customer_group; ?></a>
-								
 							</div>
 						</div>
-						
 						<a href="<?php echo $order; ?>" class="dropdown-item"><?php echo $text_order; ?></a>
-						
 						<a href="<?php echo $invoice; ?>" class="dropdown-item"><?php echo $text_invoice; ?></a>
-						
 					</div>
 				</div>
-				
-				
-				
 				
 				<div id="system" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_system; ?></a>
 					<div class="dropdown-menu">
 						<a href="<?php echo $setting; ?>" class="dropdown-item"><?php echo $text_setting; ?></a>
-						
-						
-						
 						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_users; ?></a>
 							<div class="dropdown-menu">
 								<a href="<?php echo $user; ?>" class="dropdown-item"><?php echo $text_user; ?></a>
