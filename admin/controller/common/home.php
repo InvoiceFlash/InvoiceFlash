@@ -14,10 +14,6 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_total_sale_year'] = $this->language->get('text_total_sale_year');
 		$this->data['text_total_order'] = $this->language->get('text_total_order');
 		$this->data['text_total_customer'] = $this->language->get('text_total_customer');
-		$this->data['text_total_customer_approval'] = $this->language->get('text_total_customer_approval');
-		$this->data['text_total_review_approval'] = $this->language->get('text_total_review_approval');
-		$this->data['text_total_affiliate'] = $this->language->get('text_total_affiliate');
-		$this->data['text_total_affiliate_approval'] = $this->language->get('text_total_affiliate_approval');
 		$this->data['text_day'] = $this->language->get('text_day');
 		$this->data['text_week'] = $this->language->get('text_week');
 		$this->data['text_month'] = $this->language->get('text_month');
@@ -140,28 +136,17 @@ class ControllerCommonHome extends Controller {
 
 		$this->data['token'] = $this->session->data['token'];
 
-		$this->load->model('sale/order');
+		$this->load->model('sale/invoice');
 
-		$this->data['total_sale'] = $this->currency->format($this->model_sale_order->getTotalSales(), $this->config->get('config_currency'));
-		$this->data['total_sale_year'] = $this->currency->format($this->model_sale_order->getTotalSalesByYear(date('Y')), $this->config->get('config_currency'));
-		$this->data['total_order'] = $this->model_sale_order->getTotalOrders();
+		$this->data['total_sale'] = $this->currency->format($this->model_sale_invoice->getTotalSales(), $this->config->get('config_currency'));
+		$this->data['total_sale_year'] = $this->currency->format($this->model_sale_invoice->getTotalSalesByYear(date('Y')), $this->config->get('config_currency'));
+		$this->data['total_order'] = $this->model_sale_invoice->getTotalOrders();
 
 		$this->load->model('sale/customer');
 
 		$this->data['total_customer'] = $this->model_sale_customer->getTotalCustomers();
-		$this->data['total_customer_approval'] = $this->model_sale_customer->getTotalCustomersAwaitingApproval();
 
-		$this->load->model('catalog/review');
-
-		$this->data['total_review'] = $this->model_catalog_review->getTotalReviews();
-		$this->data['total_review_approval'] = $this->model_catalog_review->getTotalReviewsAwaitingApproval();
-
-		$this->load->model('sale/affiliate');
-
-		$this->data['total_affiliate'] = $this->model_sale_affiliate->getTotalAffiliates();
-		$this->data['total_affiliate_approval'] = $this->model_sale_affiliate->getTotalAffiliatesAwaitingApproval();
-
-		$this->data['orders'] = array(); 
+		$this->data['invoices'] = array(); 
 
 		$data = array(
 			'sort'  => 'o.date_added',
@@ -170,18 +155,18 @@ class ControllerCommonHome extends Controller {
 			'limit' => 10
 		);
 
-		$results = $this->model_sale_order->getOrders($data);
+		$results = $this->model_sale_invoice->getOrders($data);
 
 		foreach ($results as $result) {
 			$action = array();
 
 			$action[] = array(
 				'text' => $this->language->get('text_view'),
-				'href' => $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'], 'SSL')
+				'href' => $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL')
 			);
 
-			$this->data['orders'][] = array(
-				'order_id'   => $result['order_id'],
+			$this->data['invoices'][] = array(
+				'invoice_id'   => $result['invoice_id'],
 				'customer'   => $result['customer'],
 				'status'     => $result['status'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),

@@ -88,10 +88,10 @@
 				</tr>
 			</thead>
 			<tbody data-link="row" class="rowlink">
-				<?php if ($orders) { ?>
-				<?php foreach ($orders as $order) { ?>
+				<?php if ($invoices) { ?>
+				<?php foreach ($invoices as $order) { ?>
 				<tr>
-					<td class="text-right hidden-xs"><?php echo $order['order_id']; ?></td>
+					<td class="text-right hidden-xs"><?php echo $order['invoice_id']; ?></td>
 					<td><?php echo $order['customer']; ?></td>
 					<td class="hidden-xs text-<?php echo strtolower($order['status']); ?>"><?php echo $order['status']; ?></td>
 					<td class="hidden-xs"><?php echo $order['date_added']; ?></td>
@@ -111,7 +111,6 @@
 	</div>
 </div>
 <script src="view/javascript/chart/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
 <script>
 $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 	var $this=$(this);

@@ -5,20 +5,20 @@ $_['heading_title']                 = 'Dashboard';
 // Text
 $_['text_overview']                 = 'Overview';
 $_['text_statistics']               = 'Statistics';
-$_['text_latest_10_orders']         = 'Latest 10 Orders';
-$_['text_total_sale']               = 'Total Orders:';
-$_['text_total_sale_year']          = 'Total Orders This Year:';
-$_['text_total_order']              = 'Total Orders:';
+$_['text_latest_10_orders']         = 'Latest 10 Invoices';
+$_['text_total_sale']               = 'Total Invoices:';
+$_['text_total_sale_year']          = 'Total Invoices This Year:';
+$_['text_total_order']              = 'Total Invoices:';
 $_['text_total_customer']           = 'No. of Customers:';
 $_['text_day']                      = 'Today';
 $_['text_week']                     = 'This Week';
 $_['text_month']                    = 'This Month';
 $_['text_year']                     = 'This Year';
-$_['text_order']                    = 'Total Orders';
+$_['text_order']                    = 'Total Invoices';
 $_['text_customer']                 = 'Total Customers';
 
 // Column 
-$_['column_order']                  = 'Order ID';
+$_['column_order']                  = 'Invoice ID';
 $_['column_customer']               = 'Customer';
 $_['column_status']                 = 'Status';
 $_['column_date_added']             = 'Date Added';
