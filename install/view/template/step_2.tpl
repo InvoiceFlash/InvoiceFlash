@@ -87,11 +87,23 @@
           <td>On</td>
           <td align="center"><?php echo function_exists('mcrypt_encrypt') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
         </tr>
+		 <tr>
+          <td>OpenSSL:</td>
+          <td><?php echo function_exists('openssl_encrypt') ? 'On' : 'Off'; ?></td>
+          <td>On</td>
+          <td align="center"><?php echo function_exists('openssl_encrypt') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
+        </tr>
         <tr>
-          <td>ZIP:</td>
+          <td>ZLIB:</td>
           <td><?php echo extension_loaded('zlib') ? 'On' : 'Off'; ?></td>
           <td>On</td>
           <td align="center"><?php echo extension_loaded('zlib') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
+        </tr>
+		<tr>
+          <td>ZIP:</td>
+          <td><?php echo extension_loaded('zip') ? 'On' : 'Off'; ?></td>
+          <td>On</td>
+          <td align="center"><?php echo extension_loaded('zIP') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
         </tr>
         <?php if (!function_exists('iconv')) { ?>
         <tr>
