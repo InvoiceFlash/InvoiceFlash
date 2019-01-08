@@ -111,7 +111,6 @@
 	</div>
 </div>
 <script src="view/javascript/chart/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
 <script>
 $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 	var $this=$(this);
