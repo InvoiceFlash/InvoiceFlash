@@ -55,6 +55,14 @@
             <span class="required"><?php echo $error_db_name; ?></span>
             <?php } ?></td>
         </tr>
+		<tr>
+          <td><span class="required">*</span> Port:</td>
+          <td><input type="text" name="db_port" value="<?php echo $db_port; ?>" />
+            <br />
+            <?php if ($error_db_port) { ?>
+            <span class="required"><?php echo $error_db_port; ?></span>
+            <?php } ?></td>
+        </tr>
         <tr>
           <td>Database Prefix:</td>
           <td><input type="text" name="db_prefix" value="<?php echo $db_prefix; ?>" />
