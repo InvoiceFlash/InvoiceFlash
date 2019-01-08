@@ -64,9 +64,17 @@ class ControllerStep2 extends Controller {
 		if (!function_exists('mcrypt_encrypt')) {
 			$this->error['warning'] = 'Warning: mCrypt extension needs to be loaded for invoiceflash to work!';
 		}
-
+		
+		if (!function_exists('openssl_encrypt')) {
+			$this->error['warning'] = 'Warning: openssl extension needs to be loaded for invoiceflash to work!';
+		}
+		
 		if (!extension_loaded('zlib')) {
 			$this->error['warning'] = 'Warning: ZLIB extension needs to be loaded for invoiceflash to work!';
+		}
+		
+		if (!extension_loaded('zip')) {
+			$this->error['warning'] = 'Warning: ZIP extension needs to be loaded for invoiceflash to work!';
 		}
 
 		if (!function_exists('iconv')) {

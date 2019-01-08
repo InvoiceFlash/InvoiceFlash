@@ -34,6 +34,7 @@ class ControllerStep3 extends Controller {
 			$output .= 'define(\'DB_USERNAME\', \'' . addslashes($this->request->post['db_user']) . '\');' . "\n";
 			$output .= 'define(\'DB_PASSWORD\', \'' . addslashes($this->request->post['db_password']) . '\');' . "\n";
 			$output .= 'define(\'DB_DATABASE\', \'' . addslashes($this->request->post['db_name']) . '\');' . "\n";
+			$output .= 'define(\'DB_PORT\', \'' . addslashes($this->request->post['db_port']) . '\');' . "\n";
 			$output .= 'define(\'DB_PREFIX\', \'' . addslashes($this->request->post['db_prefix']) . '\');' . "\n";
 			$output .= '?>';				
 
@@ -71,6 +72,7 @@ class ControllerStep3 extends Controller {
 			$output .= 'define(\'DB_USERNAME\', \'' . addslashes($this->request->post['db_user']) . '\');' . "\n";
 			$output .= 'define(\'DB_PASSWORD\', \'' . addslashes($this->request->post['db_password']) . '\');' . "\n";
 			$output .= 'define(\'DB_DATABASE\', \'' . addslashes($this->request->post['db_name']) . '\');' . "\n";
+			$output .= 'define(\'DB_PORT\', \'' . addslashes($this->request->post['db_port']) . '\');' . "\n";
 			$output .= 'define(\'DB_PREFIX\', \'' . addslashes($this->request->post['db_prefix']) . '\');' . "\n";
 			$output .= '?>';	
 
@@ -112,7 +114,13 @@ class ControllerStep3 extends Controller {
 		} else {
 			$this->data['error_db_name'] = '';
 		}
-
+		
+		if (isset($this->error['db_port'])) {
+			$this->data['error_db_port'] = $this->error['db_port'];
+		} else {
+			$this->data['error_db_port'] = '';
+		}
+		
 		if (isset($this->error['db_prefix'])) {
 			$this->data['error_db_prefix'] = $this->error['db_prefix'];
 		} else {
@@ -168,7 +176,13 @@ class ControllerStep3 extends Controller {
 		} else {
 			$this->data['db_name'] = '';
 		}
-
+		
+		if (isset($this->request->post['db_port'])) {
+			$this->data['db_port'] = html_entity_decode($this->request->post['db_port']);
+		} else {
+			$this->data['db_port'] = '3306';
+		}
+		
 		if (isset($this->request->post['db_prefix'])) {
 			$this->data['db_prefix'] = html_entity_decode($this->request->post['db_prefix']);
 		} else {
@@ -216,7 +230,11 @@ class ControllerStep3 extends Controller {
 		if (!$this->request->post['db_name']) {
 			$this->error['db_name'] = 'Database Name required!';
 		}
-
+		
+		if (!$this->request->post['db_port']) {
+			$this->error['db_port'] = 'Port is required!';
+		}
+		
 		if ($this->request->post['db_prefix'] && preg_match('/[^a-z0-9_]/', $this->request->post['db_prefix'])) {
 			$this->error['db_prefix'] = 'DB Prefix can only contain lowercase characters in the a-z range, 0-9 and "_"!';
 		}
