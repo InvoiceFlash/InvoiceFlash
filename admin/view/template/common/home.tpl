@@ -74,7 +74,7 @@
 <div class="row">
 <div class="col-sm-6"><div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="h2"><i class="fa fa-shopping-cart"></i> <?php echo $text_latest_10_quotes; ?></div>
+		<div class="h2"><i class="fa fa-edit"></i> <?php echo $text_latest_10_quotes; ?></div>
 	</div>
 	<div class="panel-body">
 		<table class="table table-bordered table-striped table-hover">
@@ -152,7 +152,6 @@
 </div></div>
 </div>
 <script src="view/javascript/chart/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.bundle.min.js"></script>
 <script>
 $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 	var $this=$(this);

@@ -104,7 +104,12 @@
 							<div class="dropdown-menu">
 								<a href="<?php echo $language; ?>" class="dropdown-item"><?php echo $text_language; ?></a>
 								<a href="<?php echo $currency; ?>" class="dropdown-item"><?php echo $text_currency; ?></a>
-								<a href="<?php echo $stock_status; ?>" class="dropdown-item"><?php echo $text_stock_status; ?></a>
+								<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_statuses; ?></a>
+									<div class="dropdown-menu">
+										<a href="<?php echo $stock_status; ?>" class="dropdown-item"><?php echo $text_stock_status; ?></a>
+										<a href="<?php echo $invoice_status; ?>" class="dropdown-item"><?php echo $text_invoice_status; ?></a>
+									</div>
+								</div>
 								<a href="<?php echo $country; ?>" class="dropdown-item"><?php echo $text_country; ?></a>
 								<a href="<?php echo $zone; ?>" class="dropdown-item"><?php echo $text_zone; ?></a>
 								<a href="<?php echo $geo_zone; ?>" class="dropdown-item"><?php echo $text_geo_zone; ?></a>

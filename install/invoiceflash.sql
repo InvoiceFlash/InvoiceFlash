@@ -7607,7 +7607,6 @@ CREATE TABLE `if_invoice` (
 /*Table structure for table `invoice_product` */
 
 DROP TABLE IF EXISTS `if_invoice_product`;
-
 CREATE TABLE `if_invoice_product` (
   `invoice_product_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
@@ -7623,7 +7622,6 @@ CREATE TABLE `if_invoice_product` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_invoice_option`;
-
 CREATE TABLE `if_invoice_option` (
   `invoice_option_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
@@ -7639,7 +7637,6 @@ CREATE TABLE `if_invoice_option` (
 /*Table structure for table `invoice_total` */
 
 DROP TABLE IF EXISTS `if_invoice_total`;
-
 CREATE TABLE `if_invoice_total` (
   `invoice_total_id` int(10) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
@@ -7702,7 +7699,6 @@ CREATE TABLE `if_profile` (
 ) ENGINE=MyISAM COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_profile_description`;
-
 CREATE TABLE `if_profile_description` (
   `profile_id` int(11) NOT NULL,
   `language_id` int(11) NOT NULL,
@@ -7710,9 +7706,8 @@ CREATE TABLE `if_profile_description` (
   PRIMARY KEY (`profile_id`,`language_id`)
 ) ENGINE=MyISAM COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `oc_quote`;
-
-CREATE TABLE `oc_quote` (
+DROP TABLE IF EXISTS `if_quote`;
+CREATE TABLE `if_quote` (
   `quote_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_no` int(11) NOT NULL DEFAULT '0',
   `invoice_prefix` varchar(26) NOT NULL,
@@ -7776,17 +7771,16 @@ CREATE TABLE `oc_quote` (
 
 /*Table structure for table `quote_product` */
 
-DROP TABLE IF EXISTS `oc_quote_status`;
-CREATE TABLE `oc_quote_status` (
+DROP TABLE IF EXISTS `if_quote_status`;
+CREATE TABLE `if_quote_status` (
   `quote_status_id` int(11) NOT NULL AUTO_INCREMENT,
   `language_id` int(11) NOT NULL,
   `name` varchar(32) NOT NULL,
   PRIMARY KEY (`quote_status_id`,`language_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `oc_quote_product`;
-
-CREATE TABLE `oc_quote_product` (
+DROP TABLE IF EXISTS `if_quote_product`;
+CREATE TABLE `if_quote_product` (
   `quote_product_id` int(11) NOT NULL AUTO_INCREMENT,
   `quote_id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
@@ -7802,8 +7796,8 @@ CREATE TABLE `oc_quote_product` (
 
 /*Table structure for table `quote_total` */
 
-DROP TABLE IF EXISTS `oc_quote_option`;
-CREATE TABLE `oc_quote_option` (
+DROP TABLE IF EXISTS `if_quote_option`;
+CREATE TABLE `if_quote_option` (
   `quote_option_id` int(11) NOT NULL AUTO_INCREMENT,
   `quote_id` int(11) NOT NULL,
   `quote_product_id` int(11) NOT NULL,
@@ -7815,9 +7809,8 @@ CREATE TABLE `oc_quote_option` (
   PRIMARY KEY (`quote_option_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `oc_quote_total`;
-
-CREATE TABLE `oc_quote_total` (
+DROP TABLE IF EXISTS `if_quote_total`;
+CREATE TABLE `if_quote_total` (
   `quote_total_id` int(10) NOT NULL AUTO_INCREMENT,
   `quote_id` int(11) NOT NULL,
   `code` varchar(32) NOT NULL,
