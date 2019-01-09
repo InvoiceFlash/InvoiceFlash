@@ -10,6 +10,7 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_overview'] = $this->language->get('text_overview');
 		$this->data['text_statistics'] = $this->language->get('text_statistics');
 		$this->data['text_latest_10_orders'] = $this->language->get('text_latest_10_orders');
+		$this->data['text_latest_10_quotes'] = $this->language->get('text_latest_10_quotes');
 		$this->data['text_total_sale'] = $this->language->get('text_total_sale');
 		$this->data['text_total_sale_year'] = $this->language->get('text_total_sale_year');
 		$this->data['text_total_order'] = $this->language->get('text_total_order');
@@ -21,6 +22,7 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 
 		$this->data['column_order'] = $this->language->get('column_order');
+		$this->data['column_quote'] = $this->language->get('column_quote');
 		$this->data['column_customer'] = $this->language->get('column_customer');
 		$this->data['column_status'] = $this->language->get('column_status');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
@@ -167,6 +169,36 @@ class ControllerCommonHome extends Controller {
 
 			$this->data['invoices'][] = array(
 				'invoice_id'   => $result['invoice_id'],
+				'customer'   => $result['customer'],
+				'status'     => $result['status'],
+				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+				'action'     => $action
+			);
+		}
+
+		$this->load->model('sale/quote');
+		$this->data['quotes'] = array(); 
+
+		$data = array(
+			'sort'  => 'o.date_added',
+			'order' => 'DESC',
+			'start' => 0,
+			'limit' => 10
+		);
+
+		$results = $this->model_sale_quote->getQuotes($data);
+
+		foreach ($results as $result) {
+			$action = array();
+
+			$action[] = array(
+				'text' => $this->language->get('text_view'),
+				'href' => $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'], 'SSL')
+			);
+
+			$this->data['quote'][] = array(
+				'quote_id'   => $result['quote_id'],
 				'customer'   => $result['customer'],
 				'status'     => $result['status'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),

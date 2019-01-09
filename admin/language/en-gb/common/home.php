@@ -6,6 +6,7 @@ $_['heading_title']                 = 'Dashboard';
 $_['text_overview']                 = 'Overview';
 $_['text_statistics']               = 'Statistics';
 $_['text_latest_10_orders']         = 'Latest 10 Invoices';
+$_['text_latest_10_quotes']         = 'Latest 10 Quotes';
 $_['text_total_sale']               = 'Total Invoices:';
 $_['text_total_sale_year']          = 'Total Invoices This Year:';
 $_['text_total_order']              = 'Total Invoices:';
@@ -19,6 +20,7 @@ $_['text_customer']                 = 'Total Customers';
 
 // Column 
 $_['column_order']                  = 'Invoice ID';
+$_['column_quote']                  = 'Quote ID';
 $_['column_customer']               = 'Customer';
 $_['column_status']                 = 'Status';
 $_['column_date_added']             = 'Date Added';
