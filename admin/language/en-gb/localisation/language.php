@@ -13,12 +13,12 @@ $_['column_action']     = 'Action';
 
 // Entry
 $_['entry_name']        = 'Language Name:';
-$_['entry_code']        = '<a data-toggle="tooltip" title="eg: en. Do not change if this is your default language."><i class="fas fa-question-circle"></i></a> Code';
-$_['entry_locale']      = '<a data-toggle="tooltip" title="eg: en_US.UTF-8,en_US,en-gb,en_gb,english"><i class="fas fa-question-circle"></i></a> Locale';
-$_['entry_image']       = '<a data-toggle="tooltip" title="eg: gb.png"><i class="fas fa-question-circle"></i></a> Image';
-$_['entry_directory']   = '<a data-toggle="tooltip" title="name of the language directory (case-sensitive)"><i class="fas fa-question-circle"></i></a> Directory';
-$_['entry_filename']    = '<a data-toggle="tooltip" title="main language filename without extension"><i class="fas fa-question-circle"></i></a> Filename';
-$_['entry_status']      = '<a data-toggle="tooltip" title="Hide/Show it in language dropdown"><i class="fas fa-question-circle"></i></a> Status';
+$_['entry_code']        = 'Code <a data-toggle="tooltip" title="eg: en. Do not change if this is your default language."><i class="fas fa-question-circle"></i></a>';
+$_['entry_locale']      = 'Locale <a data-toggle="tooltip" title="eg: en_US.UTF-8,en_US,en-gb,en_gb,english"><i class="fas fa-question-circle"></i></a>';
+$_['entry_image']       = 'Image <a data-toggle="tooltip" title="eg: gb.png"><i class="fas fa-question-circle"></i></a>';
+$_['entry_directory']   = 'Directory <a data-toggle="tooltip" title="name of the language directory (case-sensitive)"><i class="fas fa-question-circle"></i></a>';
+$_['entry_filename']    = 'Filename <a data-toggle="tooltip" title="main language filename without extension"><i class="fas fa-question-circle"></i></a>';
+$_['entry_status']      = 'Status <a data-toggle="tooltip" title="Hide/Show it in language dropdown"><i class="fas fa-question-circle"></i></a>';
 $_['entry_sort_order']  = 'Sort Order:';
 
 // Error
