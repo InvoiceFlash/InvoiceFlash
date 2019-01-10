@@ -161,7 +161,12 @@ class ControllerCommonHeader extends Controller {
 		$this->data['text_journal_book'] = $this->language->get('text_journal_book');
 		$this->data['text_report_journal_book'] = $this->language->get('text_report_journal_book');
 
+		$this->data['text_statuses'] = $this->language->get('text_statuses');
 		$this->data['text_c_status'] = $this->language->get('text_c_status');
+		$this->data['text_invoice_status'] = $this->language->get('text_invoice_status');
+
+		// prueba roundecube mail
+		$this->data['text_roundcube'] = 'Roundcube';
 
 
 		if (!$this->user->isLogged() || !isset($this->request->get['token']) || !isset($this->session->data['token']) || ($this->request->get['token'] != $this->session->data['token'])) {
@@ -299,6 +304,11 @@ class ControllerCommonHeader extends Controller {
 			$this->data['recurring_profile'] = $this->url->link('sale/recurring', 'token=' . $this->session->data['token'], 'SSL');
 			
 			$this->data['c_status'] = $this->url->link('localisation/c_status', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['invoice_status'] = $this->url->link('localisation/invoice_status', 'token=' . $this->session->data['token'], 'SSL');
+
+			// Prueba roundcube
+			$this->data['roundcube'] = $this->url->link('catalog/roundcube', 'token=' . $this->session->data['token'], 'SSL');
+
 
 			$this->data['stores'] = array();
 

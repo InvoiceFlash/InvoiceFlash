@@ -71,7 +71,47 @@
 		</div>
 	</div>
 </div>
-<div class="panel panel-default">
+<div class="row">
+<div class="col-sm-6"><div class="panel panel-default">
+	<div class="panel-heading clearfix">
+		<div class="h2"><i class="fa fa-edit"></i> <?php echo $text_latest_10_quotes; ?></div>
+	</div>
+	<div class="panel-body">
+		<table class="table table-bordered table-striped table-hover">
+			<thead>
+				<tr>
+					<th class="text-right hidden-xs"><?php echo $column_quote; ?></th>
+					<th><?php echo $column_customer; ?></th>
+					<th class="hidden-xs"><?php echo $column_status; ?></th>
+					<th class="hidden-xs"><?php echo $column_date_added; ?></th>
+					<th class="text-right hidden-xs"><?php echo $column_total; ?></th>
+					<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+				</tr>
+			</thead>
+			<tbody data-link="row" class="rowlink">
+				<?php if ($quotes) { ?>
+				<?php foreach ($quotes as $quote) { ?>
+				<tr>
+					<td class="text-right hidden-xs"><?php echo $quote['quote_id']; ?></td>
+					<td><?php echo $quote['customer']; ?></td>
+					<td class="hidden-xs text-<?php echo strtolower($quote['status']); ?>"><?php echo $quote['status']; ?></td>
+					<td class="hidden-xs"><?php echo $quote['date_added']; ?></td>
+					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $quote['total']; ?></span></td>
+					<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
+						<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+					<?php } ?></td>
+				</tr>
+				<?php } ?>
+				<?php } else { ?>
+				<tr>
+					<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
+				</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
+</div></div>
+<div class="col-sm-6"><div class="panel panel-default">
 	<div class="panel-heading clearfix">
 		<div class="h2"><i class="fa fa-shopping-cart"></i> <?php echo $text_latest_10_orders; ?></div>
 	</div>
@@ -109,8 +149,9 @@
 			</tbody>
 		</table>
 	</div>
+</div></div>
 </div>
-<script src="view/javascript/chart/chart.js"></script>
+<script src="view/javascript/chart/chart.min.js"></script>
 <script>
 $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 	var $this=$(this);

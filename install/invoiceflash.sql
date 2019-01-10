@@ -7607,7 +7607,6 @@ CREATE TABLE `if_invoice` (
 /*Table structure for table `invoice_product` */
 
 DROP TABLE IF EXISTS `if_invoice_product`;
-
 CREATE TABLE `if_invoice_product` (
   `invoice_product_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
@@ -7623,7 +7622,6 @@ CREATE TABLE `if_invoice_product` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_invoice_option`;
-
 CREATE TABLE `if_invoice_option` (
   `invoice_option_id` int(11) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
@@ -7639,7 +7637,6 @@ CREATE TABLE `if_invoice_option` (
 /*Table structure for table `invoice_total` */
 
 DROP TABLE IF EXISTS `if_invoice_total`;
-
 CREATE TABLE `if_invoice_total` (
   `invoice_total_id` int(10) NOT NULL AUTO_INCREMENT,
   `invoice_id` int(11) NOT NULL,
@@ -7661,20 +7658,10 @@ CREATE TABLE `if_invoice_status` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `if_invoice_status` (`invoice_status_id`, `language_id`, `name`) VALUES
-(2, 1, 'Processing'),
-(3, 1, 'Shipped'),
-(7, 1, 'Canceled'),
-(5, 1, 'Complete'),
-(8, 1, 'Denied'),
-(9, 1, 'Canceled Reversal'),
-(10, 1, 'Failed'),
-(11, 1, 'Refunded'),
-(12, 1, 'Reversed'),
-(13, 1, 'Chargeback'),
-(1, 1, 'Pending'),
-(16, 1, 'Voided'),
-(15, 1, 'Processed'),
-(14, 1, 'Expired');
+(2, 1, 'Sent'),
+(3, 1, 'Viewed'),
+(4, 1, 'Paid'),
+(1, 1, 'Draft');
 
 DROP TABLE IF EXISTS `if_product_profile`;
 CREATE TABLE `if_product_profile` (
@@ -7702,13 +7689,127 @@ CREATE TABLE `if_profile` (
 ) ENGINE=MyISAM COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_profile_description`;
-
 CREATE TABLE `if_profile_description` (
   `profile_id` int(11) NOT NULL,
   `language_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`profile_id`,`language_id`)
 ) ENGINE=MyISAM COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_quote`;
+CREATE TABLE `if_quote` (
+  `quote_id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoice_no` int(11) NOT NULL DEFAULT '0',
+  `invoice_prefix` varchar(26) NOT NULL,
+  `store_id` int(11) NOT NULL DEFAULT '0',
+  `store_name` varchar(64) NOT NULL,
+  `store_url` varchar(255) NOT NULL,
+  `customer_id` int(11) NOT NULL DEFAULT '0',
+  `customer_group_id` int(11) NOT NULL DEFAULT '0',
+  `firstname` varchar(32) NOT NULL,
+  `lastname` varchar(32) NOT NULL,
+  `email` varchar(96) NOT NULL,
+  `telephone` varchar(32) NOT NULL,
+  `fax` varchar(32) NOT NULL,
+  `payment_firstname` varchar(32) NOT NULL,
+  `payment_lastname` varchar(32) NOT NULL,
+  `payment_company` varchar(32) NOT NULL,
+  `payment_company_id` varchar(32) NOT NULL,
+  `payment_tax_id` varchar(32) NOT NULL,
+  `payment_address_1` varchar(128) NOT NULL,
+  `payment_address_2` varchar(128) NOT NULL,
+  `payment_city` varchar(128) NOT NULL,
+  `payment_postcode` varchar(10) NOT NULL,
+  `payment_country` varchar(128) NOT NULL,
+  `payment_country_id` int(11) NOT NULL,
+  `payment_zone` varchar(128) NOT NULL,
+  `payment_zone_id` int(11) NOT NULL,
+  `payment_address_format` text NOT NULL,
+  `payment_method` varchar(128) NOT NULL,
+  `payment_code` varchar(128) NOT NULL,
+  `shipping_firstname` varchar(32) NOT NULL,
+  `shipping_lastname` varchar(32) NOT NULL,
+  `shipping_company` varchar(32) NOT NULL,
+  `shipping_address_1` varchar(128) NOT NULL,
+  `shipping_address_2` varchar(128) NOT NULL,
+  `shipping_city` varchar(128) NOT NULL,
+  `shipping_postcode` varchar(10) NOT NULL,
+  `shipping_country` varchar(128) NOT NULL,
+  `shipping_country_id` int(11) NOT NULL,
+  `shipping_zone` varchar(128) NOT NULL,
+  `shipping_zone_id` int(11) NOT NULL,
+  `shipping_address_format` text NOT NULL,
+  `shipping_method` varchar(128) NOT NULL,
+  `shipping_code` varchar(128) NOT NULL,
+  `comment` text NOT NULL,
+  `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `quote_status_id` int(11) NOT NULL DEFAULT '0',
+  `affiliate_id` int(11) NOT NULL,
+  `commission` decimal(15,4) NOT NULL,
+  `language_id` int(11) NOT NULL,
+  `currency_id` int(11) NOT NULL,
+  `currency_code` varchar(3) NOT NULL,
+  `currency_value` decimal(15,8) NOT NULL DEFAULT '1.0000',
+  `ip` varchar(40) NOT NULL,
+  `forwarded_ip` varchar(40) NOT NULL,
+  `user_agent` varchar(255) NOT NULL,
+  `accept_language` varchar(255) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `date_modified` datetime NOT NULL,
+  PRIMARY KEY (`quote_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+/*Table structure for table `quote_product` */
+
+DROP TABLE IF EXISTS `if_quote_status`;
+CREATE TABLE `if_quote_status` (
+  `quote_status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `language_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  PRIMARY KEY (`quote_status_id`,`language_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_quote_product`;
+CREATE TABLE `if_quote_product` (
+  `quote_product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `quote_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `model` varchar(64) NOT NULL,
+  `quantity` int(4) NOT NULL,
+  `price` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `tax` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `reward` int(8) NOT NULL,
+  PRIMARY KEY (`quote_product_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+/*Table structure for table `quote_total` */
+
+DROP TABLE IF EXISTS `if_quote_option`;
+CREATE TABLE `if_quote_option` (
+  `quote_option_id` int(11) NOT NULL AUTO_INCREMENT,
+  `quote_id` int(11) NOT NULL,
+  `quote_product_id` int(11) NOT NULL,
+  `product_option_id` int(11) NOT NULL,
+  `product_option_value_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  `type` varchar(32) NOT NULL,
+  PRIMARY KEY (`quote_option_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_quote_total`;
+CREATE TABLE `if_quote_total` (
+  `quote_total_id` int(10) NOT NULL AUTO_INCREMENT,
+  `quote_id` int(11) NOT NULL,
+  `code` varchar(32) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `value` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `sort_order` int(3) NOT NULL,
+  PRIMARY KEY (`quote_total_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 
 

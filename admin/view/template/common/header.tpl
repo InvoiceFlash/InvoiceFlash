@@ -74,34 +74,14 @@
 					<div class="dropdown-menu">
 						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_sale; ?></a>
 							<div class="dropdown-menu">
-								<a href="<?php echo $report_sale_order; ?>" class="dropdown-item"><?php echo $text_report_sale_order; ?></a>
-								<a href="<?php echo $report_sale_delivery; ?>" class="dropdown-item"><?php echo $text_delivery; ?></a>
 								<a href="<?php echo $report_sale_invoice; ?>" class="dropdown-item"><?php echo $text_invoice; ?></a>
 								<a href="<?php echo $report_sale_tax; ?>" class="dropdown-item"><?php echo $text_report_sale_tax; ?></a>
 								<a href="<?php echo $report_sale_shipping; ?>" class="dropdown-item"><?php echo $text_report_sale_shipping; ?></a>
-								<a href="<?php echo $report_sale_return; ?>" class="dropdown-item"><?php echo $text_report_sale_return; ?></a>
-								<a href="<?php echo $report_sale_coupon; ?>" class="dropdown-item"><?php echo $text_report_sale_coupon; ?></a>
 							</div>
 						</div>
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_product; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $report_product_viewed; ?>" class="dropdown-item"><?php echo $text_report_product_viewed; ?></a>
-								<a href="<?php echo $report_product_purchased; ?>" class="dropdown-item"><?php echo $text_report_product_purchased; ?></a>
-							</div>
-						</div>		
 						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_customer; ?></a>
 							<div class="dropdown-menu">
-								<a href="<?php echo $report_customer_online; ?>" class="dropdown-item"><?php echo $text_report_customer_online; ?></a>
-								<a href="<?php echo $report_customer_referer; ?>" class="dropdown-item"><?php echo $text_report_customer_referer; ?></a>
-								<a href="<?php echo $report_customer_order; ?>" class="dropdown-item"><?php echo $text_report_customer_order; ?></a>
-								<a href="<?php echo $report_customer_reward; ?>" class="dropdown-item"><?php echo $text_report_customer_reward; ?></a>
-								<a href="<?php echo $report_customer_credit; ?>" class="dropdown-item"><?php echo $text_report_customer_credit; ?></a>
 								<a href="<?php echo $report_customer_support; ?>" class="dropdown-item"><?php echo $text_report_customer_support; ?></a>
-							</div>
-						</div>
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_purchases; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $report_purchases_orders; ?>" class="dropdown-item"><?php echo $text_report_purchases_orders; ?></a>
 							</div>
 						</div>
 					</div>
@@ -119,7 +99,12 @@
 							<div class="dropdown-menu">
 								<a href="<?php echo $language; ?>" class="dropdown-item"><?php echo $text_language; ?></a>
 								<a href="<?php echo $currency; ?>" class="dropdown-item"><?php echo $text_currency; ?></a>
-								<a href="<?php echo $stock_status; ?>" class="dropdown-item"><?php echo $text_stock_status; ?></a>
+								<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_statuses; ?></a>
+									<div class="dropdown-menu">
+										<a href="<?php echo $stock_status; ?>" class="dropdown-item"><?php echo $text_stock_status; ?></a>
+										<a href="<?php echo $invoice_status; ?>" class="dropdown-item"><?php echo $text_invoice_status; ?></a>
+									</div>
+								</div>
 								<a href="<?php echo $country; ?>" class="dropdown-item"><?php echo $text_country; ?></a>
 								<a href="<?php echo $zone; ?>" class="dropdown-item"><?php echo $text_zone; ?></a>
 								<a href="<?php echo $geo_zone; ?>" class="dropdown-item"><?php echo $text_geo_zone; ?></a>
