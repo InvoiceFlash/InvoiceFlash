@@ -7658,20 +7658,10 @@ CREATE TABLE `if_invoice_status` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `if_invoice_status` (`invoice_status_id`, `language_id`, `name`) VALUES
-(2, 1, 'Processing'),
-(3, 1, 'Shipped'),
-(7, 1, 'Canceled'),
-(5, 1, 'Complete'),
-(8, 1, 'Denied'),
-(9, 1, 'Canceled Reversal'),
-(10, 1, 'Failed'),
-(11, 1, 'Refunded'),
-(12, 1, 'Reversed'),
-(13, 1, 'Chargeback'),
-(1, 1, 'Pending'),
-(16, 1, 'Voided'),
-(15, 1, 'Processed'),
-(14, 1, 'Expired');
+(2, 1, 'Sent'),
+(3, 1, 'Viewed'),
+(4, 1, 'Paid'),
+(1, 1, 'Draft');
 
 DROP TABLE IF EXISTS `if_product_profile`;
 CREATE TABLE `if_product_profile` (

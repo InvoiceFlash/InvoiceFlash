@@ -35,6 +35,7 @@ $registry = new Registry();
 // Loader
 $loader = new Loader($registry);
 $registry->set('load', $loader);
-
-echo 'Go to admin';
 ?>
+<script>
+	window.location.href = 'admin/index.php';
+</script>

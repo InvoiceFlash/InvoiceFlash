@@ -79,11 +79,6 @@
 								<a href="<?php echo $report_sale_shipping; ?>" class="dropdown-item"><?php echo $text_report_sale_shipping; ?></a>
 							</div>
 						</div>
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_product; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $report_product_purchased; ?>" class="dropdown-item"><?php echo $text_report_product_purchased; ?></a>
-							</div>
-						</div>		
 						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_customer; ?></a>
 							<div class="dropdown-menu">
 								<a href="<?php echo $report_customer_support; ?>" class="dropdown-item"><?php echo $text_report_customer_support; ?></a>
