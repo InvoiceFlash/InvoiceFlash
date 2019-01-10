@@ -16,11 +16,18 @@ class ControllerReportSaleInvoice extends Controller {
 		} else {
 			$filter_date_end = '';
 		}
-		
-		if (isset($this->request->get['filter_order_status_id'])) {
-			$filter_order_status_id = $this->request->get['filter_order_status_id'];
+
+		if (isset($this->request->get['filter_group'])) {
+			$filter_group = $this->request->get['filter_group'];
 		} else {
-			$filter_order_status_id = 0;
+			$filter_group = '';
+		}
+		
+		
+		if (isset($this->request->get['filter_invoice_status_id'])) {
+			$filter_invoice_status_id = $this->request->get['filter_invoice_status_id'];
+		} else {
+			$filter_invoice_status_id = 0;
 		}	
 				
 		if (isset($this->request->get['page'])) {
@@ -38,9 +45,13 @@ class ControllerReportSaleInvoice extends Controller {
 		if (isset($this->request->get['filter_date_end'])) {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
+		
+		if (isset($this->request->get['filter_group'])) {
+			$url .= '&filter_group=' . $this->request->get['filter_group'];
+		}
 
-		if (isset($this->request->get['filter_order_status_id'])) {
-			$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
+		if (isset($this->request->get['filter_invoice_status_id'])) {
+			$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
 		}
 		
 		if (isset($this->request->get['page'])) {
@@ -68,17 +79,18 @@ class ControllerReportSaleInvoice extends Controller {
 		$data = array(
 			'filter_date_start'	     => $filter_date_start, 
 			'filter_date_end'	     => $filter_date_end, 
-			'filter_order_status_id' => $filter_order_status_id,
+			'filter_group'	     	 => $filter_group, 
+			'filter_invoice_status_id' => $filter_invoice_status_id,
 			'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
 			'limit'                  => $this->config->get('config_admin_limit')
 		);
 		
-		$order_total1 = $this->model_report_saleslist->getTotalInvoices($data);
+		$invoice_total = $this->model_report_saleslist->getTotalInvoices($data);
 		$results = $this->model_report_saleslist->getInvoices($data);
-		$order_total=0;
+		$invoice_total=0;
 		
 		foreach ($results as $result) {
-			$order_total += 1;
+			$invoice_total += 1;
 			$action = array();
 		
 			$action[] = array(
@@ -103,20 +115,16 @@ class ControllerReportSaleInvoice extends Controller {
 			//$optionvalue = trim($optionvalue,', ');			
 						
 			$this->data['customers'][] = array(
-				'order_id'          => $result['invoice_id'],		
+				'invoice_id'          => $result['invoice_id'],		
 				'customer'          => $result['customer'],
-				//'address'         => $result['address'],
 				'city'              => $result['city'],
 				'postcode'          => $result['postcode'],
 				'date_added'        => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'email'             => $result['email'],
 				'telephone'         => $result['telephone'],
 				'status'            => $result['status'] ,
-				//'pdtname'           => $result['pdtname'],
-				//'quantity'          => $result['quantity'],
 				'text' => $this->language->get('text_view'),
 				'href' => $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL'),
-				//'options'           => $optionvalue,
 				'action'            => $action
 			);
 		}
@@ -133,12 +141,12 @@ class ControllerReportSaleInvoice extends Controller {
 		$this->data['column_city'] = $this->language->get('column_city');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
 		$this->data['column_state'] = $this->language->get('column_state');
-		$this->data['column_orderid'] = $this->language->get('column_orderid');
+		$this->data['column_invoiceid'] = $this->language->get('column_invoiceid');
 		$this->data['column_email'] = $this->language->get('column_email');
 		$this->data['column_phone'] = $this->language->get('column_phone');
 		$this->data['column_customer_group'] = $this->language->get('column_customer_group');
 		$this->data['column_status'] = $this->language->get('column_status');
-		$this->data['column_orders'] = $this->language->get('column_orders');
+		$this->data['column_invoices'] = $this->language->get('column_invoices');
 		$this->data['column_products'] = $this->language->get('column_products');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_pdtname'] = $this->language->get('column_pdtname');
@@ -157,7 +165,7 @@ class ControllerReportSaleInvoice extends Controller {
 		
 		$this->load->model('localisation/invoice_status');
 		
-		$this->data['order_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
+		$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
 		
 		$this->data['groups'] = array();
 
@@ -190,13 +198,17 @@ class ControllerReportSaleInvoice extends Controller {
 		if (isset($this->request->get['filter_date_end'])) {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
+		
+		if (isset($this->request->get['filter_group'])) {
+			$url .= '&filter_group=' . $this->request->get['filter_group'];
+		}
 
-		if (isset($this->request->get['filter_order_status_id'])) {
-			$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
+		if (isset($this->request->get['filter_invoice_status_id'])) {
+			$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
 		}
 				
 		$pagination = new Pagination();
-		$pagination->total = $order_total1;
+		$pagination->total = $invoice_total;
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_admin_limit');
 		$pagination->text = $this->language->get('text_pagination');
@@ -206,7 +218,8 @@ class ControllerReportSaleInvoice extends Controller {
 		
 		$this->data['filter_date_start'] = $filter_date_start;
 		$this->data['filter_date_end'] = $filter_date_end;		
-		$this->data['filter_order_status_id'] = $filter_order_status_id;
+		$this->data['filter_group'] = $filter_group;		
+		$this->data['filter_invoice_status_id'] = $filter_invoice_status_id;
 				 
 		$this->template = 'report/sale_invoice.tpl';
 				
