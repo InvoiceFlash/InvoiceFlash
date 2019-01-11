@@ -151,7 +151,7 @@
 	</div>
 </div></div>
 </div>
-<script src="view/javascript/chart/chart.min.js"></script>
+<script src="view/javascript/chart/Chart.bundle.min.js"></script>
 <script>
 $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 	var $this=$(this);
