@@ -52,19 +52,19 @@
 
 				<div class="col-sm-2">
 
-					<select name="filter_order_status_id" title="<?php echo $entry_status; ?>" class="form-control">
+					<select name="filter_invoice_status_id" title="<?php echo $entry_status; ?>" class="form-control">
 
 						<option value="0"><?php echo $text_all_status; ?></option>
 
-						<?php foreach ($order_statuses as $order_status) { ?>
+						<?php foreach ($invoice_statuses as $invoice_status) { ?>
 
-						<?php if ($order_status['order_status_id'] == $filter_order_status_id) { ?>
+						<?php if ($invoice_status['invoice_status_id'] == $filter_invoice_status_id) { ?>
 
-						<option value="<?php echo $order_status['order_status_id']; ?>" selected=""><?php echo $order_status['name']; ?></option>
+						<option value="<?php echo $invoice_status['invoice_status_id']; ?>" selected=""><?php echo $invoice_status['name']; ?></option>
 
 						<?php } else { ?>
 
-						<option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+						<option value="<?php echo $invoice_status['invoice_status_id']; ?>"><?php echo $invoice_status['name']; ?></option>
 
 						<?php } ?>
 
@@ -89,7 +89,7 @@
 
         <thead>
           <tr>
-            <td class="left"><?php echo $column_orderid; ?></td>
+            <td class="left"><?php echo $column_invoiceid; ?></td>
 			<td class="left"><?php echo $column_date_added; ?></td>
             <td class="left"><?php echo $column_customer; ?></td>
             <td class="left"><?php echo $column_city; ?></td>
@@ -103,7 +103,7 @@
           <?php if ($customers) { ?>
           <?php foreach ($customers as $customer) { ?>
           <tr>
-            <td class="left"><?php echo $customer['order_id']; ?></td>
+            <td class="left"><?php echo $customer['invoice_id']; ?></td>
 			<td class="left"><?php echo $customer['date_added']; ?></td>
             <td class="left"><?php echo $customer['customer']; ?></td>
             <td class="left"><?php echo $customer['city']; ?></td>
@@ -140,10 +140,10 @@ function filter() {
 		url += '&filter_date_end=' + encodeURIComponent(filter_date_end);
 	}
 	
-	var filter_order_status_id = $('select[name=\'filter_order_status_id\']').attr('value');
+	var filter_invoice_status_id = $('select[name=\'filter_invoice_status_id\']').attr('value');
 	
-	if (filter_order_status_id) {
-		url += '&filter_order_status_id=' + encodeURIComponent(filter_order_status_id);
+	if (filter_invoice_status_id) {
+		url += '&filter_invoice_status_id=' + encodeURIComponent(filter_invoice_status_id);
 	}	
 
 	location = url;
