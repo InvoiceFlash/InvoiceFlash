@@ -247,22 +247,6 @@
 
 				</div>
 
-				<div class="form-group" id="tax-id-display">
-
-					<label class="control-label col-sm-2"><span id="tax-id-required" class="required">*</span> <?php echo $entry_tax_id; ?></label>
-					<div class="control-field col-sm-4">
-
-						<input type="text" name="payment_tax_id" value="<?php echo $payment_tax_id; ?>" class="form-control">
-
-						<?php if ($error_payment_tax_id) { ?>
-
-						<div class="help-block error"><?php echo $error_payment_tax_id; ?></div>
-
-						<?php } ?>
-
-					</div>
-
-				</div>
 
 				<div class="form-group">
 
@@ -586,81 +570,64 @@
 
 					<?php $option_row = 0; ?>
 
-					<?php $download_row = 0; ?>
-
 					<tbody id="product">
 
-						<?php if ($order_products) { ?>
+						<?php if ($invoice_products) { ?>
 
-						<?php foreach ($order_products as $order_product) { ?>
+						<?php foreach ($invoice_products as $invoice_product) { ?>
 
 						<tr id="product-row<?php echo $product_row; ?>">
 
 							<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-update').trigger('click');"><i class="fa fa-trash "></i></a></td>
 
-							<td><?php echo $order_product['name']; ?><br>
+							<td><?php echo $invoice_product['name']; ?><br>
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_product_id]" value="<?php echo $order_product['order_product_id']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][invoice_product_id]" value="<?php echo $invoice_product['invoice_product_id']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $order_product['product_id']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $invoice_product['product_id']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][name]" value="<?php echo $order_product['name']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][name]" value="<?php echo $invoice_product['name']; ?>">
 
-								<?php foreach ($order_product['option'] as $option) { ?>
+								<?php foreach ($invoice_product['option'] as $option) { ?>
 
 								<div class="help"><?php echo $option['name']; ?>: <?php echo $option['value']; ?></div>
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][order_option_id]" value="<?php echo $option['order_option_id']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][order_option_id]" value="<?php echo $option['order_option_id']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][product_option_id]" value="<?php echo $option['product_option_id']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][product_option_id]" value="<?php echo $option['product_option_id']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][product_option_value_id]" value="<?php echo $option['product_option_value_id']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][product_option_value_id]" value="<?php echo $option['product_option_value_id']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][name]" value="<?php echo $option['name']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][name]" value="<?php echo $option['name']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][value]" value="<?php echo $option['value']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][value]" value="<?php echo $option['value']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][type]" value="<?php echo $option['type']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][type]" value="<?php echo $option['type']; ?>">
 
 								<?php $option_row++; ?>
 
 								<?php } ?>
 
-								<?php foreach ($order_product['download'] as $download) { ?>
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_download][<?php echo $download_row; ?>][order_download_id]" value="<?php echo $download['order_download_id']; ?>">
+							<td><?php echo $invoice_product['model']; ?>
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_download][<?php echo $download_row; ?>][name]" value="<?php echo $download['name']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][model]" value="<?php echo $invoice_product['model']; ?>"></td>
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_download][<?php echo $download_row; ?>][filename]" value="<?php echo $download['filename']; ?>">
+							<td class="text-right"><?php echo $invoice_product['quantity']; ?>
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_download][<?php echo $download_row; ?>][mask]" value="<?php echo $download['mask']; ?>">
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $invoice_product['quantity']; ?>"></td>
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_download][<?php echo $download_row; ?>][remaining]" value="<?php echo $download['remaining']; ?>">
+							<td class="text-right"><?php echo $invoice_product['price']; ?>
 
-								<?php $download_row++; ?>
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][price]" value="<?php echo $invoice_product['price']; ?>"></td>
 
-								<?php } ?></td>
+							<td class="text-right"><?php echo $invoice_product['total']; ?>
 
-							<td><?php echo $order_product['model']; ?>
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][total]" value="<?php echo $invoice_product['total']; ?>">
 
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][model]" value="<?php echo $order_product['model']; ?>"></td>
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][tax]" value="<?php echo $invoice_product['tax']; ?>">
 
-							<td class="text-right"><?php echo $order_product['quantity']; ?>
-
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>"></td>
-
-							<td class="text-right"><?php echo $order_product['price']; ?>
-
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][price]" value="<?php echo $order_product['price']; ?>"></td>
-
-							<td class="text-right"><?php echo $order_product['total']; ?>
-
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][total]" value="<?php echo $order_product['total']; ?>">
-
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][tax]" value="<?php echo $order_product['tax']; ?>">
-
-								<input type="hidden" name="order_product[<?php echo $product_row; ?>][reward]" value="<?php echo $order_product['reward']; ?>"></td>
+								<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][reward]" value="<?php echo $invoice_product['reward']; ?>"></td>
 
 						</tr>
 
@@ -751,51 +718,51 @@
 
 						<?php $total_row = 0; ?>
 
-						<?php if ($order_products || $order_totals) { ?>
+						<?php if ($invoice_products || $invoice_totals) { ?>
 
-						<?php foreach ($order_products as $order_product) { ?>
+						<?php foreach ($invoice_products as $invoice_product) { ?>
 
 						<tr>
 
-							<td><?php echo $order_product['name']; ?>
+							<td><?php echo $invoice_product['name']; ?>
 
-							<?php foreach ($order_product['option'] as $option) { ?>
+							<?php foreach ($invoice_product['option'] as $option) { ?>
 
 								<div class="help"><?php echo $option['name']; ?>: <?php echo $option['value']; ?></div>
 
 							<?php } ?></td>
 
-							<td><?php echo $order_product['model']; ?></td>
+							<td><?php echo $invoice_product['model']; ?></td>
 
-							<td class="text-right"><?php echo $order_product['quantity']; ?></td>
+							<td class="text-right"><?php echo $invoice_product['quantity']; ?></td>
 
-							<td class="text-right"><?php echo $order_product['price']; ?></td>
+							<td class="text-right"><?php echo $invoice_product['price']; ?></td>
 
-							<td class="text-right"><?php echo $order_product['total']; ?></td>
+							<td class="text-right"><?php echo $invoice_product['total']; ?></td>
 
 						</tr>
 
 						<?php } ?>
 
-						<?php foreach ($order_totals as $order_total) { ?>
+						<?php foreach ($invoice_totals as $invoice_total) { ?>
 
 						<tr id="total-row<?php echo $total_row; ?>">
 
-							<td class="text-right" colspan="4"><?php echo $order_total['title']; ?>:
+							<td class="text-right" colspan="4"><?php echo $invoice_total['title']; ?>:
 
-								<input type="hidden" name="order_total[<?php echo $total_row; ?>][order_total_id]" value="<?php echo $order_total['order_total_id']; ?>">
+								<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][invoice_total_id]" value="<?php echo $invoice_total['invoice_total_id']; ?>">
 
-								<input type="hidden" name="order_total[<?php echo $total_row; ?>][code]" value="<?php echo $order_total['code']; ?>">
+								<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][code]" value="<?php echo $invoice_total['code']; ?>">
 
-								<input type="hidden" name="order_total[<?php echo $total_row; ?>][title]" value="<?php echo $order_total['title']; ?>">
+								<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][title]" value="<?php echo $invoice_total['title']; ?>">
 
-								<input type="hidden" name="order_total[<?php echo $total_row; ?>][text]" value="<?php echo $order_total['text']; ?>">
+								<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][text]" value="<?php echo $invoice_total['text']; ?>">
 
-								<input type="hidden" name="order_total[<?php echo $total_row; ?>][value]" value="<?php echo $order_total['value']; ?>">
+								<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][value]" value="<?php echo $invoice_total['value']; ?>">
 
-								<input type="hidden" name="order_total[<?php echo $total_row; ?>][sort_order]" value="<?php echo $order_total['sort_order']; ?>"></td>
+								<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][sort_order]" value="<?php echo $invoice_total['sort_order']; ?>"></td>
 
-							<td class="text-right"><?php echo $order_total['value']; ?></td>
+							<td class="text-right"><?php echo $invoice_total['value']; ?></td>
 
 						</tr>
 
@@ -819,7 +786,7 @@
 
 				<fieldset>
 
-					<legend><?php echo $text_order; ?></legend>
+					<legend><?php echo $text_invoice; ?></legend>
 
 					<div class="form-group">
 
@@ -884,20 +851,20 @@
 					</div>
 					<div class="form-group">
 
-						<label class="control-label col-sm-2"><?php echo $entry_order_status; ?></label>
+						<label class="control-label col-sm-2"><?php echo $entry_invoice_status; ?></label>
 						<div class="control-field col-sm-4">
 
 							<select name="invoice_status_id" class="form-control">
 
-								<?php foreach ($order_statuses as $order_status) { ?>
+								<?php foreach ($invoice_statuses as $invoice_status) { ?>
 
-								<?php if ($order_status['invoice_status_id'] == $invoice_status_id) { ?>
+								<?php if ($invoice_status['invoice_status_id'] == $invoice_status_id) { ?>
 
-								<option value="<?php echo $order_status['invoice_status_id']; ?>" selected=""><?php echo $order_status['name']; ?></option>
+								<option value="<?php echo $invoice_status['invoice_status_id']; ?>" selected=""><?php echo $invoice_status['name']; ?></option>
 
 								<?php } else { ?>
 
-								<option value="<?php echo $order_status['invoice_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+								<option value="<?php echo $invoice_status['invoice_status_id']; ?>"><?php echo $invoice_status['name']; ?></option>
 
 								<?php } ?>
 
@@ -915,17 +882,6 @@
 						<div class="control-field col-sm-4">
 
 							<textarea name="comment" class="form-control" rows="3"><?php echo $comment; ?></textarea>
-
-						</div>
-
-					</div>
-
-					<div class="form-group">
-
-						<label class="control-label col-sm-2"><?php echo $entry_affiliate; ?></label>
-						<div class="control-field col-sm-4">
-
-							<input type="text" name="affiliate" value="<?php echo $affiliate; ?>" class="form-control" autocomplete="off"><input type="hidden" name="affiliate_id" value="<?php echo $affiliate_id; ?>" class="form-control">
 
 						</div>
 
