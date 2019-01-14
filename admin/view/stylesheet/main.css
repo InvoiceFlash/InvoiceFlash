@@ -8711,8 +8711,12 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
   cursor: pointer; }
 
 .well {
-  padding: 24px;
-  border-radius: 0; }
+  padding: 2em;
+  margin-bottom: 2em;
+  border-radius: 0;
+  background-color: #f5f5f5; }
+  .well .row {
+    margin-bottom: 0; }
 
 .well-lg {
   margin-bottom: 20px;
@@ -8760,6 +8764,29 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 #filemanager {
   max-width: 1000px; }
 
+#actions {
+  max-height: 125px; }
+  #actions h5.buton {
+    padding-top: 1em;
+    text-align: center; }
+  @media screen and (min-width: 310px) and (max-width: 992px) {
+    #actions .card-group {
+      display: inline-flex;
+      flex-direction: unset;
+      align-content: center; }
+      #actions .card-group .card {
+        max-width: 50px;
+        padding: 0 1em;
+        margin: 0 1em; } }
+  #actions a {
+    color: #000;
+    text-decoration: none; }
+    #actions a:hover {
+      color: #3d3d3d; }
+
+@media screen and (max-width: 992px) {
+  .hidden-xs {
+    display: none; } }
 .dropdown-menu > li > a, .dropdown-submenu > li > a {
   padding: 10px 20px; }
   .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-submenu > li > a:hover, .dropdown-submenu > li > a:focus {
@@ -8812,6 +8839,21 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
     left: -100%;
     margin-left: 10px;
     border-radius: 0; }
+
+a.dropdowm-item.dropdown-toggle {
+  display: block;
+  width: 100%;
+  padding: 0.25rem 1.5rem;
+  clear: both;
+  font-weight: 400;
+  color: #212529;
+  text-align: inherit;
+  white-space: nowrap;
+  background-color: transparent;
+  border: 0; }
+  a.dropdowm-item.dropdown-toggle:hover {
+    color: white;
+    background-color: #2E8BCC; }
 
 .dropdown-item:hover, .dropdown-item:focus {
   color: #fff;
@@ -8958,48 +9000,11 @@ th a {
     line-height: 1.5;
     padding: 0 1.5rem 1rem; }
 
-.nav {
-  padding-left: 0;
-  list-style: none; }
-  .nav li {
-    position: relative;
-    display: block; }
-    .nav li a {
-      position: relative;
-      display: block;
-      padding: 10px 15px; }
-
-.fixed-top {
-  max-height: 50px; }
-
-.nav.flex-column {
-  float: left;
-  width: 100%;
-  border-right: 1px solid #ddd;
-  border-bottom: 0; }
-  .nav.flex-column a[data-toggle=pill] {
-    margin-bottom: 3px;
-    margin-right: -1px;
-    border-radius: 0px 0 0 0px;
-    color: #555; }
-    .nav.flex-column a[data-toggle=pill].active {
-      color: black;
-      background-color: #fff;
-      border: 1px solid #ddd;
-      border-right: transparent;
-      cursor: default; }
-
-.app-title {
-  flex: 0 0 auto;
-  display: block;
+.navbar-brand {
+  font-family: "Niconne";
   width: 230px;
-  color: #fff;
   text-align: center;
-  font-family: 'Niconne';
-  padding: 0 15px;
-  font-size: 26px !important;
-  font-weight: 400;
-  line-height: 50px; }
+  font-size: 2em; }
 
 .form-horizontal .form-group {
   margin-bottom: 15px;
