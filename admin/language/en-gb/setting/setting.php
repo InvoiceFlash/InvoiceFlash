@@ -1,0 +1,162 @@
+<?php
+// Heading
+$_['heading_title']                = 'Settings';
+
+// Text
+$_['text_success']                 = 'Success: You have modified settings!';
+$_['text_items']                   = 'Items';
+$_['text_product']                 = 'Products';
+$_['text_voucher']                 = 'Vouchers';
+$_['text_tax']                     = 'Taxes';
+$_['text_account']                 = 'Account';
+$_['text_checkout']                = 'Checkout';
+$_['text_stock']                   = 'Stock';
+$_['text_affiliate']               = 'Affiliates';
+$_['text_return']                  = 'Returns';
+$_['text_image_manager']           = 'Image Manager';
+$_['text_browse']                  = 'Browse';
+$_['text_clear']                   = 'Clear';
+$_['text_shipping']                = 'Shipping Address';
+$_['text_payment']                 = 'Payment Address';
+$_['text_mail']                    = 'Mail';
+$_['text_smtp']                    = 'SMTP';
+
+// Entry
+$_['entry_name']                   = 'Store Name:';
+$_['entry_owner']                  = 'Store Owner:';
+$_['entry_address']                = 'Address:';
+$_['entry_email']                  = 'E-Mail:';
+$_['entry_telephone']              = 'Telephone:';
+$_['entry_fax']                    = 'Fax:';
+$_['entry_title']                  = 'Title:';
+$_['entry_meta_description']       = 'Meta Tag Description:';
+$_['entry_layout']                 = 'Default Layout:';
+$_['entry_template']               = 'Template:';
+$_['entry_country']                = 'Country:';
+$_['entry_zone']                   = 'Region / State:';
+$_['entry_language']               = 'Language:';
+$_['entry_admin_language']         = 'Administration Language:';
+$_['entry_currency']               = '<a data-toggle="tooltip" title="Change the default currency. Clear your browser cache to see the change and reset your existing cookie."><i class="fas fa-question-circle"></i></a> Currency:';
+$_['entry_currency_auto']          = '<a data-toggle="tooltip" title="Set your store to automatically update currencies daily."><i class="fas fa-question-circle"></i></a> Auto Update Currency:';
+$_['entry_length_class']           = 'Length Class:';
+$_['entry_weight_class']           = 'Weight Class:';
+$_['entry_catalog_limit'] 	       = '<a data-toggle="tooltip" title="Determines how many catalog items are shown per page (products, categories, etc)"><i class="fas fa-question-circle"></i></a> Default Items Per Page (Catalog):';
+$_['entry_admin_limit']   	       = '<a data-toggle="tooltip" title="Determines how many admin items are shown per page (orders, customers, etc)"><i class="fas fa-question-circle"></i></a> Default Items Per Page (Admin):';
+$_['entry_product_count']          = '<a data-toggle="tooltip" title="Show the number of products inside the subcategories in the storefront header category menu. Be warned, this will cause an extreme performance hit for stores with a lot of subcategories!"><i class="fas fa-question-circle"></i></a> Category Product Count';
+$_['entry_review']       	       = '<a data-toggle="tooltip" title="Enable/Disable new review entry and display of existing reviews"><i class="fas fa-question-circle"></i></a> Allow Reviews:';
+$_['entry_download']               = 'Allow Downloads:';
+$_['entry_voucher_min']            = '<a data-toggle="tooltip" title="Minimum amount a customer can purchase a voucher for."><i class="fas fa-question-circle"></i></a> Voucher Min:';
+$_['entry_voucher_max']            = '<a data-toggle="tooltip" title="Maximum amount a customer can purchase a voucher for."><i class="fas fa-question-circle"></i></a> Voucher Max:';
+$_['entry_tax']                    = 'Display Prices With Tax:';
+$_['entry_vat']                    = '<a data-toggle="tooltip" title="Validate VAT number with http://ec.europa.eu service."><i class="fas fa-question-circle"></i></a> VAT Number Validate:';
+$_['entry_tax_default']            = '<a data-toggle="tooltip" title="Use the store address to calculate taxes if no one is logged in. You can choose to use the store address for the customers shipping or payment address."><i class="fas fa-question-circle"></i></a> Use Store Tax Address:';
+$_['entry_tax_customer']           = '<a data-toggle="tooltip" title="Use the customers default address when they login to calculate taxes. You can choose to use the default address for the customers shipping or payment address."><i class="fas fa-question-circle"></i></a> Use Customer Tax Address:';
+$_['entry_customer_online']        = '<a data-toggle="tooltip" title="Track customers online via the customer reports section."><i class="fas fa-question-circle"></i></a> Customers Online:';
+$_['entry_customer_group']         = '<a data-toggle="tooltip" title="Default customer group."><i class="fas fa-question-circle"></i></a> Customer Group:';
+$_['entry_customer_group_display'] = '<a data-toggle="tooltip" title="Display customer groups that new customers can select to use such as wholesale and business when signing up."><i class="fas fa-question-circle"></i></a> Customer Groups:';
+$_['entry_customer_price']         = '<a data-toggle="tooltip" title="Only show prices when a customer is logged in."><i class="fas fa-question-circle"></i></a> Login Display Prices:';
+$_['entry_account']                = '<a data-toggle="tooltip" title="Forces people to agree to terms before an account can be created."><i class="fas fa-question-circle"></i></a> Account Terms:';
+$_['entry_cart_weight']            = '<a data-toggle="tooltip" title="Show the cart weight on the cart page"><i class="fas fa-question-circle"></i></a> Display Weight on Cart Page:';
+$_['entry_guest_checkout']         = '<a data-toggle="tooltip" title="Allow customers to checkout without creating an account. This will not be available when a downloadable product is in the shopping cart."><i class="fas fa-question-circle"></i></a> Guest Checkout:';
+$_['entry_checkout']               = '<a data-toggle="tooltip" title="Forces people to agree to terms before an a customer can checkout."><i class="fas fa-question-circle"></i></a> Checkout Terms:';
+$_['entry_order_edit']             = '<a data-toggle="tooltip" title="Number of days allowed to edit an order. This is required because prices and discounts may change over time corrupting the order if it\'s edited."><i class="fas fa-question-circle"></i></a> Order Editing:';
+$_['entry_invoice_prefix']         = '<a data-toggle="tooltip" title="Set the invoice prefix (e.g. INV-2011-00). Invoice ID\'s will start at 1 for each unique prefix"><i class="fas fa-question-circle"></i></a> Invoice Prefix:';
+$_['entry_order_status']           = '<a data-toggle="tooltip" title="Set the default order status when an order is processed."><i class="fas fa-question-circle"></i></a> Order Status:';
+$_['entry_complete_status']        = '<a data-toggle="tooltip" title="Set the order status the customers order must reach before they are allowed to access their downloadable products and gift vouchers."><i class="fas fa-question-circle"></i></a> Complete Order Status:';
+$_['entry_stock_display']          = '<a data-toggle="tooltip" title="Display stock quantity on the product page."><i class="fas fa-question-circle"></i></a> Display Stock:';
+$_['entry_stock_warning']          = '<a data-toggle="tooltip" title="Display out of stock message on the shopping cart page if a product is out of stock but stock checkout is yes. (Warning always shows if stock checkout is no)"><i class="fas fa-question-circle"></i></a> Show Out Of Stock Warning:';
+$_['entry_stock_checkout']         = '<a data-toggle="tooltip" title="Allow customers to still checkout if the products they are ordering are not in stock."><i class="fas fa-question-circle"></i></a> Stock Checkout:';
+$_['entry_stock_status']           = '<a data-toggle="tooltip" title="Set the default out of stock status selected in product edit."><i class="fas fa-question-circle"></i></a> Out of Stock Status:';
+$_['entry_affiliate']              = '<a data-toggle="tooltip" title="Forces people to agree to terms before an affiliate account can be created."><i class="fas fa-question-circle"></i></a> Affiliate Terms:';
+$_['entry_commission']             = '<a data-toggle="tooltip" title="The default affiliate commission percentage."><i class="fas fa-question-circle"></i></a> Affiliate Commission (%):';
+$_['entry_return']                 = '<a data-toggle="tooltip" title="Forces people to agree to terms before an return account can be created."><i class="fas fa-question-circle"></i></a> Return Terms:';
+$_['entry_return_status']          = '<a data-toggle="tooltip" title="Set the default return status when an returns request is submitted."><i class="fas fa-question-circle"></i></a> Return Status:';
+$_['entry_logo']                   = 'Store Logo:';
+$_['entry_icon']                   = '<a data-toggle="tooltip" title="The icon should be a PNG that is 16px x 16px."><i class="fas fa-question-circle"></i></a> Icon:';
+$_['entry_image_category']         = 'Category Image Size:';
+$_['entry_image_thumb']            = 'Product Image Thumb Size:';
+$_['entry_image_popup']            = 'Product Image Popup Size:';
+$_['entry_image_product']          = 'Product Image List Size:';
+$_['entry_image_additional']       = 'Additional Product Image Size:';
+$_['entry_image_related']          = 'Related Product Image Size:';
+$_['entry_image_compare']          = 'Compare Image Size:';
+$_['entry_image_wishlist']         = 'Wish List Image Size:';
+$_['entry_image_cart']             = 'Cart Image Size:';
+$_['entry_ftp_host']               = 'FTP Host:';
+$_['entry_ftp_port']               = 'FTP Port:';
+$_['entry_ftp_username']           = 'FTP Username:';
+$_['entry_ftp_password']           = 'FTP Password:';
+$_['entry_ftp_root']               = '<a data-toggle="tooltip" title="The directory your opencart installation is stored in normally \'public_html/\'."><i class="fas fa-question-circle"></i></a> FTP Root:';
+$_['entry_ftp_status']             = 'Enable FTP:';
+$_['entry_mail_protocol']          = '<a data-toggle="tooltip" title="Only choose \'Mail\' unless your host has disabled the php mail function."><i class="fas fa-question-circle"></i></a> Mail Protocol:';
+$_['entry_mail_parameter']         = '<a data-toggle="tooltip" title="When using \'Mail\', additional mail parameters can be added here (e.g. "-femail@storeaddress.com")."><i class="fas fa-question-circle"></i></a> Mail Parameters:';
+$_['entry_smtp_host']              = 'SMTP Host:';
+$_['entry_smtp_username']          = 'SMTP Username:';
+$_['entry_smtp_password']          = 'SMTP Password:';
+$_['entry_smtp_port']              = 'SMTP Port:';
+$_['entry_smtp_timeout']           = 'SMTP Timeout:';
+$_['entry_account_mail']           = '<a data-toggle="tooltip" title="Send a email to the store owner when a new account is registered."><i class="fas fa-question-circle"></i></a> New Account Alert Mail:';
+$_['entry_alert_mail']             = '<a data-toggle="tooltip" title="Send a email to the store owner when a new order is created."><i class="fas fa-question-circle"></i></a> New Order Alert Mail:';
+$_['entry_alert_emails']           = '<a data-toggle="tooltip" title="Any additional emails you want to receive the alert email, in addition to the main store email. (comma separated)"><i class="fas fa-question-circle"></i></a> Additional Alert E-Mails:';
+$_['entry_fraud_detection']        = '<a data-toggle="tooltip" title="MaxMind is a fraud detections service. If you don\'t have a license key you can Sign up here \'http://www.maxmind.com/?rId=opencart\'. Once you have obtained a key copy and paste it into the field below."><i class="fas fa-question-circle"></i></a> Use MaxMind Fraud Detection System:';
+$_['entry_fraud_key']              = 'MaxMind License Key:</span>';
+$_['entry_fraud_score']            = '<a data-toggle="tooltip" title="The higher the score the more likly the order is fraudulent. Set a score between 0 - 100."><i class="fas fa-question-circle"></i></a> MaxMind Risk Score:';
+$_['entry_fraud_status']           = '<a data-toggle="tooltip" title="Orders over your set score will be assigned this order status and will not be allowed to reach the complete status automatically."><i class="fas fa-question-circle"></i></a> MaxMind Fraud Order Status:';
+$_['entry_secure']                 = '<a data-toggle="tooltip" title="To use SSL check with your host if a SSL certificate is installed and added the SSL URL to the catalog and admin config files."><i class="fas fa-question-circle"></i></a> Use SSL:';
+$_['entry_shared']                 = '<a data-toggle="tooltip" title="Try to share the session cookie between stores so the cart can be passed between different domains."><i class="fas fa-question-circle"></i></a> Use Shared Sessions:';
+$_['entry_robots']                 = '<a data-toggle="tooltip" title="A list of web crawler user agents that shared sessions will not be used with. Use separate lines for each user agent."><i class="fas fa-question-circle"></i></a> Robots:';
+$_['entry_seo_url']                = '<a data-toggle="tooltip" title="To use SEO URL\'s apache module mod-rewrite must be installed and you need to rename the htaccess.txt to .htaccess."><i class="fas fa-question-circle"></i></a>Use SEO URL\'s:';
+$_['entry_file_extension_allowed'] = '<a data-toggle="tooltip" title="Add which file extensions are allowed to be uploaded. Use a new line for each value."><i class="fas fa-question-circle"></i></a> Allowed File Extensions:';
+$_['entry_file_mime_allowed']      = '<a data-toggle="tooltip" title="Add which file mime types are allowed to be uploaded. Use a new line for each value."><i class="fas fa-question-circle"></i></a>Allowed File Mime Types:';
+$_['entry_maintenance']            = '<a data-toggle="tooltip" title="Prevents customers from browsing your store. They will instead see a maintenance message. If logged in as admin, you will see the store as normal."><i class="fas fa-question-circle"></i></a> Maintenance Mode:';
+$_['entry_password']               = '<a data-toggle="tooltip" title="Allow forgotten password to be used for the admin. This will be disabled automatically if the system detects a hack attempt."><i class="fas fa-question-circle"></i></a>Allow Forgotten Password:';
+$_['entry_encryption']             = '<a data-toggle="tooltip" title="Please provide a secret key that will be used to encrypt private information when processing orders."><i class="fas fa-question-circle"></i></a>Encryption Key:>';
+$_['entry_compression']            = '<a data-toggle="tooltip" title="GZIP for more efficient transfer to requesting clients. Compression level must be between 0 - 9"><i class="fas fa-question-circle"></i></a>Output Compression Level:';
+$_['entry_error_display']          = 'Display Errors:';
+$_['entry_error_log']              = 'Log Errors:';
+$_['entry_error_filename']         = 'Error Log Filename:';
+$_['entry_google_analytics']       = '<a data-toggle="tooltip" title="Login to your Google Analytics \'http://www.google.com/analytics/\' account and after creating your web site profile copy and paste the analytics code into this field."><i class="fas fa-question-circle"></i></a> Google Analytics Code:';
+
+// Error
+$_['error_warning']                = 'Warning: Please check the form carefully for errors!';
+$_['error_permission']             = 'Warning: You do not have permission to modify settings!';
+$_['error_name']                   = 'Store Name must be between 3 and 32 characters!';
+$_['error_owner']                  = 'Store Owner must be between 3 and 64 characters!';
+$_['error_address']                = 'Store Address must be between 10 and 256 characters!';
+$_['error_email']                  = 'E-Mail Address does not appear to be valid!';
+$_['error_telephone']              = 'Telephone must be between 3 and 32 characters!';
+$_['error_title']                  = 'Title must be between 3 and 32 characters!';
+$_['error_limit']       	       = 'Limit required!';
+$_['error_customer_group_display'] = 'You must include the default customer group if you are going to use this feature!';
+$_['error_voucher_min']            = 'Minimum voucher amount required!';
+$_['error_voucher_max']            = 'Maximum voucher amount required!';
+$_['error_image_thumb']            = 'Product Image Thumb Size dimensions required!';
+$_['error_image_popup']            = 'Product Image Popup Size dimensions required!';
+$_['error_image_product']          = 'Product List Size dimensions required!';
+$_['error_image_category']         = 'Category List Size dimensions required!';
+$_['error_image_additional']       = 'Additional Product Image Size dimensions required!';
+$_['error_image_related']          = 'Related Product Image Size dimensions required!';
+$_['error_image_compare']          = 'Compare Image Size dimensions required!';
+$_['error_image_wishlist']         = 'Wish List Image Size dimensions required!';
+$_['error_image_cart']             = 'Cart Image Size dimensions required!';
+$_['error_ftp_host']               = 'FTP Host required!';
+$_['error_ftp_port']               = 'FTP Port required!';
+$_['error_ftp_username']           = 'FTP Username required!';
+$_['error_ftp_password']           = 'FTP Password required!';
+$_['error_error_filename']         = 'Error Log Filename required!';
+$_['error_encryption']             = 'Encryption must be between 3 and 32 characters!';
+
+//Button test
+$_['button_test'] = 'Test Email';
+
+$_['text_mail_subject'] = 'Testing Email';
+$_['text_mail_message'] = 'Checking that emails are sent correctly.';
+
+// Payroll
+$_['tab_payroll']	 = 'Payroll';
+$_['entry_accounting_period'] = 'Accounting Period:';
+$_['entry_iban'] = 'IBAN:';
+$_['entry_bic'] = 'BIC:';
+$_['entry_creditor_id'] = 'Creditor Id:';
+
+?>

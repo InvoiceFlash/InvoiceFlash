@@ -9,14 +9,14 @@
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="input-group">
-						<input type="text" class="form-control" id="date-start" name="filter_date_start" value="<?php echo $filter_date_start ?>" placeholder="<?php echo $entry_date_start?>">
-						<div class="input-group-append"><span class="input-group-text"><button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button></span>
+						<input type="text" class="form-control date" id="date-start" name="filter_date_start" value="<?php echo $filter_date_start ?>" placeholder="<?php echo $entry_date_start?>">
+						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="input-group">
-						<input type="text" class="form-control" id="date-end" name="filter_date_end" value="<?php echo $filter_date_end ?>" placeholder="<?php echo $entry_date_end?>">
-						<div class="input-group-append"><span class="input-group-text"><button class="btn btn-default" type="button"><i class="fa fa-calendar"></i></button></span>
+						<input type="text" class="form-control date" id="date-end" name="filter_date_end" value="<?php echo $filter_date_end ?>" placeholder="<?php echo $entry_date_end?>">
+						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
 				</div>
 				<div class="col-sm-2">
