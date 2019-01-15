@@ -411,24 +411,6 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_layout_id'] = $this->config->get('config_layout_id');
 		}
 
-		$this->load->model('design/layout');
-
-		$this->data['layouts'] = $this->model_design_layout->getLayouts();
-
-		if (isset($this->request->post['config_template'])) {
-			$this->data['config_template'] = $this->request->post['config_template'];
-		} else {
-			$this->data['config_template'] = $this->config->get('config_template');
-		}
-
-		$this->data['templates'] = array();
-
-		$directories = glob(DIR_CATALOG . 'view/theme/*', GLOB_ONLYDIR);
-
-		foreach ($directories as $directory) {
-			$this->data['templates'][] = basename($directory);
-		}					
-
 		if (isset($this->request->post['config_country_id'])) {
 			$this->data['config_country_id'] = $this->request->post['config_country_id'];
 		} else {
@@ -598,10 +580,6 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$this->data['config_account_id'] = $this->config->get('config_account_id');			
 		}
-
-		$this->load->model('catalog/information');
-
-		$this->data['informations'] = $this->model_catalog_information->getInformations();
 
 		if (isset($this->request->post['config_cart_weight'])) {
 			$this->data['config_cart_weight'] = $this->request->post['config_cart_weight'];
