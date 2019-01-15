@@ -140,5 +140,6 @@
 	</nav>
 </div>
 <?php } ?>
+<div class="clearfix"></div>
 <div id="content" class="container-fluid">
 	<div id="notification"></div>

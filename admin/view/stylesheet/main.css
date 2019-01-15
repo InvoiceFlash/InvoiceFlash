@@ -8787,6 +8787,12 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 @media screen and (max-width: 992px) {
   .hidden-xs {
     display: none; } }
+.clearfix::after {
+  display: block;
+  clear: both;
+  margin-top: 1em;
+  content: " "; }
+
 .dropdown-menu > li > a, .dropdown-submenu > li > a {
   padding: 10px 20px; }
   .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-submenu > li > a:hover, .dropdown-submenu > li > a:focus {
@@ -8999,12 +9005,6 @@ th a {
     float: right;
     line-height: 1.5;
     padding: 0 1.5rem 1rem; }
-
-.navbar-brand {
-  font-family: "Niconne";
-  width: 230px;
-  text-align: center;
-  font-size: 2em; }
 
 .form-horizontal .form-group {
   margin-bottom: 15px;
