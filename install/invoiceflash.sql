@@ -7822,7 +7822,68 @@ CREATE TABLE `if_quote_total` (
   PRIMARY KEY (`quote_total_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_fl_mails`;
+CREATE TABLE `if_fl_mails` (
+  `mail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) DEFAULT NULL,
+  `supplier_id` int(11) DEFAULT '0',
+  `nusuario` int(11) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `date_added` datetime DEFAULT NULL,
+  `title` text COLLATE utf8_spanish2_ci,
+  `message` longtext COLLATE utf8_spanish2_ci,
+  `type` char(1) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `code` longtext COLLATE utf8_spanish2_ci,
+  `client` varchar(100) COLLATE utf8_spanish2_ci DEFAULT NULL,
+  `bleido` tinyint(1) DEFAULT '0',
+  `tag_id` int(11) DEFAULT NULL,
+  `potential_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`mail_id`),
+  KEY `customer` (`customer_id`),
+  KEY `supplier` (`supplier_id`),
+  KEY `potential` (`potential_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_customer_contacts`;
+CREATE TABLE `if_customer_contacts` (
+  `customer_contacts_id` int(11)NOT NULL AUTO_INCREMENT,
+  `customer_id` int(10) unsigned DEFAULT NULL,
+  `cname` varchar(50) DEFAULT NULL,
+  `cpuesto` varchar(50) DEFAULT NULL,
+  `cemail` varchar(50) DEFAULT NULL,
+  `ctelef1` varchar(14) DEFAULT NULL,
+  `ctelef2` varchar(14) DEFAULT NULL,
+  `mnotas` mediumtext,
+  `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `nusualta` int(5) DEFAULT NULL,
+  `caplalta` varchar(20) DEFAULT NULL,
+  `tultmod` datetime DEFAULT NULL,
+  `nusuultmod` int(5) DEFAULT NULL,
+  `caplultmod` varchar(20) DEFAULT NULL,
+   PRIMARY KEY (`customer_contacts_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_fl_contracts`;
+CREATE TABLE `if_fl_contracts` (
+  `nid` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `ncliente` int(10) unsigned DEFAULT NULL,
+  `narticulo` int(10) unsigned DEFAULT NULL,
+  `ncantidad` int(10) DEFAULT NULL,
+  `dcompra` date DEFAULT NULL,
+  `dfinsoport` date DEFAULT NULL,
+  `mnotas` mediumtext,
+  `talta` datetime DEFAULT NULL,
+  `nusualta` int(5) DEFAULT NULL,
+  `caplalta` varchar(20) DEFAULT NULL,
+  `tultmod` datetime DEFAULT NULL,
+  `nusuultmod` int(5) DEFAULT NULL,
+  `caplultmod` varchar(20) DEFAULT NULL,
+  `date_added` datetime DEFAULT NULL,
+  `contract_status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`nid`),
+  KEY `NCLIENTE` (`ncliente`),
+  KEY `narticulo` (`narticulo`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 ALTER TABLE `if_customer` ADD column date_support datetime;
 ALTER TABLE `if_customer` ADD column `company` varchar(92) NOT NULL;
-
