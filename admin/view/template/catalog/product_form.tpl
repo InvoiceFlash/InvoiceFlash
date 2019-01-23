@@ -1,7 +1,7 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-	<?php $fa = 'tablet'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
+	<?php $fa = 'box-open'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
 	<div class="panel-body">
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
@@ -735,21 +735,16 @@
 						<tbody>
 						<tr>
 							<td class="text-left"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
-							<img src="<?php echo $thumb; ?>" alt="" title="" /></a>
+							<img src="<?php echo $thumb; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>
 							<input type="hidden" name="image" value="<?php echo $image; ?>" id="input-image" /></td>
 						</tr>
 						<?php $image_row = 0; ?>
 						<?php $sort_order = array(); foreach ($product_images as $key => $product_image) { $sort_order[$key] = $product_image['sort_order']; } array_multisort($sort_order, SORT_ASC, $product_images); ?>
 						<?php foreach ($product_images as $product_image) { ?>
 							<tr id="image-row<?php echo $image_row; ?>">
-								<td><div class="media">
-									<a class="pull-left" onclick="image_upload('image<?php echo $image_row; ?>','thumb<?php echo $image_row; ?>');"><img class="img-thumbnail" src="<?php echo $product_image['thumb']; ?>" width="100" height="100" alt="" id="thumb<?php echo $image_row; ?>"></a>
-									<input type="hidden" name="product_image[<?php echo $image_row; ?>][image]" value="<?php echo $product_image['image']; ?>" id="image<?php echo $image_row; ?>">
-									<div class="media-body hidden-xs">
-										<a class="btn btn-default" onclick="image_upload('image<?php echo $image_row; ?>','thumb<?php echo $image_row; ?>');"><?php echo $text_browse; ?></a>&nbsp;
-										<a class="btn btn-default" onclick="$('#thumb<?php echo $image_row; ?>').attr('src', '<?php echo $no_image; ?>'); $('#image<?php echo $image_row; ?>').val('');"><?php echo $text_clear; ?></a>
-									</div>
-								</div></td>
+								<td><a href="" id="thumb<?php echo $image_row; ?>" data-toggle="image" class="img-thumbnail">
+									<img src="<?php echo $product_image['thumb']; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>
+									<input type="hidden" name="product_image[<?php echo $image_row; ?>][image]" value="<?php echo $product_image['image']; ?>" id="image<?php echo $image_row; ?>"></td>
 								<td class="text-right"><input type="text" name="product_image[<?php echo $image_row; ?>][sort_order]" value="<?php echo $product_image['sort_order']; ?>" class="form-control"></td>
 								<td><a onclick="$('#image-row<?php echo $image_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
 							</tr>
@@ -1039,16 +1034,14 @@ function addSpecial(){
 var image_row=<?php echo $image_row; ?>;
 
 function addImage(){
-	html ='<tr id="image-row'+image_row+'">';
-	html+='<td><div class="media"><a class="pull-left" onclick="image_upload(\'image'+image_row+'\',\'thumb'+image_row+'\');"><img class="img-thumbnail" src="<?php echo $no_image; ?>" width="100" height="100" alt="" id="thumb'+image_row+'"></a>';
-	html+='<input type="hidden" name="product_image['+image_row+'][image]" value="" id="image'+image_row+'">';
-	html+='<div class="media-body hidden-xs">';
-	html+='<a class="btn btn-default" onclick="image_upload(\'image'+image_row+'\',\'thumb'+image_row+'\');"><?php echo $text_browse; ?></a>&nbsp;';
-	html+='<a class="btn btn-default" onclick="$(\'#thumb'+image_row+'\').attr(\'src\',\'<?php echo $no_image; ?>\'); $(\'#image'+image_row+'\').attr(\'value\',\'\');"><?php echo $text_clear; ?></a>';
-	html+='</div></div></td>';
-	html+='<td class="text-right"><input type="text" name="product_image['+image_row+'][sort_order]" value="" class="form-control"></td>';
-	html+='<td><a onclick="$(\'#image-row'+image_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
-	html+='</tr>';
+	html =  '<tr id="image-row'+image_row+'">';
+	html += '<td><a href="" id="thumb'+image_row+'" data-toggle="image" class="img-thumbnail">';
+	html += '<img src="<?php echo $no_image; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>';
+	html += '<input type="hidden" name="product_image['+image_row+'][image]" value="" id="image'+image_row+'"></td>';
+	html += '<td class="text-right"><input type="text" name="product_image['+image_row+'][sort_order]" value="" class="form-control"></td>';
+	html += '<td><a onclick="$(\'#image-row'+image_row+'\').remove();" class="btn btn-danger">';
+	html += '<i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+	html += '</tr>';
 	
 	$('#images tbody').append(html);
 	
