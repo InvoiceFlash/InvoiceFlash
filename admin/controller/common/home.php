@@ -40,9 +40,9 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_new_invoice'] = $this->language->get('text_new_invoice');
 		$this->data['text_comming'] = $this->language->get('text_comming');
 
-		$this->data['add_customer'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['new_quote'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['new_invoice'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['add_customer'] = $this->url->link('sale/customer/insert', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['new_quote'] = $this->url->link('sale/quote/insert', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['new_invoice'] = $this->url->link('sale/invoice/insert', 'token=' . $this->session->data['token'], 'SSL');
 
 		// Check javascript
 		$this->data['error_javascript'] = $this->language->get('error_javascript');
@@ -153,7 +153,7 @@ class ControllerCommonHome extends Controller {
 
 		$this->data['total_sale'] = $this->currency->format($this->model_sale_invoice->getTotalSales(), $this->config->get('config_currency'));
 		$this->data['total_sale_year'] = $this->currency->format($this->model_sale_invoice->getTotalSalesByYear(date('Y')), $this->config->get('config_currency'));
-		$this->data['total_order'] = $this->model_sale_invoice->getTotalOrders();
+		$this->data['total_order'] = $this->model_sale_invoice->getTotalInvoices();
 
 		$this->load->model('sale/customer');
 
@@ -168,7 +168,7 @@ class ControllerCommonHome extends Controller {
 			'limit' => 10
 		);
 
-		$results = $this->model_sale_invoice->getOrders($data);
+		$results = $this->model_sale_invoice->getInvoices($data);
 
 		foreach ($results as $result) {
 			$action = array();
@@ -182,6 +182,7 @@ class ControllerCommonHome extends Controller {
 				'invoice_id'   => $result['invoice_id'],
 				'customer'   => $result['customer'],
 				'status'     => $result['status'],
+				'color'		 => $result['color'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
 				'action'     => $action
