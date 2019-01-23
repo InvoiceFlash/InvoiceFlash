@@ -22,6 +22,29 @@
     <div class="alert alert-danger"><?php echo $error_javascript; ?></div>
 </noscript>
 <div class="row">
+<div class="col-sm-12">
+<div class="panel panel-default" id="actions">
+	<div class="panel-heading clearfix"><h5><?php echo $text_actions; ?></h5></div>
+	<div class="panel-body">
+		<div class="card-group">
+			<div class="card">
+				<a href="<?php echo $add_customer; ?>"><h5 class="buton"><i class="fas fa-user"></i> <span class="hidden-xs"><?php echo $text_add_customer; ?>	</span></h5></a>
+			</div>
+			<div class="card">
+				<a href="<?php echo $new_quote; ?>"><h5 class="buton"><i class="fas fa-edit"></i> <span class="hidden-xs"><?php echo $text_new_quote; ?>	</span></h5></a>
+			</div>
+			<div class="card">
+				<a href="<?php echo $new_invoice; ?>"><h5 class="buton"><i class="far fa-file-alt"></i> <span class="hidden-xs"><?php echo $text_new_invoice; ?>	</span></h5></a>
+			</div>
+			<div class="card">
+				<h5 class="buton"><i class="fas fa-exclamation-triangle"></i> <span class="hidden-xs"><?php echo $text_comming; ?>	</span></h5>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+<div class="row">
 	<div class="col-sm-6">
 		<div class="panel panel-default">
 			<div class="panel-heading clearfix">
@@ -133,7 +156,7 @@
 				<tr>
 					<td class="text-right hidden-xs"><?php echo $order['invoice_id']; ?></td>
 					<td><?php echo $order['customer']; ?></td>
-					<td class="hidden-xs text-<?php echo strtolower($order['status']); ?>"><?php echo $order['status']; ?></td>
+					<td class="hidden-xs text-<?php echo strtolower($order['status']); ?>" style="background-color:rgb(<?php echo $order['color']; ?>)"><?php echo $order['status']; ?></td>
 					<td class="hidden-xs"><?php echo $order['date_added']; ?></td>
 					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $order['total']; ?></span></td>
 					<td class="text-right"><?php foreach ($order['action'] as $action) { ?>
@@ -173,9 +196,9 @@ $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 			});
 
 			// Datos Pedidos
-			var orderData = [];
+			var invoiceData = [];
 			$.each(json.order['data'], function(index, value){
-				orderData.push(value[1]);
+				invoiceData.push(value[1]);
 			});
 
 			// crear el grafico
@@ -192,7 +215,7 @@ $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 					},
 					{
 						label: json.order['label'],
-						data: orderData,
+						data: invoiceData,
 						backgroundColor: "rgba(62, 149, 205,0.2)",
 						borderColor: "#3e95cd"
 					}]

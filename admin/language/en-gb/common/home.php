@@ -40,4 +40,11 @@ $_['error_cache']                   = 'Warning: Cache directory %s not writeable
 $_['error_download']                = 'Warning: Download directory %s not writeable!';
 $_['error_logs']                    = 'Warning: Log directory %s not writeable!';
 $_['error_javascript'] 				= 'Warning: Javascript is disabled in your borwser. Please enable javascript!!';
+
+// Actions
+$_['text_actions']                  = 'Quick Actions';
+$_['text_add_customer']             = 'Add Customer';
+$_['text_new_quote']                = 'Create Quote';
+$_['text_new_invoice']              = 'Create Invoice';
+$_['text_comming']                  = 'Comming soon...'
 ?>
