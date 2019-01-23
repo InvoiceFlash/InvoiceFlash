@@ -20,7 +20,7 @@
 				<div class="tab-pane" id="tab-general">
 					<div class="row">
 						<div class="col-2">
-							<div id="vtab-language" class="nav flex-column" role="tablist" aria-orientation="vertical">
+							<div id="vtab-language"  class="nav nav-tabs flex-column" role="tablist" aria-orientation="vertical">
 								<?php foreach ($languages as $language) { ?>
 									<a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-toggle="pill" role="tab" aria-selected="false"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a>
 								<?php } ?>
@@ -426,22 +426,21 @@
 				</div>
 				<div class="tab-pane" id="tab-option">
 					<div class="row">
-						<div class="col-sm-2">
-							<div class="tabs-left">
+						<div class="col-2">
+							<div class="nav" role="tablist" aria-orientation="vertical">
 								<ul id="vtab-option" class="nav nav-tabs flex-column">
 									<?php $option_row = 0; ?>
 									<?php foreach ($product_options as $product_option) { ?>
 									<li class="nav-item"><a class="nav-link" href="#tab-option-<?php echo $option_row; ?>" id="option-<?php echo $option_row; ?>" data-toggle="tab">
-										<span class="label label-danger" onclick="$('#vtab-option a:first').trigger('click');$('#option-<?php echo $option_row; ?>').remove();$('#tab-option-<?php echo $option_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span>
-										<?php echo $product_option['name']; ?>
+										<span class="label label-danger" onclick="$('#vtab-option a:first').trigger('click');$('#option-<?php echo $option_row; ?>').remove();$('#tab-option-<?php echo $option_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $product_option['name']; ?>
 									</a></li>
 									<?php $option_row++; ?>
 									<?php } ?>
-									<li><div class="input-group mb-3">
-										<input type="text" name="option" value="" class="form-control">
-										<div class="input-group-append"><span class="input-group-text">
-											<i class="fa fa-plus-circle " title="<?php echo $button_add_option; ?>"></i>
-										</span></div>
+									<li class="action" id="option-add"><div class="input-group mb-3">
+										<input type="text" class="form-control" name="option">
+										<div class="input-group-append">
+											<span class="input-group-text"><i class="fa fa-plus-circle fa-lg" title="<?php echo $button_add_option; ?>"></i></span>
+										</div>
 									</div></li>
 								</ul>
 							</div>
@@ -481,44 +480,41 @@
 										<div class="form-group">
 											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
 											<div class="col-sm-8">
-												<textarea name="product_option[<?php echo $option_row; ?>][option_value]" class="form-control" rows="3"><?php echo $product_option['option_value']; ?></textarea>
+												<textarea name="product_option[<?php echo $option_row; ?>][option_value]" class="form-control ckeditor" rows="3"><?php echo $product_option['option_value']; ?></textarea>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'file') { ?>
-										<div class="form-group" style="display:none;">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
-											<div class="control-field col-sm-4">
-												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control">
-											</div>
+									<div class="form-group">
+										<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
+										<div class="control-field col-sm-4">
+											<input type="text" name="mask" class="form-control">
+											<input type="hidden" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>">
+											<input type="hidden" name="filename">
 										</div>
+										<button type="button" class="btn btn-info" id="button-upload"><i class="fa fa-upload"></i></button>
+									</div>
 									<?php } elseif ($product_option['type'] == 'date') { ?>
 										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
-											<div class="control-field col-sm-4">
-												<label class="input-group">
-													<input type="text" class="form-control date" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>">
-													<div class="input-group-append"><span class="input-group-text"><i class="fa fa-calendar"></i></span></div>
-												</label>
+											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>	
+											<div class="input-group col-sm-4">
+												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control date">
+												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'datetime') { ?>
 										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
-											<div class="control-field col-sm-4">
-												<label class="input-group">
-													<input type="text" class="form-control datetime" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" autocomplete="off">
-													<div class="input-group-append"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div>
-												</label>
+											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>	
+											<div class="input-group col-sm-4">
+												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control datetime">
+												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'time') { ?>
 										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
-											<div class="control-field col-sm-4">
-												<label class="input-group">
-													<input type="text" class="form-control time" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" autocomplete="off">
-													<div class="input-group-append"><span class="input-group-text"><i class="fas fa-clock"></i></span></div>
-												</label>
+											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>	
+											<div class="input-group col-sm-4">
+												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control time">
+												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image') { ?>
@@ -563,14 +559,14 @@
 												<td class="text-right"><div class="input-group">
 													<span class="input-group-btn" data-toggle="buttons">
 														<?php if ($product_option_value['price_prefix'] == '+') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+" checked=""><i class="glyphicon glyphicon-plus"></i></label>
+															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label>
 														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+"><i class="glyphicon glyphicon-plus"></i></label>
+															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+"><i class="fas fa-plus"></i></label>
 														<?php } ?>
 														<?php if ($product_option_value['price_prefix'] == '-') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-" checked=""><i class="glyphicon glyphicon-minus"></i></label>
+															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-" checked=""><i class="fas fa-minus"></i></label>
 														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-"><i class="glyphicon glyphicon-minus"></i></label>
+															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-"><i class="fas fa-minus"></i></label>
 														<?php } ?>
 													</span>
 													<input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price]" value="<?php echo $product_option_value['price']; ?>" class="form-control">
@@ -578,14 +574,14 @@
 												<td class="text-right"><div class="input-group">
 													<span class="input-group-btn" data-toggle="buttons">
 														<?php if ($product_option_value['points_prefix'] == '+') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+" checked=""><i class="glyphicon glyphicon-plus"></i></label>
+															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label>
 														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+"><i class="glyphicon glyphicon-plus"></i></label>
+															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+"><i class="fas fa-plus"></i></label>
 														<?php } ?>
 														<?php if ($product_option_value['points_prefix'] == '-') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-" checked=""><i class="glyphicon glyphicon-minus"></i></label>
+															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-" checked=""><i class="fas fa-minus"></i></label>
 														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-"><i class="glyphicon glyphicon-minus"></i></label>
+															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-"><i class="fas fa-minus"></i></label>
 														<?php } ?>
 													</span>
 													<input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points]" value="<?php echo $product_option_value['points']; ?>" class="form-control">
@@ -593,14 +589,14 @@
 												<td class="text-right"><div class="input-group">
 													<span class="input-group-btn" data-toggle="buttons">
 														<?php if ($product_option_value['weight_prefix'] == '+') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+" checked=""><i class="glyphicon glyphicon-plus"></i></label>
+															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label>
 														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+"><i class="glyphicon glyphicon-plus"></i></label>
+															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+"><i class="fas fa-plus"></i></label>
 														<?php } ?>
 														<?php if ($product_option_value['weight_prefix'] == '-') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-" checked=""><i class="glyphicon glyphicon-minus"></i></label>
+															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-" checked=""><i class="fas fa-minus"></i></label>
 														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-"><i class="glyphicon glyphicon-minus"></i></label>
+															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-"><i class="fas fa-minus"></i></label>
 														<?php } ?>
 													</span>
 													<input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight]" value="<?php echo $product_option_value['weight']; ?>" class="form-control">
@@ -885,17 +881,18 @@ a.typeahead({
 		if(mapped[item].type=='text'){
 			html+='<div class="form-group">';
 			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control" class="form-control"></div>';
+			html+='<div class="control-field col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control"></div>';
 			html+='</div>';
 		}else if(mapped[item].type=='textarea'){
 			html+='<div class="form-group">';
 			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><textarea name="product_option['+option_row+'][option_value]" class="form-control" rows="3"></textarea></div>';
+			html+='<div class="control-field col-sm-4"><textarea name="product_option['+option_row+'][option_value]" class="form-control ckeditor" cols="30" rows="10"></textarea></div>';
 			html+='</div>';	
 		}else if(mapped[item].type=='file'){
-			html+='<div class="form-group" style="display:none;">';
+			html+='<div class="form-group">';
 			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control" class="form-control"></div>';
+			html+='<div class="control-field col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control"></div>';
+			html+='<button class="btn btn-info"><i class="fa fa-upload"></i></button>';
 			html+='</div>';
 		}else if(mapped[item].type=='date'){
 			html+='<div class="form-group">';
@@ -954,7 +951,7 @@ a.typeahead({
 		
 		$('#option-container').append(html);
 
-		$('#option-add').before('<li class="nav-item"><a class="nav-link" href="#tab-option-'+option_row+'" id="option-'+option_row+'" data-toggle="tab"><span class="label label-danger" onclick="$(\'#vtab-option a:first\').trigger(\'click\'); $(\'#option-'+option_row+'\').remove();$(\'#tab-option-'+option_row+'\').remove();return false;"><i class="fa fa-trash"></i></span>'+item+'</a></li>');
+		$('#option-add').before('<li class="nav-item"><a class="nav-link" href="#tab-option-'+option_row+'" id="option-'+option_row+'" data-toggle="tab"><span class="label label-danger" onclick="$(\'#vtab-option a:first\').trigger(\'click\'); $(\'#option-'+option_row+'\').remove();$(\'#tab-option-'+option_row+'\').remove();return false;"><i class="fa fa-trash"></i></span> '+item+'</a></li>');
 
 		$('#option-'+option_row).click();
 
@@ -974,9 +971,9 @@ function addOptionValue(option_row){
 	html+='</select><input type="hidden" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][product_option_value_id]" value=""></td>';
 	html+='<td class="text-right"><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][quantity]" value="" class="form-control"></td>'; 
 	html+='<td><select name="product_option['+option_row+'][product_option_value]['+option_value_row+'][subtract]" class="form-control"><option value="1"><?php echo $text_yes; ?></option><option value="0"><?php echo $text_no; ?></option></select></td>';
-	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="+" checked=""><i class="glyphicon glyphicon-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="-"><i class="glyphicon glyphicon-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price]" value="" class="form-control"></div></td>';
-	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="+" checked=""><i class="glyphicon glyphicon-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="-"><i class="glyphicon glyphicon-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points]" value="" class="form-control"></div></td>';
-	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="+" checked=""><i class="glyphicon glyphicon-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="-"><i class="glyphicon glyphicon-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight]" value="" class="form-control"></div></td>';
+	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="-"><i class="fas fa-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price]" value="" class="form-control"></div></td>';
+	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="-"><i class="fas fa-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points]" value="" class="form-control"></div></td>';
+	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="-"><i class="fas fa-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight]" value="" class="form-control"></div></td>';
 	html+='<td><a onclick="$(\'#option-value-row'+option_value_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
 	html+='</tr>';
 	
