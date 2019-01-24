@@ -644,30 +644,27 @@
 				<div id="tab-image" class="tab-pane">
 					<div class="form-group">
 						<label class="control-label col-sm-2"><?php echo $entry_logo; ?></label>
-						<div class="col-sm-1">
-							<a onclick="image_upload('logo','thumb-logo');"><img class="img-thumbnail" src="<?php echo $logo; ?>" width="100" height="100" alt="" id="thumb-logo"></a>
-						</div>
 						<div class="control-field col-sm-4">
+							<a id="thumb-logo" data-toggle="image" class="img-thumbnail">
+							<img src="<?php echo $logo; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>
 							<input type="hidden" name="config_logo" value="<?php echo $config_logo; ?>" id="logo">
-							<a class="btn btn-default" onclick="image_upload('logo','thumb-logo');"><?php echo $text_browse; ?></a>&nbsp;
-							<a class="btn btn-default" onclick="$('#thumb-logo').attr('src', '<?php echo $no_image; ?>'); $('#logo').val('');"><?php echo $text_clear; ?></a>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-sm-2"><?php echo $entry_icon; ?></label>
-						<div class="col-sm-1">
-							<a onclick="image_upload('icon','thumb-icon');"><img class="img-thumbnail" src="<?php echo $icon; ?>" width="100" height="100" alt="" id="thumb-icon"></a>
-						</div>
 						<div class="control-field col-sm-4">
+							<a id="thumb-icon" data-toggle="image" class="img-thumbnail">
+							<img src="<?php echo $icon; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>
 							<input type="hidden" name="config_icon" value="<?php echo $config_icon; ?>" id="icon">
-							<a class="btn btn-default" onclick="image_upload('icon','thumb-icon');"><?php echo $text_browse; ?></a>&nbsp;
-							<a class="btn btn-default" onclick="$('#thumb-icon').attr('src', '<?php echo $no_image; ?>'); $('#icon').val('');"><?php echo $text_clear; ?></a>
 						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_category; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_category_width" value="<?php echo $config_image_category_width; ?>" class="form-control"> <input type="text" name="config_image_category_height" value="<?php echo $config_image_category_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_category_width" value="<?php echo $config_image_category_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_category_height" value="<?php echo $config_image_category_height; ?>" class="form-control"></div>
+							</div>							
 							<?php if ($error_image_category) { ?>
 								<div class="help-block error"><?php echo $error_image_category; ?></div>
 							<?php } ?>
@@ -676,7 +673,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_thumb; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_thumb_width" value="<?php echo $config_image_thumb_width; ?>" class="form-control"> <input type="text" name="config_image_thumb_height" value="<?php echo $config_image_thumb_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_thumb_width" value="<?php echo $config_image_thumb_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_thumb_height" value="<?php echo $config_image_thumb_height; ?>" class="form-control"></div>
+							</div>
 							<?php if ($error_image_thumb) { ?>
 								<div class="help-block error"><?php echo $error_image_thumb; ?></div>
 							<?php } ?>
@@ -685,7 +685,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_popup; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_popup_width" value="<?php echo $config_image_popup_width; ?>" class="form-control"> <input type="text" name="config_image_popup_height" value="<?php echo $config_image_popup_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_popup_width" value="<?php echo $config_image_popup_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_popup_height" value="<?php echo $config_image_popup_height; ?>" class="form-control"></div>
+							</div>							
 							<?php if ($error_image_popup) { ?>
 								<div class="help-block error"><?php echo $error_image_popup; ?></div>
 							<?php } ?>
@@ -694,7 +697,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_product; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_product_width" value="<?php echo $config_image_product_width; ?>" class="form-control"> <input type="text" name="config_image_product_height" value="<?php echo $config_image_product_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_product_width" value="<?php echo $config_image_product_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_product_height" value="<?php echo $config_image_product_height; ?>" class="form-control"></div>
+							</div>
 							<?php if ($error_image_product) { ?>
 								<div class="help-block error"><?php echo $error_image_product; ?></div>
 							<?php } ?>
@@ -703,7 +709,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_additional; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_additional_width" value="<?php echo $config_image_additional_width; ?>" class="form-control"> <input type="text" name="config_image_additional_height" value="<?php echo $config_image_additional_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_additional_width" value="<?php echo $config_image_additional_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_additional_height" value="<?php echo $config_image_additional_height; ?>" class="form-control"></div>
+							</div>
 							<?php if ($error_image_additional) { ?>
 								<div class="help-block error"><?php echo $error_image_additional; ?></div>
 							<?php } ?>
@@ -712,7 +721,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_related; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_related_width" value="<?php echo $config_image_related_width; ?>" class="form-control"> <input type="text" name="config_image_related_height" value="<?php echo $config_image_related_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_related_width" value="<?php echo $config_image_related_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_related_height" value="<?php echo $config_image_related_height; ?>" class="form-control"></div>
+							</div>
 							<?php if ($error_image_related) { ?>
 								<div class="help-block error"><?php echo $error_image_related; ?></div>
 							<?php } ?>
@@ -721,7 +733,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_compare; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_compare_width" value="<?php echo $config_image_compare_width; ?>" class="form-control"> <input type="text" name="config_image_compare_height" value="<?php echo $config_image_compare_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_compare_width" value="<?php echo $config_image_compare_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_compare_height" value="<?php echo $config_image_compare_height; ?>" class="form-control"></div>
+							</div>
 							<?php if ($error_image_compare) { ?>
 								<div class="help-block error"><?php echo $error_image_compare; ?></div>
 							<?php } ?>
@@ -730,7 +745,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_wishlist; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_wishlist_width" value="<?php echo $config_image_wishlist_width; ?>" class="form-control"> <input type="text" name="config_image_wishlist_height" value="<?php echo $config_image_wishlist_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_wishlist_width" value="<?php echo $config_image_wishlist_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_wishlist_height" value="<?php echo $config_image_wishlist_height; ?>" class="form-control"></div>
+							</div>
 							<?php if ($error_image_wishlist) { ?>
 								<div class="help-block error"><?php echo $error_image_wishlist; ?></div>
 							<?php } ?>
@@ -739,7 +757,10 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_image_cart; ?></label>
 						<div class="control-field col-sm-4">
-							<input type="text" name="config_image_cart_width" value="<?php echo $config_image_cart_width; ?>" class="form-control"> <input type="text" name="config_image_cart_height" value="<?php echo $config_image_cart_height; ?>" class="form-control">
+							<div class="slim-row">
+								<div class="slim-col-sm-6"><input type="text" name="config_image_cart_width" value="<?php echo $config_image_cart_width; ?>" class="form-control"></div>
+								<div class="slim-col-sm-6"><input type="text" name="config_image_cart_height" value="<?php echo $config_image_cart_height; ?>" class="form-control"></div>
+							</div>
 							<?php if ($error_image_cart) { ?>
 								<div class="help-block error"><?php echo $error_image_cart; ?></div>
 							<?php } ?>
