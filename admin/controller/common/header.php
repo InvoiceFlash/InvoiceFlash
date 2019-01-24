@@ -104,17 +104,6 @@ class ControllerCommonHeader extends Controller {
 		$this->data['text_weight_class'] = $this->language->get('text_weight_class');
 		$this->data['text_length_class'] = $this->language->get('text_length_class');
 		$this->data['text_zone'] = $this->language->get('text_zone');
-		$this->data['text_openbay_extension'] = $this->language->get('text_openbay_extension');
-		$this->data['text_openbay_dashboard'] = $this->language->get('text_openbay_dashboard');
-		$this->data['text_openbay_orders'] = $this->language->get('text_openbay_orders');
-		$this->data['text_openbay_items'] = $this->language->get('text_openbay_items');
-		$this->data['text_openbay_ebay'] = $this->language->get('text_openbay_ebay');
-		$this->data['text_openbay_amazon'] = $this->language->get('text_openbay_amazon');
-		$this->data['text_openbay_amazonus'] = $this->language->get('text_openbay_amazonus');
-		$this->data['text_openbay_settings'] = $this->language->get('text_openbay_settings');
-		$this->data['text_openbay_links'] = $this->language->get('text_openbay_links');
-		$this->data['text_openbay_report_price'] = $this->language->get('text_openbay_report_price');
-		$this->data['text_openbay_order_import'] = $this->language->get('text_openbay_order_import');
 
 		$this->data['text_paypal_express'] = $this->language->get('text_paypal_manage');
 		$this->data['text_paypal_express_search'] = $this->language->get('text_paypal_search');

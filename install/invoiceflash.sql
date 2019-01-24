@@ -7904,5 +7904,21 @@ CREATE TABLE `if_fl_customers` (
   PRIMARY KEY (`customer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_shipping_methods`;
+CREATE TABLE `if_shipping_methods` (
+  `shipping_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `language_id` int(11) NOT NULL,
+  PRIMARY KEY (`shipping_id`,`language_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+ 
+DROP TABLE IF EXISTS `if_payment_methods`;
+CREATE TABLE `if_payment_methods` (
+  `payment_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `language_id` int(11) NOT NULL,
+  PRIMARY KEY (`payment_id`,`language_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
 ALTER TABLE `if_customer` ADD column date_support datetime;
 ALTER TABLE `if_customer` ADD column `company` varchar(92) NOT NULL;
