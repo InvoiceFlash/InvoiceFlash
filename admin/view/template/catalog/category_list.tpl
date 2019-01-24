@@ -1,14 +1,7 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-sitemap"></i><?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<a href="<?php echo $repair; ?>" class="btn btn-success btn-spacer"><i class="fa fa-wrench"></i><span class="hidden-xs">  <?php echo $button_repair; ?></span></a>
-			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
-		</div>
-	</div>
+	<?php $fa='';include DIR_TEMPLATE . 'common/template-title-list.tpl'; ?>
 	<div class="panel-body">
 		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">

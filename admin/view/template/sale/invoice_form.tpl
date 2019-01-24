@@ -129,7 +129,7 @@
 							<?php if ($invoice_products) { ?>
 							<?php foreach ($invoice_products as $invoice_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
-								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-invoice-update').click();"><i class="fa fa-trash"></i></a></td>
+								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-invoice-product').click();"><i class="fa fa-trash"></i></a></td>
 								<td><?php echo $invoice_product['name']; ?><br>
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][invoice_product_id]" value="<?php echo $invoice_product['invoice_product_id']; ?>">
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $invoice_product['product_id']; ?>">
