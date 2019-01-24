@@ -109,12 +109,13 @@ class ControllerCommonHeader extends Controller {
 		$this->data['text_paypal_express_search'] = $this->language->get('text_paypal_search');
 		$this->data['text_recurring_profile'] = $this->language->get('text_recurring_profile');
 		
+		$this->data['text_localisation_payment'] = $this->language->get('text_localisation_payment');
+		$this->data['text_localisation_shipping'] = $this->language->get('text_localisation_shipping');
+		
 		//add
 		$this->data['text_invoice'] = $this->language->get('text_invoice');
 		$this->data['text_quote'] = $this->language->get('text_quote');
-		$this->data['text_delivery'] = $this->language->get('text_delivery');
-		$this->data['text_receipt'] = $this->language->get('text_receipt');
-		$this->data['text_remittances'] = $this->language->get('text_remittances');
+		
 		$this->data['text_export_import'] = $this->language->get('text_export_import');
 		$this->data['text_mail'] = $this->language->get('text_mail');
 		$this->data['text_purchases'] = $this->language->get('text_purchases');
@@ -214,7 +215,7 @@ class ControllerCommonHeader extends Controller {
 			$this->data['report_customer_reward'] = $this->url->link('report/customer_reward', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['report_customer_credit'] = $this->url->link('report/customer_credit', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['report_affiliate_commission'] = $this->url->link('report/affiliate_commission', 'token=' . $this->session->data['token'], 'SSL');
-			$this->data['review'] = $this->url->link('catalog/review', 'token=' . $this->session->data['token'], 'SSL');
+			
 			$this->data['return'] = $this->url->link('sale/return', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['return_action'] = $this->url->link('localisation/return_action', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['return_reason'] = $this->url->link('localisation/return_reason', 'token=' . $this->session->data['token'], 'SSL');
@@ -233,6 +234,8 @@ class ControllerCommonHeader extends Controller {
 			$this->data['weight_class'] = $this->url->link('localisation/weight_class', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['length_class'] = $this->url->link('localisation/length_class', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['zone'] = $this->url->link('localisation/zone', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['localisation_payment'] = $this->url->link('localisation/payment', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['localisation_shipping'] = $this->url->link('localisation/shipping', 'token=' . $this->session->data['token'], 'SSL');
 
 			//add
 			$this->data['delivery'] = $this->url->link('sale/delivery', 'token=' . $this->session->data['token'], 'SSL');

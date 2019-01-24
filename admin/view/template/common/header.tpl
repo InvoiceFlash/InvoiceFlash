@@ -53,7 +53,8 @@
 								<a href="<?php echo $option; ?>" class="dropdown-item"><?php echo $text_option; ?></a>
 							</div>
 						</div>
-						
+						<a href="<?php echo $localisation_payment; ?>" class="dropdown-item"><?php echo $text_localisation_payment; ?></a>
+						<a href="<?php echo $localisation_shipping; ?>" class="dropdown-item"><?php echo $text_localisation_shipping; ?></a>
 					</div>
 				</div>
 				<div id="sale" class="nav-item dropdown">
@@ -126,9 +127,9 @@
 				
 				<div id="help" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_help; ?></a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="http://www.flashinvoice.com" target="_blank"><?php echo $text_invoiceflash; ?></a>
-						<a class="dropdown-item" href="http://docs.flashinvoice.com/en-gb/introduction/" target="_blank"><?php echo $text_documentation; ?></a>
-						<a class="dropdown-item" href="http://forum.flashinvoice.com/" target="_blank"><?php echo $text_support; ?></a>
+						<a class="dropdown-item" href="http://www.invoiceflash.com" target="_blank"><?php echo $text_invoiceflash; ?></a>
+						<a class="dropdown-item" href="http://docs.invoiceflash.com/en-gb/introduction/" target="_blank"><?php echo $text_documentation; ?></a>
+						<a class="dropdown-item" href="http://forum.invoiceflash.com/" target="_blank"><?php echo $text_support; ?></a>
 					</div>
 				</div>
 			</div>

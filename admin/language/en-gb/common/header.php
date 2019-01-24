@@ -98,6 +98,8 @@ $_['text_openbay_order_import']        = 'Order import';
 $_['text_paypal_manage']               = 'PayPal';
 $_['text_paypal_search']               = 'Search';
 $_['text_recurring_profile']           = 'Recurring Profiles';
+$_['text_localisation_payment']        = 'Payment';
+$_['text_localisation_shipping']       = 'Shipping';
 
 //add
 $_['text_invoice']                     = 'Invoices';
