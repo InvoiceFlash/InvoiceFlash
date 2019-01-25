@@ -1,10 +1,10 @@
 <?php
 class ModelLocalisationPayment extends Model {
 	public function addPayment($data) {
-		$query = $this->db->query("SELECT * FROM payment_methods order by payment_id desc limit 1");
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "payment_methods order by payment_id desc limit 1");
 
 		$payment_id = isset($query->row['payment_id']) ? $query->row['payment_id']+1 : 1;
-		// Por cada lenguaje insertamos una línea en la tabla
+		
 		foreach ($data['pay_name'] as $language_id => $value) {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "payment_methods SET payment_id = " . (int)$payment_id . ", name = '" . $this->db->escape($value['name']) . "', language_id = " . (int)$language_id);
 		}
@@ -13,7 +13,7 @@ class ModelLocalisationPayment extends Model {
 	
 	public function editPayment($payment_id, $data) {
 
-		// Actualizamos todos los idiomas
+		// Update every language
 		foreach ($data['pay_name'] as $language_id => $value) {
 			$this->db->query("UPDATE " . DB_PREFIX . "payment_methods SET name = '" . $this->db->escape($value['name']) . "' WHERE language_id = " . (int)$language_id . " AND payment_id = " . (int)$payment_id);
 		}

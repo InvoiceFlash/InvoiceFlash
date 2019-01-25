@@ -7911,6 +7911,9 @@ CREATE TABLE `if_shipping_methods` (
   `language_id` int(11) NOT NULL,
   PRIMARY KEY (`shipping_id`,`language_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+insert  into `if_shipping_methods`(`shipping_id`,`name`,`language_id`) values (1,'Paid shipping',1);
+insert  into `if_shipping_methods`(`shipping_id`,`name`,`language_id`) values (2,'Freight Collect',1);
  
 DROP TABLE IF EXISTS `if_payment_methods`;
 CREATE TABLE `if_payment_methods` (
@@ -7919,6 +7922,9 @@ CREATE TABLE `if_payment_methods` (
   `language_id` int(11) NOT NULL,
   PRIMARY KEY (`payment_id`,`language_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+
+insert  into `if_payment_methods`(`payment_id`,`name`,`language_id`) values (1,'Cash',1);
+insert  into `if_payment_methods`(`payment_id`,`name`,`language_id`) values (2,'at 30 days',1);
 
 ALTER TABLE `if_customer` ADD column date_support datetime;
 ALTER TABLE `if_customer` ADD column `company` varchar(92) NOT NULL;
