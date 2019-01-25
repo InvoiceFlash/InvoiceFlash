@@ -7649,6 +7649,17 @@ CREATE TABLE `if_invoice_total` (
   KEY `order_id` (`invoice_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_invoice_history`;
+CREATE TABLE `if_invoice_history` (
+  `invoice_history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `invoice_id` int(11) NOT NULL,
+  `invoice_status_id` int(5) NOT NULL,
+  `notify` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text NOT NULL,
+  `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`invoice_history_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `if_invoice_status`;
 CREATE TABLE `if_invoice_status` (
   `invoice_status_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -7928,3 +7939,4 @@ insert  into `if_payment_methods`(`payment_id`,`name`,`language_id`) values (2,'
 
 ALTER TABLE `if_customer` ADD column date_support datetime;
 ALTER TABLE `if_customer` ADD column `company` varchar(92) NOT NULL;
+ALTER TABLE `if_customer` ADD column `notes` text ;
