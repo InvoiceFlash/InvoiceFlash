@@ -109,7 +109,7 @@
 								<a href="<?php echo $country; ?>" class="dropdown-item"><?php echo $text_country; ?></a>
 								<a href="<?php echo $zone; ?>" class="dropdown-item"><?php echo $text_zone; ?></a>
 								<a href="<?php echo $geo_zone; ?>" class="dropdown-item"><?php echo $text_geo_zone; ?></a>
-								<div class="dropdown-submenu">
+								<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_tax; ?></a>
 									<div class="dropdown-menu">
 										<a href="<?php echo $tax_class; ?>" class="dropdown-item"><?php echo $text_tax_class; ?></a>
 										<a href="<?php echo $tax_rate; ?>" class="dropdown-item"><?php echo $text_tax_rate; ?></a>
