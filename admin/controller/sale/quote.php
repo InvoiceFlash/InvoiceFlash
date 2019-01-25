@@ -1,18 +1,19 @@
 <?php
-class ControllerSaleQuote extends Controller {
-	private $error = array();
 
-  	public function index() {
-		$this->load->language('sale/quote');
+class ControllerSaleQuote extends Controller {
+    private $error = array();
+
+    public function index() {
+        $this->load->language('sale/quote');
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('sale/quote');
 
     	$this->getList();
-  	}
-	
-  	public function insert() {
+    }
+
+    public function insert() {
 		$this->load->language('sale/quote');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -20,7 +21,8 @@ class ControllerSaleQuote extends Controller {
 		$this->load->model('sale/quote');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-      	  	$this->model_sale_quote->addQuote($this->request->post);
+		
+			$this->model_sale_quote->addQuote($this->request->post);
 			
 			$this->session->data['success'] = $this->language->get('text_success');
 		  
@@ -34,8 +36,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_quote_status_id'])) {
-				$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
+			if (isset($this->request->get['filter_invoice_status_id'])) {
+				$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
 			}
 			
 			if (isset($this->request->get['filter_total'])) {
@@ -65,17 +67,18 @@ class ControllerSaleQuote extends Controller {
 			$this->redirect($this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 		
-    	$this->getForm();
-  	}
-	
+		$this->getForm();
+    }
+    
   	public function update() {
 		$this->load->language('sale/quote');
-;
+
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('sale/quote');
-    	
+
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+
 			$this->model_sale_quote->editQuote($this->request->get['quote_id'], $this->request->post);
 	  		
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -90,8 +93,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_quote_status_id'])) {
-				$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
+			if (isset($this->request->get['filter_invoice_status_id'])) {
+				$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
 			}
 			
 			if (isset($this->request->get['filter_total'])) {
@@ -122,8 +125,8 @@ class ControllerSaleQuote extends Controller {
 		}
 		
     	$this->getForm();
-  	}
-	
+    }
+    	
   	public function delete() {
 		$this->load->language('sale/quote');
 
@@ -148,8 +151,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_quote_status_id'])) {
-				$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
+			if (isset($this->request->get['filter_invoice_status_id'])) {
+				$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
 			}
 			
 			if (isset($this->request->get['filter_total'])) {
@@ -180,314 +183,321 @@ class ControllerSaleQuote extends Controller {
     	}
 
     	$this->getList();
-  	}
-
+      }
+      
   	private function getList() {
-		if (isset($this->request->get['filter_quote_id'])) {
-			$filter_quote_id = $this->request->get['filter_quote_id'];
-		} else {
-			$filter_quote_id = null;
-		}
+        if (!extension_loaded('openssl')) {
+          $this->data['error_warning'] = 'OpenSSL library is not installed. You cannot sign quotes.';
+      } else {
+          if (!extension_loaded('curl')) {
+              $this->data['error_warning'] = 'curl library is not installed. You cannot sign quotes.';
+          }
+      }
+      
+      if (isset($this->request->get['filter_quote_id'])) {
+          $filter_quote_id = $this->request->get['filter_quote_id'];
+      } else {
+          $filter_quote_id = null;
+      }
 
-		if (isset($this->request->get['filter_customer'])) {
-			$filter_customer = $this->request->get['filter_customer'];
-		} else {
-			$filter_customer = null;
-		}
+      if (isset($this->request->get['filter_customer'])) {
+          $filter_customer = $this->request->get['filter_customer'];
+      } else {
+          $filter_customer = null;
+      }
 
-		if (isset($this->request->get['filter_quote_status_id'])) {
-			$filter_quote_status_id = $this->request->get['filter_quote_status_id'];
-		} else {
-			$filter_quote_status_id = null;
-		}
-		
-		if (isset($this->request->get['filter_total'])) {
-			$filter_total = $this->request->get['filter_total'];
-		} else {
-			$filter_total = null;
-		}
-		
-		if (isset($this->request->get['filter_date_added'])) {
-			$filter_date_added = $this->request->get['filter_date_added'];
-		} else {
-			$filter_date_added = null;
-		}
-		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$filter_date_modified = $this->request->get['filter_date_modified'];
-		} else {
-			$filter_date_modified = null;
-		}
+      if (isset($this->request->get['filter_invoice_status_id'])) {
+          $filter_invoice_status_id = $this->request->get['filter_invoice_status_id'];
+      } else {
+          $filter_invoice_status_id = null;
+      }
+      
+      if (isset($this->request->get['filter_total'])) {
+          $filter_total = $this->request->get['filter_total'];
+      } else {
+          $filter_total = null;
+      }
+      
+      if (isset($this->request->get['filter_date_added'])) {
+          $filter_date_added = $this->request->get['filter_date_added'];
+      } else {
+          $filter_date_added = null;
+      }
+      
+      if (isset($this->request->get['filter_date_modified'])) {
+          $filter_date_modified = $this->request->get['filter_date_modified'];
+      } else {
+          $filter_date_modified = null;
+      }
 
-		if (isset($this->request->get['sort'])) {
-			$sort = $this->request->get['sort'];
-		} else {
-			$sort = 'o.quote_id';
-		}
+      if (isset($this->request->get['sort'])) {
+          $sort = $this->request->get['sort'];
+      } else {
+          $sort = 'o.date_added';
+      }
 
-		if (isset($this->request->get['order'])) {
-			$order = $this->request->get['order'];
-		} else {
-			$order = 'DESC';
-		}
-		
-		if (isset($this->request->get['page'])) {
-			$page = $this->request->get['page'];
-		} else {
-			$page = 1;
-		}
-				
-		$url = '';
+      if (isset($this->request->get['order'])) {
+          $order = $this->request->get['order'];
+      } else {
+          $order = 'DESC';
+      }
+      
+      if (isset($this->request->get['page'])) {
+          $page = $this->request->get['page'];
+      } else {
+          $page = 1;
+      }
+              
+      $url = '';
 
-		if (isset($this->request->get['filter_quote_id'])) {
-			$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
-		}
-		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
-		}
-											
-		if (isset($this->request->get['filter_quote_status_id'])) {
-			$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
-		}
-		
-		if (isset($this->request->get['filter_total'])) {
-			$url .= '&filter_total=' . $this->request->get['filter_total'];
-		}
-					
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
-		}
-		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-		}
+      if (isset($this->request->get['filter_quote_id'])) {
+          $url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
+      }
+      
+      if (isset($this->request->get['filter_customer'])) {
+          $url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+      }
+                                          
+      if (isset($this->request->get['filter_invoice_status_id'])) {
+          $url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
+      }
+      
+      if (isset($this->request->get['filter_total'])) {
+          $url .= '&filter_total=' . $this->request->get['filter_total'];
+      }
+                  
+      if (isset($this->request->get['filter_date_added'])) {
+          $url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+      }
+      
+      if (isset($this->request->get['filter_date_modified'])) {
+          $url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+      }
 
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
+      if (isset($this->request->get['sort'])) {
+          $url .= '&sort=' . $this->request->get['sort'];
+      }
 
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-		
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
+      if (isset($this->request->get['order'])) {
+          $url .= '&order=' . $this->request->get['order'];
+      }
+      
+      if (isset($this->request->get['page'])) {
+          $url .= '&page=' . $this->request->get['page'];
+      }
 
-  		$this->data['breadcrumbs'] = array();
+        $this->data['breadcrumbs'] = array();
 
-   		$this->data['breadcrumbs'][] = array(
-       		'text'      => $this->language->get('text_home'),
-			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
-      		'separator' => false
-   		);
+         $this->data['breadcrumbs'][] = array(
+             'text'      => $this->language->get('text_home'),
+          'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+            'separator' => false
+         );
 
-   		$this->data['breadcrumbs'][] = array(
-       		'text'      => $this->language->get('heading_title'),
-			'href'      => $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL'),
-      		'separator' => ' :: '
-   		);
+         $this->data['breadcrumbs'][] = array(
+             'text'      => $this->language->get('heading_title'),
+          'href'      => $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL'),
+            'separator' => ' :: '
+         );
 
-		$this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['insert'] = $this->url->link('sale/quote/insert', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['delete'] = $this->url->link('sale/quote/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+      $this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['print'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['insert'] = $this->url->link('sale/quote/insert', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['delete'] = $this->url->link('sale/quote/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
-		$this->data['quotes'] = array();
+      $this->data['quotes'] = array();
 
-		$data = array(
-			'filter_quote_id'        => $filter_quote_id,
-			'filter_customer'	     => $filter_customer,
-			'filter_quote_status_id' => $filter_quote_status_id,
-			'filter_total'           => $filter_total,
-			'filter_date_added'      => $filter_date_added,
-			'filter_date_modified'   => $filter_date_modified,
-			'sort'                   => $sort,
-			'order'                  => $order,
-			'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
-			'limit'                  => $this->config->get('config_admin_limit')
-		);
+      $data = array(
+          'filter_quote_id'        => $filter_quote_id,
+          'filter_customer'	     => $filter_customer,
+          'filter_invoice_status_id' => $filter_invoice_status_id,
+          'filter_total'           => $filter_total,
+          'filter_date_added'      => $filter_date_added,
+          'filter_date_modified'   => $filter_date_modified,
+          'sort'                   => $sort,
+          'order'                  => $order,
+          'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
+          'limit'                  => $this->config->get('config_admin_limit')
+      );
 
-		$quote_total = $this->model_sale_quote->getTotalQuotes($data);
+      $quote_total = $this->model_sale_quote->getTotalQuotes($data);
 
-		$results = $this->model_sale_quote->getQuotes($data);
+      $results = $this->model_sale_quote->getQuotes($data);
 
-    	foreach ($results as $result) {
-			$action = array();
-						
-			$action[] = array(
-				'text' => $this->language->get('text_view'),
-				'href' => $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL'),
-				'icon' => 'info-circle',
-				'button' => 'primary'
-			);
-			
-			if (strtotime($result['date_added']) > strtotime('-' . (int)$this->config->get('config_order_edit') . ' day')) {
-				$action[] = array(
-					'text' => $this->language->get('text_edit'),
-					'href' => $this->url->link('sale/quote/update', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL'),
-					'icon' => 'edit',
-					'button' => 'dark'
-				);
-			}
-			
-			$this->data['quotes'][] = array(
-				'quote_id'      => $result['quote_id'],
-				'customer'      => $result['customer'],
-				'status'        => $result['status'],
-				'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
-				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
-				'selected'      => isset($this->request->post['selected']) && in_array($result['quote_id'], $this->request->post['selected']),
-				'action'        => $action
-			);
-		}
+      foreach ($results as $result) {
+          $action = array();
+                      
+          $action[] = array(
+              'text' => $this->language->get('text_view'),
+              'href' => $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL')
+          );
+          
+          $action[] = array(
+              'text' => $this->language->get('text_edit'),
+              'href' => $this->url->link('sale/quote/update', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL')
+          );
+          
+          $this->data['quotes'][] = array(
+              'quote_id'      => $result['quote_id'],
+              'customer'      => $result['customer'],
+              'company'       => $result['company'],
+              'status'        => $result['status'],
+              'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+              'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+              'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
+              'selected'      => isset($this->request->post['selected']) && in_array($result['quote_id'], $this->request->post['selected']),
+              'action'        => $action
+          );
+      }
 
-		$this->data['heading_title'] = $this->language->get('heading_title');
+      $this->data['heading_title'] = $this->language->get('heading_title');
 
-		$this->data['text_no_results'] = $this->language->get('text_no_results');
-		$this->data['text_missing'] = $this->language->get('text_missing');
+      $this->data['text_no_results'] = $this->language->get('text_no_results');
+      $this->data['text_missing'] = $this->language->get('text_missing');
 
-		$this->data['column_quote_id'] = $this->language->get('column_quote_id');
-    	$this->data['column_customer'] = $this->language->get('column_customer');
-		$this->data['column_status'] = $this->language->get('column_status');
-		$this->data['column_total'] = $this->language->get('column_total');
-		$this->data['column_date_added'] = $this->language->get('column_date_added');
-		$this->data['column_date_modified'] = $this->language->get('column_date_modified');
-		$this->data['column_action'] = $this->language->get('column_action');
+      $this->data['column_quote_id'] = $this->language->get('column_quote_id');
+      $this->data['column_customer'] = $this->language->get('column_customer');
+      $this->data['column_status'] = $this->language->get('column_status');
+      $this->data['column_total'] = $this->language->get('column_total');
+      $this->data['column_date_added'] = $this->language->get('column_date_added');
+      $this->data['column_date_modified'] = $this->language->get('column_date_modified');
+      $this->data['column_action'] = $this->language->get('column_action');
 
-		$this->data['button_quote'] = $this->language->get('button_quote');
-		$this->data['button_insert'] = $this->language->get('button_insert');
-		$this->data['button_delete'] = $this->language->get('button_delete');
-		$this->data['button_filter'] = $this->language->get('button_filter');
+      $this->data['button_quote'] = $this->language->get('button_quote');
+      $this->data['button_insert'] = $this->language->get('button_insert');
+      $this->data['button_delete'] = $this->language->get('button_delete');
+      $this->data['button_filter'] = $this->language->get('button_filter');
 
-		$this->data['token'] = $this->session->data['token'];
-		
-		if (isset($this->error['warning'])) {
-			$this->data['error_warning'] = $this->error['warning'];
-		} else {
-			$this->data['error_warning'] = '';
-		}
+      $this->data['token'] = $this->session->data['token'];
+      
+      if (isset($this->error['warning'])) {
+          $this->data['error_warning'] = $this->error['warning'];
+      } else {
+          $this->data['error_warning'] = '';
+      }
 
-		if (isset($this->session->data['success'])) {
-			$this->data['success'] = $this->session->data['success'];
+      if (isset($this->session->data['success'])) {
+          $this->data['success'] = $this->session->data['success'];
 
-			unset($this->session->data['success']);
-		} else {
-			$this->data['success'] = '';
-		}
+          unset($this->session->data['success']);
+      } else {
+          $this->data['success'] = '';
+      }
 
-		$url = '';
+      $url = '';
 
-		if (isset($this->request->get['filter_quote_id'])) {
-			$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
-		}
-		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
-		}
-											
-		if (isset($this->request->get['filter_quote_status_id'])) {
-			$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
-		}
-		
-		if (isset($this->request->get['filter_total'])) {
-			$url .= '&filter_total=' . $this->request->get['filter_total'];
-		}
-					
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
-		}
-		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-		}
+      if (isset($this->request->get['filter_quote_id'])) {
+          $url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
+      }
+      
+      if (isset($this->request->get['filter_customer'])) {
+          $url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+      }
+                                          
+      if (isset($this->request->get['filter_invoice_status_id'])) {
+          $url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
+      }
+      
+      if (isset($this->request->get['filter_total'])) {
+          $url .= '&filter_total=' . $this->request->get['filter_total'];
+      }
+                  
+      if (isset($this->request->get['filter_date_added'])) {
+          $url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+      }
+      
+      if (isset($this->request->get['filter_date_modified'])) {
+          $url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+      }
 
-		if ($order == 'ASC') {
-			$url .= '&order=DESC';
-		} else {
-			$url .= '&order=ASC';
-		}
+      if ($order == 'ASC') {
+          $url .= '&order=DESC';
+      } else {
+          $url .= '&order=ASC';
+      }
 
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
+      if (isset($this->request->get['page'])) {
+          $url .= '&page=' . $this->request->get['page'];
+      }
 
-		$this->data['sort_order'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.quote_id' . $url, 'SSL');
-		$this->data['sort_customer'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=customer' . $url, 'SSL');
-		$this->data['sort_status'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
-		$this->data['sort_total'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.total' . $url, 'SSL');
-		$this->data['sort_date_added'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.date_added' . $url, 'SSL');
-		$this->data['sort_date_modified'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.date_modified' . $url, 'SSL');
+      $this->data['sort_quote'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.quote_id' . $url, 'SSL');
+      $this->data['sort_customer'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=customer' . $url, 'SSL');
+      $this->data['sort_status'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
+      $this->data['sort_total'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.total' . $url, 'SSL');
+      $this->data['sort_date_added'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.date_added' . $url, 'SSL');
+      $this->data['sort_date_modified'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.date_modified' . $url, 'SSL');
 
-		$url = '';
+      $url = '';
 
-		if (isset($this->request->get['filter_quote_id'])) {
-			$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
-		}
-		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
-		}
-											
-		if (isset($this->request->get['filter_quote_status_id'])) {
-			$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
-		}
-		
-		if (isset($this->request->get['filter_total'])) {
-			$url .= '&filter_total=' . $this->request->get['filter_total'];
-		}
-					
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
-		}
-		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-		}
+      if (isset($this->request->get['filter_quote_id'])) {
+          $url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
+      }
+      
+      if (isset($this->request->get['filter_customer'])) {
+          $url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+      }
+                                          
+      if (isset($this->request->get['filter_invoice_status_id'])) {
+          $url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
+      }
+      
+      if (isset($this->request->get['filter_total'])) {
+          $url .= '&filter_total=' . $this->request->get['filter_total'];
+      }
+                  
+      if (isset($this->request->get['filter_date_added'])) {
+          $url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+      }
+      
+      if (isset($this->request->get['filter_date_modified'])) {
+          $url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+      }
 
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
+      if (isset($this->request->get['sort'])) {
+          $url .= '&sort=' . $this->request->get['sort'];
+      }
 
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
+      if (isset($this->request->get['order'])) {
+          $url .= '&order=' . $this->request->get['order'];
+      }
 
-		$pagination = new Pagination();
-		$pagination->total = $quote_total;
-		$pagination->page = $page;
-		$pagination->limit = $this->config->get('config_admin_limit');
-		$pagination->text = $this->language->get('text_pagination');
-		$pagination->url = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
+      $pagination = new Pagination();
+      $pagination->total = $quote_total;
+      $pagination->page = $page;
+      $pagination->limit = $this->config->get('config_admin_limit');
+      $pagination->text = $this->language->get('text_pagination');
+      $pagination->url = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
 
-		$this->data['pagination'] = $pagination->render();
+      $this->data['pagination'] = $pagination->render();
 
-		$this->data['filter_quote_id'] = $filter_quote_id;
-		$this->data['filter_customer'] = $filter_customer;
-		$this->data['filter_quote_status_id'] = $filter_quote_status_id;
-		$this->data['filter_total'] = $filter_total;
-		$this->data['filter_date_added'] = $filter_date_added;
-		$this->data['filter_date_modified'] = $filter_date_modified;
+      $this->data['filter_quote_id'] = $filter_quote_id;
+      $this->data['filter_customer'] = $filter_customer;
+      $this->data['filter_invoice_status_id'] = $filter_invoice_status_id;
+      $this->data['filter_total'] = $filter_total;
+      $this->data['filter_date_added'] = $filter_date_added;
+      $this->data['filter_date_modified'] = $filter_date_modified;
 
-		$this->load->model('localisation/order_status');
+      $this->load->model('localisation/invoice_status');
 
-    	$this->data['quote_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
+      $this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
+          
+      $this->data['sort'] = $sort;
+      $this->data['order'] = $order;
 
-		$this->data['sort'] = $sort;
-		$this->data['order'] = $order;
+      $this->template = 'sale/quote_list.tpl';
 
-		$this->template = 'sale/quote_list.tpl';
+      $this->children = array(
 
-		$this->children = array(
-			'common/header',
-			'common/footer'
-		);
+          'common/header',
 
-		$this->response->setOutput($this->render());
-  	}
+          'common/footer'
 
-  	public function getForm() {
+      );
+
+      $this->response->setOutput($this->render());
+    }
+
+    public function getForm() {
 		$this->load->model('sale/customer');
 				
 		$this->data['heading_title'] = $this->language->get('heading_title');
@@ -498,18 +508,20 @@ class ControllerSaleQuote extends Controller {
 		$this->data['text_none'] = $this->language->get('text_none');
 		$this->data['text_wait'] = $this->language->get('text_wait');
 		$this->data['text_product'] = $this->language->get('text_product');
-		// $this->data['text_voucher'] = $this->language->get('text_voucher');
+		$this->data['text_sub_total'] = $this->language->get('text_sub_total');
 		$this->data['text_quote'] = $this->language->get('text_quote');
+		$this->data['text_quote_details'] = $this->language->get('text_quote_details');
 		
 		$this->data['entry_store'] = $this->language->get('entry_store');
 		$this->data['entry_customer'] = $this->language->get('entry_customer');
 		$this->data['entry_customer_group'] = $this->language->get('entry_customer_group');
 		$this->data['entry_firstname'] = $this->language->get('entry_firstname');
 		$this->data['entry_lastname'] = $this->language->get('entry_lastname');
+		$this->data['entry_vat'] = $this->language->get('entry_vat');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
 		$this->data['entry_fax'] = $this->language->get('entry_fax');
-		$this->data['entry_quote_status'] = $this->language->get('entry_quote_status');
+		$this->data['entry_invoice_status'] = $this->language->get('entry_invoice_status');
 		$this->data['entry_comment'] = $this->language->get('entry_comment');	
 		$this->data['entry_address'] = $this->language->get('entry_address');
 		$this->data['entry_company'] = $this->language->get('entry_company');
@@ -525,6 +537,10 @@ class ControllerSaleQuote extends Controller {
 		$this->data['entry_product'] = $this->language->get('entry_product');
 		$this->data['entry_option'] = $this->language->get('entry_option');
 		$this->data['entry_quantity'] = $this->language->get('entry_quantity');
+		//add
+		$this->data['entry_name_ext'] = $this->language->get('entry_name_ext');
+		$this->data['entry_price'] = $this->language->get('entry_price');
+		// end
 		$this->data['entry_to_name'] = $this->language->get('entry_to_name');
 		$this->data['entry_to_email'] = $this->language->get('entry_to_email');
 		$this->data['entry_from_name'] = $this->language->get('entry_from_name');
@@ -534,6 +550,7 @@ class ControllerSaleQuote extends Controller {
 		$this->data['entry_amount'] = $this->language->get('entry_amount');
 		$this->data['entry_shipping'] = $this->language->get('entry_shipping');
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
+		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
@@ -544,18 +561,15 @@ class ControllerSaleQuote extends Controller {
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_product'] = $this->language->get('button_add_product');
-		// $this->data['button_add_voucher'] = $this->language->get('button_add_voucher');
 		$this->data['button_update_total'] = $this->language->get('button_update_total');
 		$this->data['button_remove'] = $this->language->get('button_remove');
 		$this->data['button_upload'] = $this->language->get('button_upload');
-		//$this->data['button_quote'] = $this->language->get('button_quote');
 
 		$this->data['tab_quote'] = $this->language->get('tab_quote');
 		$this->data['tab_customer'] = $this->language->get('tab_customer');
 		$this->data['tab_payment'] = $this->language->get('tab_payment');
 		$this->data['tab_shipping'] = $this->language->get('tab_shipping');
 		$this->data['tab_product'] = $this->language->get('tab_product');
-		// $this->data['tab_voucher'] = $this->language->get('tab_voucher');
 		$this->data['tab_total'] = $this->language->get('tab_total');
 
  		if (isset($this->error['warning'])) {
@@ -564,12 +578,22 @@ class ControllerSaleQuote extends Controller {
 			$this->data['error_warning'] = '';
 		}
 		
- 		if (isset($this->error['firstname'])) {
-			$this->data['error_firstname'] = $this->error['firstname'];
+ 		if (isset($this->error['customer'])) {
+			$this->data['error_customer'] = $this->error['customer'];
 		} else {
-			$this->data['error_firstname'] = '';
+			$this->data['error_customer'] = '';
 		}
+		
+		if (isset($this->error['firstname'])) {
 
+			$this->data['error_firstname'] = $this->error['firstname'];
+
+		} else {
+
+			$this->data['error_firstname'] = '';
+
+		}
+		
  		if (isset($this->error['lastname'])) {
 			$this->data['error_lastname'] = $this->error['lastname'];
 		} else {
@@ -700,8 +724,8 @@ class ControllerSaleQuote extends Controller {
 			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
 		}
 											
-		if (isset($this->request->get['filter_quote_status_id'])) {
-			$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
+		if (isset($this->request->get['filter_invoice_status_id'])) {
+			$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
 		}
 		
 		if (isset($this->request->get['filter_total'])) {
@@ -752,7 +776,7 @@ class ControllerSaleQuote extends Controller {
 
     	if (isset($this->request->get['quote_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
       		$quote_info = $this->model_sale_quote->getQuote($this->request->get['quote_id']);
-    	}
+		}
 
 		$this->data['token'] = $this->session->data['token'];
 		
@@ -807,7 +831,15 @@ class ControllerSaleQuote extends Controller {
 		$this->load->model('sale/customer_group');
 		
 		$this->data['customer_groups'] = $this->model_sale_customer_group->getCustomerGroups();
-								
+		
+		if (isset($this->request->post['company'])) {
+      		$this->data['company'] = $this->request->post['company'];
+		} elseif (!empty($quote_info)) { 
+			$this->data['company'] = $quote_info['company'];
+		} else {
+      		$this->data['company'] = '';
+    	}
+		
     	if (isset($this->request->post['firstname'])) {
       		$this->data['firstname'] = $this->request->post['firstname'];
 		} elseif (!empty($quote_info)) { 
@@ -823,7 +855,7 @@ class ControllerSaleQuote extends Controller {
 		} else {
       		$this->data['lastname'] = '';
     	}
-
+		
     	if (isset($this->request->post['email'])) {
       		$this->data['email'] = $this->request->post['email'];
     	} elseif (!empty($quote_info)) { 
@@ -848,34 +880,22 @@ class ControllerSaleQuote extends Controller {
       		$this->data['fax'] = '';
     	}	
 		
-		if (isset($this->request->post['affiliate_id'])) {
-      		$this->data['affiliate_id'] = $this->request->post['affiliate_id'];
+		if (isset($this->request->post['invoice_status_id'])) {
+      		$this->data['invoice_status_id'] = $this->request->post['invoice_status_id'];
     	} elseif (!empty($quote_info)) { 
-			$this->data['affiliate_id'] = $quote_info['affiliate_id'];
+			$this->data['invoice_status_id'] = $quote_info['invoice_status_id'];
 		} else {
-      		$this->data['affiliate_id'] = '';
+      		$this->data['invoice_status_id'] = '';
     	}
+			
+		$this->load->model('localisation/invoice_status');
 		
-		if (isset($this->request->post['affiliate'])) {
-      		$this->data['affiliate'] = $this->request->post['affiliate'];
-    	} elseif (!empty($quote_info)) { 
-			$this->data['affiliate'] = ($quote_info['affiliate_id'] ? $quote_info['affiliate_firstname'] . ' ' . $quote_info['affiliate_lastname'] : '');
-		} else {
-      		$this->data['affiliate'] = '';
-    	}
-				
-		if (isset($this->request->post['quote_status_id'])) {
-      		$this->data['quote_status_id'] = $this->request->post['quote_status_id'];
-    	} elseif (!empty($quote_info)) { 
-			$this->data['quote_status_id'] = $quote_info['quote_status_id'];
-		} else {
-      		$this->data['quote_status_id'] = '';
-    	}
-			
-		$this->load->model('localisation/order_status');
+		$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();	
+		
+		$this->load->model('setting/extension');
 
-		$this->data['quote_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
-			
+		$this->data['shipping_option_codes'] = $this->model_sale_quote->getQuoteShippingCodes();
+		
     	if (isset($this->request->post['comment'])) {
       		$this->data['comment'] = $this->request->post['comment'];
     	} elseif (!empty($quote_info)) { 
@@ -926,14 +946,6 @@ class ControllerSaleQuote extends Controller {
       		$this->data['payment_company_id'] = '';
     	}
 		
-    	if (isset($this->request->post['payment_tax_id'])) {
-      		$this->data['payment_tax_id'] = $this->request->post['payment_tax_id'];
-    	} elseif (!empty($quote_info)) { 
-			$this->data['payment_tax_id'] = $quote_info['payment_tax_id'];
-		} else {
-      		$this->data['payment_tax_id'] = '';
-    	}
-				
     	if (isset($this->request->post['payment_address_1'])) {
       		$this->data['payment_address_1'] = $this->request->post['payment_address_1'];
     	} elseif (!empty($quote_info)) { 
@@ -1108,18 +1120,10 @@ class ControllerSaleQuote extends Controller {
 			if (isset($quote_product['quote_option'])) {
 				$quote_option = $quote_product['quote_option'];
 			} elseif (isset($this->request->get['quote_id'])) {
-				$quote_option = $this->model_sale_quote->getQuoteOptions($this->request->get['quote_id'], $quote_product['quote_product_id']);
+				$quote_option = $this->model_sale_quote->getInoviceOptions($this->request->get['quote_id'], $quote_product['quote_product_id']);
 			} else {
 				$quote_option = array();
 			}
-
-			// if (isset($quote_product['quote_download'])) {
-			// 	$quote_download = $quote_product['quote_download'];
-			// } elseif (isset($this->request->get['quote_id'])) {
-			// 	$quote_download = $this->model_sale_quote->getQuoteDownloads($this->request->get['quote_id'], $quote_product['quote_product_id']);
-			// } else {
-			// 	$quote_download = array();
-			// }
 											
 			$this->data['quote_products'][] = array(
 				'quote_product_id' => $quote_product['quote_product_id'],
@@ -1127,7 +1131,6 @@ class ControllerSaleQuote extends Controller {
 				'name'             => $quote_product['name'],
 				'model'            => $quote_product['model'],
 				'option'           => $quote_option,
-				// 'download'         => $quote_download,
 				'quantity'         => $quote_product['quantity'],
 				'price'            => $quote_product['price'],
 				'total'            => $quote_product['total'],
@@ -1135,162 +1138,39 @@ class ControllerSaleQuote extends Controller {
 			);
 		}
 		
-		// if (isset($this->request->post['quote_voucher'])) {
-		// 	$this->data['quote_vouchers'] = $this->request->post['quote_voucher'];
-		// } elseif (isset($this->request->get['quote_id'])) {
-		// 	$this->data['quote_vouchers'] = $this->model_sale_quote->getQuoteVouchers($this->request->get['quote_id']);			
-		// } else {
-		// 	$this->data['quote_vouchers'] = array();
-		// }
-       
-		// $this->load->model('sale/voucher_theme');
-					
-		// $this->data['voucher_themes'] = $this->model_sale_voucher_theme->getVoucherThemes();
-						
 		if (isset($this->request->post['quote_total'])) {
       		$this->data['quote_totals'] = $this->request->post['quote_total'];
     	} elseif (isset($this->request->get['quote_id'])) { 
 			$this->data['quote_totals'] = $this->model_sale_quote->getQuoteTotals($this->request->get['quote_id']);
 		} else {
       		$this->data['quote_totals'] = array();
-    	}	
+		}	
+		
+		$this->load->model('localisation/payment');
+		$this->load->model('localisation/shipping');
+
+		$this->data['payments'] = $this->model_localisation_payment->getPayments();
+		$this->data['shippings'] = $this->model_localisation_shipping->getShippings();
 		
 		$this->template = 'sale/quote_form.tpl';
+
 		$this->children = array(
+
 			'common/header',
+
 			'common/footer'
+
 		);
-		
+
 		$this->response->setOutput($this->render());
-  	}
-	
-  	private function validateForm() {
+    }
+
+    private function validateForm() {
     	if (!$this->user->hasPermission('modify', 'sale/quote')) {
       		$this->error['warning'] = $this->language->get('error_permission');
-    	}
-
-    	if ((utf8_strlen($this->request->post['firstname']) < 1) || (utf8_strlen($this->request->post['firstname']) > 32)) {
-      		$this->error['firstname'] = $this->language->get('error_firstname');
-    	}
-
-    	if ((utf8_strlen($this->request->post['lastname']) < 1) || (utf8_strlen($this->request->post['lastname']) > 32)) {
-      		$this->error['lastname'] = $this->language->get('error_lastname');
-    	}
-
-    	if ((utf8_strlen($this->request->post['email']) > 96) || (!preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['email']))) {
-      		$this->error['email'] = $this->language->get('error_email');
-    	}
-		
-    	if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
-      		$this->error['telephone'] = $this->language->get('error_telephone');
-    	}
-		
-    	if ((utf8_strlen($this->request->post['payment_firstname']) < 1) || (utf8_strlen($this->request->post['payment_firstname']) > 32)) {
-      		$this->error['payment_firstname'] = $this->language->get('error_firstname');
-    	}
-
-    	if ((utf8_strlen($this->request->post['payment_lastname']) < 1) || (utf8_strlen($this->request->post['payment_lastname']) > 32)) {
-      		$this->error['payment_lastname'] = $this->language->get('error_lastname');
-    	}
-
-    	if ((utf8_strlen($this->request->post['payment_address_1']) < 3) || (utf8_strlen($this->request->post['payment_address_1']) > 128)) {
-      		$this->error['payment_address_1'] = $this->language->get('error_address_1');
-    	}
-
-    	if ((utf8_strlen($this->request->post['payment_city']) < 3) || (utf8_strlen($this->request->post['payment_city']) > 128)) {
-      		$this->error['payment_city'] = $this->language->get('error_city');
-    	}
-		
-		$this->load->model('localisation/country');
-		
-		$country_info = $this->model_localisation_country->getCountry($this->request->post['payment_country_id']);
-		
-		if ($country_info) {
-			if ($country_info['postcode_required'] && (utf8_strlen($this->request->post['payment_postcode']) < 2) || (utf8_strlen($this->request->post['payment_postcode']) > 10)) {
-				$this->error['payment_postcode'] = $this->language->get('error_postcode');
-			}
-			
-			// VAT Validation
-			$this->load->helper('vat');
-			
-			if ($this->config->get('config_vat') && $this->request->post['payment_tax_id'] && (vat_validation($country_info['iso_code_2'], $this->request->post['payment_tax_id']) != 'invalid')) {
-				$this->error['payment_tax_id'] = $this->language->get('error_vat');
-			}				
-		}
-
-    	if ($this->request->post['payment_country_id'] == '') {
-      		$this->error['payment_country'] = $this->language->get('error_country');
-    	}
-		
-    	if ($this->request->post['payment_zone_id'] == '') {
-      		$this->error['payment_zone'] = $this->language->get('error_zone');
-    	}	
-		
-    	if ($this->request->post['payment_method'] == '') {
-      		$this->error['payment_zone'] = $this->language->get('error_zone');
-    	}			
-		
-		if (!$this->request->post['payment_method']) {
-			$this->error['payment_method'] = $this->language->get('error_payment');
-		}	
-					
-		// Check if any products require shipping
-		$shipping = false;
-		
-		if (isset($this->request->post['quote_product'])) {
-			$this->load->model('catalog/product');
-			
-			foreach ($this->request->post['quote_product'] as $quote_product) {
-				$product_info = $this->model_catalog_product->getProduct($quote_product['product_id']);
-			
-				if ($product_info && $product_info['shipping']) {
-					$shipping = true;
-				}
-			}
 		}
 		
-		if ($shipping) {
-			if ((utf8_strlen($this->request->post['shipping_firstname']) < 1) || (utf8_strlen($this->request->post['shipping_firstname']) > 32)) {
-				$this->error['shipping_firstname'] = $this->language->get('error_firstname');
-			}
-	
-			if ((utf8_strlen($this->request->post['shipping_lastname']) < 1) || (utf8_strlen($this->request->post['shipping_lastname']) > 32)) {
-				$this->error['shipping_lastname'] = $this->language->get('error_lastname');
-			}
-			
-			if ((utf8_strlen($this->request->post['shipping_address_1']) < 3) || (utf8_strlen($this->request->post['shipping_address_1']) > 128)) {
-				$this->error['shipping_address_1'] = $this->language->get('error_address_1');
-			}
-	
-			if ((utf8_strlen($this->request->post['shipping_city']) < 3) || (utf8_strlen($this->request->post['shipping_city']) > 128)) {
-				$this->error['shipping_city'] = $this->language->get('error_city');
-			}
-	
-			$this->load->model('localisation/country');
-			
-			$country_info = $this->model_localisation_country->getCountry($this->request->post['shipping_country_id']);
-			
-			if ($country_info && $country_info['postcode_required'] && (utf8_strlen($this->request->post['shipping_postcode']) < 2) || (utf8_strlen($this->request->post['shipping_postcode']) > 10)) {
-				$this->error['shipping_postcode'] = $this->language->get('error_postcode');
-			}
-	
-			if ($this->request->post['shipping_country_id'] == '') {
-				$this->error['shipping_country'] = $this->language->get('error_country');
-			}
-			
-			if ($this->request->post['shipping_zone_id'] == '') {
-				$this->error['shipping_zone'] = $this->language->get('error_zone');
-			}
-			
-			if (!$this->request->post['shipping_method']) {
-				$this->error['shipping_method'] = $this->language->get('error_shipping');
-			}			
-		}
-		
-		if ($this->error && !isset($this->error['warning'])) {
-			$this->error['warning'] = $this->language->get('error_warning');
-		}
-		
+
 		if (!$this->error) {
 	  		return true;
 		} else {
@@ -1308,9 +1188,9 @@ class ControllerSaleQuote extends Controller {
 		} else {
 	  		return false;
 		}
-  	}
-	
-	public function country() {
+    }
+
+    public function country() {
 		$json = array();
 		
 		$this->load->model('localisation/country');
@@ -1333,9 +1213,9 @@ class ControllerSaleQuote extends Controller {
 		}
 		
 		$this->response->setOutput(json_encode($json));
-	}
-		
-	public function info() {
+    }
+    
+    public function info() {
 		$this->load->model('sale/quote');
 
 		if (isset($this->request->get['quote_id'])) {
@@ -1363,15 +1243,11 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_email'] = $this->language->get('text_email');
 			$this->data['text_telephone'] = $this->language->get('text_telephone');
 			$this->data['text_fax'] = $this->language->get('text_fax');
+
 			$this->data['text_total'] = $this->language->get('text_total');
-			$this->data['text_quote_status'] = $this->language->get('text_quote_status');
+			$this->data['text_invoice_status'] = $this->language->get('text_invoice_status');
 			$this->data['text_comment'] = $this->language->get('text_comment');
-			$this->data['text_affiliate'] = $this->language->get('text_affiliate');
 			$this->data['text_commission'] = $this->language->get('text_commission');
-			$this->data['text_ip'] = $this->language->get('text_ip');
-			$this->data['text_forwarded_ip'] = $this->language->get('text_forwarded_ip');
-			$this->data['text_user_agent'] = $this->language->get('text_user_agent');
-			$this->data['text_accept_language'] = $this->language->get('text_accept_language');
 			$this->data['text_date_added'] = $this->language->get('text_date_added');
 			$this->data['text_date_modified'] = $this->language->get('text_date_modified');			
 			$this->data['text_firstname'] = $this->language->get('text_firstname');
@@ -1388,6 +1264,7 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_country'] = $this->language->get('text_country');
 			$this->data['text_shipping_method'] = $this->language->get('text_shipping_method');
 			$this->data['text_payment_method'] = $this->language->get('text_payment_method');	
+			$this->data['text_download'] = $this->language->get('text_download');
 			$this->data['text_wait'] = $this->language->get('text_wait');
 			$this->data['text_generate'] = $this->language->get('text_generate');
 			$this->data['text_commission_add'] = $this->language->get('text_commission_add');
@@ -1398,29 +1275,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_country_code'] = $this->language->get('text_country_code');
 			$this->data['text_high_risk_country'] = $this->language->get('text_high_risk_country');
 			$this->data['text_distance'] = $this->language->get('text_distance');
-			$this->data['text_ip_region'] = $this->language->get('text_ip_region');
-			$this->data['text_ip_city'] = $this->language->get('text_ip_city');
-			$this->data['text_ip_latitude'] = $this->language->get('text_ip_latitude');
-			$this->data['text_ip_longitude'] = $this->language->get('text_ip_longitude');
-			$this->data['text_ip_isp'] = $this->language->get('text_ip_isp');
-			$this->data['text_ip_org'] = $this->language->get('text_ip_org');
-			$this->data['text_ip_asnum'] = $this->language->get('text_ip_asnum');
-			$this->data['text_ip_user_type'] = $this->language->get('text_ip_user_type');
-			$this->data['text_ip_country_confidence'] = $this->language->get('text_ip_country_confidence');
-			$this->data['text_ip_region_confidence'] = $this->language->get('text_ip_region_confidence');
-			$this->data['text_ip_city_confidence'] = $this->language->get('text_ip_city_confidence');
-			$this->data['text_ip_postal_confidence'] = $this->language->get('text_ip_postal_confidence');
-			$this->data['text_ip_postal_code'] = $this->language->get('text_ip_postal_code');
-			$this->data['text_ip_accuracy_radius'] = $this->language->get('text_ip_accuracy_radius');
-			$this->data['text_ip_net_speed_cell'] = $this->language->get('text_ip_net_speed_cell');
-			$this->data['text_ip_metro_code'] = $this->language->get('text_ip_metro_code');
-			$this->data['text_ip_area_code'] = $this->language->get('text_ip_area_code');
-			$this->data['text_ip_time_zone'] = $this->language->get('text_ip_time_zone');
-			$this->data['text_ip_region_name'] = $this->language->get('text_ip_region_name');
-			$this->data['text_ip_domain'] = $this->language->get('text_ip_domain');
-			$this->data['text_ip_country_name'] = $this->language->get('text_ip_country_name');
-			$this->data['text_ip_continent_code'] = $this->language->get('text_ip_continent_code');
-			$this->data['text_ip_corporate_proxy'] = $this->language->get('text_ip_corporate_proxy');
 			$this->data['text_anonymous_proxy'] = $this->language->get('text_anonymous_proxy');
 			$this->data['text_proxy_score'] = $this->language->get('text_proxy_score');
 			$this->data['text_is_trans_proxy'] = $this->language->get('text_is_trans_proxy');
@@ -1444,16 +1298,19 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_queries_remaining'] = $this->language->get('text_queries_remaining');
 			$this->data['text_maxmind_id'] = $this->language->get('text_maxmind_id');
 			$this->data['text_error'] = $this->language->get('text_error');
-							
+			// Add
+			$this->data['entry_quote_id'] = $this->language->get('entry_quote_id');
+			// End add
 			$this->data['column_product'] = $this->language->get('column_product');
 			$this->data['column_model'] = $this->language->get('column_model');
 			$this->data['column_quantity'] = $this->language->get('column_quantity');
 			$this->data['column_price'] = $this->language->get('column_price');
 			$this->data['column_total'] = $this->language->get('column_total');
+			$this->data['column_download'] = $this->language->get('column_download');
 			$this->data['column_filename'] = $this->language->get('column_filename');
 			$this->data['column_remaining'] = $this->language->get('column_remaining');
 						
-			$this->data['entry_quote_status'] = $this->language->get('entry_quote_status');
+			$this->data['entry_invoice_status'] = $this->language->get('entry_invoice_status');
 			$this->data['entry_notify'] = $this->language->get('entry_notify');
 			$this->data['entry_comment'] = $this->language->get('entry_comment');
 			
@@ -1465,8 +1322,9 @@ class ControllerSaleQuote extends Controller {
 			$this->data['tab_payment'] = $this->language->get('tab_payment');
 			$this->data['tab_shipping'] = $this->language->get('tab_shipping');
 			$this->data['tab_product'] = $this->language->get('tab_product');
-			$this->data['tab_history'] = $this->language->get('tab_history');
+			$this->data['tab_quote_history'] = $this->language->get('tab_quote_history');
 			$this->data['tab_fraud'] = $this->language->get('tab_fraud');
+			$this->data['tab_history'] = $this->language->get('tab_history');
 		
 			$this->data['token'] = $this->session->data['token'];
 
@@ -1480,8 +1338,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_quote_status_id'])) {
-				$url .= '&filter_quote_status_id=' . $this->request->get['filter_quote_status_id'];
+			if (isset($this->request->get['filter_invoice_status_id'])) {
+				$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
 			}
 			
 			if (isset($this->request->get['filter_total'])) {
@@ -1523,11 +1381,10 @@ class ControllerSaleQuote extends Controller {
 			);
 
 			$this->data['printPDF'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=pdf', 'SSL');
-			$this->data['sendEmail'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=email', 'SSL');
 			$this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=view', 'SSL');
+			$this->data['sendEmail'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=email', 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL');
-			$this->data['view_order'] = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] .  '&order_id=' . $quote_info['invoice_no']);
-			
+
 			$this->data['quote_id'] = $this->request->get['quote_id'];
 			
 			if ($quote_info['invoice_no']) {
@@ -1560,6 +1417,9 @@ class ControllerSaleQuote extends Controller {
 			$this->data['email'] = $quote_info['email'];
 			$this->data['telephone'] = $quote_info['telephone'];
 			$this->data['fax'] = $quote_info['fax'];
+			$this->data['company'] = $quote_info['company'];
+			$this->data['date_added'] = $quote_info['date_added'];
+			$this->data['date_modified'] = $quote_info['date_modified'];
 			$this->data['comment'] = nl2br($quote_info['comment']);
 			$this->data['shipping_method'] = $quote_info['shipping_method'];
 			$this->data['payment_method'] = $quote_info['payment_method'];
@@ -1572,38 +1432,17 @@ class ControllerSaleQuote extends Controller {
 			}
 			
 			$this->load->model('sale/customer');
-						
-			// $this->data['credit_total'] = $this->model_sale_customer->getTotalTransactionsByQuoteId($this->request->get['quote_id']); 
-			
-			$this->data['affiliate_firstname'] = $quote_info['affiliate_firstname'];
-			$this->data['affiliate_lastname'] = $quote_info['affiliate_lastname'];
-			
-			if ($quote_info['affiliate_id']) {
-				$this->data['affiliate'] = $this->url->link('sale/affiliate/update', 'token=' . $this->session->data['token'] . '&affiliate_id=' . $quote_info['affiliate_id'], 'SSL');
-			} else {
-				$this->data['affiliate'] = '';
-			}
-			
-			$this->data['commission'] = $this->currency->format($quote_info['commission'], $quote_info['currency_code'], $quote_info['currency_value']);
-						
-			$this->load->model('sale/affiliate');
-			
-			// $this->data['commission_total'] = $this->model_sale_affiliate->getTotalTransactionsByQuoteId($this->request->get['quote_id']); 
 
-			$this->load->model('localisation/order_status');
+			$this->load->model('localisation/invoice_status');
 
-			$quote_status_info = $this->model_localisation_order_status->getOrderStatus($quote_info['quote_status_id']);
+			$quote_status_info = $this->model_localisation_invoice_status->getInvoiceStatus($quote_info['invoice_status_id']);
 
 			if ($quote_status_info) {
-				$this->data['quote_status'] = $quote_status_info['name'];
+				$this->data['invoice_status'] = $quote_status_info['name'];
 			} else {
-				$this->data['quote_status'] = '';
+				$this->data['invoice_status'] = '';
 			}
 			
-			$this->data['ip'] = $quote_info['ip'];
-			$this->data['forwarded_ip'] = $quote_info['forwarded_ip'];
-			$this->data['user_agent'] = $quote_info['user_agent'];
-			$this->data['accept_language'] = $quote_info['accept_language'];
 			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($quote_info['date_added']));
 			$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($quote_info['date_modified']));		
 			$this->data['payment_firstname'] = $quote_info['payment_firstname'];
@@ -1636,23 +1475,15 @@ class ControllerSaleQuote extends Controller {
 			foreach ($products as $product) {
 				$option_data = array();
 
-				$options = $this->model_sale_quote->getQuoteOptions($this->request->get['quote_id'], $product['quote_product_id']);
+				$options = $this->model_sale_quote->getInoviceOptions($this->request->get['quote_id'], $product['quote_product_id']);
 
 				foreach ($options as $option) {
-					if ($option['type'] != 'file') {
-						$option_data[] = array(
-							'name'  => $option['name'],
-							'value' => $option['value'],
-							'type'  => $option['type']
-						);
-					// } else {
-					// 	$option_data[] = array(
-					// 		'name'  => $option['name'],
-					// 		'value' => utf8_substr($option['value'], 0, utf8_strrpos($option['value'], '.')),
-					// 		'type'  => $option['type'],
-					// 		'href'  => $this->url->link('sale/quote/download', 'token=' . $this->session->data['token'] . '&quote_id=' . $this->request->get['quote_id'] . '&quote_option_id=' . $option['quote_option_id'], 'SSL')
-					// 	);						
-					}
+					$option_data[] = array(
+						'name'  => $option['name'],
+						'value' => utf8_substr($option['value'], 0, utf8_strrpos($option['value'], '.')),
+						'type'  => $option['type'],
+						'href'  => $this->url->link('sale/quote/download', 'token=' . $this->session->data['token'] . '&quote_id=' . $this->request->get['quote_id'] . '&quote_option_id=' . $option['quote_option_id'], 'SSL')
+					);
 				}
 
 				$this->data['products'][] = array(
@@ -1668,37 +1499,11 @@ class ControllerSaleQuote extends Controller {
 				);
 			}
 		
-			// $this->data['vouchers'] = array();	
-			
-			// $vouchers = $this->model_sale_quote->getQuoteVouchers($this->request->get['quote_id']);
-			 
-			// foreach ($vouchers as $voucher) {
-			// 	$this->data['vouchers'][] = array(
-			// 		'description' => $voucher['description'],
-			// 		'amount'      => $this->currency->format($voucher['amount'], $quote_info['currency_code'], $quote_info['currency_value']),
-			// 		'href'        => $this->url->link('sale/voucher/update', 'token=' . $this->session->data['token'] . '&voucher_id=' . $voucher['voucher_id'], 'SSL')
-			// 	);
-			// }
-		
 			$this->data['totals'] = $this->model_sale_quote->getQuoteTotals($this->request->get['quote_id']);
-
-			// $this->data['downloads'] = array();
-
-			// foreach ($products as $product) {
-			// 	$results = $this->model_sale_quote->getQuoteDownloads($this->request->get['quote_id'], $product['quote_product_id']);
-	
-			// 	foreach ($results as $result) {
-			// 		$this->data['downloads'][] = array(
-			// 			'name'      => $result['name'],
-			// 			'filename'  => $result['mask'],
-			// 			'remaining' => $result['remaining']
-			// 		);
-			// 	}
-			// }
 			
-			$this->data['quote_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
+			$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
 
-			$this->data['quote_status_id'] = $quote_info['quote_status_id'];
+			$this->data['invoice_status_id'] = $quote_info['invoice_status_id'];
 
 			// Fraud
 			$this->load->model('sale/fraud');
@@ -1716,119 +1521,7 @@ class ControllerSaleQuote extends Controller {
 				
 				$this->data['high_risk_country'] = $fraud_info['high_risk_country'];
 				$this->data['distance'] = $fraud_info['distance'];
-				
-				if ($fraud_info['ip_region']) {
-					$this->data['ip_region'] = $fraud_info['ip_region'];
-				} else {
-					$this->data['ip_region'] = '';
-				}
-								
-				if ($fraud_info['ip_city']) {
-					$this->data['ip_city'] = $fraud_info['ip_city'];
-				} else {
-					$this->data['ip_city'] = '';
-				}
-				
-				$this->data['ip_latitude'] = $fraud_info['ip_latitude'];
-				$this->data['ip_longitude'] = $fraud_info['ip_longitude'];
-
-				if ($fraud_info['ip_isp']) {
-					$this->data['ip_isp'] = $fraud_info['ip_isp'];
-				} else {
-					$this->data['ip_isp'] = '';
-				}
-				
-				if ($fraud_info['ip_org']) {
-					$this->data['ip_org'] = $fraud_info['ip_org'];
-				} else {
-					$this->data['ip_org'] = '';
-				}
-								
-				$this->data['ip_asnum'] = $fraud_info['ip_asnum'];
-				
-				if ($fraud_info['ip_user_type']) {
-					$this->data['ip_user_type'] = $fraud_info['ip_user_type'];
-				} else {
-					$this->data['ip_user_type'] = '';
-				}
-				
-				if ($fraud_info['ip_country_confidence']) {
-					$this->data['ip_country_confidence'] = $fraud_info['ip_country_confidence'];
-				} else {
-					$this->data['ip_country_confidence'] = '';
-				}
 												
-				if ($fraud_info['ip_region_confidence']) {
-					$this->data['ip_region_confidence'] = $fraud_info['ip_region_confidence'];
-				} else {
-					$this->data['ip_region_confidence'] = '';
-				}
-				
-				if ($fraud_info['ip_city_confidence']) {
-					$this->data['ip_city_confidence'] = $fraud_info['ip_city_confidence'];
-				} else {
-					$this->data['ip_city_confidence'] = '';
-				}
-				
-				if ($fraud_info['ip_postal_confidence']) {
-					$this->data['ip_postal_confidence'] = $fraud_info['ip_postal_confidence'];
-				} else {
-					$this->data['ip_postal_confidence'] = '';
-				}
-				
-				if ($fraud_info['ip_postal_code']) {
-					$this->data['ip_postal_code'] = $fraud_info['ip_postal_code'];
-				} else {
-					$this->data['ip_postal_code'] = '';
-				}
-								
-				$this->data['ip_accuracy_radius'] = $fraud_info['ip_accuracy_radius'];
-				
-				if ($fraud_info['ip_net_speed_cell']) {
-					$this->data['ip_net_speed_cell'] = $fraud_info['ip_net_speed_cell'];
-				} else {
-					$this->data['ip_net_speed_cell'] = '';
-				}
-								
-				$this->data['ip_metro_code'] = $fraud_info['ip_metro_code'];
-				$this->data['ip_area_code'] = $fraud_info['ip_area_code'];
-				
-				if ($fraud_info['ip_time_zone']) {
-					$this->data['ip_time_zone'] = $fraud_info['ip_time_zone'];
-				} else {
-					$this->data['ip_time_zone'] = '';
-				}
-
-				if ($fraud_info['ip_region_name']) {
-					$this->data['ip_region_name'] = $fraud_info['ip_region_name'];
-				} else {
-					$this->data['ip_region_name'] = '';
-				}				
-				
-				if ($fraud_info['ip_domain']) {
-					$this->data['ip_domain'] = $fraud_info['ip_domain'];
-				} else {
-					$this->data['ip_domain'] = '';
-				}
-				
-				if ($fraud_info['ip_country_name']) {
-					$this->data['ip_country_name'] = $fraud_info['ip_country_name'];
-				} else {
-					$this->data['ip_country_name'] = '';
-				}	
-								
-				if ($fraud_info['ip_continent_code']) {
-					$this->data['ip_continent_code'] = $fraud_info['ip_continent_code'];
-				} else {
-					$this->data['ip_continent_code'] = '';
-				}
-				
-				if ($fraud_info['ip_corporate_proxy']) {
-					$this->data['ip_corporate_proxy'] = $fraud_info['ip_corporate_proxy'];
-				} else {
-					$this->data['ip_corporate_proxy'] = '';
-				}
-								
 				$this->data['anonymous_proxy'] = $fraud_info['anonymous_proxy'];
 				$this->data['proxy_score'] = $fraud_info['proxy_score'];
 				
@@ -1908,6 +1601,7 @@ class ControllerSaleQuote extends Controller {
 			}
 			
 			$this->template = 'sale/quote_info.tpl';
+			
 			$this->children = array(
 				'common/header',
 				'common/footer'
@@ -1945,54 +1639,9 @@ class ControllerSaleQuote extends Controller {
 		
 			$this->response->setOutput($this->render());
 		}	
-	}
-
-	// public function createInvoiceNo() {
-	// 	$this->language->load('sale/quote');
-
-	// 	$json = array();
-		
- //     	if (!$this->user->hasPermission('modify', 'sale/quote')) {
- //      		$json['error'] = $this->language->get('error_permission'); 
-	// 	} elseif (isset($this->request->get['quote_id'])) {
-	// 		$this->load->model('sale/quote');
-			
-	// 		$invoice_no = $this->model_sale_quote->createInvoiceNo($this->request->get['quote_id']);
-			
-	// 		if ($invoice_no) {
-	// 			$json['invoice_no'] = $invoice_no;
-	// 		} else {
-	// 			$json['error'] = $this->language->get('error_action');
-	// 		}
-	// 	}
-
-	// 	$this->response->setOutput(json_encode($json));
- //  	}
-
-  	public function createOrder() {
-  		$this->language->load('sale/quote');
-
-  		$json = array();
-
-  		if (!$this->user->hasPermission('modify', 'sale/quote')) {
-  			$json['error'] = $this->language->get('error_permission');
-  		} elseif (isset($this->request->get['quote_id'])) {
-  			$this->load->model('sale/quote');
-
-  			$invoice_no = $this->model_sale_quote->createOrder($this->request->get['quote_id']);
-
-  			if ($invoice_no) {
-  				$json['invoice_no'] = $invoice_no;
-  			} else {
-  				$json['error'] = $this->language->get('error_action');
-  			}
-  			
-  		}
-  		$this->response->setOutput(json_encode($json));
-  		
-  	}
-
-	public function history() {
+    }
+    
+    public function history() {
     	$this->language->load('sale/quote');
 		
 		$this->data['error'] = '';
@@ -2028,7 +1677,7 @@ class ControllerSaleQuote extends Controller {
 		$this->data['histories'] = array();
 			
 		$results = $this->model_sale_quote->getQuoteHistories($this->request->get['quote_id'], ($page - 1) * 10, 10);
-      		
+
 		foreach ($results as $result) {
         	$this->data['histories'][] = array(
 				'notify'     => $result['notify'] ? $this->language->get('text_yes') : $this->language->get('text_no'),
@@ -2049,69 +1698,19 @@ class ControllerSaleQuote extends Controller {
 			
 		$this->data['pagination'] = $pagination->render();
 		
-		$this->template = 'sale/quote_history.tpl';		
+		$this->template = 'sale/quote_history.tpl';
 		
 		$this->response->setOutput($this->render());
-  	}
-	
-	public function upload() {
-		$this->language->load('sale/quote');
-		
-		$json = array();
-		
-		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-			if (!empty($this->request->files['file']['name'])) {
-				$filename = html_entity_decode($this->request->files['file']['name'], ENT_QUOTES, 'UTF-8');
-				
-				if ((utf8_strlen($filename) < 3) || (utf8_strlen($filename) > 128)) {
-					$json['error'] = $this->language->get('error_filename');
-				}	  	
-				
-				$allowed = array();
-				
-				$filetypes = explode(',', $this->config->get('config_upload_allowed'));
-				
-				foreach ($filetypes as $filetype) {
-					$allowed[] = trim($filetype);
-				}
-				
-				if (!in_array(utf8_substr(strrchr($filename, '.'), 1), $allowed)) {
-					$json['error'] = $this->language->get('error_filetype');
-				}
-							
-				if ($this->request->files['file']['error'] != UPLOAD_ERR_OK) {
-					$json['error'] = $this->language->get('error_upload_' . $this->request->files['file']['error']);
-				}
-			} else {
-				$json['error'] = $this->language->get('error_upload');
-			}
-		
-			if (!isset($json['error'])) {
-				if (is_uploaded_file($this->request->files['file']['tmp_name']) && file_exists($this->request->files['file']['tmp_name'])) {
-					$file = basename($filename) . '.' . md5(mt_rand());
-					
-					$json['file'] = $file;
-					
-					move_uploaded_file($this->request->files['file']['tmp_name'], DIR_DOWNLOAD . $file);
-				}
-							
-				$json['success'] = $this->language->get('text_upload');
-			}	
-		}
-		
-		$this->response->setOutput(json_encode($json));
-	}
-
-	public function invoice() {
-		$this->language->load('sale/quote');
-
-		//add
+    }
+      
+    public function invoice() {		
 		if (isset($this->request->get['format'])) {
 			$lcFormat = $this->request->get['format'];
 		} else {
 			$lcFormat = '';
 		}
-		//endAdd
+
+		$this->load->language('sale/quote');
 
 		$this->data['title'] = $this->language->get('heading_title');
 
@@ -2124,23 +1723,26 @@ class ControllerSaleQuote extends Controller {
 		$this->data['direction'] = $this->language->get('direction');
 		$this->data['language'] = $this->language->get('code');
 
-		$this->data['text_invoice'] = $this->language->get('text_invoice');
-
 		$this->data['text_quote'] = $this->language->get('text_quote');
+
 		$this->data['text_quote_id'] = $this->language->get('text_quote_id');
 		$this->data['text_invoice_no'] = $this->language->get('text_invoice_no');
 		$this->data['text_invoice_date'] = $this->language->get('text_invoice_date');
 		$this->data['text_date_added'] = $this->language->get('text_date_added');
 		$this->data['text_telephone'] = $this->language->get('text_telephone');
 		$this->data['text_fax'] = $this->language->get('text_fax');
+		$this->data['text_email'] = $this->language->get('text_email');
+		$this->data['text_nif'] = $this->language->get('text_nif');
 		$this->data['text_to'] = $this->language->get('text_to');
 		$this->data['text_company_id'] = $this->language->get('text_company_id');
-		$this->data['text_tax_id'] = $this->language->get('text_tax_id');
+		$this->data['text_tax_id'] = $this->language->get('text_tax_id');		
 		$this->data['text_ship_to'] = $this->language->get('text_ship_to');
 		$this->data['text_payment_method'] = $this->language->get('text_payment_method');
 		$this->data['text_shipping_method'] = $this->language->get('text_shipping_method');
+		$this->data['text_quote_details'] = $this->language->get('text_quote_details');
 
 		$this->data['column_product'] = $this->language->get('column_product');
+		$this->data['column_image'] = $this->language->get('column_image');
 		$this->data['column_model'] = $this->language->get('column_model');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
@@ -2161,12 +1763,25 @@ class ControllerSaleQuote extends Controller {
 			$quotes[] = $this->request->get['quote_id'];
 		}
 
+		$quotes = array_unique($quotes);
+		
+		// Add
+        if (isset($this->request->post['report'])) {
+			$lcReport = $this->request->post['report'];
+		} elseif (isset($this->request->get['report'])) {
+			$lcReport = $this->request->get['report'];
+		} else {
+			$lcReport = '';
+		}
+        // End add
+	
 		foreach ($quotes as $quote_id) {
-			$quote_info = $this->model_sale_quote->getquote($quote_id);
+			$quote_info = $this->model_sale_quote->getQuote($quote_id);
 
 			if ($quote_info) {
+				
 				$store_info = $this->model_setting_setting->getSetting('config', $quote_info['store_id']);
-
+				
 				if ($store_info) {
 					$store_address = $store_info['config_address'];
 					$store_email = $store_info['config_email'];
@@ -2178,13 +1793,17 @@ class ControllerSaleQuote extends Controller {
 					$store_telephone = $this->config->get('config_telephone');
 					$store_fax = $this->config->get('config_fax');
 				}
-
+				
+				//add
+				$store_nif = $this->config->get('config_nif');
+				//end add
+				
 				if ($quote_info['invoice_no']) {
 					$invoice_no = $quote_info['invoice_prefix'] . $quote_info['invoice_no'];
 				} else {
 					$invoice_no = '';
 				}
-
+				
 				if ($quote_info['shipping_address_format']) {
 					$format = $quote_info['shipping_address_format'];
 				} else {
@@ -2255,12 +1874,12 @@ class ControllerSaleQuote extends Controller {
 
 				$product_data = array();
 
-				$products = $this->model_sale_quote->getquoteProducts($quote_id);
+				$products = $this->model_sale_quote->getQuoteProducts($quote_id);
 
 				foreach ($products as $product) {
 					$option_data = array();
 
-					$options = $this->model_sale_quote->getquoteOptions($quote_id, $product['quote_product_id']);
+					$options = $this->model_sale_quote->getQuoteOptions($quote_id, $product['quote_product_id']);
 
 					foreach ($options as $option) {
 						if ($option['type'] != 'file') {
@@ -2268,39 +1887,30 @@ class ControllerSaleQuote extends Controller {
 						} else {
 							$value = utf8_substr($option['value'], 0, utf8_strrpos($option['value'], '.'));
 						}
-
+						
 						$option_data[] = array(
 							'name'  => $option['name'],
 							'value' => $value
-						);
+						);								
 					}
 
 					$product_data[] = array(
 						'name'     => $product['name'],
 						'model'    => $product['model'],
 						'option'   => $option_data,
+						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
 						'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $quote_info['currency_code'], $quote_info['currency_value']),
 						'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $quote_info['currency_code'], $quote_info['currency_value'])
 					);
 				}
-
-				// $voucher_data = array();
-
-				// $vouchers = $this->model_sale_quote->getOrderVouchers($quote_id);
-
-				// foreach ($vouchers as $voucher) {
-				// 	$voucher_data[] = array(
-				// 		'description' => $voucher['description'],
-				// 		'amount'      => $this->currency->format($voucher['amount'], $quote_info['currency_code'], $quote_info['currency_value'])
-				// 	);
-				// }
-
-				$total_data = $this->model_sale_quote->getquoteTotals($quote_id);
-
+				
+				$total_data = $this->model_sale_quote->getQuoteTotals($quote_id);
+				
 				$this->data['quotes'][] = array(
 					'quote_id'	         => $quote_id,
 					'invoice_no'         => $invoice_no,
+					'invoice_prefix'     => $quote_info['invoice_prefix'],
 					'date_added'         => date($this->language->get('date_format_short'), strtotime($quote_info['date_added'])),
 					'store_name'         => $quote_info['store_name'],
 					'store_url'          => rtrim($quote_info['store_url'], '/'),
@@ -2308,31 +1918,27 @@ class ControllerSaleQuote extends Controller {
 					'store_email'        => $store_email,
 					'store_telephone'    => $store_telephone,
 					'store_fax'          => $store_fax,
+					'store_nif'          => $store_nif,
 					'email'              => $quote_info['email'],
+					'vat_id'             => '',
+					'name_ext' 			 => '',
 					'telephone'          => $quote_info['telephone'],
 					'shipping_address'   => $shipping_address,
-					'shipping_method'    => $quote_info['shipping_method'],
 					'payment_address'    => $payment_address,
 					'payment_company_id' => $quote_info['payment_company_id'],
 					'payment_tax_id'     => $quote_info['payment_tax_id'],
+					'payment_address'    => $payment_address,
 					'payment_method'     => $quote_info['payment_method'],
+					'shipping_method'    => $quote_info['shipping_method'],
 					'product'            => $product_data,
-					// 'voucher'            => $voucher_data,
 					'total'              => $total_data,
 					'comment'            => nl2br($quote_info['comment'])
 				);
 			}
 		}
 
-		//Add
-		$Log = new Log('quote_mail.log');
-		$Log->write($this->request->post);
-		if (!empty($this->config->get('config_logo'))) {
-			$this->data['logo'] = DIR_IMAGE . $this->config->get('config_logo');
-		} else {
-			$this->data['logo'] = DIR_IMAGE . 'no_image.jpg';
-		}
-		 
+		$this->data['logo'] = $this->config->get('config_logo');
+
 		if ($lcFormat=='pdf') {
 			$this->renderPDF('sale/quote_printPDF.tpl', 'pdf', 'quote', $quote_id);
 		} elseif ($lcFormat=='email') {
@@ -2340,18 +1946,247 @@ class ControllerSaleQuote extends Controller {
 			$to = $this->request->post['to'];
 			$subject = $this->request->post['subject'];
 			$text = $this->request->post['message'];
-			
+
 			$lcFile = DIR_DOWNLOAD . 'quote_' . $quote_id . '.pdf';
 			$this->sendnewmail($to, $subject, $text, $lcFile);
 
 			$this->redirect($this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] .'&quote_id=' . $quote_id, 'SSL'));
-			
 		} else {
-			$this->template = 'sale/quote_invoice.tpl';
+			if ($lcReport=='') {
+				$this->template = 'sale/quote_invoice.tpl';
+			} else {
+				$this->template = 'sale/reports/' . $lcReport;
+			}
+			
 			$this->response->setOutput($this->render());
 		}
-		//endAdd
+    }
+    
+    public function checkQuote() {
+		$this->load->language('sale/quote');
+
+		$json = array();
+
+		if ($this->user->hasPermission('modify', 'sale/quote')) {
+
+			// Reset everything
+			unset($this->session->data['cart']);
+			unset($this->session->data['shipping_method']);
+			unset($this->session->data['shipping_methods']);
+			unset($this->session->data['shipping_address']);
+			unset($this->session->data['payment_method']);
+			unset($this->session->data['payment_methods']);
+			unset($this->session->data['payment_address']);
+			unset($this->session->data['store_address']);
+			unset($this->session->data['customer_id']);
+			
+			// Models
+			$this->load->model('setting/setting');
+			$this->load->model('setting/extension');
+			$this->load->model('localisation/country');
+			$this->load->model('localisation/zone');
+			$this->load->model('sale/customer');
+			$this->load->model('catalog/product');
+
+			$this->session->data['cart'] = array();
+
+			$settings = $this->model_setting_setting->getSetting('config', $this->request->post['store_id']);
+
+			foreach ($settings as $key => $value) {
+				$this->config->set($key, $value);
+			}
+
+			// Customer
+			if ($this->request->post['customer_id']) {
+				$this->session->data['customer_id'] = $this->request->post['customer_id'];
+				$customer_info = $this->model_sale_customer->getCustomer($this->request->post['customer_id']);
+			} else {
+				// Customer Group
+				$this->config->set('config_customer_group_id', $this->request->post['customer_group_id']);
+				$this->session->data['customer_id'] = 0;
+				$customer_info = array();
+			}
+
+			// Product
+			if (isset($this->request->post['quote_product'])) {
+				foreach ($this->request->post['quote_product'] as $quote_product) {
+					$product_info = $this->model_catalog_product->getProduct($quote_product['product_id']);
+					$option_data = array();
+
+					if (isset($quote_product['quote_option'])) {
+						foreach ($quote_product['quote_option'] as $option) {
+							if ($option['type'] == 'select' || $option['type'] == 'radio' || $option['type'] == 'image') { 
+								$option_data[$option['product_option_id']] = $option['product_option_value_id'];
+							} elseif ($option['type'] == 'checkbox') {
+								$option_data[$option['product_option_id']][] = $option['product_option_value_id'];
+							} elseif ($option['type'] == 'text' || $option['type'] == 'textarea' || $option['type'] == 'file' || $option['type'] == 'date' || $option['type'] == 'datetime' || $option['type'] == 'time') {
+								$option_data[$option['product_option_id']] = $option['value'];						
+							}
+						}
+					}
+
+					if ($product_info) {	
+						$this->session->data['cart'][] = array(
+							'product_id' => $product_info['product_id'],
+							'name'		 => $product_info['name'], 
+							'model'		 => $product_info['model'], 
+							'quantity' 	 => $quote_product['quantity'], 
+							'option'	 => $option_data,
+							'price'		 => $product_info['price'], 
+							'tax_class_id'=> $product_info['tax_class_id'],
+							'total'		 => ($product_info['price']*$quote_product['quantity']),
+							'shipping'	 => $product_info['shipping']
+						);
+					}
+				}
+			}
+
+			if (isset($this->request->post['product_id'])) {
+				$product_info = $this->model_catalog_product->getProduct($this->request->post['product_id']);
+
+				if (isset($this->request->post['quantity'])) {
+					$quantity = $this->request->post['quantity'];
+				} else {
+					$quantity = 1;
+				}
+	
+				if (isset($this->request->post['option'])) {
+					$option = $this->request->post['option'];
+				} else {
+					$option = array();
+				}
+	
+				if ($product_info) {
+					$this->session->data['cart'][] = array(
+						'product_id' 	=> $this->request->post['product_id'],
+						'name'		 	=> $product_info['name'], 
+						'model'		 	=> $product_info['model'], 
+						'quantity' 	 	=> $quantity, 
+						'option' 	 	=> $option, 
+						'price'		 	=> $product_info['price'], 
+						'tax_class_id'	=> $product_info['tax_class_id'], 
+						'total'		 	=> ($product_info['price']*$quantity),
+						'shipping'	 	=> $product_info['shipping']
+					);
+				
+				}
+			}
+
+			// Products
+			$json['quote_product'] = array();
+			
+			$products = $this->session->data['cart'];
+
+			foreach ($products as $product) {
+				$product_total = 0;
+
+				foreach ($products as $product_2) {
+					if ($product_2['product_id'] == $product['product_id']) {
+						$product_total += $product_2['quantity'];
+					}
+				}
+
+				$option_data = $this->model_catalog_product->getProductOptions($product['product_id']);
+				$option = array();
+				$i=0;
+				foreach ($product['option'] as $option_id => $value) {
+					$option[] = array(
+						'product_option_id'			=> $option_id, 
+						'name'						=> $option_data[$i]['name'], 
+						'value'						=> $value, 
+						'type'						=> $option_data[$i]['type']
+					);
+					$i++;
+				}
+				
+				$json['quote_product'][] = array(
+					'product_id' 	=> $product['product_id'],
+					'name'       	=> $product['name'],
+					'model'      	=> $product['model'], 
+					'quantity'   	=> $product['quantity'],
+					'option'   		=> $option,
+					'price'      	=> $product['price'],	
+					'tax_class_id'	=> $product['tax_class_id'], 
+					'total'      	=> $product['total']
+				);
+			}
+
+			// Totals
+			$json['quote_total'] = array();					
+			$total = 0;
+			$taxes = $this->getTaxes($products, $customer_info);
+
+			$sort_order = array(); 
+
+			$results = $this->model_setting_extension->getExtensions('total');
+
+			foreach ($results as $key => $value) {
+				$sort_order[$key] = $this->config->get($value['code'] . '_sort_order');
+			}
+
+			array_multisort($sort_order, SORT_ASC, $results);
+
+			foreach ($results as $result) {
+				if ($this->config->get($result['code'] . '_status')) {
+					$this->load->model('total/' . $result['code']);
+
+					$this->{'model_total_' . $result['code']}->getTotal($json['quote_total'], $total, $taxes);
+				}
+
+				$sort_order = array(); 
+
+				foreach ($json['quote_total'] as $key => $value) {
+					$sort_order[$key] = $value['sort_order'];
+				}
+
+				array_multisort($sort_order, SORT_ASC, $json['quote_total']);				
+			}
+
+			if (!isset($json['error'])) { 
+				$json['success'] = $this->language->get('text_success');
+			} else {
+				$json['error']['warning'] = $this->language->get('error_warning');
+			}
+			
+		}
+		
+		// Reset everything
+		unset($this->session->data['shipping_method']);
+		unset($this->session->data['shipping_methods']);
+		unset($this->session->data['payment_method']);
+		unset($this->session->data['payment_methods']);
+		unset($this->session->data['shipping_address']);
+		unset($this->session->data['payment_address']);
+		unset($this->session->data['store_address']);
+		unset($this->session->data['customer_id']);
+
+
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getTaxes($data, $customer_info) {
+		$this->load->model('catalog/product');
+		$customer_group_id = ($customer_info['customer_group_id']) ? $customer_info['customer_group_id'] : $this->config->get('config_customer_group_id');
+		$tax_data = array();
+
+		foreach ($data as $product) {
+			if ($product['tax_class_id']!=0) {
+				$tax_rates = $this->model_catalog_product->getRates($product['price'], $product['tax_class_id'], $customer_group_id);
+
+				foreach ($tax_rates as $tax_rate) {
+					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {
+						$tax_data[$tax_rate['tax_rate_id']] = ($tax_rate['amount'] * $product['quantity']);
+					} else {
+						$tax_data[$tax_rate['tax_rate_id']] += ($tax_rate['amount'] * $product['quantity']);
+					}
+				}
+			}
+		}
+
+		return $tax_data;
 	}
 
 }
+
+
 ?>
