@@ -1,7 +1,17 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-	<?php $fa = 'box-open'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
+	<div class="panel-heading clearfix">
+	<div class="pull-left h2">
+		<i class="hidden-xs fa fa-box-open"></i> 
+		<?php echo $heading_title; ?>
+		<?php echo (isset($this->request->get['product_id'])) ? ' : ' . $product_name : ''; ?>
+		</div>
+	<div class="pull-right">
+		<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
+		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+	</div>
+</div>
 	<div class="panel-body">
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
@@ -20,7 +30,7 @@
 				<div class="tab-pane" id="tab-general">
 					<div class="row">
 						<div class="col-2">
-							<div id="vtab-language"  class="nav nav-tabs flex-column" role="tablist" aria-orientation="vertical">
+							<div id="vtab-language"  class="nav flex-column" role="tablist" aria-orientation="vertical">
 								<?php foreach ($languages as $language) { ?>
 									<a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-toggle="pill" role="tab" aria-selected="false"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a>
 								<?php } ?>
@@ -519,7 +529,7 @@
 										</div>
 									<?php } elseif ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image') { ?>
 									<div class="table-responsive">
-									<table id="option-value<?php echo $option_row; ?>" class="table table-bordered table-striped form-inline">
+									<table id="option-value<?php echo $option_row; ?>" class="table table-bordered table-striped">
 										<thead>
 											<tr>
 												<th><?php echo $entry_option_value; ?></th>
@@ -534,72 +544,63 @@
 										<tbody>
 										<?php foreach ($product_option['product_option_value'] as $product_option_value) { ?>
 											<tr id="option-value-row<?php echo $option_value_row; ?>">
-												<td><select name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][option_value_id]" class="form-control">
-													<?php if (isset($option_values[$product_option['option_id']])) { ?>
-													<?php foreach ($option_values[$product_option['option_id']] as $option_value) { ?>
-													<?php if ($option_value['option_value_id'] == $product_option_value['option_value_id']) { ?>
-													<option value="<?php echo $option_value['option_value_id']; ?>" selected=""><?php echo $option_value['name']; ?></option>
-													<?php } else { ?>
-													<option value="<?php echo $option_value['option_value_id']; ?>"><?php echo $option_value['name']; ?></option>
-													<?php } ?>
-													<?php } ?>
-													<?php } ?>
-												</select>
-												<input type="hidden" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][product_option_value_id]" value="<?php echo $product_option_value['product_option_value_id']; ?>"></td>
+												<td>
+													<select name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][option_value_id]" class="form-control">
+														<?php if (isset($option_values[$product_option['option_id']])) { ?>
+														<?php foreach ($option_values[$product_option['option_id']] as $option_value) { ?>
+														<?php if ($option_value['option_value_id'] == $product_option_value['option_value_id']) { ?>
+														<option value="<?php echo $option_value['option_value_id']; ?>" selected=""><?php echo $option_value['name']; ?></option>
+														<?php } else { ?>
+														<option value="<?php echo $option_value['option_value_id']; ?>"><?php echo $option_value['name']; ?></option>
+														<?php } ?>
+														<?php } ?>
+														<?php } ?>
+													</select>
+													<input type="hidden" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][product_option_value_id]" value="<?php echo $product_option_value['product_option_value_id']; ?>">
+												</td>
 												<td class="text-right"><input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][quantity]" value="<?php echo $product_option_value['quantity']; ?>" class="form-control"></td>
 												<td><select name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][subtract]" class="form-control">
-													<?php if ($product_option_value['subtract']) { ?>
-													<option value="1" selected=""><?php echo $text_yes; ?></option>
-													<option value="0"><?php echo $text_no; ?></option>
-													<?php } else { ?>
-													<option value="1"><?php echo $text_yes; ?></option>
-													<option value="0" selected=""><?php echo $text_no; ?></option>
-													<?php } ?>
+													<option value="1" <?php echo ($product_option_value['subtract']) ? 'selected' : '' ; ?>><?php echo $text_yes; ?></option>
+													<option value="0" <?php echo ($product_option_value['subtract']) ? '' : 'selected' ; ?>><?php echo $text_no; ?></option>
 												</select></td>
 												<td class="text-right"><div class="input-group">
 													<span class="input-group-btn" data-toggle="buttons">
-														<?php if ($product_option_value['price_prefix'] == '+') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label>
-														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+"><i class="fas fa-plus"></i></label>
-														<?php } ?>
-														<?php if ($product_option_value['price_prefix'] == '-') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-" checked=""><i class="fas fa-minus"></i></label>
-														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-"><i class="fas fa-minus"></i></label>
-														<?php } ?>
+														<label class="btn btn-default <?php echo ($product_option_value['price_prefix']=='+') ? 'active' : ''; ?>">
+															<input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+" <?php echo ($product_option_value['price_prefix']=='+') ? 'checked' : ''; ?>>
+															<i class="fas fa-plus"></i>
+														</label>
+														<label class="btn btn-default <?php echo ($product_option_value['price_prefix']=='-') ? 'active' : ''; ?>">
+															<input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-" <?php echo ($product_option_value['price_prefix']=='-') ? 'checked' : ''; ?>>
+															<i class="fas fa-minus"></i>
+														</label>
 													</span>
 													<input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price]" value="<?php echo $product_option_value['price']; ?>" class="form-control">
 												</div></td>
 												<td class="text-right"><div class="input-group">
 													<span class="input-group-btn" data-toggle="buttons">
-														<?php if ($product_option_value['points_prefix'] == '+') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label>
-														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+"><i class="fas fa-plus"></i></label>
-														<?php } ?>
-														<?php if ($product_option_value['points_prefix'] == '-') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-" checked=""><i class="fas fa-minus"></i></label>
-														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-"><i class="fas fa-minus"></i></label>
-														<?php } ?>
+														<label class="btn btn-default <?php echo ($product_option_value['points_prefix']=='+') ? 'active' : ''; ?>">
+															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+" <?php echo ($product_option_value['points_prefix']=='+') ? 'checked' : ''; ?>>
+															<i class="fas fa-plus"></i>
+														</label>
+														<label class="btn btn-default <?php echo ($product_option_value['points_prefix']=='-') ? 'active' : ''; ?>">
+															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-" <?php echo ($product_option_value['points_prefix']=='-') ? 'checked' : ''; ?>>
+															<i class="fas fa-minus"></i>
+														</label>
 													</span>
-													<input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][points]" value="<?php echo $product_option_value['points']; ?>" class="form-control">
+													<input type="text" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][points]" value="<?php echo $product_option_value['points']; ?>" class="form-control">
 												</div></td>
 												<td class="text-right"><div class="input-group">
 													<span class="input-group-btn" data-toggle="buttons">
-														<?php if ($product_option_value['weight_prefix'] == '+') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label>
-														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+"><i class="fas fa-plus"></i></label>
-														<?php } ?>
-														<?php if ($product_option_value['weight_prefix'] == '-') { ?>
-															<label class="btn btn-default active"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-" checked=""><i class="fas fa-minus"></i></label>
-														<?php } else { ?>
-															<label class="btn btn-default"><input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-"><i class="fas fa-minus"></i></label>
-														<?php } ?>
+														<label class="btn btn-default <?php echo ($product_option_value['weight_prefix']=='+') ? 'active' : ''; ?>">
+															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+" <?php echo ($product_option_value['weight_prefix']=='+') ? 'checked' : ''; ?>>
+															<i class="fas fa-plus"></i>
+														</label>
+														<label class="btn btn-default <?php echo ($product_option_value['weight_prefix']=='-') ? 'active' : ''; ?>">
+															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-" <?php echo ($product_option_value['weight_prefix']=='-') ? 'checked' : ''; ?>>
+															<i class="fas fa-minus"></i>
+														</label>
 													</span>
-													<input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][weight]" value="<?php echo $product_option_value['weight']; ?>" class="form-control">
+													<input type="text" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][weight]" value="<?php echo $product_option_value['weight']; ?>" class="form-control">
 												</div></td>
 												<td><a onclick="$('#option-value-row<?php echo $option_value_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
 											</tr>
@@ -976,7 +977,7 @@ function addOptionValue(option_row){
 	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="-"><i class="fas fa-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight]" value="" class="form-control"></div></td>';
 	html+='<td><a onclick="$(\'#option-value-row'+option_value_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
 	html+='</tr>';
-	
+
 	$('#option-value'+option_row+' tbody').append(html);
 
 	option_value_row++;

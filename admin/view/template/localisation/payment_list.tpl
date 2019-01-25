@@ -23,8 +23,8 @@
 							<?php } ?></td>
 						<td><?php echo $payment['name']; ?></td>
 						<td class="text-right"><?php foreach ($payment['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-							<?php } ?></td>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
+						<?php } ?></td>
 					</tr>
 					<?php } ?>
 					<?php } else { ?>

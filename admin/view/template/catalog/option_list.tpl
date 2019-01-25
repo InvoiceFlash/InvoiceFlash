@@ -25,8 +25,8 @@
 						<td><?php echo $option['name']; ?></td>
 						<td class="text-right hidden-xs"><?php echo $option['sort_order']; ?></td>
 						<td class="text-right"><?php foreach ($option['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-							<?php } ?></td>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
+						<?php } ?></td>
 					</tr>
 					<?php } ?>
 					<?php } else { ?>

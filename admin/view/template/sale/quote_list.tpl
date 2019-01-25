@@ -75,7 +75,7 @@
 						<td class="hidden-xs hidden-sm"><?php echo $quote['date_modified']; ?></td>
 						<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
 							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-							<?php } ?></td>
+						<?php } ?></td>
 					</tr>
 					<?php } ?>
 					<?php } else { ?>
@@ -89,23 +89,4 @@
 		<div class="pagination"><?php echo str_replace('....','',$pagination); ?></div>
 	</div>
 </div>
-<?php include DIR_TEMPLATE . 'sale/print_modal.tpl'; ?>
-<script>
-function validate() {
-	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Select a quote to print');
-	} else {
-		$('input[type="checkbox"]:checked').each(function(){
-			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');
-		});
-		
-		$('#PrintModal').modal('toggle');
-	}
-}
-$(document).ready(function(){
-     $("#PrintModal").on('hidden.bs.modal', function () {
-        $('#formPrint>input[name="selected[]"]').remove();
-    });
-});
-</script>
 <?php echo $footer; ?>

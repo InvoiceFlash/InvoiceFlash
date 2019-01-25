@@ -1162,11 +1162,11 @@ class ControllerSaleInvoice extends Controller {
       		$this->data['invoice_totals'] = array();
 		}	
 		
-		$this->load->model('purchases/payment');
-		$this->load->model('purchases/shipping');
+		$this->load->model('localisation/payment');
+		$this->load->model('localisation/shipping');
 
-		$this->data['payments'] = $this->model_purchases_payment->getPayments();
-		$this->data['shippings'] = $this->model_purchases_shipping->getShippings();
+		$this->data['payments'] = $this->model_localisation_payment->getPayments();
+		$this->data['shippings'] = $this->model_localisation_shipping->getShippings();
 		
 		$this->template = 'sale/invoice_form.tpl';
 
