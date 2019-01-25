@@ -111,14 +111,9 @@
 					<div class="form-group">
 						<label class="control-label col-sm-2"><?php echo $entry_image; ?></label>
 						<div class="control-field col-sm-4">
-							<div class="media">
-								<a class="pull-left" onclick="image_upload('image','thumb');"><img class="img-thumbnail" src="<?php echo $thumb; ?>" width="100" height="100" alt="" id="thumb"></a>
-								<input type="hidden" name="image" value="<?php echo $image; ?>" id="image">
-								<div class="media-body hidden-xs">
-									<a class="btn btn-default" onclick="image_upload('image','thumb');"><?php echo $text_browse; ?></a>&nbsp;
-									<a class="btn btn-default" onclick="$('#thumb').attr('src','<?php echo $no_image; ?>'); $('#image').val('');"><?php echo $text_clear; ?></a>
-								</div>
-							</div>
+							<a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
+							<img src="<?php echo $thumb; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>
+							<input type="hidden" name="image" value="<?php echo $image; ?>" id="image" />
 						</div>
 					</div>
 					<div class="form-group">
