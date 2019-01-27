@@ -8710,6 +8710,26 @@ input[type="checkbox"]:checked::after, .checkbox input[type="checkbox"]:checked:
 .input-group.date .input-group-addon {
   cursor: pointer; }
 
+.navbar-brand {
+  font-family: "Niconne";
+  width: 230px;
+  text-align: center;
+  font-size: 2em; }
+
+.bg-primary {
+  background-color: #2e8bcc !important; }
+
+.flex-column .nav-link {
+  border: 1px solid #dee2e6;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  color: #333; }
+  .flex-column .nav-link.active {
+    border: 1px solid #dee2e6;
+    border-left-color: transparent;
+    border-right-color: #dee2e6; }
+
 .well {
   padding: 2em;
   margin-bottom: 2em;
@@ -8858,13 +8878,13 @@ a.dropdowm-item.dropdown-toggle {
   background-color: transparent;
   border: 0; }
   a.dropdowm-item.dropdown-toggle:hover {
-    color: white;
-    background-color: #2E8BCC; }
+    color: #fff;
+    background-color: #2e8bcc; }
 
 .dropdown-item:hover, .dropdown-item:focus {
   color: #fff;
   text-decoration: none;
-  background-color: #2E8BCC; }
+  background-color: #2e8bcc; }
 
 .nav-item > .nav-link {
   padding-top: 1em;
@@ -9087,6 +9107,9 @@ input[type="radio"], input[type="checkbox"] {
 .form-group.row p {
   padding: 1.75em;
   border: 1px solid lightgray; }
+
+.label-danger {
+  color: #dc3545; }
 
 .btn-default {
   color: #000;
@@ -9950,8 +9973,6 @@ es {
     opacity: 1;
     transform: translateX(0); } }
 .typeahead.dropdown-menu {
-  top: auto !important;
-  left: auto !important;
   display: block; }
 
 .img-thumbnail {

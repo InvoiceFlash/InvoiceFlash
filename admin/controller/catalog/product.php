@@ -74,8 +74,6 @@ class ControllerCatalogProduct extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_catalog_product->editProduct($this->request->get['product_id'], $this->request->post);
 
-			$this->openbay->productUpdateListen($this->request->get['product_id'], $this->request->post);
-
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
@@ -410,6 +408,8 @@ class ControllerCatalogProduct extends Controller {
 
 		$this->data['token'] = $this->session->data['token'];
 
+		$this->data['no_image'] = $this->model_tool_image->resize('no_image.jpg', 40, 40);
+
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
 		} else {
@@ -634,7 +634,6 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['tab_reward'] = $this->language->get('tab_reward');
 		$this->data['tab_design'] = $this->language->get('tab_design');
 		$this->data['tab_marketplace_links'] = $this->language->get('tab_marketplace_links');
-		$this->data['text_loading_message'] = $this->language->get('text_loading_message');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -744,6 +743,13 @@ class ControllerCatalogProduct extends Controller {
 			$this->data['product_description'] = $this->model_catalog_product->getProductDescriptions($this->request->get['product_id']);
 		} else {
 			$this->data['product_description'] = array();
+		}
+
+		// Añadir al título el nombre del articulo
+		if (isset($this->request->get['product_id'])){	
+			$language_code = $this->config->get('config_language');
+			$language_id = $this->data['languages'][$language_code]['language_id'];
+			$this->data['product_name'] = $this->data['product_description'][$language_id]['name'];
 		}
 
 		if (isset($this->request->post['model'])) {

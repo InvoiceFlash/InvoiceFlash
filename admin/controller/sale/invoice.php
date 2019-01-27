@@ -2001,6 +2001,7 @@ class ControllerSaleInvoice extends Controller {
 
 	public function checkInvoice() {
 		$this->load->language('sale/invoice');
+$log = new log('invoice.log');
 
 		$json = array();
 
@@ -2028,6 +2029,18 @@ class ControllerSaleInvoice extends Controller {
 			$this->session->data['cart'] = array();
 
 			$settings = $this->model_setting_setting->getSetting('config', $this->request->post['store_id']);
+//$log = new log('invoice.log');
+
+
+foreach ($_POST as $key => $value) {
+
+        $log->write( $key);
+
+        $log->write( $value);
+
+    }
+
+//$log->write('store: ' .$this->request->post['store_id']);
 
 			foreach ($settings as $key => $value) {
 				$this->config->set($key, $value);
@@ -2046,6 +2059,7 @@ class ControllerSaleInvoice extends Controller {
 
 			// Product
 			if (isset($this->request->post['invoice_product'])) {
+			
 				foreach ($this->request->post['invoice_product'] as $invoice_product) {
 					$product_info = $this->model_catalog_product->getProduct($invoice_product['product_id']);
 					$option_data = array();
@@ -2079,6 +2093,7 @@ class ControllerSaleInvoice extends Controller {
 			}
 
 			if (isset($this->request->post['product_id'])) {
+				$log->write('product: ' .$this->request->post['product_id']);
 				$product_info = $this->model_catalog_product->getProduct($this->request->post['product_id']);
 
 				if (isset($this->request->post['quantity'])) {
@@ -2094,6 +2109,7 @@ class ControllerSaleInvoice extends Controller {
 				}
 	
 				if ($product_info) {
+					$log->write('product_info: ' .$product_info['price'] ."\n");
 					$this->session->data['cart'][] = array(
 						'product_id' 	=> $this->request->post['product_id'],
 						'name'		 	=> $product_info['name'], 
@@ -2173,15 +2189,20 @@ class ControllerSaleInvoice extends Controller {
 				$sort_order = array(); 
 
 				foreach ($json['invoice_total'] as $key => $value) {
+		
 					$sort_order[$key] = $value['sort_order'];
+		
 				}
 
-				array_multisort($sort_order, SORT_ASC, $json['invoice_total']);				
+				array_multisort($sort_order, SORT_ASC, $json['invoice_total']);	
+			
 			}
 
 			if (!isset($json['error'])) { 
+				$log->write('Bien '  ."\n");
 				$json['success'] = $this->language->get('text_success');
 			} else {
+				$log->write('ERROR '  ."\n");
 				$json['error']['warning'] = $this->language->get('error_warning');
 			}
 			
@@ -2196,7 +2217,8 @@ class ControllerSaleInvoice extends Controller {
 		unset($this->session->data['payment_address']);
 		unset($this->session->data['store_address']);
 		unset($this->session->data['customer_id']);
-
+		
+		//$log->write(var_dump($json)) ;
 
 		$this->response->setOutput(json_encode($json));
 	}

@@ -49,7 +49,7 @@
 						<div class="form-group col-sm-8">
 							<label class="control-label col-sm-2"><?php echo $entry_customer; ?></label>
 							<div class="control-field input-group col-sm-10">
-								<input type="text" name="customer" value="<?php echo $customer; ?>" id="invoice-customer" autocomplete="off" class="form-control">
+								<input type="text" name="customer" value="<?php echo $customer; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-toggle="modal" data-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
@@ -593,7 +593,7 @@ $('#ProductModal').on('hidden.bs.modal', function () {
 $('#addProduct').click(function(e){
 	if($('#customer_id').val()==0){
 		alert('Please, select a customer first');
-		$('#invoice-customer').focus();
+		$('#order-customer').focus();
 	} else {
 		$('#ProductModal').modal('show');
 	}
