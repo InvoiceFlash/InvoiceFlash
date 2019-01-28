@@ -178,7 +178,8 @@ class ControllerLocalisationZone extends Controller {
 
 			$action[] = array(
 				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('localisation/zone/update', 'token=' . $this->session->data['token'] . '&zone_id=' . $result['zone_id'] . $url, 'SSL')
+				'href' => $this->url->link('localisation/zone/update', 'token=' . $this->session->data['token'] . '&zone_id=' . $result['zone_id'] . $url, 'SSL'),
+				'icon' => '<i class="fa fa-edit"></i>'
 			);
 
 			$this->data['zones'][] = array(

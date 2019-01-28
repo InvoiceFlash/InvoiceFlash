@@ -31,10 +31,6 @@
 							<td><?php echo $text_store_name; ?></td>
 							<td><?php echo $store_name; ?></td>
 						</tr>
-						<tr>
-							<td><?php echo $text_store_url; ?></td>
-							<td><a href="<?php echo $store_url; ?>" target="_blank"><?php echo $store_url; ?></a></td>
-						</tr>
 						<?php if ($customer) { ?>
 						<tr>
 							<td><?php echo $text_customer; ?></td>
