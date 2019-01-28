@@ -117,6 +117,7 @@
 								</div>
 								<a href="<?php echo $length_class; ?>" class="dropdown-item"><?php echo $text_length_class; ?></a>
 								<a href="<?php echo $weight_class; ?>" class="dropdown-item"><?php echo $text_weight_class; ?></a>
+								<a href="<?php echo $total; ?>" class="dropdown-item"><?php echo $text_total; ?></a>
 							</div>
 						</div>
 						<a href="<?php echo $error_log; ?>" class="dropdown-item"><?php echo $text_error_log; ?></a>
