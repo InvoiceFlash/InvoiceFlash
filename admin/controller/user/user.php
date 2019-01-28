@@ -178,7 +178,8 @@ class ControllerUserUser extends Controller {
 
 			$action[] = array(
 				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('user/user/update', 'token=' . $this->session->data['token'] . '&user_id=' . $result['user_id'] . $url, 'SSL')
+				'href' => $this->url->link('user/user/update', 'token=' . $this->session->data['token'] . '&user_id=' . $result['user_id'] . $url, 'SSL'),
+				'icon' => '<i class="fa fa-edit"></i>'
 			);
 
 			$this->data['users'][] = array(

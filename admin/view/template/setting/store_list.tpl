@@ -25,7 +25,7 @@
 						<td><?php echo $store['name']; ?></td>
 						<td class="hidden-xs"><?php echo $store['url']; ?></td>
 						<td class="text-right"><?php foreach ($store['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>

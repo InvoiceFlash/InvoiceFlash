@@ -267,7 +267,7 @@
 						<div class="form-group">
 							<label class="control-label col-sm-2"><?php echo $entry_invoice_status; ?></label>
 							<div class="control-field col-sm-4">
-								<select name="invoice_status_id" class="form-control">
+								<select name="quote_status_id" class="form-control">
 									<?php foreach ($invoice_statuses as $invoice_statuses) { ?>
 									<?php if ($invoice_statuses['invoice_status_id'] == $invoice_status_id) { ?>
 									<option value="<?php echo $invoice_statuses['invoice_status_id']; ?>" selected=""><?php echo $invoice_statuses['name']; ?></option>
