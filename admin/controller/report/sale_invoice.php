@@ -87,34 +87,17 @@ class ControllerReportSaleInvoice extends Controller {
 		
 		$invoice_total = $this->model_report_saleslist->getTotalInvoices($data);
 		$results = $this->model_report_saleslist->getInvoices($data);
-		$invoice_total=0;
 		
 		foreach ($results as $result) {
-			$invoice_total += 1;
 			$action = array();
-		
+
 			$action[] = array(
-				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL')
+				'text' 				=> $this->language->get('text_view'),
+				'href' 				=> $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL'),
+				'icon'				=> '<i class="far fa-eye"></i>'
 			);
 			
-			// To Include the option value
-			// $a = explode(',', $result['options']);
-			// $b = explode(',', $result['ordprdid']);
-			// $c = explode(',', $result['optprdid']);
-			// $d = explode(',', $result['opquantity']);
-
-			// $i=0;
-			// $optionvalue='';
-			// if($result['options']<>''){
-			// foreach ($b as $option) {
-				// $optionvalue .= $a[$i] . '(' . $d[array_search($b[$i], $c)] . '), ' ;
-				// $i += 1;
-			// }
-			// }
-			//$optionvalue = trim($optionvalue,', ');			
-						
-			$this->data['customers'][] = array(
+			$this->data['invoices'][] = array(
 				'invoice_id'          => $result['invoice_id'],		
 				'customer'          => $result['customer'],
 				'city'              => $result['city'],
@@ -122,15 +105,11 @@ class ControllerReportSaleInvoice extends Controller {
 				'date_added'        => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'email'             => $result['email'],
 				'telephone'         => $result['telephone'],
-				'status'            => $result['status'] ,
-				'text' => $this->language->get('text_view'),
-				'href' => $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL'),
-				'action'            => $action
+				'status'            => $result['status'],
+				'action'			=> $action
 			);
 		}
 		
-		
-		 
  		$this->data['heading_title'] = $this->language->get('heading_title');
 		 
 		$this->data['text_no_results'] = $this->language->get('text_no_results');

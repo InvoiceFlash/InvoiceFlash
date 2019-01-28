@@ -54,8 +54,6 @@
 		</div>
 		<div class="table-responsive">
 		<table class="table table-bordered table-striped">
-
-
         <thead>
           <tr>
             <td class="left"><?php echo $column_invoiceid; ?></td>
@@ -69,22 +67,24 @@
           </tr>
         </thead>
         <tbody>
-          <?php if ($customers) { ?>
-          <?php foreach ($customers as $customer) { ?>
+          <?php if ($invoices) { ?>
+          <?php foreach ($invoices as $invoice) { ?>
           <tr>
-            <td class="left"><?php echo $customer['invoice_id']; ?></td>
-			<td class="left"><?php echo $customer['date_added']; ?></td>
-            <td class="left"><?php echo $customer['customer']; ?></td>
-            <td class="left"><?php echo $customer['city']; ?></td>
-            <td class="left"><?php echo $customer['email']; ?></td>
-            <td class="left"><?php echo $customer['telephone']; ?></td>
-            <td class="left"><?php echo $customer['status']; ?></td>
-            <td class="right"><a href="<?php echo $customer['href']; ?>" class="button"><span><?php echo $customer['text']; ?></span></a></td>
+            <td class="text-left"><?php echo $invoice['invoice_id']; ?></td>
+						<td class="text-left"><?php echo $invoice['date_added']; ?></td>
+            <td class="text-left"><?php echo $invoice['customer']; ?></td>
+            <td class="text-left"><?php echo $invoice['city']; ?></td>
+            <td class="text-left"><?php echo $invoice['email']; ?></td>
+            <td class="text-left"><?php echo $invoice['telephone']; ?></td>
+            <td class="text-left"><?php echo $invoice['status']; ?></td>
+            <td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
+							<a href="<?php echo $action['href']; ?>" class="btn btn-info"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
+						<?php } ?></td>
           </tr>
           <?php } ?>
           <?php } else { ?>
           <tr>
-            <td class="center" colspan="12"><?php echo $text_no_results; ?></td>
+            <td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
           </tr>
           <?php } ?>
         </tbody>

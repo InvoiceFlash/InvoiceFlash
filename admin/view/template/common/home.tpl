@@ -26,7 +26,7 @@
 <div class="panel panel-default" id="actions">
 	<div class="panel-heading clearfix"><h5><?php echo $text_actions; ?></h5></div>
 	<div class="panel-body">
-		<div class="card-group">
+		<div class="card-group d-flex justify-content-center">
 			<div class="card">
 				<a href="<?php echo $add_customer; ?>"><h5 class="buton"><i class="fas fa-user"></i> <span class="hidden-xs"><?php echo $text_add_customer; ?>	</span></h5></a>
 			</div>
@@ -197,7 +197,7 @@ $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 
 			// Datos Pedidos
 			var invoiceData = [];
-			$.each(json.order['data'], function(index, value){
+			$.each(json.invoice['data'], function(index, value){
 				invoiceData.push(value[1]);
 			});
 
@@ -214,7 +214,7 @@ $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 						borderColor: "#f89406"
 					},
 					{
-						label: json.order['label'],
+						label: json.invoice['label'],
 						data: invoiceData,
 						backgroundColor: "rgba(62, 149, 205,0.2)",
 						borderColor: "#3e95cd"

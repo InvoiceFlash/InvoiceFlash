@@ -27,7 +27,7 @@
 						<td class="hidden-xs"><?php echo $language['code']; ?></td>
 						<td class="text-right hidden-xs"><?php echo $language['sort_order']; ?></td>
 						<td class="text-right"><?php foreach ($language['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>

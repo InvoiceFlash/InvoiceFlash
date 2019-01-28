@@ -29,7 +29,7 @@
 						<td class="text-right hidden-xs"><?php echo $currency['value']; ?></td>
 						<td class="hidden-xs"><?php echo $currency['date_modified']; ?></td>
 						<td class="text-right"><?php foreach ($currency['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>

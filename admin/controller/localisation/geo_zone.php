@@ -178,7 +178,8 @@ class ControllerLocalisationGeoZone extends Controller {
 
 			$action[] = array(
 				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('localisation/geo_zone/update', 'token=' . $this->session->data['token'] . '&geo_zone_id=' . $result['geo_zone_id'] . $url, 'SSL')
+				'href' => $this->url->link('localisation/geo_zone/update', 'token=' . $this->session->data['token'] . '&geo_zone_id=' . $result['geo_zone_id'] . $url, 'SSL'),
+				'icon' => '<i class="fa fa-edit"></i>'
 			);
 
 			$this->data['geo_zones'][] = array(

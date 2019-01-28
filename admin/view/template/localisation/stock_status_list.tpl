@@ -23,7 +23,7 @@
 							<?php } ?></td>
 						<td><?php echo $stock_status['name']; ?></td>
 						<td class="text-right"><?php foreach ($stock_status['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?><?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>
