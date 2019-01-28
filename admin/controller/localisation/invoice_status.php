@@ -178,7 +178,8 @@ class ControllerLocalisationInvoiceStatus extends Controller {
 
 			$action[] = array(
 				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('localisation/invoice_status/update', 'token=' . $this->session->data['token'] . '&invoice_status_id=' . $result['invoice_status_id'] . $url, 'SSL')
+				'href' => $this->url->link('localisation/invoice_status/update', 'token=' . $this->session->data['token'] . '&invoice_status_id=' . $result['invoice_status_id'] . $url, 'SSL'),
+				'icon' => '<i class="fa fa-edit"></i>'
 			);
 
 			$this->data['invoice_statuses'][] = array(
