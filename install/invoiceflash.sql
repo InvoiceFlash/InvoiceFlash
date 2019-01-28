@@ -7836,6 +7836,17 @@ CREATE TABLE `if_quote_total` (
   PRIMARY KEY (`quote_total_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_quote_history`;
+CREATE TABLE `if_quote_history` (
+  `quote_history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `quote_id` int(11) NOT NULL,
+  `quote_status_id` int(5) NOT NULL,
+  `notify` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text NOT NULL,
+  `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`quote_history_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 DROP TABLE IF EXISTS `if_fl_mails`;
 CREATE TABLE `if_fl_mails` (
   `mail_id` int(11) NOT NULL AUTO_INCREMENT,
