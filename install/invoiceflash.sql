@@ -2466,6 +2466,7 @@ CREATE TABLE `if_product_image` (
 
 INSERT INTO `if_product_image` (`product_image_id`, `product_id`, `image`) VALUES
 (2345, 30, 'data/demo/canon_eos_5d_2.jpg'),
+(2344, 30, 'data/demo/canon_eos_5d_3.jpg'),
 (2321, 47, 'data/demo/hp_3.jpg'),
 (2035, 28, 'data/demo/htc_touch_hd_2.jpg'),
 (2351, 41, 'data/demo/imac_3.jpg'),
@@ -2492,7 +2493,6 @@ INSERT INTO `if_product_image` (`product_image_id`, `product_id`, `image`) VALUE
 (1990, 48, 'data/demo/ipod_classic_3.jpg'),
 (1981, 40, 'data/demo/iphone_2.jpg'),
 (1980, 40, 'data/demo/iphone_5.jpg'),
-(2344, 30, 'data/demo/canon_eos_5d_3.jpg'),
 (2320, 47, 'data/demo/hp_2.jpg'),
 (2034, 28, 'data/demo/htc_touch_hd_3.jpg'),
 (2350, 41, 'data/demo/imac_2.jpg'),
@@ -2521,7 +2521,6 @@ INSERT INTO `if_product_image` (`product_image_id`, `product_id`, `image`) VALUE
 (2324, 49, 'data/demo/samsung_tab_4.jpg'),
 (2323, 49, 'data/demo/samsung_tab_3.jpg'),
 (2322, 49, 'data/demo/samsung_tab_2.jpg'),
-(2317, 42, 'data/demo/canon_logo.jpg'),
 (2316, 42, 'data/demo/hp_1.jpg'),
 (2315, 42, 'data/demo/compaq_presario.jpg'),
 (2314, 42, 'data/demo/canon_eos_5d_1.jpg'),
