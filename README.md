@@ -24,7 +24,8 @@ To use InvoiceFlash application you should have already installed:
 - Customers
 - Invoices
 - Quotes
-Limitations:
+
+# Limitations 0.1.0 release:
 - No stock control
 
 
