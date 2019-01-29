@@ -18,10 +18,13 @@ To use InvoiceFlash application you should have already installed:
 - [ ] Import InvoicePlane
 - [x] Manufacturer
 - [ ] Import Flash Software
+- [ ] web with landpage, forum, demo and download
 
 ## 0.1.0 (Alpha)
 - Customers
 - Invoices
 - Quotes
+Limitations:
+- No stock control
 
 
