@@ -19,6 +19,7 @@ To use InvoiceFlash application you should have already installed:
 - [x] Manufacturer
 - [ ] Import Flash Software
 - [ ] web with landpage, forum, demo and download
+- [ ] Option to erase demo data
 
 ## 0.1.0 (Alpha)
 - Customers
