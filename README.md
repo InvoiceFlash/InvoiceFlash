@@ -1,4 +1,4 @@
-# InvoiceFlash (Alpha)
+# InvoiceFlash 
 
 ## Credits / Technologies
 
@@ -12,5 +12,16 @@ To use InvoiceFlash application you should have already installed:
 *   Any HTTP web server supporting php eg. _**Apache with mod_php**_ or _**IIS**_.
 *   **_PHP_** >=5.0 
 *   **_MySQL_** >=4.1 server 
+
+## 0.2.0
+
+- [ ] Import InvoicePlane
+- [x] Manufacturer
+- [ ] Import Flash Software
+
+## 0.1.0 (Alpha)
+- Customers
+- Invoices
+- Quotes
 
 
