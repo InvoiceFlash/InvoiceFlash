@@ -677,5 +677,47 @@ class ModelCatalogProduct extends Model {
 
 		return $query->row['total'];
 	}
+
+	public function getProductRates($value, $tax_class_id) {
+		$tax_rates = array();
+
+		$query = $this->db->query("SELECT tr2.tax_rate_id, tr2.name, tr2.rate, tr2.type, tr1.priority FROM `".DB_PREFIX."tax_rule` tr1 LEFT JOIN `".DB_PREFIX."tax_rate` tr2 ON (tr1.tax_rate_id = tr2.tax_rate_id) WHERE tr1.tax_class_id = '" . (int)$tax_class_id . "' ORDER BY tr1.priority ASC");
+
+		foreach ($query->rows as $result) {
+			$tax_rates[$result['tax_rate_id']] = array(
+				'tax_rate_id'	=> $result['tax_rate_id'],
+				'name'			=> $result['name'],
+				'rate'			=> $result['rate'],
+				'type'			=> $result['type'],
+				'priority'		=> $result['priority']
+			);
+		}
+
+		$tax_rate_data = array();
+
+		foreach ($tax_rates as $tax_rate) {
+			if (isset($tax_rate_data[$tax_rate['tax_rate_id']])) {
+				$amount = $tax_rate_data[$tax_rate['tax_rate_id']]['amount'];
+			} else {
+				$amount = 0;
+			}
+
+			if ($tax_rate['type'] == 'F') {
+				$amount += $tax_rate['rate'];
+			} elseif ($tax_rate['type'] == 'P') {
+				$amount += ($value / 100 * $tax_rate['rate']);
+			}
+
+			$tax_rate_data[$tax_rate['tax_rate_id']] = array(
+				'tax_rate_id' => $tax_rate['tax_rate_id'],
+				'name'        => $tax_rate['name'],
+				'rate'        => $tax_rate['rate'],
+				'type'        => $tax_rate['type'],
+				'amount'      => $amount
+			);
+		}
+
+		return $tax_rate_data;
+	}
 }
 ?>
