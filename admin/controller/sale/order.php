@@ -319,14 +319,14 @@ class ControllerSaleOrder extends Controller {
 			$text = $this->language->get('text_view');
 			$href = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'] . $url, 'SSL');
 			$action[] = array(
-				'button' => '<a class="btn btn-primary" href="' . $href . '"><i class="fas fa-info-circle"></i><span class="hidden-xs"> ' . $text . '</span></a>'
+				'button' => '<a class="btn btn-info" href="' . $href . '"><i class="far fa-eye"></i> <span class="d-none d-xxl-inline"> ' . $text . '</span></a>'
 			);
 
 			if (strtotime($result['date_added']) > strtotime('-' . (int)$this->config->get('config_order_edit') . ' day')) {
 				$text = $this->language->get('text_edit');
 				$href = $this->url->link('sale/order/update', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'] . $url, 'SSL');
 				$action[] = array(
-					'button' => '<a class="btn btn-dark" href="' . $href . '"><i class="fas fa-edit"></i><span class="hidden-xs"> ' . $text . '</span></a>'
+					'button' => '<a class="btn btn-default" href="' . $href . '"><i class="fas fa-edit"></i><span class="d-none d-xxl-inline"> ' . $text . '</span></a>'
 				);
 			}
 

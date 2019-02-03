@@ -2001,7 +2001,6 @@ class ControllerSaleInvoice extends Controller {
 
 	public function checkInvoice() {
 		$this->load->language('sale/invoice');
-$log = new log('invoice.log');
 
 		$json = array();
 
@@ -2029,18 +2028,6 @@ $log = new log('invoice.log');
 			$this->session->data['cart'] = array();
 
 			$settings = $this->model_setting_setting->getSetting('config', $this->request->post['store_id']);
-//$log = new log('invoice.log');
-
-
-foreach ($_POST as $key => $value) {
-
-        $log->write( $key);
-
-        $log->write( $value);
-
-    }
-
-//$log->write('store: ' .$this->request->post['store_id']);
 
 			foreach ($settings as $key => $value) {
 				$this->config->set($key, $value);
@@ -2059,7 +2046,6 @@ foreach ($_POST as $key => $value) {
 
 			// Product
 			if (isset($this->request->post['invoice_product'])) {
-			
 				foreach ($this->request->post['invoice_product'] as $invoice_product) {
 					$product_info = $this->model_catalog_product->getProduct($invoice_product['product_id']);
 					$option_data = array();
@@ -2093,7 +2079,6 @@ foreach ($_POST as $key => $value) {
 			}
 
 			if (isset($this->request->post['product_id'])) {
-				$log->write('product: ' .$this->request->post['product_id']);
 				$product_info = $this->model_catalog_product->getProduct($this->request->post['product_id']);
 
 				if (isset($this->request->post['quantity'])) {
@@ -2107,9 +2092,16 @@ foreach ($_POST as $key => $value) {
 				} else {
 					$option = array();
 				}
-	
-				if ($product_info) {
-					$log->write('product_info: ' .$product_info['price'] ."\n");
+
+				$product_options = $this->model_catalog_product->getProductOptions($this->request->post['product_id']);
+				
+				foreach ($product_options as $product_option) {
+					if ($product_option['required'] && empty($option[$product_option['product_option_id']])) {
+						$json['error']['product']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+					}
+				}
+
+				if (!isset($json['error']['product']['option'])) {
 					$this->session->data['cart'][] = array(
 						'product_id' 	=> $this->request->post['product_id'],
 						'name'		 	=> $product_info['name'], 
@@ -2167,7 +2159,7 @@ foreach ($_POST as $key => $value) {
 			// Totals
 			$json['invoice_total'] = array();					
 			$total = 0;
-			$taxes = $this->getTaxes($products, $customer_info);
+			$taxes = $this->getTaxes($products);
 
 			$sort_order = array(); 
 
@@ -2189,20 +2181,15 @@ foreach ($_POST as $key => $value) {
 				$sort_order = array(); 
 
 				foreach ($json['invoice_total'] as $key => $value) {
-		
 					$sort_order[$key] = $value['sort_order'];
-		
 				}
 
-				array_multisort($sort_order, SORT_ASC, $json['invoice_total']);	
-			
+				array_multisort($sort_order, SORT_ASC, $json['invoice_total']);				
 			}
 
 			if (!isset($json['error'])) { 
-				$log->write('Bien '  ."\n");
 				$json['success'] = $this->language->get('text_success');
 			} else {
-				$log->write('ERROR '  ."\n");
 				$json['error']['warning'] = $this->language->get('error_warning');
 			}
 			
@@ -2217,20 +2204,19 @@ foreach ($_POST as $key => $value) {
 		unset($this->session->data['payment_address']);
 		unset($this->session->data['store_address']);
 		unset($this->session->data['customer_id']);
-		
-		//$log->write(var_dump($json)) ;
+
 
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function getTaxes($data, $customer_info) {
+	public function getTaxes($data) {
 		$this->load->model('catalog/product');
-		$customer_group_id = ($customer_info['customer_group_id']) ? $customer_info['customer_group_id'] : $this->config->get('config_customer_group_id');
+		
 		$tax_data = array();
 
 		foreach ($data as $product) {
 			if ($product['tax_class_id']!=0) {
-				$tax_rates = $this->model_catalog_product->getRates($product['price'], $product['tax_class_id'], $customer_group_id);
+				$tax_rates = $this->model_catalog_product->getProductRates($product['price'], $product['tax_class_id']);
 
 				foreach ($tax_rates as $tax_rate) {
 					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {

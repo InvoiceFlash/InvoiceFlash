@@ -2056,7 +2056,15 @@ class ControllerSaleQuote extends Controller {
 					$option = array();
 				}
 	
-				if ($product_info) {
+				$product_options = $this->model_catalog_product->getProductOptions($this->request->post['product_id']);
+
+				foreach ($product_options as $product_option) {
+					if ($product_option['required'] && empty($option[$product_option['product_option_id']])) {
+						$json['error']['product']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+					}
+				}
+
+				if (!isset($json['error']['product']['option'])) {
 					$this->session->data['cart'][] = array(
 						'product_id' 	=> $this->request->post['product_id'],
 						'name'		 	=> $product_info['name'], 
@@ -2114,7 +2122,7 @@ class ControllerSaleQuote extends Controller {
 			// Totals
 			$json['quote_total'] = array();					
 			$total = 0;
-			$taxes = $this->getTaxes($products, $customer_info);
+			$taxes = $this->getTaxes($products);
 
 			$sort_order = array(); 
 
@@ -2164,14 +2172,14 @@ class ControllerSaleQuote extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function getTaxes($data, $customer_info) {
+	public function getTaxes($data) {
 		$this->load->model('catalog/product');
-		$customer_group_id = ($customer_info['customer_group_id']) ? $customer_info['customer_group_id'] : $this->config->get('config_customer_group_id');
+		
 		$tax_data = array();
 
 		foreach ($data as $product) {
 			if ($product['tax_class_id']!=0) {
-				$tax_rates = $this->model_catalog_product->getRates($product['price'], $product['tax_class_id'], $customer_group_id);
+				$tax_rates = $this->model_catalog_product->getProductRates($product['price'], $product['tax_class_id']);
 
 				foreach ($tax_rates as $tax_rate) {
 					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {
