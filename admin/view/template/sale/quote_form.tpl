@@ -177,7 +177,7 @@
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][text]" value="<?php echo $quote_total['text']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][value]" value="<?php echo $quote_total['value']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][sort_order]" value="<?php echo $quote_total['sort_order']; ?>"></td>
-								<td class="text-right"><?php echo $quote_total['value']; ?></td>
+								<td class="text-right"><?php echo $quote_total['text']; ?></td>
 							</tr>
 							<?php $total_row++; ?>
 							<?php } ?>

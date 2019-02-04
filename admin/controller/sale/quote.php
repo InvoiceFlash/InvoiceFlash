@@ -340,7 +340,6 @@ class ControllerSaleQuote extends Controller {
           $this->data['quotes'][] = array(
               'quote_id'      => $result['quote_id'],
               'customer'      => $result['customer'],
-              'company'       => $result['company'],
               'status'        => $result['status'],
               'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
@@ -1132,8 +1131,8 @@ class ControllerSaleQuote extends Controller {
 				'model'            => $quote_product['model'],
 				'option'           => $quote_option,
 				'quantity'         => $quote_product['quantity'],
-				'price'            => $quote_product['price'],
-				'total'            => $quote_product['total'],
+				'price'            => $this->currency->format($quote_product['price']),
+				'total'            => $this->currency->format($quote_product['total']),
 				'tax'              => $quote_product['tax']
 			);
 		}
@@ -2113,9 +2112,9 @@ class ControllerSaleQuote extends Controller {
 					'model'      	=> $product['model'], 
 					'quantity'   	=> $product['quantity'],
 					'option'   		=> $option,
-					'price'      	=> $product['price'],	
+					'price'      	=> $this->currency->format($product['price']),	
 					'tax_class_id'	=> $product['tax_class_id'], 
-					'total'      	=> $product['total']
+					'total'      	=> $this->currency->format($product['total'])
 				);
 			}
 
