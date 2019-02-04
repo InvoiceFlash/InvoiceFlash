@@ -209,7 +209,7 @@ class ControllerCommonHome extends Controller {
 				'href' => $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'], 'SSL')
 			);
 
-			$this->data['quote'][] = array(
+			$this->data['quotes'][] = array(
 				'quote_id'   => $result['quote_id'],
 				'customer'   => $result['customer'],
 				'status'     => $result['status'],
@@ -239,11 +239,11 @@ class ControllerCommonHome extends Controller {
 
 		$data = array();
 
-		$data['order'] = array();
+		$data['invoice'] = array();
 		$data['customer'] = array();
 		$data['xaxis'] = array();
 
-		$data['order']['label'] = $this->language->get('text_order');
+		$data['invoice']['label'] = $this->language->get('text_order');
 		$data['customer']['label'] = $this->language->get('text_customer');
 
 		if (isset($this->request->get['range'])) {
@@ -255,7 +255,9 @@ class ControllerCommonHome extends Controller {
 		switch ($range) {
 			case 'day':
 				for ($i = 0; $i < 24; $i++) {
-					$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE invoice_status_id > '" . (int)$this->config->get('config_complete_status_id') . "' AND (DATE(date_added) = DATE(NOW()) AND HOUR(date_added) = '" . (int)$i . "') GROUP BY HOUR(date_added) ORDER BY date_added ASC");
+					$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE (DATE(date_added) = DATE(NOW()) AND HOUR(date_added) = '" . (int)$i . "') GROUP BY HOUR(date_added) ORDER BY date_added ASC";
+
+					$query = $this->db->query($sql);
 
 					if ($query->num_rows) {
 						$data['invoice']['data'][]  = array($i, (int)$query->row['total']);
@@ -280,7 +282,9 @@ class ControllerCommonHome extends Controller {
 				for ($i = 0; $i < 7; $i++) {
 					$date = date('Y-m-d', $date_start + ($i * 86400));
 
-					$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE invoice_status_id > '" . (int)$this->config->get('config_complete_status_id') . "' AND DATE(date_added) = '" . $this->db->escape($date) . "' GROUP BY DATE(date_added)");
+					$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE DATE(date_added) = '" . $this->db->escape($date) . "' GROUP BY DATE(date_added)";
+
+					$query = $this->db->query($sql);
 
 					if ($query->num_rows) {
 						$data['invoice']['data'][] = array($i, (int)$query->row['total']);
@@ -305,7 +309,7 @@ class ControllerCommonHome extends Controller {
 				for ($i = 1; $i <= date('t'); $i++) {
 					$date = date('Y') . '-' . date('m') . '-' . $i;
 
-					$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE invoice_status_id > '" . (int)$this->config->get('config_complete_status_id') . "' AND (DATE(date_added) = '" . $this->db->escape($date) . "') GROUP BY DAY(date_added)");
+					$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE (DATE(date_added) = '" . $this->db->escape($date) . "') GROUP BY DAY(date_added)");
 
 					if ($query->num_rows) {
 						$data['invoice']['data'][] = array($i, (int)$query->row['total']);
@@ -326,7 +330,7 @@ class ControllerCommonHome extends Controller {
 				break;
 			case 'year':
 				for ($i = 1; $i <= 12; $i++) {
-					$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE invoice_status_id > '" . (int)$this->config->get('config_complete_status_id') . "' AND YEAR(date_added) = '" . date('Y') . "' AND MONTH(date_added) = '" . $i . "' GROUP BY MONTH(date_added)");
+					$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE YEAR(date_added) = '" . date('Y') . "' AND MONTH(date_added) = '" . $i . "' GROUP BY MONTH(date_added)");
 
 					if ($query->num_rows) {
 						$data['invoice']['data'][] = array($i, (int)$query->row['total']);

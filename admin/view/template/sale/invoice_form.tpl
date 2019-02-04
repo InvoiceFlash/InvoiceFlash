@@ -1,7 +1,13 @@
 <?php echo $header; ?>
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
-	<?php $fa='file-alt'; include DIR_TEMPLATE . 'common/template-title-form.tpl'; ?>
+	<div class="panel-heading clearfix">
+	<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?> <?php echo ($invoice_id) ? 'Nº ' . $invoice_id : ''; ?></div>
+	<div class="pull-right">
+		<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
+		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+	</div>
+</div>
 	<div class="panel-body">
 		<form action="<?php echo $action; ?>" method="post" onsubmit="return validateForm();" class="form-inline" enctype="multipart/form-data" id="form">
 			<div class="card" id="tab-customer" style="width:100%;">
@@ -177,7 +183,7 @@
 									<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][text]" value="<?php echo $invoice_total['text']; ?>">
 									<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][value]" value="<?php echo $invoice_total['value']; ?>">
 									<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][sort_order]" value="<?php echo $invoice_total['sort_order']; ?>"></td>
-								<td class="text-right"><?php echo $invoice_total['value']; ?></td>
+								<td class="text-right"><?php echo $invoice_total['text']; ?></td>
 							</tr>
 							<?php $total_row++; ?>
 							<?php } ?>

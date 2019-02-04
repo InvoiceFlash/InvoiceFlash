@@ -29,13 +29,9 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
-
-			<div class="tab-content">
-				
+			<div class="tab-content">				
 				<div class="tab-pane" id="tab-general">
-
 					<div class="row">
-
 						<div class="col-2">
 							<div class="nav flex-column" id="vtabs-address" role="tablist" aria-orientation="vertical">
 								<a href="#tab-customer" class="nav-link active" role="tab" aria-selected="true" data-toggle="pill"><?php echo $tab_general; ?></a>
@@ -45,18 +41,20 @@
 								<?php $address_row=1; ?>
 								<?php foreach ($addresses as $address) { ?>
 									<a href="#tab-address-<?php echo $address_row; ?>" id="address-<?php echo $address_row; ?>" class="nav-link" role="tab" aria-selected="false" data-toggle="pill"><span class="btn btn-danger" onclick="$('#tab-general .nav-tabs a:first').trigger('click');$('#address-<?php echo $address_row; ?>').remove();$('#tab-address-<?php echo $address_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $tab_address . ' ' . $address_row; ?></a>
-
 									<?php $address_row++; ?>
 								<?php } ?>
 								<a class="nav-link action" id="address-add" role="tab" aria-selected="false" data-toggle="pill"><button type="button" class="btn btn-info btn-block" onclick="addAddress();"><i class="fa fa-plus-circle"></i>&nbsp;<?php echo $button_add_address; ?></button></a>
 							</div>
-
 						</div>
-
 						<div class="col-9">
-						
 							<div class="tab-content" id="customer-content">
 								<div class="tab-pane fade show active" role="tab-panel" id="tab-customer">
+									<div class="form-group">
+										<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_company; ?></label>
+										<div class="control-field col-sm-4">
+											<input type="text" name="company" value="<?php echo $company; ?>" class="form-control">
+										</div>
+									</div>
 									<div class="form-group">
 										<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
 										<div class="control-field col-sm-4">
@@ -76,12 +74,6 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="control-label col-sm-2"><?php echo $entry_company; ?></label>
-										<div class="control-field col-sm-4">
-											<input type="text" name="company" value="<?php echo $company; ?>" class="form-control">
-										</div>
-									</div>
-									<div class="form-group">
 										<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_email; ?></label>
 										<div class="control-field col-sm-4">
 											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
@@ -92,7 +84,7 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_telephone; ?></label>
+										<label class="control-label col-sm-2"><?php echo $entry_telephone; ?></label>
 										<div class="control-field col-sm-4">
 											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 											<?php if ($error_telephone) { ?>
@@ -104,24 +96,6 @@
 										<label class="control-label col-sm-2"><?php echo $entry_fax; ?></label>
 										<div class="control-field col-sm-4">
 											<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-sm-2"><?php echo $entry_password; ?></label>
-										<div class="control-field col-sm-4">
-											<input type="password" name="password" value="<?php echo $password; ?>" class="form-control">
-											<?php if ($error_password) { ?>
-												<div class="help-block error"><?php echo $error_password; ?></div>
-											<?php	} ?>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-sm-2"><?php echo $entry_confirm; ?></label>
-										<div class="control-field col-sm-4">
-											<input type="password" name="confirm" value="<?php echo $confirm; ?>" class="form-control">
-											<?php if ($error_confirm) { ?>
-												<div class="help-block error"><?php echo $error_confirm; ?></div>
-										<?php	} ?>
 										</div>
 									</div>
 									<div class="form-group">
@@ -417,317 +391,178 @@
 								<th><?php echo $column_product_id; ?></th>
 
 								<th class="hidden-xs"><?php echo $column_product_name; ?></th>
-								
 								<th class="text-right"><?php echo $column_order; ?></th>
-
 								<th class="text-left"><?php echo $column_order_date; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
-
 							</tr>
-
 						</thead>
-
 						<tbody>
-
 						<?php if ($products) { ?>
 							<?php foreach ($products as $product) { ?>
-
 							<tr>
-
 								<td class="left"><?php echo $product['product_id']; ?></td>
 								<td class="left"><?php echo $product['name']; ?></td>
 								<td class="left"><?php echo $product['order_id']; ?></td>
 								<td class="left"><?php echo $product['date']; ?></td>
 								<td class="right"><?php echo $product['quantity']; ?></td>
 								<td class="right"><?php echo $product['total']; ?></td>
-
 							</tr>
-
 							<?php } ?>
-
 						<?php } else { ?>
-
 							<tr>
-
 								<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
-
 							</tr>
-
 						<?php } ?>
-
 						</tbody>
-
 					</table>
-					
 					</div>
-					
 					<div class="tab-pane" id="tab-quotes">
 						<table class="table table-bordered table-striped table-hover">
-
 						<thead>
-
 							<tr>
-
 								<th><?php echo $column_quote; ?></th>
-
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								
+								<th class="hidden-xs"><?php echo $column_date_added; ?></th>	
 								<th class="text-right"><?php echo $column_total; ?></th>
-
 								<th class="text-right"><?php echo $column_action; ?></th>
-
 							</tr>
-
 						</thead>
-
 						<tbody>
-
 						<?php if ($quotes) { ?>
-
 						<?php foreach ($quotes as $quote) { ?>
-
 							<tr>
-
 								<td class="left"><?php echo $quote['quote_id']; ?></td>
 								<td class="left"><?php echo $quote['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $quote['total']; ?></td>
 								<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
 									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-									  <?php } ?></td>
+								  <?php } ?></td>
 							</tr>
-
 							<?php } ?>
-
 						<?php } else { ?>
-
 							<tr>
-
 								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
-
 							</tr>
-
 						<?php } ?>
-
 						</tbody>
-
 					</table>
-					
 					</div>
-					
 					<div class="tab-pane" id="tab-orders">
 						<table class="table table-bordered table-striped table-hover">
-
 						<thead>
-
 							<tr>
-
 								<th><?php echo $column_order; ?></th>
-
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								
+								<th class="hidden-xs"><?php echo $column_date_added; ?></th>							
 								<th class="text-right"><?php echo $column_total; ?></th>
-
 								<th class="text-right"><?php echo $column_action; ?></th>
-
 							</tr>
-
 						</thead>
-
 						<tbody>
-
 						<?php if ($orders) { ?>
-
 						<?php foreach ($orders as $order) { ?>
-
 							<tr>
-
 								<td class="left"><?php echo $order['order_id']; ?></td>
 								<td class="left"><?php echo $order['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $order['total']; ?></td>
 								<td class="text-right"><?php foreach ($order['action'] as $action) { ?>
 									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
 									  <?php } ?></td>
-
 							</tr>
-
 							<?php } ?>
-
 						<?php } else { ?>
-
 							<tr>
-
 								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
-
 							</tr>
-
 						<?php } ?>
-
 						</tbody>
-
 					</table>
-					
 					</div>
-					
 					<div class="tab-pane" id="tab-email">
 						<table class="table table-bordered table-striped table-hover">
-
 						<thead>
-
 							<tr>
-
 								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								
 								<th class="text-right"><?php echo $column_email_subject; ?></th>
-								
 								<th class="text-right"><?php echo $column_email_text; ?></th>
-
 							</tr>
-
 						</thead>
-
 						<tbody>
-
 						<?php if ($emails) { ?>
-
 						 <?php foreach ($emails as $email) { ?>
-
 							<tr>
-
 								<td class="left"><?php echo $email['date_added']; ?></td>
 								<td class="left"><?php echo $email['subject']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $email['text']; ?></td>
-								
-
 							</tr>
-
 							<?php } ?>
-
 						<?php } else { ?>
-
 							<tr>
-
 								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
-
 							</tr>
-
 						<?php } ?>
-
 						</tbody>
-
 					</table>
-					
 					</div>
-					
 					<div class="tab-pane" id="tab-delivery">
-					
 						<table class="table table-bordered table-striped table-hover">
-
 						<thead>
-
 							<tr>
-
 								<th><?php echo $column_delivery; ?></th>
-
 								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								
 								<th class="text-right"><?php echo $column_total; ?></th>
-
 								<th class="text-right"><?php echo $column_action; ?></th>
-
 							</tr>
-
 						</thead>
-
 						<tbody>
-
 						<?php if ($invoices) { ?>
-
 						<?php foreach ($invoices as $invoice) { ?>
-
 							<tr>
-
 								<td class="left"><?php echo $invoice['order_id']; ?></td>
 								<td class="left"><?php echo $invoice['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
 									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
 									  <?php } ?></td>
-								
-
 							</tr>
-
 							<?php } ?>
-
 						<?php } else { ?>
-
 							<tr>
-
 								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
-
 							</tr>
-
 						<?php } ?>
-
 						</tbody>
-
 					</table>
 					</div>
 					<div class="tab-pane" id="tab-invoices">
-					
 						<table class="table table-bordered table-striped table-hover">
-
 						<thead>
-
 							<tr>
-
 								<th><?php echo $column_invoice; ?></th>
-
 								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								
 								<th class="text-right"><?php echo $column_total; ?></th>
-
 								<th class="text-right"><?php echo $column_action; ?></th>
-
 							</tr>
-
 						</thead>
-
 						<tbody>
-
 						<?php if ($invoices) { ?>
-
 						<?php foreach ($invoices as $invoice) { ?>
-
 							<tr>
-
 								<td class="left"><?php echo $invoice['order_id']; ?></td>
 								<td class="left"><?php echo $invoice['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
 									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
 									  <?php } ?></td>
-								
-
 							</tr>
-
 							<?php } ?>
-
 						<?php } else { ?>
-
 							<tr>
-
 								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
-
 							</tr>
-
 						<?php } ?>
-
 						</tbody>
-
 					</table>
 					</div>
-
 					<div class="tab-pane" id="tab-contracts">
 						<table class="table table-bordered table-striped table-hover">
 			              <thead>
@@ -762,159 +597,84 @@
 			              </tfoot>
 			            </table>
 					</div>
-					
 					<div class="tab-pane" id="tab-transaction">
-
 						<div id="transaction" data-href="index.php?route=sale/customer/transaction&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>"></div>
-
 						<div class="form-group">
-
 							<label class="control-label col-sm-2"><?php echo $entry_description; ?></label>
 							<div class="control-field col-sm-4">
-
 								<input type="text" name="description" value="" class="form-control" class="form-control">
-
 							</div>
-
 						</div>
-
 						<div class="form-group">
-
 							<label class="control-label col-sm-2"><?php echo $entry_amount; ?></label>
 							<div class="control-field col-sm-4">
-
 								<input type="text" name="amount" value="" class="form-control" class="form-control">
-
 							</div>
-
 						</div>
-
 						<div class="form-group">
-
 							<div class="control-field col-sm-4 col-sm-offset-2">
-
 								<button type="button" id="button-transaction" data-target="customer" data-id="<?php echo $customer_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_transaction; ?></button>
-
 							</div>
-
 						</div>
-
 					</div>
-
 					<div class="tab-pane" id="tab-reward">
-
 						<div id="reward" data-href="index.php?route=sale/customer/reward&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>"></div>
-
 						<div class="form-group">
-
 							<label class="control-label col-sm-2"><?php echo $entry_description; ?></label>
 							<div class="control-field col-sm-4">
-
 								<input type="text" name="description" value="" class="form-control">
-
 							</div>
-
 						</div>
-
 						<div class="form-group">
-
 							<label class="control-label col-sm-2"><?php echo $entry_points; ?></label>
 							<div class="control-field col-sm-4">
-
 								<input type="text" name="points" value="" class="form-control">
-
 							</div>
-
 						</div>
-
 						<div class="form-group">
-
 							<div class="control-field col-sm-4 col-sm-offset-2">
-
 								<button type="button" id="button-reward" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_reward; ?></button>
-
 							</div>
-
 						</div>
-
 					</div>
-
 				<?php } ?>
-
 				<div class="tab-pane" id="tab-ip">
-
 					<table class="table table-bordered table-striped table-hover">
-
 						<thead>
-
 							<tr>
-
 								<th><?php echo $column_ip; ?></th>
-
 								<th class="text-right"><?php echo $column_total; ?></th>
-
 								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-
 								<th class="text-right"><?php echo $column_action; ?></th>
-
 							</tr>
-
 						</thead>
-
 						<tbody>
-
 						<?php if ($ips) { ?>
-
 						<?php foreach ($ips as $ip) { ?>
-
 							<tr>
-
 								<td><a href="http://www.geoiptool.com/en/?IP=<?php echo $ip['ip']; ?>" target="_blank"><?php echo $ip['ip']; ?></a></td>
-
 								<td class="text-right"><a href="<?php echo $ip['filter_ip']; ?>" target="_blank"><?php echo $ip['total']; ?></a></td>
-
 								<td class="hidden-xs"><?php echo $ip['date_added']; ?></td>
-
 								<td class="text-right"><?php if ($ip['ban_ip']) { ?>
-
 									<span class="bracket"><a id="<?php echo str_replace('.', '-', $ip['ip']); ?>" onclick="removeBanIP('<?php echo $ip['ip']; ?>');"><?php echo $text_remove_ban_ip; ?></a></span>
-
 									<?php } else { ?>
-
 									<span class="bracket"><a id="<?php echo str_replace('.', '-', $ip['ip']); ?>" onclick="addBanIP('<?php echo $ip['ip']; ?>');"><?php echo $text_add_ban_ip; ?></a></span>
-
 									<?php } ?>
-
 								</td>
-
 							</tr>
-
 							<?php } ?>
-
 						<?php } else { ?>
-
 							<tr>
-
 								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
-
 							</tr>
-
 						<?php } ?>
-
 						</tbody>
-
 					</table>
-
 				</div>
-
 			</div>
-
 		</form>
-
 	</div>
-
 </div>
-
 <!-- Modal -->
 <div id="EmailModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog">
@@ -922,7 +682,6 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Email</h4>
       </div>
       <div class="modal-body">
       <?php

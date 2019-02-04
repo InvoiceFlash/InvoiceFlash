@@ -303,20 +303,6 @@ class ModelSaleInvoice extends Model {
 	}
 
 	public function deleteInvoice($invoice_id) {
-		$invoice_query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "invoice` WHERE invoice_status_id > '0' AND invoice_id = '" . (int)$invoice_id . "'");
-
-		if ($invoice_query->num_rows) {
-			$product_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "invoice_product WHERE invoice_id = '" . (int)$invoice_id . "'");
-
-			foreach($product_query->rows as $product) {
-				$option_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "invoice_option WHERE invoice_id = '" . (int)$invoice_id . "' AND invoice_product_id = '" . (int)$product['invoice_product_id'] . "'");
-
-				foreach ($option_query->rows as $option) {
-					$this->db->query("UPDATE " . DB_PREFIX . "product_option_value SET quantity = (quantity + " . (int)$product['quantity'] . ") WHERE product_option_value_id = '" . (int)$option['product_option_value_id'] . "' AND subtract = '1'");
-				}
-			}
-		}
-
 		$this->db->query("DELETE FROM " . DB_PREFIX . "invoice WHERE invoice_id = '" . (int)$invoice_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "invoice_product WHERE invoice_id = '" . (int)$invoice_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "invoice_option WHERE invoice_id = '" . (int)$invoice_id . "'");

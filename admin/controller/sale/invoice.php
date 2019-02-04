@@ -1148,8 +1148,8 @@ class ControllerSaleInvoice extends Controller {
 				'model'            => $invoice_product['model'],
 				'option'           => $invoice_option,
 				'quantity'         => $invoice_product['quantity'],
-				'price'            => $invoice_product['price'],
-				'total'            => $invoice_product['total'],
+				'price'			   => $this->currency->format($invoice_product['price'], $invoice_info['currency_code'], $invoice_info['currency_value']),
+				'total'            => $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value']),
 				'tax'              => $invoice_product['tax']
 			);
 		}
