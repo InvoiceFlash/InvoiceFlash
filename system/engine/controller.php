@@ -115,7 +115,7 @@ abstract class Controller {
 			$this->output =  $pdf->Output(DIR_DOWNLOAD . $name . '_' . $id . '.pdf', 'F');
 		}else{		 
 		    //$this->output =  $pdf->Output('invoice.pdf', 'I');
-			$this->output =  $pdf->Output($name . '_' . $id . '.pdf', 'I');
+			$this->output =  $pdf->Output(DIR_DOWNLOAD . $name . '_' . $id . '.pdf', 'I');
 		}
 	}
 	
