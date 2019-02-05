@@ -2246,6 +2246,9 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
+		if ((utf8_strlen($this->request->post['company']) < 1) || (utf8_strlen($this->request->post['company']) > 32)) {
+			$this->error['company'] = $this->language->get('error_company');
+		}
 
 
 		if ((utf8_strlen($this->request->post['firstname']) < 1) || (utf8_strlen($this->request->post['firstname']) > 32)) {
@@ -2293,37 +2296,7 @@ class ControllerSaleCustomer extends Controller {
 			}
 
 		}
-
-
-
-		if ((utf8_strlen($this->request->post['telephone']) < 3) || (utf8_strlen($this->request->post['telephone']) > 32)) {
-
-			$this->error['telephone'] = $this->language->get('error_telephone');
-
-		}
-
-
-
-		if ($this->request->post['password'] || (!isset($this->request->get['customer_id']))) {
-
-			if ((utf8_strlen($this->request->post['password']) < 4) || (utf8_strlen($this->request->post['password']) > 20)) {
-
-				$this->error['password'] = $this->language->get('error_password');
-
-			}
-
-
-
-			if ($this->request->post['password'] != $this->request->post['confirm']) {
-
-				$this->error['confirm'] = $this->language->get('error_confirm');
-
-			}
-
-		}
-
-
-
+  
 		if (isset($this->request->post['address'])) {
 
 			foreach ($this->request->post['address'] as $key => $value) {

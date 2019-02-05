@@ -27,6 +27,7 @@ $_['tab_various']           = 'Various';
 
 // Column
 
+$_['column_company']           = 'Company';
 $_['column_name']           = 'Customer Name';
 $_['column_email']          = 'E-Mail';
 $_['column_quote']          = 'Quote Nº';
@@ -163,6 +164,7 @@ $_['error_postcode']        = 'Postcode must be between 2 and 10 characters for 
 $_['error_country']         = 'Please select a country!';
 
 $_['error_zone']            = 'Please select a region / state!';
+$_['error_company']         = 'Company must be between 1 and 32 characters!';
 
 // contacts
 $_['tab_contacts'] = 'Contacts';

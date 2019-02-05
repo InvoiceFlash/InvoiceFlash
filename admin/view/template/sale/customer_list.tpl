@@ -16,20 +16,20 @@
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
+						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_company; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_name; ?>"><?php echo $column_name; echo ($sort == 'name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_email; ?>"><?php echo $column_email; echo ($sort == 'c.email') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_customer_group; ?>"><?php echo $column_customer_group; echo ($sort == 'customer_group') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'c.status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_approved; ?>"><?php echo $column_approved; echo ($sort == 'c.approved') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<!-- <th width="40" class="visible-lg"><a href="<?php echo $sort_ip; ?>"><?php echo $column_ip; echo ($sort == 'c.ip') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th> -->
 						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'c.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="visible-lg"><?php echo $column_login; ?></th>
 						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
 					<tr id="filter" class="info">
 						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/customer&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer"></td>
 						<td><input type="text" name="filter_name" value="<?php echo $filter_name; ?>" class="form-control" data-target="name" data-url="sale/customer"></td>
 						<td><input type="text" name="filter_email" value="<?php echo $filter_email; ?>" class="form-control"></td>
 						<td class="hidden-xs"><select name="filter_customer_group_id" class="form-control">
@@ -74,7 +74,6 @@
 							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 							</div>
 						</div></td>
-						<td class="visible-lg"></td>
 						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
 					</tr>
 					<?php if ($customers) { ?>
@@ -85,6 +84,7 @@
 							<?php } else { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $customer['customer_id']; ?>">
 							<?php } ?></td>
+						<td><?php echo $customer['company']; ?></td>
 						<td><?php echo $customer['name']; ?></td>
 						<td><?php echo $customer['email']; ?></td>
 						<td class="hidden-xs"><?php echo $customer['customer_group']; ?></td>
@@ -92,14 +92,7 @@
 						<td class="hidden-xs"><?php echo $customer['approved']; ?></td>
 						<!-- <td class="visible-lg"><?php echo $customer['ip']; ?></td> -->
 						<td class="hidden-xs"><?php echo $customer['date_added']; ?></td>
-						<td class="rowlink-skip text-center visible-lg"><select class="form-control" onchange="((this.value!=='') ? window.open('index.php?route=sale/customer/login&token=<?php echo $token; ?>&customer_id=<?php echo $customer['customer_id']; ?>&store_id='+this.value) : null); this.value = '';">
-							<option value=""><?php echo $text_select; ?></option>
-							<option value="0"><?php echo $text_default; ?></option>
-							<?php foreach ($stores as $store) { ?>
-							<option value="<?php echo $store['store_id']; ?>"><?php echo $store['name']; ?></option>
-							<?php } ?>
-						</select></td>
-						<td class="text-right"><?php foreach ($customer['action'] as $action) { ?>
+					 	<td class="text-right"><?php foreach ($customer['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
 						<?php } ?></td>
 					</tr>

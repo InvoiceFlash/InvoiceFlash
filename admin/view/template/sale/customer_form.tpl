@@ -2,13 +2,11 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="clearfix">
-			<div class="pull-left h2"><i class="hidden-xs fa fa-user"></i><span> <?php echo $heading_title; ?></span></div>
-			<div class="pull-right">
-				<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
-				<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
-				<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
-			</div>
+		<div class="pull-left h2"><i class="hidden-xs fa fa-user"></i><span> <?php echo $heading_title; ?></span></div>
+		<div class="pull-right">
+			<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
+			<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -56,7 +54,7 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
+										<label class="control-label col-sm-2"><?php echo $entry_firstname; ?></label>
 										<div class="control-field col-sm-4">
 											<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
 											<?php if ($error_firstname) { ?>
@@ -65,7 +63,7 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
+										<label class="control-label col-sm-2"><?php echo $entry_lastname; ?></label>
 										<div class="control-field col-sm-4">
 											<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
 											<?php if ($error_lastname) { ?>

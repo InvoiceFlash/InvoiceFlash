@@ -1067,6 +1067,7 @@ CREATE TABLE `if_customer` (
   `approved` tinyint(1) NOT NULL,
   `token` varchar(255) NOT NULL,
   `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `date_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`customer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -7918,7 +7919,6 @@ CREATE TABLE `if_fl_customers` (
   `cod_payment` int(11) DEFAULT NULL,
   `bank_cc` varchar(25) DEFAULT NULL,
   `contable_account` decimal(10,0) DEFAULT NULL,
-  `date_modified` datetime DEFAULT NULL,
   `bic` char(8) DEFAULT NULL,
   `efaccafi` char(15) DEFAULT NULL,
   `efaccapa` char(15) DEFAULT NULL,
@@ -7970,6 +7970,7 @@ CREATE TABLE `if_receipt` (
 
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --
+-- ALTER TABLE `if_customer` ADD column `date_modified` datetime; --
 -- ALTER TABLE `if_customer` ADD column `company` varchar(92) NOT NULL; --
 -- ALTER TABLE `if_customer` ADD column `notes` text ;--
 
