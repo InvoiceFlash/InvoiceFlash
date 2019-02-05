@@ -3,8 +3,23 @@
 class ModelSaleCustomer extends Model {
 
 	public function addCustomer($data) {
+		$date = strtotime($data['date_support']);
+		$date_support = ($date ? date('Y-m-d', $date) : null);
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "customer SET firstname = '" . $this->db->escape($data['firstname']) . "', lastname = '" . $this->db->escape($data['lastname']) . "', company = '" . $this->db->escape($data['company']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "', status = '" . (int)$data['status'] . "', date_added = NOW(), date_modified = NOW(), date_support = ''");
+		$sql = "INSERT INTO " . DB_PREFIX . "customer SET 
+			firstname = '" . $this->db->escape($data['firstname']) . "', 
+			lastname = '" . $this->db->escape($data['lastname']) . "', 
+			company = '" . $this->db->escape($data['company']) . "', 
+			email = '" . $this->db->escape($data['email']) . "', 
+			telephone = '" . $this->db->escape($data['telephone']) . "', 
+			fax = '" . $this->db->escape($data['fax']) . "', 
+			customer_group_id = '" . (int)$data['customer_group_id'] . "', 
+			`status` = '" . (int)$data['status'] . "', 
+			date_added = NOW(), 
+			date_modified = NOW(), 
+			date_support = '" . $date_support . "'";
+		
+		$this->db->query($sql);
 
 		$customer_id = $this->db->getLastId();
 
@@ -35,12 +50,14 @@ class ModelSaleCustomer extends Model {
 
 
 	public function editCustomer($customer_id, $data) {
+		$date = strtotime($data['date_support']);
+		$date_support = ($date ? date('Y-m-d', $date) : null);
 
 		$this->db->query("UPDATE " . DB_PREFIX . "customer SET 
 			firstname = '" . $this->db->escape($data['firstname']) . "', 
 			company = '" . $this->db->escape($data['company']) . "', 
 			notes = '', 
-			lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '' WHERE customer_id = '" . (int)$customer_id . "'");
+			lastname = '" . $this->db->escape($data['lastname']) . "', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($data['bank_cc']) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "' WHERE customer_id = " . (int)$customer_id);
 

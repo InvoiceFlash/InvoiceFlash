@@ -515,7 +515,7 @@ class ModelSaleInvoice extends Model {
 		return $query->row;
 	}
 
-	public function getInoviceOptions($invoice_id, $invoice_product_id) {
+	public function getInvoiceOptions($invoice_id, $invoice_product_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "invoice_option WHERE invoice_id = '" . (int)$invoice_id . "' AND invoice_product_id = '" . (int)$invoice_product_id . "'");
 
 		return $query->rows;

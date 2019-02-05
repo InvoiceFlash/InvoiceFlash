@@ -177,7 +177,7 @@
 									<div class="form-group">
 										<label class="control-label col-sm-2"><?php echo $text_date_support; ?></label>	
 										<div class="input-group col-sm-4">
-											<input type="text" name="date_added" value="<?php echo $date_support; ?>" class="form-control datetime"/>
+											<input type="text" name="date_support" value="<?php echo $date_support; ?>" class="form-control date">
 											<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 										</div>
 									</div>
