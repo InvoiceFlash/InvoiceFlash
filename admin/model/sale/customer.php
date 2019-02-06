@@ -172,9 +172,9 @@ class ModelSaleCustomer extends Model {
 		}
 
 
-		if (!empty($data['filter_name'])) {
+		if (!empty($data['filter_telephone'])) {
 
-			$implode[] = "CONCAT(c.firstname, ' ', c.lastname) LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
+			$implode[] = "telephone LIKE '%" . $this->db->escape($data['filter_telephone']) . "%'";
 
 		}
 
@@ -225,7 +225,7 @@ class ModelSaleCustomer extends Model {
 		$sort_data = array(
 
 			'company',
-			'name',
+			'telephone',
 
 			'c.email',
 
@@ -539,13 +539,11 @@ class ModelSaleCustomer extends Model {
 
 		}
 
-		if (!empty($data['filter_name'])) {
+		if (!empty($data['filter_telephone'])) {
 
-			$implode[] = "CONCAT(firstname, ' ', lastname) LIKE '%" . $this->db->escape($data['filter_name']) . "%'";
+			$implode[] = "telephone LIKE '%" . $this->db->escape($data['filter_telephone']) . "%'";
 
 		}
-
-
 
 		if (!empty($data['filter_email'])) {
 
@@ -1063,6 +1061,19 @@ class ModelSaleCustomer extends Model {
 
 		return $query->row['total'];
 	}
+	
+	public function getDeliveryCustomerTotal($customer_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "delivery` WHERE customer_id = '" . (int)$customer_id . "'");
+		
+		return $query->row['total'];
+	}	
+	
+	public function getDeliveryCustomer($customer_id) {
+		$query = $this->db->query("SELECT * FROM  `" . DB_PREFIX . "delivery` WHERE customer_id = '" . (int)$customer_id . "' order by date_added desc");
+		
+		return $query->rows;
+	}
+	
 	
 	public function getInvoicesCustomerTotal($customer_id) {
 		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "invoice` WHERE customer_id = '" . (int)$customer_id . "'");

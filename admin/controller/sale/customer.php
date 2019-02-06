@@ -2927,7 +2927,8 @@ class ControllerSaleCustomer extends Controller {
 		$data['text'] = $this->request->post['message'];
 		$data['code'] = md5($this->request->post['message']);
 
-		if (isset($this->request->post['filename'])){
+		$lcFile = '';
+		if (isset($this->request->post['filename']) && $this->request->post['filename']!=''){
 			$lcFile = DIR_DOWNLOAD . $this->request->post['filename'];
 
 			$newName = substr($lcFile, 0, strripos($lcFile, '.'));
@@ -2935,8 +2936,6 @@ class ControllerSaleCustomer extends Controller {
 			if (rename($lcFile, $newName)) {
 				$lcFile = $newName;
 			}
-		} else {
-			$lcFile = '';
 		}
 
 		$this->sendnewmail($data['to'], $data['subject'], $data['text'], $lcFile);
