@@ -33,8 +33,8 @@ class ControllerSaleCustomer extends Controller {
 				$url .= '&filter_company=' . $this->request->get['filter_company'];
 			}
 
-			if (isset($this->request->get['filter_name'])) {
-				$url .= '&filter_name=' . $this->request->get['filter_name'];
+			if (isset($this->request->get['filter_telephone'])) {
+				$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
 			}
 
 			if (isset($this->request->get['filter_email'])) {
@@ -94,8 +94,8 @@ class ControllerSaleCustomer extends Controller {
 				$url .= '&filter_company=' . $this->request->get['filter_company'];
 			}
 
-			if (isset($this->request->get['filter_name'])) {
-				$url .= '&filter_name=' . $this->request->get['filter_name'];
+			if (isset($this->request->get['filter_telephone'])) {
+				$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
 			}
 
 			if (isset($this->request->get['filter_email'])) {
@@ -157,8 +157,8 @@ class ControllerSaleCustomer extends Controller {
 				$url .= '&filter_company=' . $this->request->get['filter_company'];
 			}
 
-			if (isset($this->request->get['filter_name'])) {
-				$url .= '&filter_name=' . $this->request->get['filter_name'];
+			if (isset($this->request->get['filter_telephone'])) {
+				$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
 			}
 
 			if (isset($this->request->get['filter_email'])) {
@@ -224,8 +224,8 @@ class ControllerSaleCustomer extends Controller {
 				$url .= '&filter_company=' . $this->request->get['filter_company'];
 			}
 
-			if (isset($this->request->get['filter_name'])) {
-				$url .= '&filter_name=' . $this->request->get['filter_name'];
+			if (isset($this->request->get['filter_telephone'])) {
+				$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
 			}
 
 			if (isset($this->request->get['filter_email'])) {
@@ -269,10 +269,10 @@ class ControllerSaleCustomer extends Controller {
 			$filter_company = null;
 		}
 		
-		if (isset($this->request->get['filter_name'])) {
-			$filter_name = $this->request->get['filter_name'];
+		if (isset($this->request->get['filter_telephone'])) {
+			$filter_telephone = $this->request->get['filter_telephone'];
 		} else {
-			$filter_name = null;
+			$filter_telephone = null;
 		}
 		
 		if (isset($this->request->get['filter_email'])) {
@@ -329,8 +329,8 @@ class ControllerSaleCustomer extends Controller {
 			$url .= '&filter_company=' . $this->request->get['filter_company'];
 		}
 
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . $this->request->get['filter_name'];
+		if (isset($this->request->get['filter_telephone'])) {
+			$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
 		}
 
 		if (isset($this->request->get['filter_email'])) {
@@ -387,7 +387,7 @@ class ControllerSaleCustomer extends Controller {
 
 		$data = array(		
 			'filter_company'		   => $filter_company, 
-			'filter_name'              => $filter_name, 
+			'filter_telephone'         => $filter_telephone, 
 			'filter_email'             => $filter_email, 
 			'filter_customer_group_id' => $filter_customer_group_id, 
 			'filter_status'            => $filter_status, 
@@ -414,7 +414,7 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['customers'][] = array(
 				'customer_id'    => $result['customer_id'],
 				'company'		 => $result['company'], 
-				'name'           => $result['name'],
+				'telephone'      => $result['telephone'],
 				'email'          => $result['email'],
 				'customer_group' => $result['customer_group'],
 				'status'         => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
@@ -438,7 +438,7 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['column_customer_id'] = $this->language->get('column_customer_id');	
 		$this->data['column_company'] = $this->language->get('column_company');
-		$this->data['column_name'] = $this->language->get('column_name');
+		$this->data['column_telephone'] = $this->language->get('column_telephone');
 		$this->data['column_email'] = $this->language->get('column_email');
 		$this->data['column_customer_group'] = $this->language->get('column_customer_group');
 		$this->data['column_status'] = $this->language->get('column_status');
@@ -473,8 +473,8 @@ class ControllerSaleCustomer extends Controller {
 			$url .= '&filter_company=' . $this->request->get['filter_company'];
 		}
 
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . $this->request->get['filter_name'];
+		if (isset($this->request->get['filter_telephone'])) {
+			$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
 		}
 
 		if (isset($this->request->get['filter_email'])) {
@@ -508,7 +508,7 @@ class ControllerSaleCustomer extends Controller {
 		}
 		
 		$this->data['sort_company'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=company' . $url, 'SSL');
-		$this->data['sort_name'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=name' . $url, 'SSL');
+		$this->data['sort_telephone'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=telephone' . $url, 'SSL');
 		$this->data['sort_email'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=c.email' . $url, 'SSL');
 		$this->data['sort_customer_group'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=customer_group' . $url, 'SSL');
 		$this->data['sort_status'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=c.status' . $url, 'SSL');
@@ -521,8 +521,8 @@ class ControllerSaleCustomer extends Controller {
 			$url .= '&filter_company=' . $this->request->get['filter_company'];
 		}
 
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . $this->request->get['filter_name'];
+		if (isset($this->request->get['filter_telephone'])) {
+			$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
 		}
 
 		if (isset($this->request->get['filter_email'])) {
@@ -563,7 +563,7 @@ class ControllerSaleCustomer extends Controller {
         $this->data['pagination'] = $pagination->render();
         
         $this->data['filter_company'] = $filter_company;
-        $this->data['filter_name'] = $filter_name;
+        $this->data['filter_telephone'] = $filter_telephone;
         $this->data['filter_email'] = $filter_email;
         $this->data['filter_customer_group_id'] = $filter_customer_group_id;
         $this->data['filter_status'] = $filter_status;
@@ -992,9 +992,9 @@ class ControllerSaleCustomer extends Controller {
 
 
 
-		if (isset($this->request->get['filter_name'])) {
+		if (isset($this->request->get['filter_telephone'])) {
 
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
+			$url .= '&filter_telephone=' . urlencode(html_entity_decode($this->request->get['filter_telephone'], ENT_QUOTES, 'UTF-8'));
 
 		}
 
@@ -1196,6 +1196,30 @@ class ControllerSaleCustomer extends Controller {
 				'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
 				);
 			}
+
+			// Deliveries
+			$deliver_total = $this->model_sale_customer->getDeliveryCustomerTotal($this->request->get['customer_id']);
+			
+			$results = $this->model_sale_customer->getDeliveryCustomer($this->request->get['customer_id']);
+				
+			$this->data['deliveries'] = array();
+			
+			foreach ($results as $result) {
+					
+				$action = array();
+					
+				$action[] = array(
+					'text' => $this->language->get('text_edit'),
+					'href' => HTTPS_SERVER . 'index.php?route=sale/delivery/update&token=' . $this->session->data['token'] . '&delivery_id=' . $result['delivery_id'] . $url
+				);
+				
+				$this->data['deliveries'][] = array(
+					'delivery_id' => $result['delivery_id'] ,
+					'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'action'   => $action ,
+					'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
+				);
+			}
 			
 			// Invoices
 			$invoice_total = $this->model_sale_customer->getInvoicesCustomerTotal($this->request->get['customer_id']);
@@ -1214,10 +1238,10 @@ class ControllerSaleCustomer extends Controller {
 				);
 				
 				$this->data['invoices'][] = array(
-				'order_id' => $result['invoice_id'] ,
-				'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'action'   => $action ,
-				'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
+					'invoice_id' => $result['invoice_id'] ,
+					'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'action'   => $action ,
+					'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
 				);
 			}
 
@@ -1310,41 +1334,28 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['telephone'] = '';
 		}
 
-		if (isset($this->request->post['firstname'])) {
-			$this->data['firstname'] = $this->request->post['firstname'];
+		// if (isset($this->request->post['firstname'])) {
+		// 	$this->data['firstname'] = $this->request->post['firstname'];
+		// } elseif (!empty($customer_info)) { 
+		// 	$this->data['firstname'] = $customer_info['firstname'];
+		// } else {
+		// 	$this->data['firstname'] = '';
+		// }
 
-		} elseif (!empty($customer_info)) { 
-
-			$this->data['firstname'] = $customer_info['firstname'];
-			
-			$this->data['heading_title'] = $this->data['firstname'] . ' ' . $customer_info['lastname'] ;
-			
-		} else {
-
-			$this->data['firstname'] = '';
-
-		}
-
-
-
-		if (isset($this->request->post['lastname'])) {
-
-			$this->data['lastname'] = $this->request->post['lastname'];
-
-		} elseif (!empty($customer_info)) {
-
-			$this->data['lastname'] = $customer_info['lastname'];
-
-		} else {
-
-			$this->data['lastname'] = '';
-
-		}
+		// if (isset($this->request->post['lastname'])) {
+		// 	$this->data['lastname'] = $this->request->post['lastname'];
+		// } elseif (!empty($customer_info)) {
+		// 	$this->data['lastname'] = $customer_info['lastname'];
+		// } else {
+		// 	$this->data['lastname'] = '';
+		// }
 
 		if (isset($this->request->post['company'])) {
 			$this->data['company'] = $this->request->post['company'];
 		} elseif (!empty($customer_info)) {
 			$this->data['company'] = $customer_info['company'];
+
+			$this->data['heading_title'] = $customer_info['company'];
 		} else {
 			$this->data['company'] = '';
 		}

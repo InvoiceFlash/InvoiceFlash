@@ -31,8 +31,8 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -88,8 +88,8 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -146,8 +146,8 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -199,10 +199,10 @@ class ControllerSaleInvoice extends Controller {
 			$filter_invoice_id = null;
 		}
 
-		if (isset($this->request->get['filter_customer'])) {
-			$filter_customer = $this->request->get['filter_customer'];
+		if (isset($this->request->get['filter_company'])) {
+			$filter_company = $this->request->get['filter_company'];
 		} else {
-			$filter_customer = null;
+			$filter_company = null;
 		}
 
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -253,8 +253,8 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 		}
 		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+		if (isset($this->request->get['filter_company'])) {
+			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -325,7 +325,7 @@ class ControllerSaleInvoice extends Controller {
 
 		$data = array(
 			'filter_invoice_id'        => $filter_invoice_id,
-			'filter_customer'	     => $filter_customer,
+			'filter_company'	     => $filter_company,
 			'filter_invoice_status_id' => $filter_invoice_status_id,
 			'filter_total'           => $filter_total,
 			'filter_date_added'      => $filter_date_added,
@@ -355,10 +355,9 @@ class ControllerSaleInvoice extends Controller {
 			
 			$this->data['invoices'][] = array(
 				'invoice_id'      => $result['invoice_id'],
-				'customer'      => $result['customer'],
 				'company'       => $result['company'],
 				'status'        => $result['status'],
-				'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+				'total'         => $this->currency->format($result['total']),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['invoice_id'], $this->request->post['selected']),
@@ -406,8 +405,8 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 		}
 		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+		if (isset($this->request->get['filter_company'])) {
+			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -437,7 +436,7 @@ class ControllerSaleInvoice extends Controller {
 		}
 
 		$this->data['sort_invoice'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=o.invoice_id' . $url, 'SSL');
-		$this->data['sort_customer'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=customer' . $url, 'SSL');
+		$this->data['sort_company'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=company' . $url, 'SSL');
 		$this->data['sort_status'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
 		$this->data['sort_total'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=o.total' . $url, 'SSL');
 		$this->data['sort_date_added'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=o.date_added' . $url, 'SSL');
@@ -449,8 +448,8 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 		}
 		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+		if (isset($this->request->get['filter_company'])) {
+			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -487,7 +486,7 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['pagination'] = $pagination->render();
 
 		$this->data['filter_invoice_id'] = $filter_invoice_id;
-		$this->data['filter_customer'] = $filter_customer;
+		$this->data['filter_company'] = $filter_company;
 		$this->data['filter_invoice_status_id'] = $filter_invoice_status_id;
 		$this->data['filter_total'] = $filter_total;
 		$this->data['filter_date_added'] = $filter_date_added;
@@ -594,8 +593,8 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['error_warning'] = '';
 		}
 		
- 		if (isset($this->error['customer'])) {
-			$this->data['error_customer'] = $this->error['customer'];
+ 		if (isset($this->error['company'])) {
+			$this->data['error_customer'] = $this->error['company'];
 		} else {
 			$this->data['error_customer'] = '';
 		}
@@ -736,8 +735,8 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 		}
 		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+		if (isset($this->request->get['filter_company'])) {
+			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -820,12 +819,12 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['store_url'] = HTTP_CATALOG;
 		}
 		
-		if (isset($this->request->post['customer'])) {
-			$this->data['customer'] = $this->request->post['customer'];
+		if (isset($this->request->post['company'])) {
+			$this->data['company'] = $this->request->post['company'];
 		} elseif (!empty($invoice_info)) {
-			$this->data['customer'] = $invoice_info['customer'];
+			$this->data['company'] = $invoice_info['company'];
 		} else {
-			$this->data['customer'] = '';
+			$this->data['company'] = '';
 		}
 						
 		if (isset($this->request->post['customer_id'])) {
@@ -1136,7 +1135,7 @@ class ControllerSaleInvoice extends Controller {
 			if (isset($invoice_product['invoice_option'])) {
 				$invoice_option = $invoice_product['invoice_option'];
 			} elseif (isset($this->request->get['invoice_id'])) {
-				$invoice_option = $this->model_sale_invoice->getInoviceOptions($this->request->get['invoice_id'], $invoice_product['invoice_product_id']);
+				$invoice_option = $this->model_sale_invoice->getInvoiceOptions($this->request->get['invoice_id'], $invoice_product['invoice_product_id']);
 			} else {
 				$invoice_option = array();
 			}
@@ -1351,8 +1350,8 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_invoice_id=' . $this->request->get['filter_invoice_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -1511,14 +1510,13 @@ class ControllerSaleInvoice extends Controller {
 			foreach ($products as $product) {
 				$option_data = array();
 
-				$options = $this->model_sale_invoice->getInoviceOptions($this->request->get['invoice_id'], $product['invoice_product_id']);
+				$options = $this->model_sale_invoice->getInvoiceOptions($this->request->get['invoice_id'], $product['invoice_product_id']);
 
 				foreach ($options as $option) {
 					$option_data[] = array(
 						'name'  => $option['name'],
 						'value' => utf8_substr($option['value'], 0, utf8_strrpos($option['value'], '.')),
-						'type'  => $option['type'],
-						'href'  => $this->url->link('sale/invoice/download', 'token=' . $this->session->data['token'] . '&invoice_id=' . $this->request->get['invoice_id'] . '&invoice_option_id=' . $option['invoice_option_id'], 'SSL')
+						'type'  => $option['type']
 					);
 				}
 
@@ -1529,8 +1527,8 @@ class ControllerSaleInvoice extends Controller {
 					'model'    		   => $product['model'],
 					'option'   		   => $option_data,
 					'quantity'		   => $product['quantity'],
-					'price'    		   => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $invoice_info['currency_code'], $invoice_info['currency_value']),
-					'total'    		   => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $invoice_info['currency_code'], $invoice_info['currency_value']),
+					'price'    		   => $this->currency->format($product['price']),
+					'total'    		   => $this->currency->format($product['total']),
 					'href'     		   => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
 				);
 			}
@@ -1541,101 +1539,6 @@ class ControllerSaleInvoice extends Controller {
 
 			$this->data['invoice_status_id'] = $invoice_info['invoice_status_id'];
 
-			// Fraud
-			$this->load->model('sale/fraud');
-			
-			$fraud_info = $this->model_sale_fraud->getFraud($invoice_info['invoice_id']);
-			
-			if ($fraud_info) {
-				$this->data['country_match'] = $fraud_info['country_match'];
-				
-				if ($fraud_info['country_code']) {
-					$this->data['country_code'] = $fraud_info['country_code'];
-				} else {
-					$this->data['country_code'] = '';
-				}
-				
-				$this->data['high_risk_country'] = $fraud_info['high_risk_country'];
-				$this->data['distance'] = $fraud_info['distance'];
-												
-				$this->data['anonymous_proxy'] = $fraud_info['anonymous_proxy'];
-				$this->data['proxy_score'] = $fraud_info['proxy_score'];
-				
-				if ($fraud_info['is_trans_proxy']) {
-					$this->data['is_trans_proxy'] = $fraud_info['is_trans_proxy'];
-				} else {
-					$this->data['is_trans_proxy'] = '';
-				}	
-							
-				$this->data['free_mail'] = $fraud_info['free_mail'];
-				$this->data['carder_email'] = $fraud_info['carder_email'];
-				
-				if ($fraud_info['high_risk_username']) {
-					$this->data['high_risk_username'] = $fraud_info['high_risk_username'];
-				} else {
-					$this->data['high_risk_username'] = '';
-				}
-							
-				if ($fraud_info['high_risk_password']) {
-					$this->data['high_risk_password'] = $fraud_info['high_risk_password'];
-				} else {
-					$this->data['high_risk_password'] = '';
-				}		
-				
-				$this->data['bin_match'] = $fraud_info['bin_match'];
-
-				if ($fraud_info['bin_country']) {
-					$this->data['bin_country'] = $fraud_info['bin_country'];
-				} else {
-					$this->data['bin_country'] = '';
-				}	
-								
-				$this->data['bin_name_match'] = $fraud_info['bin_name_match'];
-				
-				if ($fraud_info['bin_name']) {
-					$this->data['bin_name'] = $fraud_info['bin_name'];
-				} else {
-					$this->data['bin_name'] = '';
-				}	
-								
-				$this->data['bin_phone_match'] = $fraud_info['bin_phone_match'];
-
-				if ($fraud_info['bin_phone']) {
-					$this->data['bin_phone'] = $fraud_info['bin_phone'];
-				} else {
-					$this->data['bin_phone'] = '';
-				}	
-				
-				if ($fraud_info['customer_phone_in_billing_location']) {
-					$this->data['customer_phone_in_billing_location'] = $fraud_info['customer_phone_in_billing_location'];
-				} else {
-					$this->data['customer_phone_in_billing_location'] = '';
-				}	
-												
-				$this->data['ship_forward'] = $fraud_info['ship_forward'];
-
-				if ($fraud_info['city_postal_match']) {
-					$this->data['city_postal_match'] = $fraud_info['city_postal_match'];
-				} else {
-					$this->data['city_postal_match'] = '';
-				}	
-				
-				if ($fraud_info['ship_city_postal_match']) {
-					$this->data['ship_city_postal_match'] = $fraud_info['ship_city_postal_match'];
-				} else {
-					$this->data['ship_city_postal_match'] = '';
-				}	
-								
-				$this->data['score'] = $fraud_info['score'];
-				$this->data['explanation'] = $fraud_info['explanation'];
-				$this->data['risk_score'] = $fraud_info['risk_score'];
-				$this->data['queries_remaining'] = $fraud_info['queries_remaining'];
-				$this->data['maxmind_id'] = $fraud_info['maxmind_id'];
-				$this->data['error'] = $fraud_info['error'];
-			} else {
-				$this->data['maxmind_id'] = '';
-			}
-			
 			$this->template = 'sale/invoice_info.tpl';
 			
 			$this->children = array(
@@ -1747,6 +1650,7 @@ class ControllerSaleInvoice extends Controller {
 			$lcFormat = '';
 		}
 
+		$this->data['lang'] = $this->config->get('config_language');
 		$this->load->language('sale/invoice');
 
 		$this->data['title'] = $this->language->get('heading_title');
@@ -1937,8 +1841,8 @@ class ControllerSaleInvoice extends Controller {
 						'option'   => $option_data,
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
-						'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $invoice_info['currency_code'], $invoice_info['currency_value']),
-						'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $invoice_info['currency_code'], $invoice_info['currency_value'])
+						'price'    => $this->currency->format($product['price']),
+						'total'    => $this->currency->format($product['total'])
 					);
 				}
 				
@@ -2150,9 +2054,9 @@ class ControllerSaleInvoice extends Controller {
 					'model'      	=> $product['model'], 
 					'quantity'   	=> $product['quantity'],
 					'option'   		=> $option,
-					'price'      	=> $product['price'],	
+					'price'      	=> $this->currency->format($product['price']),	
 					'tax_class_id'	=> $product['tax_class_id'], 
-					'total'      	=> $product['total']
+					'total'      	=> $this->currency->format($product['total'])
 				);
 			}
 

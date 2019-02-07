@@ -4,9 +4,9 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
+			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a> 
 			<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
-			<button class="btn btn-success" data-toggle="modal" data-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Print</span></button>
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<a class="btn btn-success" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_quote; ?></span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -34,12 +34,12 @@
 						<?php if ($customer) { ?>
 						<tr>
 							<td><?php echo $text_customer; ?></td>
-							<td><a href="<?php echo $customer; ?>"><?php echo $firstname; ?> <?php echo $lastname; ?></a></td>
+							<td><a href="<?php echo $customer; ?>"><?php echo $company; ?></a></td>
 						</tr>
 						<?php } else { ?>
 						<tr>
 							<td><?php echo $text_customer; ?></td>
-							<td><?php echo $firstname; ?> <?php echo $lastname; ?></td>
+							<td><?php echo $company; ?></td>
 						</tr>
 						<?php } ?>
 						<?php if ($customer_group) { ?>

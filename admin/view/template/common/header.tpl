@@ -142,6 +142,5 @@
 	</nav>
 </div>
 <?php } ?>
-<div class="clearfix"></div>
-<div id="content" class="container-fluid">
+<div id="content" class="container-fluid clearfix">
 	<div id="notification"></div>

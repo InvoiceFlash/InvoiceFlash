@@ -32,8 +32,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -89,8 +89,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -147,8 +147,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -200,10 +200,10 @@ class ControllerSaleQuote extends Controller {
           $filter_quote_id = null;
       }
 
-      if (isset($this->request->get['filter_customer'])) {
-          $filter_customer = $this->request->get['filter_customer'];
+      if (isset($this->request->get['filter_company'])) {
+          $filter_company = $this->request->get['filter_company'];
       } else {
-          $filter_customer = null;
+          $filter_company = null;
       }
 
       if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -254,8 +254,8 @@ class ControllerSaleQuote extends Controller {
           $url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
       }
       
-      if (isset($this->request->get['filter_customer'])) {
-          $url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+      if (isset($this->request->get['filter_company'])) {
+          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
       }
                                           
       if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -309,7 +309,7 @@ class ControllerSaleQuote extends Controller {
 
       $data = array(
           'filter_quote_id'        => $filter_quote_id,
-          'filter_customer'	     => $filter_customer,
+          'filter_company'	     => $filter_company,
           'filter_invoice_status_id' => $filter_invoice_status_id,
           'filter_total'           => $filter_total,
           'filter_date_added'      => $filter_date_added,
@@ -339,7 +339,7 @@ class ControllerSaleQuote extends Controller {
           
           $this->data['quotes'][] = array(
               'quote_id'      => $result['quote_id'],
-              'customer'      => $result['customer'],
+              'company'      => $result['company'],
               'status'        => $result['status'],
               'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
@@ -389,8 +389,8 @@ class ControllerSaleQuote extends Controller {
           $url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
       }
       
-      if (isset($this->request->get['filter_customer'])) {
-          $url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+      if (isset($this->request->get['filter_company'])) {
+          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
       }
                                           
       if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -420,7 +420,7 @@ class ControllerSaleQuote extends Controller {
       }
 
       $this->data['sort_quote'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.quote_id' . $url, 'SSL');
-      $this->data['sort_customer'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=customer' . $url, 'SSL');
+      $this->data['sort_company'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=company' . $url, 'SSL');
       $this->data['sort_status'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
       $this->data['sort_total'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.total' . $url, 'SSL');
       $this->data['sort_date_added'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . '&sort=o.date_added' . $url, 'SSL');
@@ -432,8 +432,8 @@ class ControllerSaleQuote extends Controller {
           $url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
       }
       
-      if (isset($this->request->get['filter_customer'])) {
-          $url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+      if (isset($this->request->get['filter_company'])) {
+          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
       }
                                           
       if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -470,7 +470,7 @@ class ControllerSaleQuote extends Controller {
       $this->data['pagination'] = $pagination->render();
 
       $this->data['filter_quote_id'] = $filter_quote_id;
-      $this->data['filter_customer'] = $filter_customer;
+      $this->data['filter_company'] = $filter_company;
       $this->data['filter_invoice_status_id'] = $filter_invoice_status_id;
       $this->data['filter_total'] = $filter_total;
       $this->data['filter_date_added'] = $filter_date_added;
@@ -577,8 +577,8 @@ class ControllerSaleQuote extends Controller {
 			$this->data['error_warning'] = '';
 		}
 		
- 		if (isset($this->error['customer'])) {
-			$this->data['error_customer'] = $this->error['customer'];
+ 		if (isset($this->error['company'])) {
+			$this->data['error_customer'] = $this->error['company'];
 		} else {
 			$this->data['error_customer'] = '';
 		}
@@ -719,8 +719,8 @@ class ControllerSaleQuote extends Controller {
 			$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
 		}
 		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+		if (isset($this->request->get['filter_company'])) {
+			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -801,14 +801,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['store_url'] = HTTPS_CATALOG;
 		} else {
 			$this->data['store_url'] = HTTP_CATALOG;
-		}
-		
-		if (isset($this->request->post['customer'])) {
-			$this->data['customer'] = $this->request->post['customer'];
-		} elseif (!empty($quote_info)) {
-			$this->data['customer'] = $quote_info['customer'];
-		} else {
-			$this->data['customer'] = '';
 		}
 						
 		if (isset($this->request->post['customer_id'])) {
@@ -1119,7 +1111,7 @@ class ControllerSaleQuote extends Controller {
 			if (isset($quote_product['quote_option'])) {
 				$quote_option = $quote_product['quote_option'];
 			} elseif (isset($this->request->get['quote_id'])) {
-				$quote_option = $this->model_sale_quote->getInoviceOptions($this->request->get['quote_id'], $quote_product['quote_product_id']);
+				$quote_option = $this->model_sale_quote->getQuoteOptions($this->request->get['quote_id'], $quote_product['quote_product_id']);
 			} else {
 				$quote_option = array();
 			}
@@ -1333,8 +1325,8 @@ class ControllerSaleQuote extends Controller {
 				$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
 			}
 			
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -1474,7 +1466,7 @@ class ControllerSaleQuote extends Controller {
 			foreach ($products as $product) {
 				$option_data = array();
 
-				$options = $this->model_sale_quote->getInoviceOptions($this->request->get['quote_id'], $product['quote_product_id']);
+				$options = $this->model_sale_quote->getQuoteOptions($this->request->get['quote_id'], $product['quote_product_id']);
 
 				foreach ($options as $option) {
 					$option_data[] = array(

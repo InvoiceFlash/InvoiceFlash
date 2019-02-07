@@ -17,9 +17,6 @@
 				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
 				<li class="nav-item"><a class="nav-link" href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li>
-				<?php if ($maxmind_id) { ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-toggle="tab"><?php echo $tab_fraud; ?></a></li>
-				<?php } ?>
 			</ul>
 			<div class="tab-content">
 				<div id="tab-invoice" class="tab-pane active">
@@ -35,12 +32,12 @@
 						<?php if ($customer) { ?>
 						<tr>
 							<td><?php echo $text_customer; ?></td>
-							<td><a href="<?php echo $customer; ?>"><?php echo $firstname; ?> <?php echo $lastname; ?></a></td>
+							<td><a href="<?php echo $customer; ?>"><?php echo $company; ?></a></td>
 						</tr>
 						<?php } else { ?>
 						<tr>
 							<td><?php echo $text_customer; ?></td>
-							<td><?php echo $firstname; ?> <?php echo $lastname; ?></td>
+							<td><?php echo $company; ?></td>
 						</tr>
 						<?php } ?>
 						<?php if ($customer_group) { ?>
@@ -294,174 +291,6 @@
 						</div>
 					</div>
 				</div>
-				<?php if ($maxmind_id) { ?>
-				<div id="tab-fraud" class="tab-pane">
-					<table class="table table-bordered table-striped table-hover">
-						<?php if ($country_match) { ?>
-						<tr>
-							<td><?php echo $text_country_match; ?></td>
-							<td><?php echo $country_match; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($country_code) { ?>
-						<tr>
-							<td><?php echo $text_country_code; ?></td>
-							<td><?php echo $country_code; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($high_risk_country) { ?>
-						<tr>
-							<td><?php echo $text_high_risk_country; ?></td>
-							<td><?php echo $high_risk_country; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($distance) { ?>
-						<tr>
-							<td><?php echo $text_distance; ?></td>
-							<td><?php echo $distance; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($anonymous_proxy) { ?>
-						<tr>
-							<td><?php echo $text_anonymous_proxy; ?></td>
-							<td><?php echo $anonymous_proxy; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($proxy_score) { ?>
-						<tr>
-							<td><?php echo $text_proxy_score; ?></td>
-							<td><?php echo $proxy_score; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($is_trans_proxy) { ?>
-						<tr>
-							<td><?php echo $text_is_trans_proxy; ?></td>
-							<td><?php echo $is_trans_proxy; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($free_mail) { ?>
-						<tr>
-							<td><?php echo $text_free_mail; ?></td>
-							<td><?php echo $free_mail; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($carder_email) { ?>
-						<tr>
-							<td><?php echo $text_carder_email; ?></td>
-							<td><?php echo $carder_email; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($high_risk_username) { ?>
-						<tr>
-							<td><?php echo $text_high_risk_username; ?></td>
-							<td><?php echo $high_risk_username; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($high_risk_password) { ?>
-						<tr>
-							<td><?php echo $text_high_risk_password; ?></td>
-							<td><?php echo $high_risk_password; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($bin_match) { ?>
-						<tr>
-							<td><?php echo $text_bin_match; ?></td>
-							<td><?php echo $bin_match; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($bin_country) { ?>
-						<tr>
-							<td><?php echo $text_bin_country; ?></td>
-							<td><?php echo $bin_country; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($bin_name_match) { ?>
-						<tr>
-							<td><?php echo $text_bin_name_match; ?></td>
-							<td><?php echo $bin_name_match; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($bin_name) { ?>
-						<tr>
-							<td><?php echo $text_bin_name; ?></td>
-							<td><?php echo $bin_name; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($bin_phone_match) { ?>
-						<tr>
-							<td><?php echo $text_bin_phone_match; ?></td>
-							<td><?php echo $bin_phone_match; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($bin_phone) { ?>
-						<tr>
-							<td><?php echo $text_bin_phone; ?></td>
-							<td><?php echo $bin_phone; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($customer_phone_in_billing_location) { ?>
-						<tr>
-							<td><?php echo $text_customer_phone_in_billing_location; ?></td>
-							<td><?php echo $customer_phone_in_billing_location; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($ship_forward) { ?>
-						<tr>
-							<td><?php echo $text_ship_forward; ?></td>
-							<td><?php echo $ship_forward; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($city_postal_match) { ?>
-						<tr>
-							<td><?php echo $text_city_postal_match; ?></td>
-							<td><?php echo $city_postal_match; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($ship_city_postal_match) { ?>
-						<tr>
-							<td><?php echo $text_ship_city_postal_match; ?></td>
-							<td><?php echo $ship_city_postal_match; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($score) { ?>
-						<tr>
-							<td><?php echo $text_score; ?></td>
-							<td><?php echo $score; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($explanation) { ?>
-						<tr>
-							<td><?php echo $text_explanation; ?></td>
-							<td><?php echo $explanation; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($risk_score) { ?>
-						<tr>
-							<td><?php echo $text_risk_score; ?></td>
-							<td><?php echo $risk_score; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($queries_remaining) { ?>
-						<tr>
-							<td><?php echo $text_queries_remaining; ?></td>
-							<td><?php echo $queries_remaining; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($maxmind_id) { ?>
-						<tr>
-							<td><?php echo $text_maxmind_id; ?></td>
-							<td><?php echo $maxmind_id; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($error) { ?>
-						<tr>
-							<td><?php echo $text_error; ?></td>
-							<td><?php echo $error; ?></td>
-						</tr>
-						<?php } ?>
-					</table>
-				</div>
-				<?php } ?>
 			</div>
 		</div>
 	</div>

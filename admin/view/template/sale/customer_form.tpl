@@ -54,24 +54,6 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="control-label col-sm-2"><?php echo $entry_firstname; ?></label>
-										<div class="control-field col-sm-4">
-											<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
-											<?php if ($error_firstname) { ?>
-												<div class="help-block error"><?php echo $error_firstname; ?></div>
-											<?php } ?>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="control-label col-sm-2"><?php echo $entry_lastname; ?></label>
-										<div class="control-field col-sm-4">
-											<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
-											<?php if ($error_lastname) { ?>
-												<div class="help-block error"><?php echo $error_lastname; ?></div>
-											<?php } ?>
-										</div>
-									</div>
-									<div class="form-group">
 										<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_email; ?></label>
 										<div class="control-field col-sm-4">
 											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
@@ -370,6 +352,8 @@
 		                      <?php endforeach ?></td>
 		                    </tr>
 		                  <?php endforeach ?>
+						<?php else: ?>
+						<tr><td colspan="6" class="text-center"><?php echo $text_no_results; ?></td></tr>
 		                <?php endif ?>
 		              </tbody>
 		              <tfoot>
@@ -512,10 +496,10 @@
 							</tr>
 						</thead>
 						<tbody>
-						<?php if ($invoices) { ?>
-						<?php foreach ($invoices as $invoice) { ?>
+						<?php if ($deliveries) { ?>
+						<?php foreach ($deliveries as $invoice) { ?>
 							<tr>
-								<td class="left"><?php echo $invoice['order_id']; ?></td>
+								<td class="left"><?php echo $invoice['delivery_id']; ?></td>
 								<td class="left"><?php echo $invoice['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
@@ -545,7 +529,7 @@
 						<?php if ($invoices) { ?>
 						<?php foreach ($invoices as $invoice) { ?>
 							<tr>
-								<td class="left"><?php echo $invoice['order_id']; ?></td>
+								<td class="left"><?php echo $invoice['invoice_id']; ?></td>
 								<td class="left"><?php echo $invoice['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
@@ -585,6 +569,8 @@
 			                      <?php endforeach ?></td>
 			                    </tr>
 			                  <?php endforeach ?>
+							<?php else: ?>
+							<tr><td colspan="5" class="text-center"><?php echo $text_no_results; ?></td></tr>
 			                <?php endif ?>
 			              </tbody>
 			              <tfoot>

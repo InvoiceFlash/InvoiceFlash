@@ -16,7 +16,7 @@
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th class="text-right"><a href="<?php echo $sort_invoice; ?>"><?php echo $column_invoice_id; echo ($sort == 'o.invoice_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th><a href="<?php echo $sort_customer; ?>"><?php echo $column_customer; echo ($sort == 'customer') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_customer; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right hidden-xs"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
@@ -28,7 +28,7 @@
 					<tr id="filter" class="info">
 						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/invoice&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
 						<td class="text-right"><input type="text" name="filter_invoice_id" value="<?php echo $filter_invoice_id; ?>" class="form-control text-right"></td>
-						<td><input type="text" name="filter_customer" value="<?php echo $filter_customer; ?>" class="form-control" data-target="name" data-url="sale/customer" class="form-control"></td>
+						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
 						<td class="hidden-xs"><select name="filter_invoice_status_id" class="form-control">
 							<option value="*">&ndash;</option>
 							<?php if ($filter_invoice_status_id == '0') { ?>
@@ -68,7 +68,7 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $invoice['invoice_id']; ?>">
 							<?php } ?></td>
 						<td class="text-right"><?php echo $invoice['invoice_id']; ?></td>
-						<td><?php echo $invoice['customer']; ?></td>
+						<td><?php echo $invoice['company']; ?></td>
 						<td class="hidden-xs text-<?php echo strtolower($invoice['status']); ?>"><?php echo $invoice['status']; ?></td>
 						<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 						<td class="hidden-xs"><?php echo $invoice['date_added']; ?></td>

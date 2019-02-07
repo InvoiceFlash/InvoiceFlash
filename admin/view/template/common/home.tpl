@@ -116,7 +116,7 @@
 				<?php foreach ($quotes as $quote) { ?>
 				<tr>
 					<td class="text-right hidden-xs"><?php echo $quote['quote_id']; ?></td>
-					<td><?php echo $quote['customer']; ?></td>
+					<td><?php echo $quote['company']; ?></td>
 					<td class="hidden-xs text-<?php echo strtolower($quote['status']); ?>"><?php echo $quote['status']; ?></td>
 					<td class="hidden-xs"><?php echo $quote['date_added']; ?></td>
 					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $quote['total']; ?></span></td>
@@ -152,14 +152,14 @@
 			</thead>
 			<tbody data-link="row" class="rowlink">
 				<?php if ($invoices) { ?>
-				<?php foreach ($invoices as $order) { ?>
+				<?php foreach ($invoices as $invoice) { ?>
 				<tr>
-					<td class="text-right hidden-xs"><?php echo $order['invoice_id']; ?></td>
-					<td><?php echo $order['customer']; ?></td>
-					<td class="hidden-xs text-<?php echo strtolower($order['status']); ?>" style="background-color:rgb(<?php echo $order['color']; ?>)"><?php echo $order['status']; ?></td>
-					<td class="hidden-xs"><?php echo $order['date_added']; ?></td>
-					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $order['total']; ?></span></td>
-					<td class="text-right"><?php foreach ($order['action'] as $action) { ?>
+					<td class="text-right hidden-xs"><?php echo $invoice['invoice_id']; ?></td>
+					<td><?php echo $invoice['company']; ?></td>
+					<td class="hidden-xs text-<?php echo strtolower($invoice['status']); ?>" style="background-color:rgb(<?php echo $invoice['color']; ?>)"><?php echo $invoice['status']; ?></td>
+					<td class="hidden-xs"><?php echo $invoice['date_added']; ?></td>
+					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $invoice['total']; ?></span></td>
+					<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
 						<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
 					<?php } ?></td>
 				</tr>
