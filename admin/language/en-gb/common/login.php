@@ -1,6 +1,6 @@
 <?php
 // header
-$_['heading_title']  = 'Administration';
+$_['heading_title']  = 'InvoiceFlash';
 
 // Text
 $_['text_heading']   = 'Administration';

@@ -1756,16 +1756,6 @@ class ControllerSaleQuote extends Controller {
 
 		$quotes = array_unique($quotes);
 		
-		// Add
-        if (isset($this->request->post['report'])) {
-			$lcReport = $this->request->post['report'];
-		} elseif (isset($this->request->get['report'])) {
-			$lcReport = $this->request->get['report'];
-		} else {
-			$lcReport = '';
-		}
-        // End add
-	
 		foreach ($quotes as $quote_id) {
 			$quote_info = $this->model_sale_quote->getQuote($quote_id);
 
@@ -1943,11 +1933,7 @@ class ControllerSaleQuote extends Controller {
 
 			$this->redirect($this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] .'&quote_id=' . $quote_id, 'SSL'));
 		} else {
-			if ($lcReport=='') {
-				$this->template = 'sale/quote_invoice.tpl';
-			} else {
-				$this->template = 'sale/reports/' . $lcReport;
-			}
+			$this->template = 'sale/quote_invoice.tpl';
 			
 			$this->response->setOutput($this->render());
 		}
@@ -2032,7 +2018,7 @@ class ControllerSaleQuote extends Controller {
 				}
 			}
 
-			if (isset($this->request->post['product_id'])) {
+			if (isset($this->request->post['product_id']) && $this->request->post['product_id']!=0) {
 				$product_info = $this->model_catalog_product->getProduct($this->request->post['product_id']);
 
 				if (isset($this->request->post['quantity'])) {
