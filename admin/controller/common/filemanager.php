@@ -1,88 +1,83 @@
 <?php
 class ControllerCommonFileManager extends Controller {
 	
-				public function index() {
-					if (!$this->user->hasPermission('access', 'extension/elfinder')) {
-						$this->index_fm();
-						return;
-					}
+	public function index() {
+		if (!$this->user->hasPermission('access', 'extension/elfinder')) {
+			$this->index_fm();
+			return;
+		}
 
-					$this->language->load('extension/elfinder');
-			
+		$this->language->load('extension/elfinder');
 
-					$this->data['connector_url'] = $this->url->link('extension/elfinder/connector', 'token='.$this->session->data['token'], true);
-					$this->data['modal'] = true;
-					$this->data['token_name'] = 'token';
-					$this->data['token'] = $this->session->data['token'];
-					$this->data['thumb_image'] = !empty($this->request->get['thumb']) ? $this->request->get['thumb'] : '';
-					$this->data['target_image'] = !empty($this->request->get['target']) ? $this->request->get['target'] : '';
-					$this->data['CKEditor'] = !empty($this->request->get['CKEditor']) ? $this->request->get['CKEditor'] : '';
-					$this->data['CKEditorFuncNum'] = !empty($this->request->get['CKEditorFuncNum']) ? $this->request->get['CKEditorFuncNum'] : '';
-					$this->data['text_loading_message'] = $this->language->get('text_loading_message');
-					
-					//$This->data['version'] = $this->load->controller('extension/elfinder/getversion');
-					$this->data['oc_version'] = '111';
 
-					if (!empty($data['CKEditorFuncNum'])) {
-						$this->data['iframe'] = true;
-						//$this->el_iframe();
-						//return true;
-					}
+		$this->data['connector_url'] = $this->url->link('extension/elfinder/connector', 'token='.$this->session->data['token'], true);
+		$this->data['modal'] = true;
+		$this->data['token_name'] = 'token';
+		$this->data['token'] = $this->session->data['token'];
+		$this->data['thumb_image'] = !empty($this->request->get['thumb']) ? $this->request->get['thumb'] : '';
+		$this->data['target_image'] = !empty($this->request->get['target']) ? $this->request->get['target'] : '';
+		$this->data['CKEditor'] = !empty($this->request->get['CKEditor']) ? $this->request->get['CKEditor'] : '';
+		$this->data['CKEditorFuncNum'] = !empty($this->request->get['CKEditorFuncNum']) ? $this->request->get['CKEditorFuncNum'] : '';
+		$this->data['text_loading_message'] = $this->language->get('text_loading_message');
+		
+		$this->data['oc_version'] = '111';
 
-					$params = !empty($this->request->get) ? $this->request->get : array('token' => $this->session->data['token']);
+		if (!empty($data['CKEditorFuncNum'])) {
+			$this->data['iframe'] = true;
+		}
 
-					if (isset($params['route'])) {
-						unset($params['route']);
-					}
+		$params = !empty($this->request->get) ? $this->request->get : array('token' => $this->session->data['token']);
 
-					$this->data['iframe_link'] = $this->url->link('common/filemanager/el_iframe', http_build_query($params), true);
+		if (isset($params['route'])) {
+			unset($params['route']);
+		}
 
-					//$this->response->setOutput($this->load->view('extension/elfinder', $data));
-					$this->children = array(
-						 'common/header',
-						 'common/footer'
-					);
+		$this->data['iframe_link'] = $this->url->link('common/filemanager/el_iframe', http_build_query($params), true);
 
-					$this->template = 'extension/elfinder.tpl';
-					
-					$this->response->setOutput($this->render());
-				}
+		$this->children = array(
+				'common/header',
+				'common/footer'
+		);
 
-				public function el_iframe() {
-					if (!$this->user->hasPermission('access', 'extension/elfinder')) {
-						die('Permission extension/elfinder denied!');
-						return;
-					}
+		$this->template = 'extension/elfinder.tpl';
+		
+		$this->response->setOutput($this->render());
+	}
 
-					$this->language->load('extension/elfinder');
+	public function el_iframe() {
+		if (!$this->user->hasPermission('access', 'extension/elfinder')) {
+			die('Permission extension/elfinder denied!');
+			return;
+		}
 
-					$this->data['title'] = $this->language->get('heading_title');
-					$this->data['lang'] = $this->language->get('code');
-					$this->data['direction'] = $this->language->get('direction');
+		$this->language->load('extension/elfinder');
 
-					$this->data['connector_url'] = $this->url->link('extension/elfinder/connector', 'token='.$this->session->data['token'], true);
-					$this->data['iframe'] = true;
-					$this->data['token_name'] = 'token';
-					$this->data['token'] = $this->session->data['token'];
-					$this->data['thumb_image'] = !empty($this->request->get['thumb']) ? $this->request->get['thumb'] : '';
-					$this->data['target_image'] = !empty($this->request->get['target']) ? $this->request->get['target'] : '';
-					$this->data['CKEditor'] = !empty($this->request->get['CKEditor']) ? $this->request->get['CKEditor'] : '';
-					$this->data['CKEditorFuncNum'] = !empty($this->request->get['CKEditorFuncNum']) ? $this->request->get['CKEditorFuncNum'] : '';
+		$this->data['title'] = $this->language->get('heading_title');
+		$this->data['lang'] = $this->language->get('code');
+		$this->data['direction'] = $this->language->get('direction');
 
-					//$This->data['version'] = $this->load->controller('extension/elfinder/getversion');
-					$this->data['oc_version'] = '111';
+		$this->data['connector_url'] = $this->url->link('extension/elfinder/connector', 'token='.$this->session->data['token'], true);
+		$this->data['iframe'] = true;
+		$this->data['token_name'] = 'token';
+		$this->data['token'] = $this->session->data['token'];
+		$this->data['thumb_image'] = !empty($this->request->get['thumb']) ? $this->request->get['thumb'] : '';
+		$this->data['target_image'] = !empty($this->request->get['target']) ? $this->request->get['target'] : '';
+		$this->data['CKEditor'] = !empty($this->request->get['CKEditor']) ? $this->request->get['CKEditor'] : '';
+		$this->data['CKEditorFuncNum'] = !empty($this->request->get['CKEditorFuncNum']) ? $this->request->get['CKEditorFuncNum'] : '';
 
-					$this->template = 'extension/elfinder.tpl';
-					
-					$this->children = array(
-						 'common/header',
-						 'common/footer'
-					);
-					
-					$this->response->setOutput($this->render());
-				}
+		$this->data['oc_version'] = '111';
 
-				public function index_fm() {
+		$this->template = 'extension/elfinder.tpl';
+		
+		$this->children = array(
+				'common/header',
+				'common/footer'
+		);
+		
+		$this->response->setOutput($this->render());
+	}
+
+	public function index_fm() {
 	
 		$this->load->language('common/filemanager');
 

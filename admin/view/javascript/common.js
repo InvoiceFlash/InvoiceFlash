@@ -248,7 +248,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('[name="filter_name"],[name="filter_product"],[name="filter_model"],[name="filter_customer"]').each(function(){
+	$('[name="filter_name"],[name="filter_product"],[name="filter_model"],[name="filter_customer"],[name="filter_company"]').each(function(){
 		var a=$(this),b=a.data('target');
 		a.typeahead({
 			source:function(q,process){
@@ -525,27 +525,6 @@ $(document).ready(function() {
 		}
 	});
 	
-	var mapped={};
-	$('input[name="affiliates"]').typeahead({
-		source:function(q,process){
-			return $.getJSON('index.php?route=sale/affiliate/autocomplete&token='+token+'&filter_name='+encodeURIComponent(q),function(json){
-				var data=[];
-				$.each(json,function(i,item){
-					mapped[item.name]=item.affiliate_id;
-					data.push(item.name);
-				});
-				process(data);
-			});
-		},
-		updater:function(item){
-			$('#affiliate'+mapped[item]).remove();
-			$('#affiliate').append('<div class="list-group-item" id="affiliate'+mapped[item]+'">'+item+'<a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="affiliate[]" value="'+mapped[item]+'"></div>');
-			return null;
-		}
-	});
-	
-	
-
 });
 function attributeautocomplete(attribute_row){
 	var mapped={};
@@ -730,12 +709,6 @@ $(function(){
 			}
 		});
 	});
-	var a=$('#reward');
-	$(document).on('click','#reward .pagination a',function(e){
-		e.preventDefault();
-		a.on('load',(this.href));
-	});
-	a.on('load',(a.data('href')));
 	
 	$(document).on('click', 'a[data-toggle=\'image\']', function(e) {
 		var $element = $(this);
@@ -808,41 +781,23 @@ function newFunction(idNom) {
 	}
 	return idNom;
 }
-
-function sendVoucher(voucher_id,b){
-	$.ajax({
-		url:'index.php?route=sale/voucher/send&token='+token+'&voucher_id='+voucher_id,
-		type:'post',
-		dataType:'json',
-		beforeSend:function(){
-			alertMessage('warning',b);
-		},
-		success:function(json){
-			if(json['error']){
-				alertMessage('danger',json['error']);
-			}
-			if(json['success']){
-				alertMessage('success',json['success']);
-			}		
-		}
-	});
-}
 /*--- order_form.tpl ---*/
 $(function(){
 	var mapped={};
 	$('#order-customer').typeahead({
 		source:function(q,process){
-			return $.getJSON('index.php?route=sale/customer/autocomplete&token='+token+'&filter_name='+encodeURIComponent(q),function(json){
+			return $.getJSON('index.php?route=sale/customer/autocomplete&token='+token+'&filter_company='+encodeURIComponent(q),function(json){
 				var data=[];
 				$.each(json,function(i,item){
-					mapped[item.name]=item;
-					data.push(item.name);
+					mapped[item.company]=item;
+					data.push(item.company);
 				});
 				process(data);
 			});
 		},
 		updater:function(item){
-			$('input[name="customer"]').val(item);
+			$('input[name="customer"]').val(mapped[item].company);
+			$('input[name="company"]').val(mapped[item].company);
 			$('input[name="customer_id"]').val(mapped[item].customer_id);
 			$('input[name="firstname"]').val(mapped[item].firstname);
 			$('input[name="lastname"]').val(mapped[item].lastname);
@@ -895,41 +850,6 @@ $(function(){
 		}
 	}).click(function(){
 		this.select();
-	});
-	
-	$('select[data-param]').on('change',function(e){
-		var $this=$(this),param=$this.data('param');
-		$.ajax({
-			url:'index.php?route=sale/affiliate/country&token='+token+'&country_id='+$this.val(),
-			dataType:'json',
-			beforeSend:function(){
-				$this.after($('<i>',{class:'icon-loading'}));
-			},
-			complete:function(){
-				$('.icon-loading').remove();
-			},
-			success:function(json){
-				if(json['postcode_required']==1){
-					$('#postcode-required').show();
-				}else{
-					$('#postcode-required').hide();
-				}
-				
-				if(json['zone']!=''){
-					html='<option value="">'+param.select+'</option>';
-					for(i=0;i<json['zone'].length;i++){
-						html+='<option value="'+json['zone'][i]['zone_id']+'"';
-						if(json['zone'][i]['zone_id']==param.zone_id){
-							html+=' selected=""';
-						}
-						html+='>'+json['zone'][i]['name']+'</option>';
-					}
-				}else{
-					html='<option value="0" selected="">'+param.none+'</option>';
-				}
-				$('select[name="zone_id"]').html(html);
-			}
-		});
 	});
 	$('select[name="country_id"]').change();
 
@@ -1109,23 +1029,6 @@ $(function(){
 		$('input[name="shipping_code"]').val(this.value);
 	});
 	var mapped={};
-	$('input[name="affiliate"]').typeahead({
-		source:function(q,process){
-			return $.getJSON('index.php?route=sale/affiliate/autocomplete&token='+token+'&filter_name='+encodeURIComponent(q),function(json){
-				var data=[];
-				$.each(json,function(i,item){
-					mapped[item.name]=item.affiliate_id;
-					data.push(item.name);
-				});
-				process(data);
-			});
-		},
-		updater:function(item){
-			$('input[name="affiliate_id"]').val(mapped[item]);
-			return item;
-		}
-	});
-	
 	var a=$('#order-product'),mapped={};
 	a.typeahead({
 		source:function(q,process){
@@ -1286,7 +1189,7 @@ $(function(){
 	}).click(function(){
 		this.select();
 	});
-	$('#button-product,#button-voucher,#button-update').on('click',function(){
+	$('#button-product,#button-update').on('click',function(){
 		var a=$(this);
 
 		if ($('#tab-customer').length!=0) {
@@ -1301,11 +1204,6 @@ $(function(){
 			data+='#tab-product input[type="text"],#tab-product input[type="hidden"],#tab-product input[type="radio"]:checked,#tab-product input[type="checkbox"]:checked,#tab-product select,#tab-product textarea,';
 		}else{
 			data+='#product input[type="text"],#product input[type="hidden"],#product input[type="radio"]:checked,#product input[type="checkbox"]:checked,#product select,#product textarea,';
-		}
-		if (a.attr('id')=='button-voucher'){
-			data+='#tab-voucher input[type="text"],#tab-voucher input[type="hidden"],#tab-voucher input[type="radio"]:checked,#tab-voucher input[type="checkbox"]:checked,#tab-voucher select,#tab-voucher textarea,';
-		}else{
-			data+='#voucher input[type="text"],#voucher input[type="hidden"],#voucher input[type="radio"]:checked,#voucher input[type="checkbox"]:checked,#voucher select,#voucher textarea,';
 		}
 		data+='#tab-total input[type="text"],#tab-total input[type="hidden"],#tab-total input[type="radio"]:checked,#tab-total input[type="checkbox"]:checked,#tab-total select,#tab-total textarea';
 		$.ajax({
@@ -1370,14 +1268,6 @@ $(function(){
 						$('#option .form-group').remove();		
 						$('input[name="quantity"]').val('1');		
 					}
-					if(json['error']['vouchers']){
-						$.each(json['error']['vouchers'],function(key,val){
-							$('input[name="'+key+'"]').after('<div class="help-block error">'+val+'</div>');
-						});
-					}else{
-						$('input[name="from_name"],input[name="from_email"],input[name="to_name"],input[name="to_email"],textarea[name="message"]').val('');
-						$('input[name="amount"]').val('25.00');
-					}
 					$('.help-block.error').closest('.form-group').addClass('has-error');
 					if(json['error']['shipping_method']){
 						alertMessage('danger',json['error']['shipping_method']);
@@ -1387,9 +1277,6 @@ $(function(){
 					}
 					if(json['error']['coupon']){
 						alertMessage('danger',json['error']['coupon']);
-					}
-					if(json['error']['voucher']){
-						alertMessage('danger',json['error']['voucher']);
 					}
 					if(json['error']['reward']){
 						alertMessage('danger',json['error']['reward']);
@@ -1451,38 +1338,7 @@ $(function(){
 				}else{
 					$('#product').html('<tr><td colspan="6" class="text-center">'+text_no_results+'</td></tr>');
 				}
-				if(json['order_voucher']!=''){
-					var voucher_row=0;
-					html='';
-					for(i in json['order_voucher']){
-						voucher=json['order_voucher'][i];
-						html+='<tr id="voucher-row'+voucher_row+'">';
-						html+='<td class="text-center"><a title="'+button_remove+'" onclick="$("#voucher-row'+voucher_row+'").remove();$("#button-update").trigger("click");"><i class="fa fa-trash-o fa-lg"></i></a></td>';
-						html+='<td>'+voucher['description'];
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][order_voucher_id]" value="">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][voucher_id]" value="'+voucher['voucher_id']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][description]" value="'+voucher['description']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][code]" value="'+voucher['code']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][from_name]" value="'+voucher['from_name']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][from_email]" value="'+voucher['from_email']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][to_name]" value="'+voucher['to_name']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][to_email]" value="'+voucher['to_email']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][voucher_theme_id]" value="'+voucher['voucher_theme_id']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][message]" value="'+voucher['message']+'">';
-						html+='<input type="hidden" name="order_voucher['+voucher_row+'][amount]" value="'+voucher['amount']+'">';
-						html+='</td>';
-						html+='<td></td>';
-						html+='<td class="text-right">1</td>';
-						html+='<td class="text-right">'+voucher['amount']+'</td>';
-						html+='<td class="text-right">'+voucher['amount']+'</td>';
-						html+='</tr>';
-						voucher_row++;
-					}
-					$('#voucher').html(html);			
-				}else{
-					$('#voucher').html('<tr><td colspan="6" class="text-center">'+text_no_results+'</td></tr>');
-				}
-				if(json['order_product']!=''||json['order_voucher']!=''||json['order_total']!=''){
+				if(json['order_product']!=''||json['order_total']!=''){
 					html='';
 					if(json['order_product']!=''){
 						for(i=0;i<json['order_product'].length;i++){
@@ -1503,18 +1359,6 @@ $(function(){
 							html+='<td class="text-right">'+product['total']+'</td>';
 							html+='</tr>';
 						}			
-					}
-					if(json['order_voucher']!=''){
-						for(i in json['order_voucher']){
-							voucher=json['order_voucher'][i];
-							html+='<tr>';
-							html+='<td>'+voucher['description']+'</td>';
-							html+='<td></td>';
-							html+='<td class="text-right">1</td>';
-							html+='<td class="text-right">'+voucher['amount']+'</td>';
-							html+='<td class="text-right">'+voucher['amount']+'</td>';
-							html+='</tr>';
-						}
 					}
 					var total_row=0;
 					for(i in json['order_total']){
@@ -1683,6 +1527,7 @@ $(function(){
 		}
 	}).click(function(){
 		this.select();
+		this.setSelectionRange(0,0);
 	});
 	$('#button-invoice-product,#button-invoice-update').on('click',function(){
 		var a=$(this);
@@ -1743,7 +1588,7 @@ $(function(){
 						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="invoice_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="invoice_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="invoice_product['+product_row+'][price]" value="'+product['price']+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="invoice_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="invoice_product['+product_row+'][tax]" value="'+product['tax']+'"><input type="hidden" name="invoice_product['+product_row+'][reward]" value="'+product['reward']+'"></td>';
+						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="invoice_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="invoice_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;		
 					}
@@ -1756,7 +1601,7 @@ $(function(){
 						total=json['invoice_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
 						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="invoice_total['+total_row+'][invoice_total_id]" value=""><input type="hidden" name="invoice_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="invoice_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="invoice_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="invoice_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="invoice_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['value']+'</td>';
+						html+='<td class="text-right">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
@@ -1874,6 +1719,7 @@ $(function(){
 		}
 	}).click(function(){
 		this.select();
+		this.setSelectionRange(0,0);
 	});
 	$('#button-quote-product,#button-quote-update').on('click',function(){
 		var a=$(this);
@@ -1932,7 +1778,7 @@ $(function(){
 						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="quote_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="quote_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="quote_product['+product_row+'][price]" value="'+product['price']+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="quote_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="quote_product['+product_row+'][tax]" value="'+product['tax']+'"><input type="hidden" name="quote_product['+product_row+'][reward]" value="'+product['reward']+'"></td>';
+						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="quote_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="quote_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;		
 					}
@@ -1945,7 +1791,7 @@ $(function(){
 						total=json['quote_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
 						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="quote_total['+total_row+'][quote_total_id]" value=""><input type="hidden" name="quote_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="quote_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="quote_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="quote_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="quote_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['value']+'</td>';
+						html+='<td class="text-right">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
