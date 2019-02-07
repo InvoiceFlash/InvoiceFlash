@@ -180,7 +180,7 @@ class ControllerCommonHome extends Controller {
 
 			$this->data['invoices'][] = array(
 				'invoice_id'   => $result['invoice_id'],
-				'customer'   => $result['customer'],
+				'company'   => $result['company'],
 				'status'     => $result['status'],
 				'color'		 => $result['color'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
@@ -211,7 +211,7 @@ class ControllerCommonHome extends Controller {
 
 			$this->data['quotes'][] = array(
 				'quote_id'   => $result['quote_id'],
-				'customer'   => $result['customer'],
+				'company'   => $result['company'],
 				'status'     => $result['status'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
