@@ -1,7 +1,7 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-	<?php $fa = 'user'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
+	<?php $fa = 'money-bill-alt'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
 	<div class="panel-body">
 		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">

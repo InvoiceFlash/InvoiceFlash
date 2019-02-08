@@ -1,7 +1,7 @@
 <?php echo $header; ?>
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
-	<?php $fa='file-alt'; include DIR_TEMPLATE . 'common/template-title-form.tpl'; ?>
+	<?php $fa='clipboard'; include DIR_TEMPLATE . 'common/template-title-form.tpl'; ?>
 	<div class="panel-body">
 		<form action="<?php echo $action; ?>" method="post" onsubmit="return validateForm();" class="form-inline" enctype="multipart/form-data" id="form">
 			<div class="card" id="tab-customer" style="width:100%;">
