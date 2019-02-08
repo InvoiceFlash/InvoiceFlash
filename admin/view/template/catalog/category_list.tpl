@@ -1,7 +1,7 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-	<?php $fa='';include DIR_TEMPLATE . 'common/template-title-list.tpl'; ?>
+	<?php $fa='sitemap';include DIR_TEMPLATE . 'common/template-title-list.tpl'; ?>
 	<div class="panel-body">
 		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">
@@ -25,7 +25,7 @@
 						<td><?php echo $category['name']; ?></td>
 						<td class="text-right hidden-xs"><?php echo $category['sort_order']; ?></td>
 						<td class="text-right"><?php foreach ($category['action'] as $action) { ?>
-							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <span class="d-none d-sm-none d-md-inline"><?php echo $action['text']; ?></span></span></a>
 						<?php } ?></td>
 					</tr>
 					<?php } ?>

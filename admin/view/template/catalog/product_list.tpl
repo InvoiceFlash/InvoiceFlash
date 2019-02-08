@@ -72,7 +72,7 @@
 							<?php } ?></td>
 						<td class="hidden-xs text-<?php echo strtolower($product['status']); ?>"><?php echo $product['status']; ?></td>
 						<td><?php foreach ($product['action'] as $action) { ?>
-							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <span class="d-none d-sm-none d-md-inline"><?php echo $action['text']; ?></span></a>
 						<?php } ?></td>
 					</tr>
 					<?php } ?>
