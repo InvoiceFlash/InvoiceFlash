@@ -417,8 +417,8 @@
 								<td class="left"><?php echo $quote['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $quote['total']; ?></td>
 								<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
-									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-								  <?php } ?></td>
+									<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+								<?php } ?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>
@@ -447,8 +447,8 @@
 								<td class="left"><?php echo $order['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $order['total']; ?></td>
 								<td class="text-right"><?php foreach ($order['action'] as $action) { ?>
-									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-									  <?php } ?></td>
+								  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+								<?php } ?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>
@@ -503,8 +503,8 @@
 								<td class="left"><?php echo $invoice['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
-									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-									  <?php } ?></td>
+									  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+								<?php } ?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>
@@ -533,8 +533,8 @@
 								<td class="left"><?php echo $invoice['date']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
-									  <span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-									  <?php } ?></td>
+									  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+								<?php } ?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>

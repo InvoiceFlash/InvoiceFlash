@@ -376,8 +376,8 @@ class ControllerCatalogProduct extends Controller {
 				'product_id' => $result['product_id'],
 				'name'       => $result['name'],
 				'model'      => $result['model'],
-				'price'      => $result['price'],
-				'special'    => $special,
+				'price'      => $this->currency->format($result['price']),
+				'special'    => $this->currency->format($special),
 				'image'      => $image,
 				'quantity'   => $result['quantity'],
 				'status'     => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
@@ -540,6 +540,7 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['text_none'] = $this->language->get('text_none');
 		$this->data['text_percent'] = $this->language->get('text_percent');
 		$this->data['text_amount'] = $this->language->get('text_amount');
+		$this->data['text_no_results'] = $this->language->get('text_no_results');
 
 		$this->data['entry_name'] = $this->language->get('entry_name');
 		$this->data['entry_meta_description'] = $this->language->get('entry_meta_description');

@@ -410,6 +410,7 @@
 							</tr>
 						</thead>
 						<tbody>
+							<?php if ($product_attributes) { ?>
 							<?php $attribute_row = 0; ?>
 							<?php foreach ($product_attributes as $product_attribute) { ?>
 								<tr id="attribute-row<?php echo $attribute_row; ?>">
@@ -424,6 +425,9 @@
 									<td><a onclick="$('#attribute-row<?php echo $attribute_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
 								</tr>
 							<?php $attribute_row++; ?>
+							<?php } ?>
+							<?php } else { ?>
+								<tr><td colspan="3" class="text-center"><?php echo $text_no_results; ?></td></tr>
 							<?php } ?>
 						</tbody>
 						<tfoot>
@@ -542,6 +546,7 @@
 											</tr>
 										</thead>
 										<tbody>
+										<?php if ($product_option['product_option_value']) { ?>
 										<?php foreach ($product_option['product_option_value'] as $product_option_value) { ?>
 											<tr id="option-value-row<?php echo $option_value_row; ?>">
 												<td>
@@ -606,6 +611,9 @@
 											</tr>
 										<?php $option_value_row++; ?>
 										<?php } ?>
+										<?php } else { ?>
+											<tr><td colspan="7" class="text-center"><?php echo $text_no_results; ?></td></tr>
+										<?php } ?>
 										</tbody>
 										<tfoot>
 											<tr>
@@ -644,6 +652,7 @@
 							</tr>
 						</thead>
 						<tbody>
+						<?php if ($product_discounts) { ?>
 						<?php $discount_row = 0; ?>
 						<?php foreach ($product_discounts as $product_discount) { ?>
 							<tr id="discount-row<?php echo $discount_row; ?>">
@@ -664,6 +673,9 @@
 								<td><a onclick="$('#discount-row<?php echo $discount_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
 							</tr>
 						<?php $discount_row++; ?>
+						<?php } ?>
+						<?php } else { ?>
+							<tr><td colspan="7" class="text-center"><?php echo $text_no_results; ?></td></tr>
 						<?php } ?>
 						</tbody>
 						<tfoot>
@@ -689,6 +701,7 @@
 							</tr>
 						</thead>
 						<tbody>
+						<?php if ($product_specials) { ?>
 						<?php $special_row = 0; ?>
 						<?php foreach ($product_specials as $product_special) { ?>
 							<tr id="special-row<?php echo $special_row; ?>">
@@ -708,6 +721,9 @@
 								<td><a onclick="$('#special-row<?php echo $special_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
 							</tr>
 						<?php $special_row++; ?>
+						<?php } ?>
+						<?php } else { ?>
+							<tr><td colspan="6" class="text-center"><?php echo $text_no_results; ?></td></tr>
 						<?php } ?>
 						</tbody>
 						<tfoot>
@@ -930,7 +946,7 @@ a.typeahead({
 			html+='<th></th>';
 			html+='</tr>';
 			html+='</thead>';
-			html+='<tbody></tbody>';
+			html+='<tbody><tr><td colspan="7" class="text-center"><?php echo $text_no_results; ?></td></tr></tbody>';
 			html+='<tfoot>';
 			html+='<tr>';
 			html+='<td colspan="6"></td>';
@@ -978,10 +994,15 @@ function addOptionValue(option_row){
 	html+='<td><a onclick="$(\'#option-value-row'+option_value_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
 	html+='</tr>';
 
-	$('#option-value'+option_row+' tbody').append(html);
+	if (option_value_row==0) {
+		$('#option-value'+option_row+' tbody').html(html);
+	} else {
+		$('#option-value'+option_row+' tbody').append(html);
+	}
 
 	option_value_row++;
 }
+
 </script>
 <script>
 var discount_row=<?php echo $discount_row; ?>;

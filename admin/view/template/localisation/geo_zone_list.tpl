@@ -25,7 +25,7 @@
 						<td><?php echo $geo_zone['name']; ?></td>
 						<td class="hidden-xs"><?php echo $geo_zone['description']; ?></td>
 						<td class="text-right"><?php foreach ($geo_zone['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>
