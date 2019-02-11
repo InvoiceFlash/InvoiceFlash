@@ -11,6 +11,15 @@ $_['text_delete']      = 'Success: Your file or directory has been deleted!';
 $_['entry_search']     = 'Search..';
 $_['entry_folder']     = 'Folder Name';
 
+// Button
+$_['button_parent']    = 'Parent folder';
+$_['button_refresh']   = 'Refresh';
+$_['button_folder']    = 'New Folder';
+
+// Entry
+$_['entry_search']     = 'Search..';
+$_['entry_folder']     = 'Folder Name';
+
 // Error
 $_['error_permission'] = 'Warning: Permission Denied!';
 $_['error_filename']   = 'Warning: Filename must be between 3 and 255!';

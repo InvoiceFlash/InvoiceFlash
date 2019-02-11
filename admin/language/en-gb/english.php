@@ -26,6 +26,7 @@ $_['text_separator']                = ' &gt; ';
 $_['text_edit']                     = 'Edit';
 $_['text_view']                     = 'View';
 $_['text_home']                     = 'Home';
+$_['text_confirm']                  = 'Are you sure?';
 
 // Button
 $_['button_insert']                 = 'Insert';
