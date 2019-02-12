@@ -2,7 +2,7 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="h2"><i class="fab fa-btc"></i> <?php echo $heading_title; ?></div>
+		<div class="h2"><i class="fas fa-dollar-sign"></i> <?php echo $heading_title; ?></div>
 	</div>
 	<div class="panel-body">
 		<table class="table table-bordered table-striped table-hover">
@@ -22,7 +22,7 @@
 					<td class="hidden-xs text-<?php echo strtolower($extension['status']); ?>"><?php echo $extension['status'] ?></td>
 					<td class="text-right hidden-xs"><?php echo $extension['sort_order']; ?></td>
 					<td class="text-right"><?php foreach ($extension['action'] as $action) { ?>
-						<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+						<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
 						<?php } ?></td>
 				</tr>
 				<?php } ?>

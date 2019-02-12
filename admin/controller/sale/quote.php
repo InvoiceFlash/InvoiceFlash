@@ -322,7 +322,9 @@ class ControllerSaleQuote extends Controller {
 
       $quote_total = $this->model_sale_quote->getTotalQuotes($data);
 
-      $results = $this->model_sale_quote->getQuotes($data);
+	  $results = $this->model_sale_quote->getQuotes($data);
+	  
+	  $log=new Log('quote.log'); $log->write($results);
 
       foreach ($results as $result) {
           $action = array();
@@ -339,7 +341,7 @@ class ControllerSaleQuote extends Controller {
           
           $this->data['quotes'][] = array(
               'quote_id'      => $result['quote_id'],
-              'company'      => $result['company'],
+              'company'       => $result['company'],
               'status'        => $result['status'],
               'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),

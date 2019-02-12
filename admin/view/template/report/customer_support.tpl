@@ -2,7 +2,7 @@
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
   <div class="panel-heading clearfix">
-    <div class="h2"><?php echo $heading_title; ?></div>
+    <div class="h2"><i class="fas fa-user"></i> <?php echo $heading_title; ?></div>
   </div>
   <div class="panel-body">
     <div class="well" id="filter">

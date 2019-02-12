@@ -13,7 +13,7 @@ class ModelSaleQuote extends Model {
 			$store_name = $this->config->get('config_name');
 			$store_url = HTTP_CATALOG;
 		}
-		
+
 		$this->load->model('setting/setting');
 		
 		$setting_info = $this->model_setting_setting->getSetting('setting', $data['store_id']);
@@ -134,13 +134,17 @@ class ModelSaleQuote extends Model {
       	if (isset($data['quote_product'])) {		
 
       		foreach ($data['quote_product'] as $quote_product) {	
-      			$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET 
-					quote_id = '" . (int)$quote_id . "', 
-					product_id = '" . (int)$quote_product['product_id'] . "', 
-					name = '" . $this->db->escape($quote_product['name']) . "', 
-					model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . (float)$quote_product['price'] . "', total = '" . (float)$quote_product['total'] . "', tax = '" . (float)$quote_product['tax'] . "'");
-				
-				//name_ext = '" . $this->db->escape($quote_product['name_ext']) . "', 
+      		
+				// Valores float de price y total que llegan como strings
+				$price = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['price']));
+				$total = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['total']));
+
+				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET 
+				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "', 
+				quote_id = '" . (int)$quote_id . "', 
+				product_id = '" . (int)$quote_product['product_id'] . "', 
+				name = '" . $this->db->escape($quote_product['name']) . "', 
+				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "'");
 				
 				$quote_product_id = $this->db->getLastId();
 	
@@ -255,20 +259,24 @@ class ModelSaleQuote extends Model {
 		`shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
 		`comment` = '" . $this->db->escape($data['comment']) . "', 
 		`quote_status_id` = '" . (int)$data['invoice_status_id'] . "', 
-		`language_id` = '" . (int)$this->config->get('config_language_id') . "', 
 		`date_modified` = now() WHERE `quote_id` = '" . (int)$quote_id . "'");
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "quote_product WHERE quote_id = '" . (int)$quote_id . "'"); 
        	$this->db->query("DELETE FROM " . DB_PREFIX . "quote_option WHERE quote_id = '" . (int)$quote_id . "'");
 		
       	if (isset($data['quote_product'])) {		
-      		foreach ($data['quote_product'] as $quote_product) {	
-      			$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET 
-					quote_product_id = '" . (int)$quote_product['quote_product_id'] . "', 
-					quote_id = '" . (int)$quote_id . "', 
-					product_id = '" . (int)$quote_product['product_id'] . "', 
-					name = '" . $this->db->escape($quote_product['name']) . "', 
-					model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . (float)$quote_product['price'] . "', total = '" . (float)$quote_product['total'] . "', tax = '" . (float)$quote_product['tax'] . "'");
+      		foreach ($data['quote_product'] as $quote_product) {
+				
+				// Valores float de price y total que llegan como strings
+				$price = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['price']));
+				$total = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['total']));
+
+				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET 
+				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "', 
+				quote_id = '" . (int)$quote_id . "', 
+				product_id = '" . (int)$quote_product['product_id'] . "', 
+				name = '" . $this->db->escape($quote_product['name']) . "', 
+				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "'");
 			
 				$quote_product_id = $this->db->getLastId();
 	
@@ -303,7 +311,6 @@ class ModelSaleQuote extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "quote_product WHERE quote_id = '" . (int)$quote_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "quote_option WHERE quote_id = '" . (int)$quote_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "quote_total WHERE quote_id = '" . (int)$quote_id . "'");
-		$this->db->query("DELETE FROM " . DB_PREFIX . "receipt WHERE quote_id = '" . (int)$quote_id . "'");
 	}
 
 	public function getQuote($quote_id) {
@@ -437,7 +444,7 @@ class ModelSaleQuote extends Model {
 	}
 
 	public function getQuotes($data = array()) {
-		$sql = "SELECT o.quote_id, CONCAT(o.firstname, ' ', o.lastname) AS customer, o.shipping_company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."quote` o LEFT JOIN `".DB_PREFIX."invoice_status` os ON o.quote_status_id = os.invoice_status_id LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
+		$sql = "SELECT o.quote_id, c.company AS company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."quote` o LEFT JOIN `".DB_PREFIX."invoice_status` os ON o.quote_status_id = os.invoice_status_id LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {
 			$sql .= " AND o.quote_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
@@ -449,8 +456,8 @@ class ModelSaleQuote extends Model {
 			$sql .= " AND o.quote_id = '" . (int)$data['filter_quote_id'] . "'";
 		}
 
-		if (!empty($data['filter_customer'])) {
-			$sql .= " AND LCASE(CONCAT(o.firstname, ' ', o.lastname)) LIKE '" . $this->db->escape(utf8_strtolower($data['filter_customer'])) . "%'";
+		if (!empty($data['filter_company'])) {
+			$sql .= " AND c.company LIKE '" . $this->db->escape(utf8_strtolower($data['filter_company'])) . "%'";
 		}
 
 		if (!empty($data['filter_date_added'])) {
@@ -463,7 +470,7 @@ class ModelSaleQuote extends Model {
 
 		$sort_data = array(
 			'o.quote_id',
-			'customer',
+			'company',
 			'status',
 			'o.date_added',
 			'o.date_modified',
@@ -511,7 +518,7 @@ class ModelSaleQuote extends Model {
 		return $query->row;
 	}
 
-	public function getInoviceOptions($quote_id, $quote_product_id) {
+	public function getQuoteOptions($quote_id, $quote_product_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "quote_option WHERE quote_id = '" . (int)$quote_id . "' AND quote_product_id = '" . (int)$quote_product_id . "'");
 
 		return $query->rows;
@@ -530,8 +537,8 @@ class ModelSaleQuote extends Model {
 			$sql .= " AND quote_id = '" . (int)$data['filter_quote_id'] . "'";
 		}
 
-		if (!empty($data['filter_customer'])) {
-			$sql .= " AND CONCAT(firstname, ' ', lastname) LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";
+		if (!empty($data['filter_company'])) {
+			$sql .= " AND payment_company LIKE '%" . $this->db->escape($data['filter_company']) . "%'";
 		}
 
 		if (!empty($data['filter_date_added'])) {
