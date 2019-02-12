@@ -322,9 +322,7 @@ class ControllerSaleQuote extends Controller {
 
       $quote_total = $this->model_sale_quote->getTotalQuotes($data);
 
-	  $results = $this->model_sale_quote->getQuotes($data);
-	  
-	  $log=new Log('quote.log'); $log->write($results);
+      $results = $this->model_sale_quote->getQuotes($data);
 
       foreach ($results as $result) {
           $action = array();
@@ -341,7 +339,7 @@ class ControllerSaleQuote extends Controller {
           
           $this->data['quotes'][] = array(
               'quote_id'      => $result['quote_id'],
-              'company'       => $result['company'],
+              'company'      => $result['company'],
               'status'        => $result['status'],
               'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
@@ -1183,31 +1181,6 @@ class ControllerSaleQuote extends Controller {
 		}
     }
 
-    public function country() {
-		$json = array();
-		
-		$this->load->model('localisation/country');
-
-    	$country_info = $this->model_localisation_country->getCountry($this->request->get['country_id']);
-		
-		if ($country_info) {
-			$this->load->model('localisation/zone');
-
-			$json = array(
-				'country_id'        => $country_info['country_id'],
-				'name'              => $country_info['name'],
-				'iso_code_2'        => $country_info['iso_code_2'],
-				'iso_code_3'        => $country_info['iso_code_3'],
-				'address_format'    => $country_info['address_format'],
-				'postcode_required' => $country_info['postcode_required'],
-				'zone'              => $this->model_localisation_zone->getZonesByCountryId($this->request->get['country_id']),
-				'status'            => $country_info['status']		
-			);
-		}
-		
-		$this->response->setOutput(json_encode($json));
-    }
-    
     public function info() {
 		$this->load->model('sale/quote');
 

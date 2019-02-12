@@ -860,7 +860,7 @@ $(function(){
 	$('[data-provide="countries"]').on('change',function(){
 		var a=$(this),b=a.data('target');
 		$.ajax({
-			url:'index.php?route=sale/order/country&token='+token+'&country_id='+this.value,
+			url:'index.php?route=localisation/country/autocomplete&token='+token+'&country_id='+this.value,
 			dataType:'json',
 			beforeSend:function(){
 				a.after($('<i>',{class:'icon-loading'}));
@@ -1800,40 +1800,6 @@ $(function(){
 			}
 		});
 	});
-});
-
-// Download Form
-$(document).on('click','#button-upload',function(){
-	var a=$(this);
-	$('#form-upload').remove();
-	$('body').prepend('<form enctype="multipart/form-data" id="form-upload" style="display:none;"><input type="file" name="file"></form>');
-	$('#form-upload input[name="file"]').on('change',function(){
-		$.ajax({
-			url:'index.php?route=catalog/download/upload&token='+token,
-			type:'post',
-			dataType:'json',
-			data:new FormData($(this).parent()[0]),
-			cache:false,
-			contentType:false,
-			processData:false,
-			beforeSend:function(){
-				a.button('loading').append($('<i>',{class:'icon-loading'}));
-			},	
-			complete:function(){
-				a.button('reset');
-			},
-			success:function(json){
-				if (json['error']){
-					alert(json['error']);
-				}
-				if (json['success']){
-					alert(json['success']);
-					$('input[name="filename"]').val(json['filename']);
-					$('input[name="mask"]').val(json['mask']);
-				}
-			}
-		});
-	}).click();
 });
 // Contact
 $(document).on('click','#button-send',function(){
