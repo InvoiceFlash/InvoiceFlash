@@ -21,7 +21,7 @@ To use InvoiceFlash application you should have already installed:
 - [ ] web with landpage, forum, demo and download
 - [ ] Option to erase demo data
 
-## 0.1.0 (Alpha)
+## 0.1.0 (Beta)
 - Customers
 - Invoices
 - Quotes
