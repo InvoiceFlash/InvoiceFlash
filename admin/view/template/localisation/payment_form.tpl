@@ -5,8 +5,8 @@
 	<div class="panel-body">
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="form-group">
-				<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_name; ?></label>
-				<div class="control-field col-sm-4">
+				<label class="control-label col-2"><b class="required">*</b> <?php echo $entry_name; ?></label>
+				<div class="control-field col-sm-10 col-md-6">
 					<?php foreach ($languages as $language) { ?>
 						<div class="input-group">
 							<input type="text" name="pay_name[<?php echo $language['language_id'] ?>][name]" value="<?php echo isset($pay_name[$language['language_id']]['name']) ? $pay_name[$language['language_id']]['name'] : '' ?>" class="form-control">
