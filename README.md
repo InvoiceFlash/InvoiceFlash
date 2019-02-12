@@ -4,11 +4,11 @@ InvoiceFlash is a self-hosted open source application for managing your invoices
 
 ## 0.2.0 (next release)
 
-- [ ] Import InvoicePlane
 - [x] Manufacturer
-- [ ] Import Flash Software
 - [ ] web with landpage, forum, demo and download
 - [ ] Option to erase demo data
+- [ ] Import Flash Software
+- [ ] Import InvoicePlane
 
 ## 0.1.0 (Beta)
 - Customers
