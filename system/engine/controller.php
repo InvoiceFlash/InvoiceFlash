@@ -120,7 +120,8 @@ abstract class Controller {
 	}
 	
 	protected function sendnewmail($to,$subject,$text,$lcFile) {
-        $mail = new Mail();
+		$mail = new Mail();
+		
         $mail->protocol = $this->config->get('config_mail_protocol');
         $mail->parameter = $this->config->get('config_mail_parameter');
         $mail->hostname = $this->config->get('config_smtp_host');
@@ -133,8 +134,13 @@ abstract class Controller {
         $mail->setSender($this->config->get('config_title'));
         $mail->setSubject($subject);
  
-        $mail->setText(html_entity_decode($text, ENT_QUOTES, 'UTF-8'));
-        $mail->addAttachment($lcFile);
+		$mail->setHTML(html_entity_decode($text, ENT_QUOTES, 'UTF-8'));
+		
+        if(file_exists($lcFile)){
+			$mail->addAttachment($lcFile);
+		}
+
+		$log=new Log('mail.log'); $log->write($mail);
         $mail->send();
     }
 	//end
