@@ -27,7 +27,7 @@ To use InvoiceFlash application you should have already installed:
 ## Credits / Technologies
 
 *   ** _Bootstrap 4.x_**
-*   **[jQuery 3.x](https://jquery.com/)**
-*   **[Font Awesome 5.x](https://fontawesome.com/)**
+*   ** _jQuery 3.x_**
+*   ** _Font Awesome 5.x_**
 
 
