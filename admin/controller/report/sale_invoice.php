@@ -74,7 +74,7 @@ class ControllerReportSaleInvoice extends Controller {
 		
 		$this->load->model('report/saleslist');
 		
-		$this->data['customers'] = array();
+		$this->data['invoices'] = array();
 		
 		$data = array(
 			'filter_date_start'	     => $filter_date_start, 
