@@ -1122,7 +1122,9 @@ class ControllerSaleCustomer extends Controller {
 					$this->data['emails'][] = array(
 						'email_id'   => $result['mail_id'],
 						'subject'    => $result['title'],
-						'text'       => strip_tags($result['message'], '<br>'),
+						'text'       => strip_tags(html_entity_decode($result['message'])),
+						//'text'       => strip_tags($result['message'], '<br>'),
+						//'text'       =>replaceAll("\\<.*","")
 						'date_added' => date('d/m/y', strtotime($result['date_added']))
 					);
 				}
@@ -1257,14 +1259,14 @@ class ControllerSaleCustomer extends Controller {
 				foreach ($results as $result) {
 					$action = array();
 
+					$link = $this->url->link('sale/customer/updateContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['customer_contacts_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
 		   			$action[] = array(
-		   				'text'	=> $this->language->get('text_edit'),
-		   				'href'	=> $this->url->link('sale/customer/updateContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['customer_contacts_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL')
+						'link'	=> '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i><span class="hidden-xs"> ' . $this->language->get('text_edit') . '</span></a>'
 		   			);
 
+		   			$link = $this->url->link('sale/customer/deleteContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['customer_contacts_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
 		   			$action[] = array(
-		   				'text'	=> $this->language->get('text_delete'),
-		   				'href'	=> $this->url->link('sale/customer/deleteContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['customer_contacts_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL')
+						'link'	=> '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i><span class="hidden-xs"> ' . $this->language->get('text_delete') . '</span></a>'
 		   			);
 
 					$this->data['contacts'][] = array(
@@ -1289,14 +1291,14 @@ class ControllerSaleCustomer extends Controller {
 				foreach ($results as $result) {
 					$action = array();
 
+					$link = $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&contract_id=' . $result['nid'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
 					$action[] = array(
-						'text' => $this->language->get('text_edit'),
-						'href' => $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&contract_id=' . $result['nid'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL') 
+						'link' => '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i> <span class="hidden-xs">'.$this->language->get('text_edit').'</span></a>'
 					);
 
+					$link = $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&contract_id=' . $result['nid'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
 					$action[] = array(
-						'text' => $this->language->get('text_delete'),
-						'href' => $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&contract_id=' . $result['nid'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL') 
+						'link' => '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i> <span class="hidden-xs">'.$this->language->get('text_delete').'</span></a>'
 					);
 
 					$this->load->model('catalog/product');
