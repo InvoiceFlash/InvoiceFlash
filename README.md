@@ -2,7 +2,9 @@
 
 InvoiceFlash is a self-hosted open source application for managing your invoices, clients and payments.
 
-## 0.2.0 (next release)
+---
+
+### 0.2.0 (next release)
 
 - [x] Manufacturer
 - [ ] web with landpage, forum, demo and download
@@ -10,7 +12,7 @@ InvoiceFlash is a self-hosted open source application for managing your invoices
 - [ ] Import Flash Software
 - [ ] Import InvoicePlane
 
-## 0.1.0 (Beta)
+### 0.1.0 (Beta)
 - Customers
 - Invoices
 - Quotes
@@ -18,7 +20,7 @@ InvoiceFlash is a self-hosted open source application for managing your invoices
 ### Limitations 0.1.0 release:
 - No stock control
 
-## Requirements
+### Requirements
 To use InvoiceFlash application you should have already installed:
 
 *   **_PHP_** >=5.0 
