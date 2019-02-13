@@ -21,7 +21,6 @@ InvoiceFlash is a self-hosted open source application for managing your invoices
 ## Requirements
 To use InvoiceFlash application you should have already installed:
 
-*   Any HTTP web server supporting php eg. _**Apache with mod_php**_ or _**IIS**_.
 *   **_PHP_** >=5.0 
 *   **_MySQL_** >=4.1 server 
 
