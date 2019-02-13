@@ -11,14 +11,12 @@ InvoiceFlash is a self-hosted open source application for managing your invoices
 - [ ] Option to erase demo data
 - [ ] Import Flash Software
 - [ ] Import InvoicePlane
+- [ ] Logo on invoice/quote template
 
 ### 0.1.0 (Beta)
 - Customers
 - Invoices
 - Quotes
-
-### Limitations 0.1.0 release:
-- No stock control
 
 ### Requirements
 To use InvoiceFlash application you should have already installed:
@@ -28,7 +26,7 @@ To use InvoiceFlash application you should have already installed:
 
 ## Credits / Technologies
 
-*   **[Bootstrap 4.x](https://getbootstrap.com)** + **[SASS](http://sass-lang.com)**
+*   ** _Bootstrap 4.x_**
 *   **[jQuery 3.x](https://jquery.com/)**
 *   **[Font Awesome 5.x](https://fontawesome.com/)**
 
