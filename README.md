@@ -1,8 +1,7 @@
-#### InvoiceFlash
+# InvoiceFlash
 
 InvoiceFlash is a self-hosted open source application for managing your invoices, clients and payments.
 
----
 ![InvoiceFlash](https://www.invoiceflash.com/github/logo/png/logo898x507.png)
 
 ---
