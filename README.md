@@ -1,5 +1,5 @@
 # InvoiceFlash 
-
+![InvoiceFlash](https://www.invoiceflash.com/github/logo/png/logo898x507.png)
 InvoiceFlash is a self-hosted open source application for managing your invoices, clients and payments.
 
 ---
@@ -26,7 +26,7 @@ To use InvoiceFlash application you should have already installed:
 
 ## Credits / Technologies
 
-*   **_Bootstrap 4.x_**
+*   **_Bootstrap 4.x + SASS _**
 *   **_jQuery 3.x_**
 *   **_Font Awesome 5.x_**
 
