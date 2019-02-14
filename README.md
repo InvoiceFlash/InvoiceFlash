@@ -1,10 +1,9 @@
-### InvoiceFlash
+#### InvoiceFlash
+
+InvoiceFlash is a self-hosted open source application for managing your invoices, clients and payments.
+
 ---
 ![InvoiceFlash](https://www.invoiceflash.com/github/logo/png/logo898x507.png)
----
-
-
-**InvoiceFlash is a self-hosted open source application for managing your invoices, clients and payments.**
 
 ---
 
@@ -24,8 +23,8 @@
 ### Requirements
 To use InvoiceFlash application you should have already installed:
 
-*   **_PHP_** >=5.0 
-*   **_MySQL_** >=4.1 server 
+*   **PHP** >=5.0 
+*   **MySQL** >=4.1 server 
 
 ## Credits / Technologies
 
