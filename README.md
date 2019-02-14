@@ -12,7 +12,6 @@
 - [ ] web with landpage, forum, demo and download
 - [ ] Option to erase demo data
 - [ ] Import Flash Software
-- [ ] Import InvoicePlane
 - [ ] Logo on invoice/quote template
 
 ### 0.1.0 (Beta)
@@ -29,7 +28,7 @@ To use InvoiceFlash application you should have already installed:
 ## Credits / Technologies
 
 *   **Bootstrap 4.x + SASS**
-*   **_jQuery 3.x_**
-*   **_Font Awesome 5.x_**
+*   **jQuery 3.x**
+*   **Font Awesome 5.x**
 
 
