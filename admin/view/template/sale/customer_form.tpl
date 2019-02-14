@@ -462,7 +462,7 @@
 						<thead>
 							<tr>
 								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								<th class="text-right"><?php echo $column_email_subject; ?></th>
+								<th class="text-left"><?php echo $column_email_subject; ?></th>
 								<th class="text-right"><?php echo $column_email_text; ?></th>
 							</tr>
 						</thead>
@@ -470,8 +470,8 @@
 						<?php if ($emails) { ?>
 						 <?php foreach ($emails as $email) { ?>
 							<tr>
-								<td class="left"><?php echo $email['date_added']; ?></td>
-								<td class="left"><?php echo $email['subject']; ?></td>
+								<td class="text-left"><?php echo $email['date_added']; ?></td>
+								<td class="text-left"><?php echo $email['subject']; ?></td>
 								<td class="text-right hidden-xs"><?php echo $email['text']; ?></td>
 							</tr>
 							<?php } ?>
@@ -669,24 +669,24 @@
     <?php }   ?>
         <form action="<?php echo $new_email; ?>" class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
             <div class="form-group">
-              <label for="to" class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_to ?></label>
-              <div class="col-sm-10">
+              <label for="to" class="control-label col-sm-3"><?php echo $text_to ?></label>
+              <div class="col-sm-9">
                 <input type="email" name="to" id="to" class="form-control" value="<?php echo $to; ?>">
               </div>
             </div>
         <div class="form-group">
-          <label class="control-label col-xs-2 col-sm-3 col-md-3" for="subject"><?php echo $text_subject ?></label>
-          <div class="col-sm-10">
+          <label class="control-label col-sm-3" for="subject"><?php echo $text_subject ?></label>
+          <div class="col-sm-9">
             <input type="text" class="form-control" id="subject" name="subject">
           </div>
           </div>
           <div class="form-group">
-            <label for="message" class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_message ?></label>
-            <div class="col-sm-10"><textarea name="message" class="ckeditor form-control" spellcheck="false" id="message"></textarea></div>
+            <label for="message" class="control-label col-sm-3"><?php echo $text_message ?></label>
+            <div class="col-sm-9"><textarea name="message" class="ckeditor form-control" spellcheck="false" id="message"></textarea></div>
           </div>
           <div class="form-group">
-          	<label class="control-label col-xs-2 col-sm-3 col-md-3">Attachment:</label>
-          	<div class="control-field col-sm-10">
+          	<label class="control-label col-sm-3">Attachment:</label>
+          	<div class="control-field col-sm-9">
           		<div class="input-group">
           			<span class="input-group-btn">
           				<button type="button" id="button-upload" class="btn btn-info">
@@ -715,19 +715,19 @@ function country(a,b,c){
 
 	$.ajax({
 
-		url:'index.php?route=sale/customer/country&token=<?php echo $token; ?>&country_id='+a.value,
+		url:'index.php?route=localisation/country/autocomplete&token=<?php echo $token; ?>&country_id='+a.value,
 
 		dataType:'json',
 
 		beforeSend:function(){
 
-			$this.after($('<i>',{class:'icon-loading'}));
+			$this.after($('<i>',{class:'fas fa-spinner'}));
 
 		},
 
 		complete:function(){
 
-			$('.icon-loading').remove();
+			$('.fas.fa-spinner').remove();
 
 		},
 
