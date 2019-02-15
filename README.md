@@ -27,6 +27,10 @@ To use InvoiceFlash application you should have already installed:
 *   **PHP** >=5.0 
 *   **MySQL** >=4.1 server 
 
+### How to install
+
+Please read the installation instructions included in the repository or download file
+
 ## Credits / Technologies
 
 *   **Bootstrap 4.x + SASS**
