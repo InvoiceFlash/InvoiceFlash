@@ -214,24 +214,6 @@
 								<div class="tab-pane fade" role="tab-panel" id="tab-address-<?php echo $address_row; ?>">
 									<input type="hidden" name="address[<?php echo $address_row; ?>][address_id]" value="<?php echo $address['address_id']; ?>">
 										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][firstname]" value="<?php echo $address['firstname']; ?>" class="form-control">
-												<?php if (isset($error_address_firstname[$address_row])) { ?>
-													<div class="help-block error"><?php echo $error_address_firstname[$address_row]; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][lastname]" value="<?php echo $address['lastname']; ?>" class="form-control">
-												<?php if (isset($error_address_lastname[$address_row])) { ?>
-													<div class="help-block error"><?php echo $error_address_lastname[$address_row]; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
 											<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_company; ?></label>
 											<div class="control-field col-sm-9 col-md-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][company]" value="<?php echo $address['company']; ?>" class="form-control">
@@ -840,22 +822,6 @@ function addAddress(){
 	html ='<div class="tab-pane" id="tab-address-'+address_row+'">';
 
 	html+='<input type="hidden" name="address['+address_row+'][address_id]" value="">';
-
-	html+='<div class="form-group">';
-
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>';
-
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][firstname]" value="" class="form-control" class="form-control"></div>';
-
-	html+='</div>';
-
-	html+='<div class="form-group">';
-
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>';
-
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][lastname]" value="" class="form-control" class="form-control"></div>';
-
-	html+='</div>';
 
 	html+='<div class="form-group">';
 

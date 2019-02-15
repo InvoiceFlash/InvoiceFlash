@@ -133,12 +133,18 @@ class ModelSaleInvoice extends Model {
 		
       	if (isset($data['invoice_product'])) {		
 
-      		foreach ($data['invoice_product'] as $invoice_product) {	
-      			$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET 
-					invoice_id = '" . (int)$invoice_id . "', 
-					product_id = '" . (int)$invoice_product['product_id'] . "', 
-					name = '" . $this->db->escape($invoice_product['name']) . "', 
-					model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . (float)$invoice_product['price'] . "', total = '" . (float)$invoice_product['total'] . "', tax = '" . (float)$invoice_product['tax'] . "'");
+      		foreach ($data['invoice_product'] as $invoice_product) {
+				
+				// Valores float de price y total que llegan como strings
+				$price = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['price']));
+				$total = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['total']));
+
+				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET 
+				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "', 
+				invoice_id = '" . (int)$invoice_id . "', 
+				product_id = '" . (int)$invoice_product['product_id'] . "', 
+				name = '" . $this->db->escape($invoice_product['name']) . "', 
+				model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $invoice_product['tax'] . "'");
 				
 				//name_ext = '" . $this->db->escape($invoice_product['name_ext']) . "', 
 				
@@ -267,13 +273,18 @@ class ModelSaleInvoice extends Model {
 		
       	if (isset($data['invoice_product'])) {		
       		foreach ($data['invoice_product'] as $invoice_product) {	
-      			$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET 
-					invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "', 
-					invoice_id = '" . (int)$invoice_id . "', 
-					product_id = '" . (int)$invoice_product['product_id'] . "', 
-					name = '" . $this->db->escape($invoice_product['name']) . "', 
-					model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . (float)$invoice_product['price'] . "', total = '" . (float)$invoice_product['total'] . "', tax = '" . (float)$invoice_product['tax'] . "'");
-			
+      			
+				// Valores float de price y total que llegan como strings
+				$price = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['price']));
+				$total = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['total']));
+
+				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET 
+				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "', 
+				invoice_id = '" . (int)$invoice_id . "', 
+				product_id = '" . (int)$invoice_product['product_id'] . "', 
+				name = '" . $this->db->escape($invoice_product['name']) . "', 
+				model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $invoice_product['tax'] . "'");
+				
 				$invoice_product_id = $this->db->getLastId();
 	
 				if (isset($invoice_product['invoice_option'])) {
@@ -311,10 +322,10 @@ class ModelSaleInvoice extends Model {
 	}
 
 	public function getInvoice($invoice_id) {
-		$invoice_query = $this->db->query("SELECT o.*, CONCAT(c.firstname, ' ', c.lastname) as customer, c.company as company
+		$invoice_query = $this->db->query("SELECT o.*, c.company as company
 			FROM `" . DB_PREFIX . "invoice` o 
-		LEFT JOIN " . DB_PREFIX . "customer c ON o.customer_id=c.customer_id  
-		WHERE o.invoice_id = '" . (int)$invoice_id . "'");
+			LEFT JOIN " . DB_PREFIX . "customer c ON o.customer_id=c.customer_id  
+			WHERE o.invoice_id = '" . (int)$invoice_id . "'");
 		
 		
 		if ($invoice_query->num_rows) {
@@ -378,7 +389,6 @@ class ModelSaleInvoice extends Model {
 				'store_url'               => $invoice_query->row['store_url'],
 				'customer_id'             => $invoice_query->row['customer_id'],
 				'company'                 => $invoice_query->row['company'],
-				'customer'                => $invoice_query->row['customer'],
 				'customer_group_id'       => $invoice_query->row['customer_group_id'],
 				'firstname'               => $invoice_query->row['firstname'],
 				'lastname'                => $invoice_query->row['lastname'],
@@ -441,7 +451,7 @@ class ModelSaleInvoice extends Model {
 	}
 
 	public function getInvoices($data = array()) {
-		$sql = "SELECT o.invoice_id, CONCAT(o.firstname, ' ', o.lastname) AS customer, o.shipping_company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, '' AS company FROM `" . DB_PREFIX . "invoice` o LEFT JOIN `" . DB_PREFIX . "invoice_status` os ON o.invoice_status_id = os.invoice_status_id LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
+		$sql = "SELECT o.invoice_id, o.shipping_company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, c.company AS company FROM `" . DB_PREFIX . "invoice` o LEFT JOIN `" . DB_PREFIX . "invoice_status` os ON o.invoice_status_id = os.invoice_status_id LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {
 			$sql .= " AND o.invoice_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
@@ -453,8 +463,8 @@ class ModelSaleInvoice extends Model {
 			$sql .= " AND o.invoice_id = '" . (int)$data['filter_invoice_id'] . "'";
 		}
 
-		if (!empty($data['filter_customer'])) {
-			$sql .= " AND LCASE(CONCAT(o.firstname, ' ', o.lastname)) LIKE '" . $this->db->escape(utf8_strtolower($data['filter_customer'])) . "%'";
+		if (!empty($data['filter_company'])) {
+			$sql .= " AND c.company LIKE '" . $this->db->escape(utf8_strtolower($data['filter_company'])) . "%'";
 		}
 
 		if (!empty($data['filter_date_added'])) {
@@ -467,7 +477,7 @@ class ModelSaleInvoice extends Model {
 
 		$sort_data = array(
 			'o.invoice_id',
-			'customer',
+			'company',
 			'status',
 			'o.date_added',
 			'o.date_modified',
@@ -534,8 +544,8 @@ class ModelSaleInvoice extends Model {
 			$sql .= " AND invoice_id = '" . (int)$data['filter_invoice_id'] . "'";
 		}
 
-		if (!empty($data['filter_customer'])) {
-			$sql .= " AND CONCAT(firstname, ' ', lastname) LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";
+		if (!empty($data['filter_company'])) {
+			$sql .= " AND payment_company LIKE '%" . $this->db->escape($data['filter_company']) . "%'";
 		}
 
 		if (!empty($data['filter_date_added'])) {

@@ -136,7 +136,7 @@
 </div></div>
 <div class="col-sm-6"><div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="h2"><i class="fa fa-shopping-cart"></i> <?php echo $text_latest_10_orders; ?></div>
+		<div class="h2"><i class="far fa-file-alt"></i> <?php echo $text_latest_10_orders; ?></div>
 	</div>
 	<div class="panel-body">
 		<table class="table table-bordered table-striped table-hover">
