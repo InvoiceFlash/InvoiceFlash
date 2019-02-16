@@ -606,72 +606,40 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['column_email_text'] = $this->language->get('column_email_text');
 		$this->data['column_quote'] = $this->language->get('column_quote');
 		$this->data['column_quote'] = $this->language->get('column_quote');
-		
 		$this->data['column_delivery'] = $this->language->get('column_delivery');
-				
 		$this->data['column_invoice'] = $this->language->get('column_invoice');
-		
 		$this->data['column_ip'] = $this->language->get('column_ip');
-
 		$this->data['column_total'] = $this->language->get('column_total');
-
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
-
 		$this->data['column_action'] = $this->language->get('column_action');
-		
 		$this->data['column_product_id'] = $this->language->get('column_product_id');
-		
 		$this->data['column_product_name'] = $this->language->get('column_product_name');
-		
 		$this->data['column_order_date'] = $this->language->get('column_order_date');
-		
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
-		
-
 
 		$this->data['entry_email'] = $this->language->get('entry_email');
-
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
-
 		$this->data['entry_fax'] = $this->language->get('entry_fax');
-
 		$this->data['entry_password'] = $this->language->get('entry_password');
-
 		$this->data['entry_confirm'] = $this->language->get('entry_confirm');
-
 		$this->data['entry_newsletter'] = $this->language->get('entry_newsletter');
-
 		$this->data['entry_customer_group'] = $this->language->get('entry_customer_group');
-
 		$this->data['entry_status'] = $this->language->get('entry_status');
-
 		$this->data['entry_company'] = $this->language->get('entry_company');
-
 		$this->data['entry_company_id'] = $this->language->get('entry_company_id');
-
 		$this->data['entry_tax_id'] = $this->language->get('entry_tax_id');
-
 		$this->data['entry_address_1'] = $this->language->get('entry_address_1');
-
 		$this->data['entry_address_2'] = $this->language->get('entry_address_2');
-
 		$this->data['entry_city'] = $this->language->get('entry_city');
-
 		$this->data['entry_postcode'] = $this->language->get('entry_postcode');
-
 		$this->data['entry_zone'] = $this->language->get('entry_zone');
-
 		$this->data['entry_country'] = $this->language->get('entry_country');
-
 		$this->data['entry_default'] = $this->language->get('entry_default');
-
 		$this->data['entry_comment'] = $this->language->get('entry_comment');
-
 		$this->data['entry_description'] = $this->language->get('entry_description');
-
 		$this->data['entry_amount'] = $this->language->get('entry_amount');
-
 		$this->data['entry_points'] = $this->language->get('entry_points');
+
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
 		$this->data['text_date_support'] = $this->language->get('text_date_support');
@@ -682,7 +650,6 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['text_paid'] = $this->language->get('text_paid');
 
 		$this->data['button_save'] = $this->language->get('button_save');
-
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 
 		$this->data['button_add_address'] = $this->language->get('button_add_address');
@@ -702,21 +669,13 @@ class ControllerSaleCustomer extends Controller {
 
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
-		
 		$this->data['tab_notes'] = $this->language->get('tab_notes');
-
 		$this->data['tab_address'] = $this->language->get('tab_address');
-
 		$this->data['tab_history'] = $this->language->get('tab_history');
-
 		$this->data['tab_transaction'] = $this->language->get('tab_transaction');
-
 		$this->data['tab_reward'] = $this->language->get('tab_reward');
-
 		$this->data['tab_ip'] = $this->language->get('tab_ip');
-		
 		$this->data['tab_email'] = $this->language->get('tab_email');
-		
 		$this->data['tab_products'] = $this->language->get('tab_products');
 		
 		$this->data['tab_quotes'] = $this->language->get('tab_quotes');
@@ -764,32 +723,19 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['button_send'] = $this->language->get('button_send');
 		$this->data['button_upload'] = $this->language->get('button_upload');
 		$this->data['text_alert_imap'] = $this->language->get('text_alert_imap');
-
 		
 		$this->data['token'] = $this->session->data['token'];
 
-
-
 		if (isset($this->request->get['customer_id'])) {
-
 			$this->data['customer_id'] = $this->request->get['customer_id'];
-
 		} else {
-
 			$this->data['customer_id'] = 0;
-
 		}
 
-
-
 		if (isset($this->error['warning'])) {
-
 			$this->data['error_warning'] = $this->error['warning'];
-
 		} else {
-
 			$this->data['error_warning'] = '';
-
 		}
 
 		if (isset($this->error['email'])) {
@@ -802,8 +748,6 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		if (isset($this->error['telephone'])) {
 
 			$this->data['error_telephone'] = $this->error['telephone'];
@@ -813,8 +757,6 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['error_telephone'] = '';
 
 		}
-
-
 
 		if (isset($this->error['password'])) {
 
@@ -826,8 +768,6 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		if (isset($this->error['confirm'])) {
 
 			$this->data['error_confirm'] = $this->error['confirm'];
@@ -837,9 +777,6 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['error_confirm'] = '';
 
 		}
-
-
-
 
 		if (isset($this->error['address_tax_id'])) {
 
@@ -851,8 +788,6 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		if (isset($this->error['address_address_1'])) {
 
 			$this->data['error_address_address_1'] = $this->error['address_address_1'];
@@ -860,7 +795,6 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 
 			$this->data['error_address_address_1'] = '';
-
 		}
 
 		if (isset($this->error['notas'])) {
@@ -868,7 +802,6 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['error_notas'] = '';
 		}
-
 
 		if (isset($this->error['address_city'])) {
 
@@ -880,8 +813,6 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		if (isset($this->error['address_postcode'])) {
 
 			$this->data['error_address_postcode'] = $this->error['address_postcode'];
@@ -891,8 +822,6 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['error_address_postcode'] = '';
 
 		}
-
-
 
 		if (isset($this->error['address_country'])) {
 
@@ -904,8 +833,6 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		if (isset($this->error['address_zone'])) {
 
 			$this->data['error_address_zone'] = $this->error['address_zone'];
@@ -916,19 +843,12 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		$url = '';
-
-
 
 		if (isset($this->request->get['filter_telephone'])) {
 
 			$url .= '&filter_telephone=' . urlencode(html_entity_decode($this->request->get['filter_telephone'], ENT_QUOTES, 'UTF-8'));
-
 		}
-
-
 
 		if (isset($this->request->get['filter_email'])) {
 
@@ -936,15 +856,11 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		if (isset($this->request->get['filter_customer_group_id'])) {
 
 			$url .= '&filter_customer_group_id=' . $this->request->get['filter_customer_group_id'];
 
 		}
-
-
 
 		if (isset($this->request->get['filter_status'])) {
 
@@ -984,14 +900,9 @@ class ControllerSaleCustomer extends Controller {
 
 		}
 
-
-
 		if (isset($this->request->get['page'])) {
-
 			$url .= '&page=' . $this->request->get['page'];
-
 		}
-
 
 		$this->data['breadcrumbs'] = array();
 
