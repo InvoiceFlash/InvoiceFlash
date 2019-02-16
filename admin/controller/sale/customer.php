@@ -1,10 +1,8 @@
 <?php
 class ControllerSaleCustomer extends Controller { 
-
 	private $error = array();
 
 	public function index() {
-
 		$this->language->load('sale/customer');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -12,7 +10,6 @@ class ControllerSaleCustomer extends Controller {
 		$this->load->model('sale/customer');
 
 		$this->getList();
-
 	}
 
 	public function insert() {
@@ -592,35 +589,22 @@ class ControllerSaleCustomer extends Controller {
     }
 
 	protected function getForm() {
-
 		$this->data['heading_title'] = $this->language->get('heading_title');
 	
 		$this->data['text_enabled'] = $this->language->get('text_enabled');
-
 		$this->data['text_disabled'] = $this->language->get('text_disabled');
-
 		$this->data['text_select'] = $this->language->get('text_select');
-
 		$this->data['text_none'] = $this->language->get('text_none');
-
 		$this->data['text_wait'] = $this->language->get('text_wait');
-
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
-
 		$this->data['text_add_ban_ip'] = $this->language->get('text_add_ban_ip');
-
 		$this->data['text_remove_ban_ip'] = $this->language->get('text_remove_ban_ip');
 		
 		$this->data['column_order'] = $this->language->get('column_order');
-		
 		$this->data['column_email'] = $this->language->get('column_email');
-		
 		$this->data['column_email_subject'] = $this->language->get('column_email_subject');
-		
 		$this->data['column_email_text'] = $this->language->get('column_email_text');
-		
 		$this->data['column_quote'] = $this->language->get('column_quote');
-		
 		$this->data['column_quote'] = $this->language->get('column_quote');
 		
 		$this->data['column_delivery'] = $this->language->get('column_delivery');
