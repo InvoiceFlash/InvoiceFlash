@@ -322,7 +322,9 @@ class ControllerSaleQuote extends Controller {
 
       $quote_total = $this->model_sale_quote->getTotalQuotes($data);
 
-      $results = $this->model_sale_quote->getQuotes($data);
+	  $results = $this->model_sale_quote->getQuotes($data);
+	  
+	  $log=new Log('quote.log'); $log->write($results);
 
       foreach ($results as $result) {
           $action = array();
@@ -339,7 +341,7 @@ class ControllerSaleQuote extends Controller {
           
           $this->data['quotes'][] = array(
               'quote_id'      => $result['quote_id'],
-              'company'      => $result['company'],
+              'company'       => $result['company'],
               'status'        => $result['status'],
               'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
@@ -486,11 +488,8 @@ class ControllerSaleQuote extends Controller {
       $this->template = 'sale/quote_list.tpl';
 
       $this->children = array(
-
           'common/header',
-
           'common/footer'
-
       );
 
       $this->response->setOutput($this->render());
@@ -536,10 +535,8 @@ class ControllerSaleQuote extends Controller {
 		$this->data['entry_product'] = $this->language->get('entry_product');
 		$this->data['entry_option'] = $this->language->get('entry_option');
 		$this->data['entry_quantity'] = $this->language->get('entry_quantity');
-		//add
 		$this->data['entry_name_ext'] = $this->language->get('entry_name_ext');
 		$this->data['entry_price'] = $this->language->get('entry_price');
-		// end
 		$this->data['entry_to_name'] = $this->language->get('entry_to_name');
 		$this->data['entry_to_email'] = $this->language->get('entry_to_email');
 		$this->data['entry_from_name'] = $this->language->get('entry_from_name');
@@ -584,13 +581,9 @@ class ControllerSaleQuote extends Controller {
 		}
 		
 		if (isset($this->error['firstname'])) {
-
 			$this->data['error_firstname'] = $this->error['firstname'];
-
 		} else {
-
 			$this->data['error_firstname'] = '';
-
 		}
 		
  		if (isset($this->error['lastname'])) {
@@ -1146,11 +1139,8 @@ class ControllerSaleQuote extends Controller {
 		$this->template = 'sale/quote_form.tpl';
 
 		$this->children = array(
-
-			'common/header',
-
+			'common/header'
 			'common/footer'
-
 		);
 
 		$this->response->setOutput($this->render());
@@ -1161,7 +1151,6 @@ class ControllerSaleQuote extends Controller {
       		$this->error['warning'] = $this->language->get('error_permission');
 		}
 		
-
 		if (!$this->error) {
 	  		return true;
 		} else {
@@ -1209,7 +1198,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_email'] = $this->language->get('text_email');
 			$this->data['text_telephone'] = $this->language->get('text_telephone');
 			$this->data['text_fax'] = $this->language->get('text_fax');
-
 			$this->data['text_total'] = $this->language->get('text_total');
 			$this->data['text_invoice_status'] = $this->language->get('text_invoice_status');
 			$this->data['text_comment'] = $this->language->get('text_comment');
@@ -1264,9 +1252,9 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_queries_remaining'] = $this->language->get('text_queries_remaining');
 			$this->data['text_maxmind_id'] = $this->language->get('text_maxmind_id');
 			$this->data['text_error'] = $this->language->get('text_error');
-			// Add
+
 			$this->data['entry_quote_id'] = $this->language->get('entry_quote_id');
-			// End add
+
 			$this->data['column_product'] = $this->language->get('column_product');
 			$this->data['column_model'] = $this->language->get('column_model');
 			$this->data['column_quantity'] = $this->language->get('column_quantity');
@@ -1350,7 +1338,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=view', 'SSL');
 			$this->data['sendEmail'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=email', 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL');
-
 			$this->data['quote_id'] = $this->request->get['quote_id'];
 			
 			if ($quote_info['invoice_no']) {
@@ -1690,7 +1677,6 @@ class ControllerSaleQuote extends Controller {
 		$this->data['language'] = $this->language->get('code');
 
 		$this->data['text_quote'] = $this->language->get('text_quote');
-
 		$this->data['text_quote_id'] = $this->language->get('text_quote_id');
 		$this->data['text_invoice_no'] = $this->language->get('text_invoice_no');
 		$this->data['text_invoice_date'] = $this->language->get('text_invoice_date');
@@ -1750,9 +1736,7 @@ class ControllerSaleQuote extends Controller {
 					$store_fax = $this->config->get('config_fax');
 				}
 				
-				//add
 				$store_nif = $this->config->get('config_nif');
-				//end add
 				
 				if ($quote_info['invoice_no']) {
 					$invoice_no = $quote_info['invoice_prefix'] . $quote_info['invoice_no'];
@@ -2120,7 +2104,6 @@ class ControllerSaleQuote extends Controller {
 		unset($this->session->data['store_address']);
 		unset($this->session->data['customer_id']);
 
-
 		$this->response->setOutput(json_encode($json));
 	}
 
@@ -2142,11 +2125,7 @@ class ControllerSaleQuote extends Controller {
 				}
 			}
 		}
-
 		return $tax_data;
 	}
-
 }
-
-
 ?>
