@@ -26,7 +26,7 @@
 			<?php } ?>
 			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">				
 				<div class="tab-pane" id="tab-general">
 					<div class="row">
@@ -47,15 +47,15 @@
 						<div class="col-xs-8 col-sm-9">
 							<div class="tab-content" id="customer-content">
 								<div class="tab-pane fade show active" role="tab-panel" id="tab-customer">
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_company; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_company; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="company" value="<?php echo $company; ?>" class="form-control">
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_email; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_email; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
 											<?php $to = $email ?>
 											<?php if ($error_email) { ?>
@@ -63,24 +63,24 @@
 											<?php	} ?>
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_telephone; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_telephone; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 											<?php if ($error_telephone) { ?>
 												<div class="help-block error"><?php echo $error_telephone; ?></div>
 											<?php	} ?>
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_fax; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fax; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_newsletter; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_newsletter; ?></label>
+										<div class="col-sm-6">
 											<select name="newsletter" class="form-control">
 												<?php if ($newsletter) { ?>
 												<option value="1" selected=""><?php echo $text_enabled; ?></option>
@@ -92,9 +92,9 @@
 											</select>
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_customer_group; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_group; ?></label>
+										<div class="col-sm-6">
 											<select name="customer_group_id" onchange="groupToggle();" class="form-control">
 												<?php foreach ($customer_groups as $customer_group) { ?>
 													<?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
@@ -106,9 +106,9 @@
 											</select>
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_status; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status; ?></label>
+										<div class="col-sm-6">
 											<select name="status" class="form-control">
 												<?php if ($status) { ?>
 													<option value="1" selected=""><?php echo $text_enabled; ?></option>
@@ -157,54 +157,54 @@
 									</table>
 								</div>
 								<div class="tab-pane fade" role="tab-panel" id="tab-various">
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_date_support; ?></label>	
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_date_support; ?></label>	
 										<div class="input-group col-sm-9 col-md-6">
 											<input type="text" name="date_support" value="<?php echo $date_support; ?>" class="form-control date">
 											<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_bank_cc; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_bank_cc; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="bank_cc" value="<?php echo $bank_cc; ?>" class="form-control" >
 										</div>										
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_bic; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_bic; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="bic" value="<?php echo $bic; ?>" class="form-control" >
 										</div>										
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_fiscal ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_fiscal ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="efaccafi" value="<?php echo $efaccafi ?>" class="form-control">
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_receptor ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_receptor ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="efaccare" value="<?php echo $efaccare ?>" class="form-control">
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_paid ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_paid ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="efaccapa" value="<?php echo $efaccapa ?>" class="form-control">
 										</div>
 									</div>
 								</div>
 								<div class="tab-pane fade" role="tab-panel" id="tab-info">
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_datecreated; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_datecreated; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="date_added" value="<?php echo $date_added; ?>" class="form-control" disabled>
 										</div>
 									</div>
-									<div class="form-group">
-										<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $text_date_modified; ?></label>
-										<div class="control-field col-sm-9 col-md-6">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_date_modified; ?></label>
+										<div class="col-sm-6">
 											<input type="text" name="date_modified" value="<?php echo $date_modified; ?>" class="form-control" disabled>
 										</div>
 									</div>
@@ -213,60 +213,60 @@
 								<?php foreach ($addresses as $address) { ?>
 								<div class="tab-pane fade" role="tab-panel" id="tab-address-<?php echo $address_row; ?>">
 									<input type="hidden" name="address[<?php echo $address_row; ?>][address_id]" value="<?php echo $address['address_id']; ?>">
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_company; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][company]" value="<?php echo $address['company']; ?>" class="form-control">
 											</div>
 										</div>
-										<div class="form-group company-id-display">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_company_id; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row company-id-display">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company_id; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][company_id]" value="<?php echo $address['company_id']; ?>" class="form-control">
 											</div>
 										</div>
-										<div class="form-group tax-id-display">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_tax_id; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row tax-id-display">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][tax_id]" value="<?php echo $address['tax_id']; ?>" class="form-control">
 												<?php if (isset($error_address_tax_id[$address_row])) { ?>
 													<div class="help-block error"><?php echo $error_address_tax_id[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_address_1; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_address_1; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][address_1]" value="<?php echo $address['address_1']; ?>" class="form-control">
 												<?php if (isset($error_address_address_1[$address_row])) { ?>
 													<div class="help-block error"><?php echo $error_address_address_1[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_address_2; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_2; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][address_2]" value="<?php echo $address['address_2']; ?>" class="form-control">
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_city; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_city; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][city]" value="<?php echo $address['city']; ?>" class="form-control">
 												<?php if (isset($error_address_city[$address_row])) { ?>
 													<div class="help-block error"><?php echo $error_address_city[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><span id="postcode-required<?php echo $address_row; ?>" class="required">*</span> <?php echo $entry_postcode; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><span id="postcode-required<?php echo $address_row; ?>" class="required">*</span> <?php echo $entry_postcode; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][postcode]" value="<?php echo $address['postcode']; ?>" class="form-control">
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_country; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_country; ?></label>
+											<div class="col-sm-6">
 												<select name="address[<?php echo $address_row; ?>][country_id]" onchange="country(this,'<?php echo $address_row; ?>','<?php echo $address['zone_id']; ?>');" class="form-control">
 													<option value=""><?php echo $text_select; ?></option>
 													<?php foreach ($countries as $country) { ?>
@@ -282,9 +282,9 @@
 												<?php } ?>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_zone; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_zone; ?></label>
+											<div class="col-sm-6">
 												<select name="address[<?php echo $address_row; ?>][zone_id]" class="form-control">
 												</select>
 												<?php if (isset($error_address_zone[$address_row])) { ?>
@@ -292,9 +292,9 @@
 												<?php } ?>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-xs-2 col-sm-3 col-md-3" for="default<?php echo $address_row; ?>"><?php echo $entry_default; ?></label>
-											<div class="control-field col-sm-9 col-md-6">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2" for="default<?php echo $address_row; ?>"><?php echo $entry_default; ?></label>
+											<div class="col-sm-6">
 												<label class="radio-inline"><?php if (($address['address_id'] == $address_id) || !$addresses) { ?>
 													<input type="radio" name="address[<?php echo $address_row; ?>][default]" value="<?php echo $address_row; ?>" id="default<?php echo $address_row; ?>" checked="">
 												<?php } else { ?>
@@ -353,9 +353,9 @@
 								<th><?php echo $column_product_id; ?></th>
 
 								<th class="d-none d-sm-table-cell"><?php echo $column_product_name; ?></th>
-								<th class="text-right"><?php echo $column_order; ?></th>
+								<th class="text-left"><?php echo $column_order; ?></th>
 								<th class="text-left"><?php echo $column_order_date; ?></th>
-								<th class="text-right"><?php echo $column_quantity; ?></th>
+								<th class="text-left"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 							</tr>
 						</thead>
@@ -364,11 +364,11 @@
 							<?php foreach ($products as $product) { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"><?php echo $product['product_id']; ?></td>
-								<td class="left"><?php echo $product['name']; ?></td>
-								<td class="left"><?php echo $product['order_id']; ?></td>
-								<td class="left"><?php echo $product['date']; ?></td>
-								<td class="right"><?php echo $product['quantity']; ?></td>
-								<td class="right"><?php echo $product['total']; ?></td>
+								<td class="text-left"><?php echo $product['name']; ?></td>
+								<td class="text-left"><?php echo $product['order_id']; ?></td>
+								<td class="text-left"><?php echo $product['date']; ?></td>
+								<td class="text-left"><?php echo $product['quantity']; ?></td>
+								<td class="text-right"><?php echo $product['total']; ?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>
@@ -560,40 +560,40 @@
 					</div>
 					<div class="tab-pane" id="tab-transaction">
 						<div id="transaction" data-href="index.php?route=sale/customer/transaction&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>"></div>
-						<div class="form-group">
-							<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_description; ?></label>
-							<div class="control-field col-sm-9 col-md-6">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_description; ?></label>
+							<div class="col-sm-6">
 								<input type="text" name="description" value="" class="form-control" class="form-control">
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_amount; ?></label>
-							<div class="control-field col-sm-9 col-md-6">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_amount; ?></label>
+							<div class="col-sm-6">
 								<input type="text" name="amount" value="" class="form-control" class="form-control">
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="control-field col-sm-9 col-md-6 col-sm-offset-2">
+						<div class="form-group row">
+							<div class="col-sm-10 col-sm-offset-2">
 								<button type="button" id="button-transaction" data-target="customer" data-id="<?php echo $customer_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_transaction; ?></button>
 							</div>
 						</div>
 					</div>
 					<div class="tab-pane" id="tab-reward">
 						<div id="reward" data-href="index.php?route=sale/customer/reward&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>"></div>
-						<div class="form-group">
-							<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_description; ?></label>
-							<div class="control-field col-sm-9 col-md-6">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_description; ?></label>
+							<div class="col-sm-6">
 								<input type="text" name="description" value="" class="form-control">
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_points; ?></label>
-							<div class="control-field col-sm-9 col-md-6">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_points; ?></label>
+							<div class="col-sm-6">
 								<input type="text" name="points" value="" class="form-control">
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="control-field col-sm-9 col-md-6 col-sm-offset-2">
+						<div class="form-group row">
+							<div class="col-sm-10 col-sm-offset-2">
 								<button type="button" id="button-reward" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_reward; ?></button>
 							</div>
 						</div>
@@ -650,23 +650,23 @@
       <center><span class = "label label-danger"><?php echo $text_alert_imap ?></span>
     <?php }   ?>
         <form action="<?php echo $new_email; ?>" class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
-            <div class="form-group">
+            <div class="form-group row">
               <label for="to" class="control-label col-sm-3"><?php echo $text_to ?></label>
               <div class="col-sm-9">
                 <input type="email" name="to" id="to" class="form-control" value="<?php echo $to; ?>">
               </div>
             </div>
-        <div class="form-group">
+        <div class="form-group row">
           <label class="control-label col-sm-3" for="subject"><?php echo $text_subject ?></label>
           <div class="col-sm-9">
             <input type="text" class="form-control" id="subject" name="subject">
           </div>
           </div>
-          <div class="form-group">
+          <div class="form-group row">
             <label for="message" class="control-label col-sm-3"><?php echo $text_message ?></label>
             <div class="col-sm-9"><textarea name="message" class="ckeditor form-control" spellcheck="false" id="message"></textarea></div>
           </div>
-          <div class="form-group">
+          <div class="form-group row">
           	<label class="control-label col-sm-3">Attachment:</label>
           	<div class="control-field col-sm-9">
           		<div class="input-group">
@@ -823,67 +823,67 @@ function addAddress(){
 
 	html+='<input type="hidden" name="address['+address_row+'][address_id]" value="">';
 
-	html+='<div class="form-group">';
+	html+='<div class="form-group row">';
 
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_company; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company; ?></label>';
 
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][company]" value="" class="form-control" class="form-control"></div>';
-
-	html+='</div>';
-
-	html+='<div class="form-group company-id-display">';
-
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_company_id; ?></label>';
-
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][company_id]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][company]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
-	html+='<div class="form-group tax-id-display">';
+	html+='<div class="form-group row company-id-display">';
 
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_tax_id; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company_id; ?></label>';
 
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][tax_id]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][company_id]" value="" class="form-control" class="form-control"></div>';
+
+	html+='</div>';
+
+	html+='<div class="form-group row tax-id-display">';
+
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>';
+
+	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][tax_id]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';		
 
-	html+='<div class="form-group">';
+	html+='<div class="form-group row">';
 
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_address_1; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_address_1; ?></label>';
 
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][address_1]" value="" class="form-control" class="form-control"></div>';
-
-	html+='</div>';
-
-	html+='<div class="form-group">';
-
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><?php echo $entry_address_2; ?></label>';
-
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][address_2]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][address_1]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
-	html+='<div class="form-group">';
+	html+='<div class="form-group row">';
 
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_city; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_2; ?></label>';
 
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][city]" value="" class="form-control" class="form-control"></div>';
-
-	html+='</div>';
-
-	html+='<div class="form-group">';
-
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><span id="postcode-required'+address_row+'" class="required">*</span> <?php echo $entry_postcode; ?></label>';
-
-	html+='<div class="control-field col-sm-9 col-md-6"><input type="text" name="address['+address_row+'][postcode]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][address_2]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
-	html+='<div class="form-group">';
+	html+='<div class="form-group row">';
 
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_country; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_city; ?></label>';
 
-	html+='<div class="control-field col-sm-9 col-md-6"><select name="address['+address_row+'][country_id]" onchange="country(this, \''+address_row+'\', \'0\');" class="form-control">';
+	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][city]" value="" class="form-control" class="form-control"></div>';
+
+	html+='</div>';
+
+	html+='<div class="form-group row">';
+
+	html+='<label class="col-form-label col-sm-10 col-md-2"><span id="postcode-required'+address_row+'" class="required">*</span> <?php echo $entry_postcode; ?></label>';
+
+	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][postcode]" value="" class="form-control" class="form-control"></div>';
+
+	html+='</div>';
+
+	html+='<div class="form-group row">';
+
+	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_country; ?></label>';
+
+	html+='<div class="col-sm-6"><select name="address['+address_row+'][country_id]" onchange="country(this, \''+address_row+'\', \'0\');" class="form-control">';
 
 	html+='<option value=""><?php echo $text_select; ?></option>';
 
@@ -897,19 +897,19 @@ function addAddress(){
 
 	html+='</div>';
 
-	html+='<div class="form-group">';
+	html+='<div class="form-group row">';
 
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3"><b class="required">*</b> <?php echo $entry_zone; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_zone; ?></label>';
 
-	html+='<div class="control-field col-sm-9 col-md-6"><select name="address['+address_row+'][zone_id]" class="form-control"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></div>';
+	html+='<div class="col-sm-6"><select name="address['+address_row+'][zone_id]" class="form-control"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></div>';
 
 	html+='</div>';
 
-	html+='<div class="form-group">';
+	html+='<div class="form-group row">';
 
-	html+='<label class="control-label col-xs-2 col-sm-3 col-md-3" for="default'+address_row+'"><?php echo $entry_default; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2" for="default'+address_row+'"><?php echo $entry_default; ?></label>';
 
-	html+='<div class="control-field col-sm-9 col-md-6"><label class="radio-inline"><input type="radio" name="address['+address_row+'][default]" value="1" id="default'+address_row+'"></label></div>';
+	html+='<div class="col-sm-6"><label class="radio-inline"><input type="radio" name="address['+address_row+'][default]" value="1" id="default'+address_row+'"></label></div>';
 
 	html+='</div>';
 

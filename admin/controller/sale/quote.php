@@ -330,13 +330,15 @@ class ControllerSaleQuote extends Controller {
           $action = array();
                       
           $action[] = array(
-              'text' => $this->language->get('text_view'),
-              'href' => $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL')
+			  'href' => $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL'),
+			  'icon' => 'far fa-eye',
+			  'color' => 'info'
           );
           
           $action[] = array(
-              'text' => $this->language->get('text_edit'),
-              'href' => $this->url->link('sale/quote/update', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL')
+              'href' => $this->url->link('sale/quote/update', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL'),
+			  'icon' => 'fas fa-edit',
+			  'color' => 'default'
           );
           
           $this->data['quotes'][] = array(
@@ -513,8 +515,6 @@ class ControllerSaleQuote extends Controller {
 		$this->data['entry_store'] = $this->language->get('entry_store');
 		$this->data['entry_customer'] = $this->language->get('entry_customer');
 		$this->data['entry_customer_group'] = $this->language->get('entry_customer_group');
-		$this->data['entry_firstname'] = $this->language->get('entry_firstname');
-		$this->data['entry_lastname'] = $this->language->get('entry_lastname');
 		$this->data['entry_vat'] = $this->language->get('entry_vat');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
@@ -580,18 +580,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['error_customer'] = '';
 		}
 		
-		if (isset($this->error['firstname'])) {
-			$this->data['error_firstname'] = $this->error['firstname'];
-		} else {
-			$this->data['error_firstname'] = '';
-		}
-		
- 		if (isset($this->error['lastname'])) {
-			$this->data['error_lastname'] = $this->error['lastname'];
-		} else {
-			$this->data['error_lastname'] = '';
-		}
-		
  		if (isset($this->error['email'])) {
 			$this->data['error_email'] = $this->error['email'];
 		} else {
@@ -604,18 +592,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['error_telephone'] = '';
 		}
 						
- 		if (isset($this->error['payment_firstname'])) {
-			$this->data['error_payment_firstname'] = $this->error['payment_firstname'];
-		} else {
-			$this->data['error_payment_firstname'] = '';
-		}
-
- 		if (isset($this->error['payment_lastname'])) {
-			$this->data['error_payment_lastname'] = $this->error['payment_lastname'];
-		} else {
-			$this->data['error_payment_lastname'] = '';
-		}
-				
 		if (isset($this->error['payment_address_1'])) {
 			$this->data['error_payment_address_1'] = $this->error['payment_address_1'];
 		} else {
@@ -658,18 +634,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['error_payment_method'] = '';
 		}
 
- 		if (isset($this->error['shipping_firstname'])) {
-			$this->data['error_shipping_firstname'] = $this->error['shipping_firstname'];
-		} else {
-			$this->data['error_shipping_firstname'] = '';
-		}
-
- 		if (isset($this->error['shipping_lastname'])) {
-			$this->data['error_shipping_lastname'] = $this->error['shipping_lastname'];
-		} else {
-			$this->data['error_shipping_lastname'] = '';
-		}
-				
 		if (isset($this->error['shipping_address_1'])) {
 			$this->data['error_shipping_address_1'] = $this->error['shipping_address_1'];
 		} else {
@@ -824,22 +788,6 @@ class ControllerSaleQuote extends Controller {
       		$this->data['company'] = '';
     	}
 		
-    	if (isset($this->request->post['firstname'])) {
-      		$this->data['firstname'] = $this->request->post['firstname'];
-		} elseif (!empty($quote_info)) { 
-			$this->data['firstname'] = $quote_info['firstname'];
-		} else {
-      		$this->data['firstname'] = '';
-    	}
-
-    	if (isset($this->request->post['lastname'])) {
-      		$this->data['lastname'] = $this->request->post['lastname'];
-    	} elseif (!empty($quote_info)) { 
-			$this->data['lastname'] = $quote_info['lastname'];
-		} else {
-      		$this->data['lastname'] = '';
-    	}
-		
     	if (isset($this->request->post['email'])) {
       		$this->data['email'] = $this->request->post['email'];
     	} elseif (!empty($quote_info)) { 
@@ -898,22 +846,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['addresses'] = array();
 		}
 			
-    	if (isset($this->request->post['payment_firstname'])) {
-      		$this->data['payment_firstname'] = $this->request->post['payment_firstname'];
-		} elseif (!empty($quote_info)) { 
-			$this->data['payment_firstname'] = $quote_info['payment_firstname'];
-		} else {
-      		$this->data['payment_firstname'] = '';
-    	}
-
-    	if (isset($this->request->post['payment_lastname'])) {
-      		$this->data['payment_lastname'] = $this->request->post['payment_lastname'];
-    	} elseif (!empty($quote_info)) { 
-			$this->data['payment_lastname'] = $quote_info['payment_lastname'];
-		} else {
-      		$this->data['payment_lastname'] = '';
-    	}
-
     	if (isset($this->request->post['payment_company'])) {
       		$this->data['payment_company'] = $this->request->post['payment_company'];
     	} elseif (!empty($quote_info)) { 
@@ -994,22 +926,6 @@ class ControllerSaleQuote extends Controller {
       		$this->data['payment_code'] = '';
     	}			
 			
-    	if (isset($this->request->post['shipping_firstname'])) {
-      		$this->data['shipping_firstname'] = $this->request->post['shipping_firstname'];
-		} elseif (!empty($quote_info)) { 
-			$this->data['shipping_firstname'] = $quote_info['shipping_firstname'];
-		} else {
-      		$this->data['shipping_firstname'] = '';
-    	}
-
-    	if (isset($this->request->post['shipping_lastname'])) {
-      		$this->data['shipping_lastname'] = $this->request->post['shipping_lastname'];
-    	} elseif (!empty($quote_info)) { 
-			$this->data['shipping_lastname'] = $quote_info['shipping_lastname'];
-		} else {
-      		$this->data['shipping_lastname'] = '';
-    	}
-
     	if (isset($this->request->post['shipping_company'])) {
       		$this->data['shipping_company'] = $this->request->post['shipping_company'];
     	} elseif (!empty($quote_info)) { 
@@ -1139,7 +1055,7 @@ class ControllerSaleQuote extends Controller {
 		$this->template = 'sale/quote_form.tpl';
 
 		$this->children = array(
-			'common/header'
+			'common/header',
 			'common/footer'
 		);
 
@@ -1204,8 +1120,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_commission'] = $this->language->get('text_commission');
 			$this->data['text_date_added'] = $this->language->get('text_date_added');
 			$this->data['text_date_modified'] = $this->language->get('text_date_modified');			
-			$this->data['text_firstname'] = $this->language->get('text_firstname');
-			$this->data['text_lastname'] = $this->language->get('text_lastname');
 			$this->data['text_company'] = $this->language->get('text_company');
 			$this->data['text_company_id'] = $this->language->get('text_company_id');
 			$this->data['text_tax_id'] = $this->language->get('text_tax_id');
@@ -1348,8 +1262,6 @@ class ControllerSaleQuote extends Controller {
 			
 			$this->data['store_name'] = $quote_info['store_name'];
 			$this->data['store_url'] = $quote_info['store_url'];
-			$this->data['firstname'] = $quote_info['firstname'];
-			$this->data['lastname'] = $quote_info['lastname'];
 						
 			if ($quote_info['customer_id']) {
 				$this->data['customer'] = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $quote_info['customer_id'], 'SSL');
@@ -1398,8 +1310,6 @@ class ControllerSaleQuote extends Controller {
 			
 			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($quote_info['date_added']));
 			$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($quote_info['date_modified']));		
-			$this->data['payment_firstname'] = $quote_info['payment_firstname'];
-			$this->data['payment_lastname'] = $quote_info['payment_lastname'];
 			$this->data['payment_company'] = $quote_info['payment_company'];
 			$this->data['payment_company_id'] = $quote_info['payment_company_id'];
 			$this->data['payment_tax_id'] = $quote_info['payment_tax_id'];
@@ -1410,8 +1320,6 @@ class ControllerSaleQuote extends Controller {
 			$this->data['payment_zone'] = $quote_info['payment_zone'];
 			$this->data['payment_zone_code'] = $quote_info['payment_zone_code'];
 			$this->data['payment_country'] = $quote_info['payment_country'];			
-			$this->data['shipping_firstname'] = $quote_info['shipping_firstname'];
-			$this->data['shipping_lastname'] = $quote_info['shipping_lastname'];
 			$this->data['shipping_company'] = $quote_info['shipping_company'];
 			$this->data['shipping_address_1'] = $quote_info['shipping_address_1'];
 			$this->data['shipping_address_2'] = $quote_info['shipping_address_2'];
@@ -1747,12 +1655,10 @@ class ControllerSaleQuote extends Controller {
 				if ($quote_info['shipping_address_format']) {
 					$format = $quote_info['shipping_address_format'];
 				} else {
-					$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 				}
 
 				$find = array(
-					'{firstname}',
-					'{lastname}',
 					'{company}',
 					'{address_1}',
 					'{address_2}',
@@ -1764,8 +1670,6 @@ class ControllerSaleQuote extends Controller {
 				);
 
 				$replace = array(
-					'firstname' => $quote_info['shipping_firstname'],
-					'lastname'  => $quote_info['shipping_lastname'],
 					'company'   => $quote_info['shipping_company'],
 					'address_1' => $quote_info['shipping_address_1'],
 					'address_2' => $quote_info['shipping_address_2'],
@@ -1781,12 +1685,10 @@ class ControllerSaleQuote extends Controller {
 				if ($quote_info['payment_address_format']) {
 					$format = $quote_info['payment_address_format'];
 				} else {
-					$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 				}
 
 				$find = array(
-					'{firstname}',
-					'{lastname}',
 					'{company}',
 					'{address_1}',
 					'{address_2}',
@@ -1798,8 +1700,6 @@ class ControllerSaleQuote extends Controller {
 				);
 
 				$replace = array(
-					'firstname' => $quote_info['payment_firstname'],
-					'lastname'  => $quote_info['payment_lastname'],
 					'company'   => $quote_info['payment_company'],
 					'address_1' => $quote_info['payment_address_1'],
 					'address_2' => $quote_info['payment_address_2'],
