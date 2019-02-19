@@ -25,23 +25,23 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-toggle="tab"><?php echo $tab_reward; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-design" data-toggle="tab"><?php echo $tab_design; ?></a></li>
 		</ul>
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
 				<div class="tab-pane" id="tab-general">
 					<div class="row">
-						<div class="col-2">
+						<div class="col-xs-4 col-sm-3">
 							<div id="vtab-language"  class="nav flex-column" role="tablist" aria-orientation="vertical">
 								<?php foreach ($languages as $language) { ?>
 									<a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-toggle="pill" role="tab" aria-selected="false"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a>
 								<?php } ?>
 							</div>
 						</div>
-						<div class="col-sm-10">
+						<div class="col-xs-8 col-sm-9">
 							<div class="tab-content">
 								<?php foreach ($languages as $language) { ?>
 									<div class="tab-pane" id="language<?php echo $language['language_id']; ?>">
-										<div class="form-group">
-											<label class="control-label col-sm-2" for="name<?php echo $language['language_id']; ?>"><b class="required">*</b> <?php echo $entry_name; ?></label>
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2" for="name<?php echo $language['language_id']; ?>"><b class="required">*</b> <?php echo $entry_name; ?></label>
 											<div class="col-sm-6">
 												<input type="text" name="product_description[<?php echo $language['language_id']; ?>][name]" value="<?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['name'] : ''; ?>" class="form-control" id="name<?php echo $language['language_id']; ?>" class="form-control">
 												<?php if (isset($error_name[$language['language_id']])) { ?>
@@ -49,26 +49,26 @@
 												<?php } ?>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-sm-2" for="meta_description<?php echo $language['language_id']; ?>"><?php echo $entry_meta_description; ?></label>
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2" for="meta_description<?php echo $language['language_id']; ?>"><?php echo $entry_meta_description; ?></label>
 											<div class="col-sm-6">
 												<textarea name="product_description[<?php echo $language['language_id']; ?>][meta_description]" class="form-control" rows="3" spellcheck="false" id="meta_description<?php echo $language['language_id']; ?>"><?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['meta_description'] : ''; ?></textarea>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-sm-2" for="meta_keyword<?php echo $language['language_id']; ?>"><?php echo $entry_meta_keyword; ?></label>
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2" for="meta_keyword<?php echo $language['language_id']; ?>"><?php echo $entry_meta_keyword; ?></label>
 											<div class="col-sm-6">
 												<textarea name="product_description[<?php echo $language['language_id']; ?>][meta_keyword]" class="form-control" rows="3" spellcheck="false" id="meta_keyword<?php echo $language['language_id']; ?>"><?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['meta_keyword'] : ''; ?></textarea>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-sm-2" for="description<?php echo $language['language_id']; ?>"><?php echo $entry_description; ?></label>
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2" for="description<?php echo $language['language_id']; ?>"><?php echo $entry_description; ?></label>
 											<div class="col-sm-10">
 												<textarea name="product_description[<?php echo $language['language_id']; ?>][description]" class="ckeditor form-control" rows="10" spellcheck="false"><?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['description'] :''; ?></textarea>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-sm-2" for="description<?php echo $language['language_id']; ?>"><?php echo $entry_tag; ?></label>
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2" for="description<?php echo $language['language_id']; ?>"><?php echo $entry_tag; ?></label>
 											<div class="col-sm-6">
 												<?php if (isset($product_tag)) { ?>
 													<input type="text" name="product_tag[<?php echo $language['language_id']; ?>]" value="<?php echo isset($product_tag[$language['language_id']]) ? $product_tag[$language['language_id']] : ''; ?>" class="form-control">
@@ -86,8 +86,8 @@
 				<div class="tab-pane" id="tab-data">
 					<div class="row">
 						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label col-sm-4"><b class="required">*</b> <?php echo $entry_model; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><b class="required">*</b> <?php echo $entry_model; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="model" value="<?php echo $model; ?>" class="form-control">
 									<?php if ($error_model) { ?>
@@ -95,56 +95,56 @@
 									<?php } ?>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_sku; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_sku; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="sku" value="<?php echo $sku; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_upc; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_upc; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="upc" value="<?php echo $upc; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_ean; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_ean; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="ean" value="<?php echo $ean; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_jan; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_jan; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="jan" value="<?php echo $jan; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_isbn; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_isbn; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="isbn" value="<?php echo $isbn; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_mpn; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_mpn; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="mpn" value="<?php echo $mpn; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_location; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_location; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="location" value="<?php echo $location; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_price; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_price; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="price" value="<?php echo $price; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_tax_class; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_tax_class; ?></label>
 								<div class="col-sm-6">
 									<select name="tax_class_id" class="form-control">
 										<option value="0"><?php echo $text_none; ?></option>
@@ -158,20 +158,20 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_quantity; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_quantity; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="quantity" value="<?php echo $quantity; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_minimum; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_minimum; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="minimum" value="<?php echo $minimum; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_subtract; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_subtract; ?></label>
 								<div class="col-sm-6">
 									<select name="subtract" class="form-control">
 										<?php if ($subtract) { ?>
@@ -184,8 +184,8 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_stock_status; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_stock_status; ?></label>
 								<div class="col-sm-6">
 									<select name="stock_status_id" class="form-control">
 										<?php foreach ($stock_statuses as $stock_status) { ?>
@@ -198,8 +198,8 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_shipping; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_shipping; ?></label>
 								<div class="col-sm-6">
 									<div class="btn-group" data-toggle="buttons">
 										<?php if ($shipping) { ?>
@@ -212,16 +212,16 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_keyword; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_keyword; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="keyword" value="<?php echo $keyword; ?>" class="form-control">
 								</div>
 							</div>
 						</div>
 						<div class="col-sm-6">
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_date_available; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_date_available; ?></label>
 								<div class="col-sm-6">
 									<div class="input-group">
 										<input type="text" name="date_available" class="form-control" value="<?php echo $date_available; ?>">
@@ -229,8 +229,8 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_dimension; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_dimension; ?></label>
 								<div class="col-sm-6">
 									<div class="slim-row">
 										<div class="slim-col-sm-4">
@@ -245,8 +245,8 @@
 									</div>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_length; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_length; ?></label>
 								<div class="col-sm-6">
 									<select name="length_class_id" class="form-control">
 										<?php foreach ($length_classes as $length_class) { ?>
@@ -259,14 +259,14 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_weight; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_weight; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="weight" value="<?php echo $weight; ?>" class="form-control">
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_weight_class; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_weight_class; ?></label>
 								<div class="col-sm-6">
 									<select name="weight_class_id" class="form-control">
 										<?php foreach ($weight_classes as $weight_class) { ?>
@@ -279,8 +279,8 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_status; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_status; ?></label>
 								<div class="col-sm-6">
 									<select name="status" class="form-control">
 										<?php if ($status) { ?>
@@ -293,8 +293,8 @@
 									</select>
 								</div>
 							</div>
-							<div class="form-group">
-								<label class="control-label col-sm-4"><?php echo $entry_sort_order; ?></label>
+							<div class="form-group row">
+								<label class="col-form-label col-sm-4"><?php echo $entry_sort_order; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="sort_order" value="<?php echo $sort_order; ?>" class="form-control">
 								</div>
@@ -303,17 +303,17 @@
 					</div>
 				</div>
 				<div class="tab-pane" id="tab-links">
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_manufacturer; ?></label>
-						<div class="control-field col-sm-4">
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_manufacturer; ?></label>
+						<div class="col-sm-6">
 							<input type="text" name="manufacturer" value="<?php echo $manufacturer ?>" class="form-control" autocomplete="off">
 							<input type="hidden" name="manufacturer_id" value="<?php echo $manufacturer_id; ?>">
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_category; ?></label>
-						<div class="control-field col-sm-4">
-							<p><input type="text" name="category" value="" class="form-control" data-target="product" autocomplete="off"></p>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_category; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="category" value="" class="form-control" data-target="product" autocomplete="off">
 							<div class="panel panel-default panel-scrollable">
 								<div id="product-category" class="list-group">
 								<?php foreach ($product_categories as $product_category) { ?>
@@ -326,10 +326,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_filter; ?></label>
-						<div class="control-field col-sm-4">
-							<p><input type="text" name="filter" value="" class="form-control" data-target="product" autocomplete="off"></p>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_filter; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="filter" value="" class="form-control" data-target="product" autocomplete="off">
 							<div class="panel panel-default panel-scrollable">
 								<div id="product-filter" class="list-group">
 								<?php foreach ($product_filters as $product_filter) { ?>
@@ -342,9 +342,9 @@
 							</div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_store; ?></label>
-						<div class="control-field col-sm-4">
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_store; ?></label>
+						<div class="col-sm-6">
 							<div class="panel panel-default panel-scrollable">
 								<div class="list-group list-group-hover">
 									<label class="list-group-item">
@@ -367,10 +367,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_download; ?></label>
-						<div class="control-field col-sm-4">
-							<p><input type="text" name="download" value="" class="form-control" autocomplete="off"></p>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_download; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="download" value="" class="form-control" autocomplete="off">
 							<div class="panel panel-default panel-scrollable">
 								<div id="product-download" class="list-group">
 								<?php foreach ($product_downloads as $product_download) { ?>
@@ -383,10 +383,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_related; ?></label>
-						<div class="control-field col-sm-4">
-							<p><input type="text" name="related" value="" class="form-control" autocomplete="off"></p>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_related; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="related" value="" class="form-control" autocomplete="off">
 							<div class="panel panel-default panel-scrollable">
 								<div id="product-related" class="list-group">
 								<?php foreach ($product_related as $product_related) { ?>
@@ -410,8 +410,8 @@
 							</tr>
 						</thead>
 						<tbody>
-							<?php if ($product_attributes) { ?>
 							<?php $attribute_row = 0; ?>
+							<?php if ($product_attributes) { ?>
 							<?php foreach ($product_attributes as $product_attribute) { ?>
 								<tr id="attribute-row<?php echo $attribute_row; ?>">
 									<td><input type="text" name="product_attribute[<?php echo $attribute_row; ?>][name]" value="<?php echo $product_attribute['name']; ?>" class="form-control">
@@ -440,8 +440,8 @@
 				</div>
 				<div class="tab-pane" id="tab-option">
 					<div class="row">
-						<div class="col-2">
-							<div class="nav" role="tablist" aria-orientation="vertical">
+						<div class="col-xs-4 col-sm-3">
+							<div class="nav flex-column">
 								<ul id="vtab-option" class="nav nav-tabs flex-column">
 									<?php $option_row = 0; ?>
 									<?php foreach ($product_options as $product_option) { ?>
@@ -459,7 +459,7 @@
 								</ul>
 							</div>
 						</div>
-						<div class="col-sm-10">
+						<div class="col-xs-8 col-sm-9">
 							<div class="tab-content" id="option-container">
 								<?php $option_row = 0; ?>
 								<?php $option_value_row = 0; ?>
@@ -469,9 +469,9 @@
 									<input type="hidden" name="product_option[<?php echo $option_row; ?>][name]" value="<?php echo $product_option['name']; ?>">
 									<input type="hidden" name="product_option[<?php echo $option_row; ?>][option_id]" value="<?php echo $product_option['option_id']; ?>">
 									<input type="hidden" name="product_option[<?php echo $option_row; ?>][type]" value="<?php echo $product_option['type']; ?>">
-									<div class="form-group">
-										<label class="control-label col-sm-2"><?php echo $entry_required; ?></label>
-										<div class="control-field col-sm-4">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_required; ?></label>
+										<div class="col-sm-6">
 											<select name="product_option[<?php echo $option_row; ?>][required]" class="form-control">
 												<?php if ($product_option['required']) { ?>
 												<option value="1" selected=""><?php echo $text_yes; ?></option>
@@ -484,48 +484,48 @@
 										</div>
 									</div>
 									<?php if ($product_option['type'] == 'text') { ?>
-										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
-											<div class="control-field col-sm-4">
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>
+											<div class="col-sm-6">
 												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control">
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'textarea') { ?>
-										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>
 											<div class="col-sm-8">
 												<textarea name="product_option[<?php echo $option_row; ?>][option_value]" class="form-control ckeditor" rows="3"><?php echo $product_option['option_value']; ?></textarea>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'file') { ?>
-									<div class="form-group">
-										<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>
-										<div class="control-field col-sm-4">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>
+										<div class="col-sm-6 input-group">
 											<input type="text" name="mask" class="form-control">
 											<input type="hidden" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>">
 											<input type="hidden" name="filename">
+											<button type="button" class="btn btn-info" id="button-upload"><i class="fa fa-upload"></i></button>
 										</div>
-										<button type="button" class="btn btn-info" id="button-upload"><i class="fa fa-upload"></i></button>
 									</div>
 									<?php } elseif ($product_option['type'] == 'date') { ?>
-										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>	
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>	
 											<div class="input-group col-sm-4">
 												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control date">
 												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'datetime') { ?>
-										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>	
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>	
 											<div class="input-group col-sm-4">
 												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control datetime">
 												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'time') { ?>
-										<div class="form-group">
-											<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>	
+										<div class="form-group row">
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>	
 											<div class="input-group col-sm-4">
 												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control time">
 												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
@@ -652,8 +652,8 @@
 							</tr>
 						</thead>
 						<tbody>
-						<?php if ($product_discounts) { ?>
 						<?php $discount_row = 0; ?>
+						<?php if ($product_discounts) { ?>
 						<?php foreach ($product_discounts as $product_discount) { ?>
 							<tr id="discount-row<?php echo $discount_row; ?>">
 								<td><select name="product_discount[<?php echo $discount_row; ?>][customer_group_id]" class="form-control">
@@ -701,8 +701,8 @@
 							</tr>
 						</thead>
 						<tbody>
-						<?php if ($product_specials) { ?>
 						<?php $special_row = 0; ?>
+						<?php if ($product_specials) { ?>
 						<?php foreach ($product_specials as $product_special) { ?>
 							<tr id="special-row<?php echo $special_row; ?>">
 								<td><select name="product_special[<?php echo $special_row; ?>][customer_group_id]" class="form-control">
@@ -773,9 +773,9 @@
 					</table>
 				</div>
 				<div class="tab-pane" id="tab-reward">
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_points; ?></label>
-						<div class="control-field col-sm-4">
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_points; ?></label>
+						<div class="col-sm-6">
 							<input type="text" name="points" value="<?php echo $points; ?>" class="form-control">
 						</div>
 					</div>
@@ -885,9 +885,9 @@ a.typeahead({
 		html+='<input type="hidden" name="product_option['+option_row+'][name]" value="'+item+'">';
 		html+='<input type="hidden" name="product_option['+option_row+'][option_id]" value="'+mapped[item].option_id+'">';
 		html+='<input type="hidden" name="product_option['+option_row+'][type]" value="'+mapped[item].type+'">';
-		html+='<div class="form-group">';
-		html+='<label class="control-label col-sm-2"><?php echo $entry_required; ?></label>';
-		html+='<div class="control-field col-sm-4">';
+		html+='<div class="form-group row">';
+		html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_required; ?></label>';
+		html+='<div class="col-sm-4">';
 		html+='<select name="product_option['+option_row+'][required]" class="form-control">';
 		html+='<option value="1"><?php echo $text_yes; ?></option>';
 		html+='<option value="0"><?php echo $text_no; ?></option>';
@@ -896,39 +896,39 @@ a.typeahead({
 		html+='</div>';
 			
 		if(mapped[item].type=='text'){
-			html+='<div class="form-group">';
-			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control"></div>';
+			html+='<div class="form-group row">';
+			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
+			html+='<div class="col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control"></div>';
 			html+='</div>';
 		}else if(mapped[item].type=='textarea'){
-			html+='<div class="form-group">';
-			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><textarea name="product_option['+option_row+'][option_value]" class="form-control ckeditor" cols="30" rows="10"></textarea></div>';
+			html+='<div class="form-group row">';
+			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
+			html+='<div class="col-sm-4"><textarea name="product_option['+option_row+'][option_value]" class="form-control ckeditor" cols="30" rows="10"></textarea></div>';
 			html+='</div>';	
 		}else if(mapped[item].type=='file'){
-			html+='<div class="form-group">';
-			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control"></div>';
+			html+='<div class="form-group row">';
+			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
+			html+='<div class="col-sm-4"><input type="text" name="product_option['+option_row+'][option_value]" value="" class="form-control"></div>';
 			html+='<button class="btn btn-info"><i class="fa fa-upload"></i></button>';
 			html+='</div>';
 		}else if(mapped[item].type=='date'){
-			html+='<div class="form-group">';
-			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><label class="input-group">';
+			html+='<div class="form-group row">';
+			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
+			html+='<div class="col-sm-4"><label class="input-group">';
 			html+='<input type="text" class="form-control date" name="product_option['+option_row+'][option_value]" value="">';
 			html+='<div class="input-group-append"><span class="input-group-text"><i class="fa fa-calendar"></i></span></div>';
 			html+='</label></div>';
 		}else if(mapped[item].type=='datetime'){
-			html+='<div class="form-group">';
-			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><label class="input-group">';
+			html+='<div class="form-group row">';
+			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
+			html+='<div class="col-sm-4"><label class="input-group">';
 			html+='<input type="text" class="form-control datetime" name="product_option['+option_row+'][option_value]" value="" autocomplete="off">';
 			html+='<div class="input-group-append"><span class="input-group-text"><i class="fa fa-calendar"></i></span></div>';
 			html+='</label></div>';
 		}else if(mapped[item].type=='time'){
-			html+='<div class="form-group">';
-			html+='<label class="control-label col-sm-2"><?php echo $entry_option_value; ?></label>';
-			html+='<div class="control-field col-sm-4"><label class="input-group">';
+			html+='<div class="form-group row">';
+			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
+			html+='<div class="col-sm-4"><label class="input-group">';
 			html+='<input type="text" class="form-control time" name="product_option['+option_row+'][option_value]" value="" autocomplete="off">';
 			html+='<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>';
 			html+='</label></div>';
