@@ -14,7 +14,7 @@ InvoiceFlash is a self-hosted open source application for managing your invoices
 - [ ] web with landpage, forum, demo and download
 - [ ] Option to erase demo data
 - [ ] Import Flash Software
-- [ ] Logo on invoice/quote template
+- [x] Logo on invoice/quote template
 
 ### 0.1.0 (Beta)
 - Customers
