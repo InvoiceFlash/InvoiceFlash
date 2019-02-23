@@ -333,8 +333,8 @@
 		                      <?php endforeach ?></td>
 		                    </tr>
 		                  <?php endforeach ?>
-										<?php else: ?>
-										<tr><td colspan="6" class="text-center"><?php echo $text_no_results; ?></td></tr>
+						<?php else: ?>
+							<tr><td colspan="6" class="text-center"><?php echo $text_no_results; ?></td></tr>
 		                <?php endif ?>
 		              </tbody>
 		              <tfoot>
@@ -347,11 +347,8 @@
 					<div class="tab-pane" id="tab-products">
 						<table class="table table-bordered table-striped table-hover">
 						<thead>
-
 							<tr>
-
 								<th><?php echo $column_product_id; ?></th>
-
 								<th class="d-none d-sm-table-cell"><?php echo $column_product_name; ?></th>
 								<th class="text-left"><?php echo $column_order; ?></th>
 								<th class="text-left"><?php echo $column_order_date; ?></th>
@@ -692,89 +689,43 @@
 <script>
 
 function country(a,b,c){
-
 	var $this=$('select[name="address['+b+'][country_id]"]');
-
 	$.ajax({
-
 		url:'index.php?route=localisation/country/autocomplete&token=<?php echo $token; ?>&country_id='+a.value,
-
 		dataType:'json',
-
 		beforeSend:function(){
-
 			$this.after($('<i>',{class:'fas fa-spinner'}));
-
 		},
-
 		complete:function(){
-
 			$('.fas.fa-spinner').remove();
-
 		},
-
 		success:function(json){
-
 			if(json['postcode_required']=='1'){
-
 				$('#postcode-required'+b).show();
-
 			} else {
-
 				$('#postcode-required'+b).hide();
-
 			}
-
-			
-
 			html='<option value=""><?php echo $text_select; ?></option>';
-
 			if((typeof(json['zone'])!='undefined')&&json['zone']!=''){
-
 				for(i=0;i<json['zone'].length;i++){
-
 					html+='<option value="'+json['zone'][i]['zone_id']+'"';
-
 					if(json['zone'][i]['zone_id']==c){
-
 						html+=' selected=""';
-
 					}
-
 					html+='>'+json['zone'][i]['name']+'</option>';
-
 				}
-
 			} else {
-
 				html+='<option value="0"><?php echo $text_none; ?></option>';
-
 			}
-
-			
-
 			$('select[name="address['+b+'][zone_id]"]').html(html);
-
 		}
-
 	});
-
 }
-
-
-
 $('select[name$="[country_id]"]').change();
-
 </script>
-
 <script>
-
 function groupToggle(){
-
 	var customer_group = [];
-
-	
-
 <?php foreach ($customer_groups as $customer_group) { ?>
 
 	customer_group[<?php echo $customer_group['customer_group_id']; ?>]=[];
@@ -786,34 +737,20 @@ function groupToggle(){
 <?php } ?>
 	var customer_group_id = $('select[name="customer_group_id"]').val();
 	if(customer_group[customer_group_id]) {
-
 		if(customer_group[customer_group_id]['company_id_display']==1){
-
 			$('.company-id-display').show();
-
 		} else {
-
 			$('.company-id-display').hide();
-
 		}
 		if(customer_group[customer_group_id]['tax_id_display']==1){
-
 			$('.tax-id-display').show();
-
 		} else {
-
 			$('.tax-id-display').hide();
-
 		}
-
 	}
-
 }
-
 groupToggle();
-
 </script>
-
 <script>
 var address_row=<?php echo $address_row; ?>+1;
 
