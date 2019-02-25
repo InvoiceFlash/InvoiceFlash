@@ -35,7 +35,7 @@ class ModelSaleInvoice extends Model {
 			$shipping_address_format = $country_info['address_format'];
 		} else {
 			$shipping_country = '';	
-			$shipping_address_format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+			$shipping_address_format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 		}	
 		
 		$zone_info = $this->model_localisation_zone->getZone($data['shipping_zone_id']);
@@ -53,7 +53,7 @@ class ModelSaleInvoice extends Model {
 			$payment_address_format = $country_info['address_format'];			
 		} else {
 			$payment_country = '';	
-			$payment_address_format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';					
+			$payment_address_format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';					
 		}
 	
 		$zone_info = $this->model_localisation_zone->getZone($data['payment_zone_id']);
@@ -85,13 +85,9 @@ class ModelSaleInvoice extends Model {
 			 `store_url` = '" . $this->db->escape($store_url) . "', 
 			 `customer_id` = '" . (int)$data['customer_id'] . "', 
 			 `customer_group_id` = '" . (int)$data['customer_group_id'] . "', 
-			 `firstname` = '" . $this->db->escape($data['firstname']) . "', 
-			 `lastname` = '" . $this->db->escape($data['lastname']) . "', 
 			 `email` = '" . $this->db->escape($data['email']) . "', 
 			 `telephone` = '" . $this->db->escape($data['telephone']) . "', 
 			 `fax` = '" . $this->db->escape($data['fax']) . "', 
-			 `payment_firstname` = '" . $this->db->escape($data['payment_firstname']) . "', 
-			 `payment_lastname` = '" . $this->db->escape($data['payment_lastname']) . "', 
 			 `payment_company` = '" . $this->db->escape($data['payment_company']) . "', 
 			 `payment_address_1` = '" . $this->db->escape($data['payment_address_1']) . "', 
 			 `payment_address_2` = '" . $this->db->escape($data['payment_address_2']) . "', 
@@ -104,8 +100,6 @@ class ModelSaleInvoice extends Model {
 			 `payment_address_format` = '" . $this->db->escape($payment_address_format) . "', 
 			 `payment_method` = '" . $this->db->escape($data['payment_method']) . "', 
 			 `payment_code` = '" . $this->db->escape($data['payment_code']) . "', 
-			 `shipping_firstname` = '" . $this->db->escape($data['shipping_firstname']) . "', 
-			 `shipping_lastname` = '" . $this->db->escape($data['shipping_lastname']) . "', 
 			 `shipping_company` = '" . $this->db->escape($data['shipping_company']) . "', 
 			 `shipping_address_1` = '" . $this->db->escape($data['shipping_address_1']) . "', 
 			 `shipping_address_2` = '" . $this->db->escape($data['shipping_address_2']) . "', 
@@ -196,7 +190,7 @@ class ModelSaleInvoice extends Model {
 			$shipping_address_format = $country_info['address_format'];
 		} else {
 			$shipping_country = '';	
-			$shipping_address_format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+			$shipping_address_format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 		}	
 		
 		$zone_info = $this->model_localisation_zone->getZone($data['shipping_zone_id']);
@@ -214,7 +208,7 @@ class ModelSaleInvoice extends Model {
 			$payment_address_format = $country_info['address_format'];			
 		} else {
 			$payment_country = '';	
-			$payment_address_format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';					
+			$payment_address_format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';					
 		}
 	
 		$zone_info = $this->model_localisation_zone->getZone($data['payment_zone_id']);
@@ -230,13 +224,9 @@ class ModelSaleInvoice extends Model {
 		`store_id` = '" . (int)$data['store_id'] . "', 
 		`customer_id` = '" . (int)$data['customer_id'] . "', 
 		`customer_group_id` = '" . (int)$data['customer_group_id'] . "', 
-		`firstname` = '" . $this->db->escape($data['firstname']) . "', 
-		`lastname` = '" . $this->db->escape($data['lastname']) . "', 
 		`email` = '" . $this->db->escape($data['email']) . "', 
 		`telephone` = '" . $this->db->escape($data['telephone']) . "', 
 		`fax` = '" . $this->db->escape($data['fax']) . "', 
-		`payment_firstname` = '" . $this->db->escape($data['payment_firstname']) . "', 
-		`payment_lastname` = '" . $this->db->escape($data['payment_lastname']) . "', 
 		`payment_company` = '" . $this->db->escape($data['payment_company']) . "', 
 		`payment_address_1` = '" . $this->db->escape($data['payment_address_1']) . "', 
 		`payment_address_2` = '" . $this->db->escape($data['payment_address_2']) . "', 
@@ -249,8 +239,6 @@ class ModelSaleInvoice extends Model {
 		`payment_address_format` = '" . $this->db->escape($payment_address_format) . "', 
 		`payment_method` = '" . $this->db->escape($data['payment_method']) . "', 
 		`payment_code` = '" . $this->db->escape($data['payment_code']) . "', 
-		`shipping_firstname` = '" . $this->db->escape($data['shipping_firstname']) . "', 
-		`shipping_lastname` = '" . $this->db->escape($data['shipping_lastname']) . "', 
 		`shipping_company` = '" . $this->db->escape($data['shipping_company']) . "', 
 		`shipping_address_1` = '" . $this->db->escape($data['shipping_address_1']) . "', 
 		`shipping_address_2` = '" . $this->db->escape($data['shipping_address_2']) . "', 
@@ -390,13 +378,9 @@ class ModelSaleInvoice extends Model {
 				'customer_id'             => $invoice_query->row['customer_id'],
 				'company'                 => $invoice_query->row['company'],
 				'customer_group_id'       => $invoice_query->row['customer_group_id'],
-				'firstname'               => $invoice_query->row['firstname'],
-				'lastname'                => $invoice_query->row['lastname'],
 				'telephone'               => $invoice_query->row['telephone'],
 				'fax'                     => $invoice_query->row['fax'],
 				'email'                   => $invoice_query->row['email'],
-				'payment_firstname'       => $invoice_query->row['payment_firstname'],
-				'payment_lastname'        => $invoice_query->row['payment_lastname'],
 				'payment_company'         => $invoice_query->row['payment_company'],
 				'payment_company_id'      => $invoice_query->row['payment_company_id'],
 				'payment_tax_id'          => $invoice_query->row['payment_tax_id'],
@@ -414,8 +398,6 @@ class ModelSaleInvoice extends Model {
 				'payment_address_format'  => $invoice_query->row['payment_address_format'],
 				'payment_method'          => $invoice_query->row['payment_method'],
 				'payment_code'            => $invoice_query->row['payment_code'],				
-				'shipping_firstname'      => $invoice_query->row['shipping_firstname'],
-				'shipping_lastname'       => $invoice_query->row['shipping_lastname'],
 				'shipping_company'        => $invoice_query->row['shipping_company'],
 				'shipping_address_1'      => $invoice_query->row['shipping_address_1'],
 				'shipping_address_2'      => $invoice_query->row['shipping_address_2'],

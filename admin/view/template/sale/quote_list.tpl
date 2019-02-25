@@ -74,7 +74,7 @@
 						<td class="hidden-xs"><?php echo $quote['date_added']; ?></td>
 						<td class="hidden-xs hidden-sm"><?php echo $quote['date_modified']; ?></td>
 						<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+							<a href="<?php echo $action['href']; ?>" class="btn btn-<?php echo $action['color']; ?>"><i class="<?php echo $action['icon']; ?>"></i></a>
 						<?php } ?></td>
 					</tr>
 					<?php } ?>
@@ -89,4 +89,15 @@
 		<div class="pagination"><?php echo str_replace('....','',$pagination); ?></div>
 	</div>
 </div>
+<script>
+function validate() {
+	if (!$('input[type="checkbox"]').is(':checked')) {
+		alert('Select a quote to print');
+	} else {
+		var form = document.getElementById('form');
+		form.setAttribute('target', '_blank');
+		document.form.submit();
+	}
+}
+</script>
 <?php echo $footer; ?>
