@@ -66,7 +66,13 @@ class ControllerSaleInvoice extends Controller {
 			$this->redirect($this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 		
-		$this->getForm();
+		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
+      		$this->error['warning'] = $this->language->get('error_permission');
+
+			$this->getList();
+		}else{
+			$this->getForm();
+		}
   	}
 	
   	public function update() {
@@ -530,8 +536,6 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['entry_store'] = $this->language->get('entry_store');
 		$this->data['entry_customer'] = $this->language->get('entry_customer');
 		$this->data['entry_customer_group'] = $this->language->get('entry_customer_group');
-		$this->data['entry_firstname'] = $this->language->get('entry_firstname');
-		$this->data['entry_lastname'] = $this->language->get('entry_lastname');
 		$this->data['entry_vat'] = $this->language->get('entry_vat');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
@@ -599,22 +603,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['error_customer'] = '';
 		}
 		
-		if (isset($this->error['firstname'])) {
-
-			$this->data['error_firstname'] = $this->error['firstname'];
-
-		} else {
-
-			$this->data['error_firstname'] = '';
-
-		}
-		
- 		if (isset($this->error['lastname'])) {
-			$this->data['error_lastname'] = $this->error['lastname'];
-		} else {
-			$this->data['error_lastname'] = '';
-		}
-		
  		if (isset($this->error['email'])) {
 			$this->data['error_email'] = $this->error['email'];
 		} else {
@@ -626,19 +614,7 @@ class ControllerSaleInvoice extends Controller {
 		} else {
 			$this->data['error_telephone'] = '';
 		}
-						
- 		if (isset($this->error['payment_firstname'])) {
-			$this->data['error_payment_firstname'] = $this->error['payment_firstname'];
-		} else {
-			$this->data['error_payment_firstname'] = '';
-		}
 
- 		if (isset($this->error['payment_lastname'])) {
-			$this->data['error_payment_lastname'] = $this->error['payment_lastname'];
-		} else {
-			$this->data['error_payment_lastname'] = '';
-		}
-				
 		if (isset($this->error['payment_address_1'])) {
 			$this->data['error_payment_address_1'] = $this->error['payment_address_1'];
 		} else {
@@ -681,18 +657,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['error_payment_method'] = '';
 		}
 
- 		if (isset($this->error['shipping_firstname'])) {
-			$this->data['error_shipping_firstname'] = $this->error['shipping_firstname'];
-		} else {
-			$this->data['error_shipping_firstname'] = '';
-		}
-
- 		if (isset($this->error['shipping_lastname'])) {
-			$this->data['error_shipping_lastname'] = $this->error['shipping_lastname'];
-		} else {
-			$this->data['error_shipping_lastname'] = '';
-		}
-				
 		if (isset($this->error['shipping_address_1'])) {
 			$this->data['error_shipping_address_1'] = $this->error['shipping_address_1'];
 		} else {
@@ -855,22 +819,6 @@ class ControllerSaleInvoice extends Controller {
       		$this->data['company'] = '';
     	}
 		
-    	if (isset($this->request->post['firstname'])) {
-      		$this->data['firstname'] = $this->request->post['firstname'];
-		} elseif (!empty($invoice_info)) { 
-			$this->data['firstname'] = $invoice_info['firstname'];
-		} else {
-      		$this->data['firstname'] = '';
-    	}
-
-    	if (isset($this->request->post['lastname'])) {
-      		$this->data['lastname'] = $this->request->post['lastname'];
-    	} elseif (!empty($invoice_info)) { 
-			$this->data['lastname'] = $invoice_info['lastname'];
-		} else {
-      		$this->data['lastname'] = '';
-    	}
-		
     	if (isset($this->request->post['email'])) {
       		$this->data['email'] = $this->request->post['email'];
     	} elseif (!empty($invoice_info)) { 
@@ -928,14 +876,6 @@ class ControllerSaleInvoice extends Controller {
 		} else {
 			$this->data['addresses'] = array();
 		}
-			
-    	if (isset($this->request->post['payment_firstname'])) {
-      		$this->data['payment_firstname'] = $this->request->post['payment_firstname'];
-		} elseif (!empty($invoice_info)) { 
-			$this->data['payment_firstname'] = $invoice_info['payment_firstname'];
-		} else {
-      		$this->data['payment_firstname'] = '';
-    	}
 
     	if (isset($this->request->post['payment_lastname'])) {
       		$this->data['payment_lastname'] = $this->request->post['payment_lastname'];
@@ -1024,14 +964,6 @@ class ControllerSaleInvoice extends Controller {
 		} else {
       		$this->data['payment_code'] = '';
     	}			
-			
-    	if (isset($this->request->post['shipping_firstname'])) {
-      		$this->data['shipping_firstname'] = $this->request->post['shipping_firstname'];
-		} elseif (!empty($invoice_info)) { 
-			$this->data['shipping_firstname'] = $invoice_info['shipping_firstname'];
-		} else {
-      		$this->data['shipping_firstname'] = '';
-    	}
 
     	if (isset($this->request->post['shipping_lastname'])) {
       		$this->data['shipping_lastname'] = $this->request->post['shipping_lastname'];
@@ -1241,8 +1173,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['text_commission'] = $this->language->get('text_commission');
 			$this->data['text_date_added'] = $this->language->get('text_date_added');
 			$this->data['text_date_modified'] = $this->language->get('text_date_modified');			
-			$this->data['text_firstname'] = $this->language->get('text_firstname');
-			$this->data['text_lastname'] = $this->language->get('text_lastname');
 			$this->data['text_company'] = $this->language->get('text_company');
 			$this->data['text_company_id'] = $this->language->get('text_company_id');
 			$this->data['text_tax_id'] = $this->language->get('text_tax_id');
@@ -1405,8 +1335,6 @@ class ControllerSaleInvoice extends Controller {
 			
 			$this->data['store_name'] = $invoice_info['store_name'];
 			$this->data['store_url'] = $invoice_info['store_url'];
-			$this->data['firstname'] = $invoice_info['firstname'];
-			$this->data['lastname'] = $invoice_info['lastname'];
 						
 			if ($invoice_info['customer_id']) {
 				$this->data['customer'] = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $invoice_info['customer_id'], 'SSL');
@@ -1455,8 +1383,6 @@ class ControllerSaleInvoice extends Controller {
 			
 			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($invoice_info['date_added']));
 			$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($invoice_info['date_modified']));		
-			$this->data['payment_firstname'] = $invoice_info['payment_firstname'];
-			$this->data['payment_lastname'] = $invoice_info['payment_lastname'];
 			$this->data['payment_company'] = $invoice_info['payment_company'];
 			$this->data['payment_company_id'] = $invoice_info['payment_company_id'];
 			$this->data['payment_tax_id'] = $invoice_info['payment_tax_id'];
@@ -1467,8 +1393,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['payment_zone'] = $invoice_info['payment_zone'];
 			$this->data['payment_zone_code'] = $invoice_info['payment_zone_code'];
 			$this->data['payment_country'] = $invoice_info['payment_country'];			
-			$this->data['shipping_firstname'] = $invoice_info['shipping_firstname'];
-			$this->data['shipping_lastname'] = $invoice_info['shipping_lastname'];
 			$this->data['shipping_company'] = $invoice_info['shipping_company'];
 			$this->data['shipping_address_1'] = $invoice_info['shipping_address_1'];
 			$this->data['shipping_address_2'] = $invoice_info['shipping_address_2'];
@@ -1723,12 +1647,10 @@ class ControllerSaleInvoice extends Controller {
 				if ($invoice_info['shipping_address_format']) {
 					$format = $invoice_info['shipping_address_format'];
 				} else {
-					$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 				}
 
 				$find = array(
-					'{firstname}',
-					'{lastname}',
 					'{company}',
 					'{address_1}',
 					'{address_2}',
@@ -1740,8 +1662,6 @@ class ControllerSaleInvoice extends Controller {
 				);
 
 				$replace = array(
-					'firstname' => $invoice_info['shipping_firstname'],
-					'lastname'  => $invoice_info['shipping_lastname'],
 					'company'   => $invoice_info['shipping_company'],
 					'address_1' => $invoice_info['shipping_address_1'],
 					'address_2' => $invoice_info['shipping_address_2'],
@@ -1757,12 +1677,10 @@ class ControllerSaleInvoice extends Controller {
 				if ($invoice_info['payment_address_format']) {
 					$format = $invoice_info['payment_address_format'];
 				} else {
-					$format = '{firstname} {lastname}' . "\n" . '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
 				}
 
 				$find = array(
-					'{firstname}',
-					'{lastname}',
 					'{company}',
 					'{address_1}',
 					'{address_2}',
@@ -1774,8 +1692,6 @@ class ControllerSaleInvoice extends Controller {
 				);
 
 				$replace = array(
-					'firstname' => $invoice_info['payment_firstname'],
-					'lastname'  => $invoice_info['payment_lastname'],
 					'company'   => $invoice_info['payment_company'],
 					'address_1' => $invoice_info['payment_address_1'],
 					'address_2' => $invoice_info['payment_address_2'],
@@ -2072,7 +1988,9 @@ class ControllerSaleInvoice extends Controller {
 				$json['error']['warning'] = $this->language->get('error_warning');
 			}
 			
-		}
+		}else{
+			$this->data['error_warning'] = $this->language->get('error_permission');
+		} 
 		
 		// Reset everything
 		unset($this->session->data['shipping_method']);

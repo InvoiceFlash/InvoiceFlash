@@ -67,7 +67,13 @@ class ControllerSaleQuote extends Controller {
 			$this->redirect($this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 		
-		$this->getForm();
+		if (!$this->user->hasPermission('modify', 'sale/quote')) {
+      		$this->error['warning'] = $this->language->get('error_permission');
+
+			$this->getList();
+		}else{
+			$this->getForm();
+		}
     }
     
   	public function update() {
@@ -1613,6 +1619,22 @@ class ControllerSaleQuote extends Controller {
 
 		$this->load->model('setting/setting');
 
+		$this->load->model('tool/image');
+		
+		// if ($this->config->get('config_logo') && file_exists(DIR_IMAGE . $this->config->get('config_logo')) && is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
+		// 	$this->data['logo'] = $this->model_tool_image->resize($this->config->get('config_logo'), 250, 50);		
+		// } else {
+		// 	$this->data['logo'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
+		// }
+
+		$logo = $this->config->get('config_logo');
+
+		if (isset($logo) && file_exists(DIR_IMAGE . $logo)) {
+			$this->data['logo'] = $this->model_tool_image->resize($logo, 100, 100);
+		} else {
+			$this->data['logo'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
+		}
+		
 		$this->data['quotes'] = array();
 
 		$quotes = array();
