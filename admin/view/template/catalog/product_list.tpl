@@ -2,7 +2,7 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fas fa-box-open"></i><?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><i class="hidden-xs fas fa-box-open"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button class="btn btn-success btn-spacer" onClick="validate();"><i class="fa fa-files-o"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
@@ -58,7 +58,7 @@
 						<td class="text-center"><img class="img-thumbnail" src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>"></td>
 						<td><?php echo $product['name']; ?></td>
 						<td class="hidden-xs"><?php echo $product['model']; ?></td>
-						<td class="text-right hidden-xs"><?php if ($product['special']) { ?>
+						<td class="text-right hidden-xs"><?php if ($product['special']!=0) { ?>
 								<s class="text-danger"><?php echo $product['price']; ?></s> <?php echo $product['special']; ?>
 							<?php } else { ?>
 								<?php echo $product['price']; ?>

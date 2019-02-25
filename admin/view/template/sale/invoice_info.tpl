@@ -92,14 +92,6 @@
 				</div>
 				<div id="tab-payment" class="tab-pane">
 					<table class="table table-bordered table-striped table-hover info-page">
-						<tr>
-							<td class="col-sm-3"><?php echo $text_firstname; ?></td>
-							<td><?php echo $payment_firstname; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_lastname; ?></td>
-							<td><?php echo $payment_lastname; ?></td>
-						</tr>
 						<?php if ($payment_company) { ?>
 						<tr>
 							<td><?php echo $text_company; ?></td>
@@ -161,14 +153,6 @@
 				<?php if ($shipping_method) { ?>
 				<div id="tab-shipping" class="tab-pane">
 					<table class="table table-bordered table-striped table-hover info-page">
-						<tr>
-							<td class="col-sm-3"><?php echo $text_firstname; ?></td>
-							<td><?php echo $shipping_firstname; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_lastname; ?></td>
-							<td><?php echo $shipping_lastname; ?></td>
-						</tr>
 						<?php if ($shipping_company) { ?>
 						<tr>
 							<td><?php echo $text_company; ?></td>

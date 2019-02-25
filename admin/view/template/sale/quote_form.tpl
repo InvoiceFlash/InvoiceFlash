@@ -239,7 +239,7 @@
 								<li class="nav-item"><a href="#tab-payment" class="nav-link" data-toggle="tab">Payment</a></li>
 								<li class="nav-item"><a href="#tab-shipping" class="nav-link" data-toggle="tab">Shipping</a></li>
 							</ul>
-							<div class="tab-content">
+							<div class="tab-content mt-2">
 								<div class="tab-pane" id="modal-tab-customer">
 									<div class="form-horizontal">
 										<div class="form-group">
@@ -254,24 +254,6 @@
 														<?php } ?>
 													<?php } ?>
 												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
-												<?php if ($error_firstname) { ?>
-													<div class="help-block error"><?php echo $error_firstname; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
-												<?php if ($error_lastname) { ?>
-													<div class="help-block error"><?php echo $error_lastname; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
@@ -308,27 +290,9 @@
 												<select name="payment_address" class="form-control">
 													<option value="0" selected=""><?php echo $text_none; ?></option>
 													<?php foreach ($addresses as $address) { ?>
-														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname'] . ' ' . $address['lastname'] . ', ' . $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
+														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
 													<?php } ?>
 												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="payment_firstname" value="<?php echo $payment_firstname; ?>" class="form-control">
-												<?php if ($error_payment_firstname) { ?>
-													<div class="help-block error"><?php echo $error_payment_firstname; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="payment_lastname" value="<?php echo $payment_lastname; ?>" class="form-control">
-												<?php if ($error_payment_lastname) { ?>
-													<div class="help-block error"><?php echo $error_payment_lastname; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
@@ -407,27 +371,9 @@
 												<select name="shipping_address" class="form-control">
 													<option value="0" selected=""><?php echo $text_none; ?></option>
 													<?php foreach ($addresses as $address) { ?>
-														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname'] . ' ' . $address['lastname'] . ', ' . $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
+														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
 													<?php } ?>
 												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="shipping_firstname" value="<?php echo $shipping_firstname; ?>" class="form-control">
-												<?php if ($error_shipping_firstname) { ?>
-													<div class="help-block error"><?php echo $error_shipping_firstname; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="shipping_lastname" value="<?php echo $shipping_lastname; ?>" class="form-control">
-												<?php if ($error_shipping_lastname) { ?>
-													<div class="help-block error"><?php echo $error_shipping_lastname; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
