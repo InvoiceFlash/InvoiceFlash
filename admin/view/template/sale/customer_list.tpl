@@ -17,7 +17,7 @@
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_company; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th><a href="<?php echo $sort_email; ?>"><?php echo $column_email; echo ($sort == 'c.email') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs"><a href="<?php echo $sort_email; ?>"><?php echo $column_email; echo ($sort == 'c.email') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_telephone; ?>"><?php echo $column_telephone; echo ($sort == 'telephone') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_customer_group; ?>"><?php echo $column_customer_group; echo ($sort == 'customer_group') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'c.status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
@@ -30,7 +30,7 @@
 					<tr id="filter" class="info">
 						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/customer&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer"></td>
-						<td><input type="text" name="filter_email" value="<?php echo $filter_email; ?>" class="form-control"></td>
+						<td class="hidden-xs"><input type="text" name="filter_email" value="<?php echo $filter_email; ?>" class="form-control"></td>
 						<td><input type="text" name="filter_telephone" value="<?php echo $filter_telephone; ?>" class="form-control"></td>
 						<td class="hidden-xs"><select name="filter_customer_group_id" class="form-control">
 							<option value="*">&ndash;</option>
@@ -85,7 +85,7 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $customer['customer_id']; ?>">
 							<?php } ?></td>
 						<td><?php echo $customer['company']; ?></td>
-						<td><?php echo $customer['email']; ?></td>
+						<td class="hidden-xs"><?php echo $customer['email']; ?></td>
 						<td><?php echo $customer['telephone']; ?></td>
 						<td class="hidden-xs"><?php echo $customer['customer_group']; ?></td>
 						<td class="hidden-xs text-<?php echo strtolower($customer['status']); ?>"><?php echo $customer['status']; ?></td>

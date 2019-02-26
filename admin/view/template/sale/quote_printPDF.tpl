@@ -44,7 +44,7 @@ th {
 <!-- <?php foreach ($quotes as $quotes) { ?> -->
 	<div class="store_logo">
 		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $quote['store_name']; ?>" /><br>
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $quotes['store_name']; ?>" /><br>
 			<span class="title"><?php echo $text_quote; ?></span>
 		</div>
 	</div>
@@ -60,10 +60,10 @@ th {
 				<?php echo $quotes['store_url']; ?></td>
 			<td>
 				<b><?php echo $text_date_added; ?></b> <?php echo $quotes['date_added']; ?><br>
-				<?php if ($quotes['quote_no']) { ?>
-					<b><?php echo $text_quote_no; ?></b> <?php echo $quotes['quote_no']; ?><br>
+				<?php if ($quotes['invoice_no']) { ?>
+					<b><?php echo $text_quote_no; ?></b> <?php echo $quotes['invoice_no']; ?><br>
 				<?php } ?>
-				<b><?php echo $text_quote_id; ?></b> <?php echo $quotes['quote_prefix'] . $quotes['quote_id']; ?><br>
+				<b><?php echo $text_quote_id; ?></b> <?php echo $quotes['invoice_prefix'] . $quotes['quote_id']; ?><br>
 				<b><?php echo $text_payment_method; ?></b> <?php echo $quotes['payment_method']; ?><br>
 				<?php if ($quotes['shipping_method']) { ?>
 				<b><?php echo $text_shipping_method; ?></b> <?php echo $quotes['shipping_method']; ?><br>
