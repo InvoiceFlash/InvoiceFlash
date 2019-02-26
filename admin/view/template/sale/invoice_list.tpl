@@ -74,8 +74,8 @@
 						<td class="hidden-xs"><?php echo $invoice['date_added']; ?></td>
 						<td class="hidden-xs hidden-sm"><?php echo $invoice['date_modified']; ?></td>
 						<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
-							<?php } ?></td>
+							<a href="<?php echo $action['href']; ?>" class="btn btn-<?php echo $action['color']; ?>"><i class="<?php echo $action['icon']; ?>"></i></a>
+						<?php } ?></td>
 					</tr>
 					<?php } ?>
 					<?php } else { ?>

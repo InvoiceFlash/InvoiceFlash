@@ -65,14 +65,14 @@ class ControllerSaleInvoice extends Controller {
 			
 			$this->redirect($this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
-		
-		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
-      		$this->error['warning'] = $this->language->get('error_permission');
 
+		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+	   
 			$this->getList();
-		}else{
+	  	}else{
 			$this->getForm();
-		}
+	  	}
   	}
 	
   	public function update() {
@@ -129,7 +129,13 @@ class ControllerSaleInvoice extends Controller {
 			$this->redirect($this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 		
-    	$this->getForm();
+    	if (!$this->user->hasPermission('modify', 'sale/invoice')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		
+			$this->getList();
+		}else{
+			$this->getForm();
+		}
   	}
 	
   	public function delete() {
@@ -348,15 +354,17 @@ class ControllerSaleInvoice extends Controller {
 
     	foreach ($results as $result) {
 			$action = array();
-						
+                      
 			$action[] = array(
-				'text' => $this->language->get('text_view'),
-				'href' => $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL')
+				'href' => $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL'),
+				'icon' => 'far fa-eye',
+				'color' => 'info'
 			);
 			
 			$action[] = array(
-				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('sale/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL')
+				'href' => $this->url->link('sale/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL'),
+				'icon' => 'fas fa-edit',
+				'color' => 'default'
 			);
 			
 			$this->data['invoices'][] = array(
@@ -1988,9 +1996,7 @@ class ControllerSaleInvoice extends Controller {
 				$json['error']['warning'] = $this->language->get('error_warning');
 			}
 			
-		}else{
-			$this->data['error_warning'] = $this->language->get('error_permission');
-		} 
+		}
 		
 		// Reset everything
 		unset($this->session->data['shipping_method']);
