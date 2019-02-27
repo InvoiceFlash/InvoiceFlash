@@ -15,6 +15,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] web with landpage, forum, demo and download
 - [ ] Option to erase demo data
 - [ ] Import Flash Software
+- [x] Multilanguage
 - [x] Logo on invoice/quote template
 
 ### 0.1.0 (Beta)
