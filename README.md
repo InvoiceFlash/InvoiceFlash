@@ -9,7 +9,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 
 ---
 
-### 0.2.0 (next release)
+### 0.0.2 (next release)
 
 - [x] Manufacturer
 - [ ] web with landpage, forum, demo and download
@@ -17,8 +17,10 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Import Flash Software
 - [x] Multilanguage
 - [x] Logo on invoice/quote template
+- [ ] Mails (send & receive)
+- [ ] Category filter on products.
 
-### 0.1.0 (Beta)
+### 0.0.1 (Beta)
 - Customers
 - Invoices
 - Quotes
