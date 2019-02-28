@@ -4,27 +4,27 @@
 	<?php $fa = 'money'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
 	<div class="panel-body">
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
-			<div class="form-group">
-				<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_name; ?></label>
-				<div class="control-field col-sm-4">
+			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_name; ?></label>
+				<div class="col-sm-6">
 					<input type="text" name="name" value="<?php echo $name; ?>" class="form-control" autofocus="">
 					<?php if ($error_name) { ?>
 						<div class="help-block error"><?php echo $error_name; ?></div>
 					<?php } ?>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_rate; ?></label>
-				<div class="control-field col-sm-4">
+			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_rate; ?></label>
+				<div class="col-sm-6">
 					<input type="text" name="rate" value="<?php echo $rate; ?>" class="form-control">
 					<?php if ($error_rate) { ?>
 						<div class="help-block error"><?php echo $error_rate; ?></div>
 					<?php } ?>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_type; ?></label>
-				<div class="control-field col-sm-4">
+			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_type; ?></label>
+				<div class="col-sm-6">
 					<select name="type" class="form-control">
 						<?php if ($type == 'P') { ?>
 						<option value="P" selected=""><?php echo $text_percent; ?></option>
@@ -39,9 +39,9 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_customer_group; ?></label>
-				<div class="control-field col-sm-4">
+			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_group; ?></label>
+				<div class="col-sm-6">
 					<div class="panel panel-default panel-scrollable">
 						<div class="list-group list-group-hover">
 						<?php foreach ($customer_groups as $customer_group) { ?>
@@ -59,9 +59,9 @@
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_geo_zone; ?></label>
-				<div class="control-field col-sm-4">
+			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_geo_zone; ?></label>
+				<div class="col-sm-6">
 					<select name="geo_zone_id" class="form-control">
 						<?php foreach ($geo_zones as $geo_zone) { ?>
 						<?php	if ($geo_zone['geo_zone_id'] == $geo_zone_id) { ?>
