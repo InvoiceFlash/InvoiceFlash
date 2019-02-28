@@ -30,9 +30,9 @@
           <tr>
             <th class="text-left"><?php echo $column_date_added; ?></th>
             <th class="text-left"><?php echo $column_customer; ?></th>
-            <th class="text-left"><?php echo $column_city; ?></th>
-            <th class="text-left"><?php echo $column_email; ?></th>
-            <th class="text-left"><?php echo $column_phone; ?></th>
+            <th class="text-left d-none d-sm-table-cell"><?php echo $column_city; ?></th>
+            <th class="text-left d-none d-sm-table-cell"><?php echo $column_email; ?></th>
+            <th class="text-left d-none d-sm-table-cell"><?php echo $column_phone; ?></th>
             <th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
           </tr>
         </thead>
@@ -42,10 +42,12 @@
               <tr>
                 <td class="text-left"><?php echo $customer['date_added'] ?></td>
                 <td class="text-left"><?php echo $customer['customer'] ?></td>
-                <td class="text-left"><?php echo $customer['city'] ?></td>
-                <td class="text-left"><?php echo $customer['email'] ?></td>
-                <td class="text-left"><?php echo $customer['telephone'] ?></td>
-                <td class="text-right"><a href="<?php echo $customer['href'] ?>" class="btn btn-default"><?php echo $customer['text'] ?></a></td>
+                <td class="text-left d-none d-sm-table-cell"><?php echo $customer['city'] ?></td>
+                <td class="text-left d-none d-sm-table-cell"><?php echo $customer['email'] ?></td>
+                <td class="text-left d-none d-sm-table-cell"><?php echo $customer['telephone'] ?></td>
+                <td class="text-right"><a href="<?php echo $customer['href'] ?>" class="btn btn-info">
+                  <i class="fas fa-eye"></i><span class="d-none d-sm-inline"> <?php echo $customer['text'] ?></span>
+                </a></td>
               </tr>
             <?php endforeach ?>
           <?php else: ?>

@@ -27,7 +27,7 @@
 						<td><?php echo $zone['name']; ?></td>
 						<td class="hidden-xs"><?php echo $zone['code']; ?></td>
 						<td class="text-right"><?php foreach ($zone['action'] as $action) { ?>
-							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <span class="hidden-xs"><?php echo $action['text']; ?></span></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>
