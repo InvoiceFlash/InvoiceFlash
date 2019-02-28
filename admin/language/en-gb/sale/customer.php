@@ -213,5 +213,10 @@ $_['button_send'] = 'Send';
 $_['button_upload'] = 'Upload';
 
 $_['text_alert_imap'] = 'Imap library is not installed!!';
+$_['text_success_email'] = 'Mail sended correctly to customer';
+
+$_['error_to'] = 'The destination email is not valid!';
+$_['error_subject'] = 'Subject can not be empty!';
+$_['error_message'] = 'Message can not be empty!';
 
 ?>

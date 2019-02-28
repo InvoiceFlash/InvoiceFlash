@@ -71,18 +71,24 @@ class ControllerExtensionTotal extends Controller {
 
 				if (!in_array($extension, $extensions)) {
 					$action[] = array(
-						'text' => $this->language->get('text_install'),
-						'href' => $this->url->link('extension/total/install', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
+						'icon' 	=> '<i class="fas fa-plus-circle"></i>',
+						'color' => 'success',
+						'text' 	=> $this->language->get('text_install'),
+						'href' 	=> $this->url->link('extension/total/install', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
 					);
 				} else {
 					$action[] = array(
-						'text' => $this->language->get('text_edit'),
-						'href' => $this->url->link('total/' . $extension . '', 'token=' . $this->session->data['token'], 'SSL')
+						'icon' 	=> '<i class="fas fa-edit"></i>',
+						'color' => 'default',
+						'text' 	=> $this->language->get('text_edit'),
+						'href' 	=> $this->url->link('total/' . $extension . '', 'token=' . $this->session->data['token'], 'SSL')
 					);
 
 					$action[] = array(
-						'text' => $this->language->get('text_uninstall'),
-						'href' => $this->url->link('extension/total/uninstall', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
+						'icon' 	=> '<i class="fas fa-minus-circle"></i>',
+						'color' => 'danger',
+						'text' 	=> $this->language->get('text_uninstall'),
+						'href' 	=> $this->url->link('extension/total/uninstall', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
 					);
 				}
 

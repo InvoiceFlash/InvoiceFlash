@@ -12,10 +12,11 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 ### 0.0.2 (next release)
 
 - [x] Manufacturer
-- [ ] web with landpage, forum, demo and download
+- [ ] web with download and docs
 - [ ] Option to erase demo data
 - [ ] Import Flash Software
 - [x] Multilanguage
+- [x] Returns
 - [x] Logo on invoice/quote template
 - [ ] Mails (send & receive)
 - [ ] Category filter on products.

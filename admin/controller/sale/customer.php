@@ -2144,31 +2144,51 @@ class ControllerSaleCustomer extends Controller {
 	}
 
 	public function new_email(){
-		$data['customer_id'] = $this->request->get['customer_id'];
+		$this->language->load('sale/customer');
+		$json = array();
+		
+		if ($this->request->post['to']=='' || filter_var($this->request->post['to'], FILTER_VALIDATE_EMAIL)==false) {
+			$json['error']['to'] = $this->language->get('error_to');
+		} 
 
-		$data['to'] = $this->request->post['to'];
-		$data['subject'] = $this->request->post['subject'];
-		$data['text'] = $this->request->post['message'];
-		$data['code'] = md5($this->request->post['message']);
-
-		$lcFile = '';
-		if (isset($this->request->post['filename']) && $this->request->post['filename']!=''){
-			$lcFile = DIR_DOWNLOAD . $this->request->post['filename'];
-
-			$newName = substr($lcFile, 0, strripos($lcFile, '.'));
-
-			if (rename($lcFile, $newName)) {
-				$lcFile = $newName;
-			}
+		if ($this->request->post['subject']=='') {
+			$json['error']['subject'] = $this->language->get('error_subject');
 		}
 
-		$this->sendnewmail($data['to'], $data['subject'], $data['text'], $lcFile);
-
-		$this->load->model('catalog/mail');
-
-		$this->model_catalog_mail->addMailSended($data);
-
-		$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->request->get['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'));
+		if ($this->request->post['message']=='') {
+			$json['error']['message'] = $this->language->get('error_message');
+		} 
+		
+		if(empty($json['error'])){
+			$data['customer_id'] = $this->request->get['customer_id'];
+			
+			$data['to'] = $this->request->post['to'];
+			$data['subject'] = $this->request->post['subject'];
+			$data['text'] = $this->request->post['message'];
+			$data['code'] = md5($this->request->post['message']);
+			
+			$data['file'] = '';
+			if (isset($this->request->post['filename']) && $this->request->post['filename']!=''){
+				$data['file'] = DIR_DOWNLOAD . $this->request->post['filename'];
+				
+				$newName = substr($data['file'], 0, strripos($data['file'], '.'));
+				
+				if (rename($data['file'], $newName)) {
+					$data['file'] = $newName;
+				}
+			}
+			
+			$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+			
+			$this->load->model('catalog/mail');
+			
+			$this->model_catalog_mail->addMailSended($data);
+			
+			$json['success'] = $this->language->get('text_success_email');
+		}
+		
+		
+		$this->response->setOutput(json_encode($json));
 	}
 
 	public function country() {

@@ -22,8 +22,8 @@
 					<td class="hidden-xs text-<?php echo strtolower($extension['status']); ?>"><?php echo $extension['status'] ?></td>
 					<td class="text-right hidden-xs"><?php echo $extension['sort_order']; ?></td>
 					<td class="text-right"><?php foreach ($extension['action'] as $action) { ?>
-						<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
-						<?php } ?></td>
+						<a class="btn btn-<?php echo $action['color']; ?>" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?> <span class="hidden-xs"><?php echo $action['text']; ?></span></a>
+					<?php } ?></td>
 				</tr>
 				<?php } ?>
 				<?php } else { ?>
