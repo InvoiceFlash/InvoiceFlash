@@ -21,7 +21,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Mails (send & receive)
 - [ ] Category filter on products.
 
-### 0.0.1 (Beta)
+### 0.0.1 
 - Customers
 - Invoices
 - Quotes
