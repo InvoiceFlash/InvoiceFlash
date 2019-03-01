@@ -2188,7 +2188,9 @@ class ControllerSaleCustomer extends Controller {
 		}
 		
 		
-		$this->response->setOutput(json_encode($json));
+		//$this->response->setOutput(json_encode($json));
+		
+		$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->request->get['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'));
 	}
 
 	public function country() {

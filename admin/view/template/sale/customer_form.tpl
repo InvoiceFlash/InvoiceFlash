@@ -648,26 +648,23 @@
       <?php
     if (!extension_loaded('imap')) {?>
       <center><span class = "label label-danger"><?php echo $text_alert_imap ?></span>
-    <?php } ?>
-        <form class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
+    <?php }   ?>
+        <form action="<?php echo $new_email; ?>" class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
             <div class="form-group row">
               <label for="to" class="control-label col-sm-3"><?php echo $text_to ?></label>
               <div class="col-sm-9">
                 <input type="email" name="to" id="to" class="form-control" value="<?php echo $to; ?>">
-								<span class="text-danger" id="error-to"></span>
               </div>
             </div>
         <div class="form-group row">
           <label class="control-label col-sm-3" for="subject"><?php echo $text_subject ?></label>
           <div class="col-sm-9">
             <input type="text" class="form-control" id="subject" name="subject">
-						<span class="text-danger" id="error-subject"></span>
           </div>
           </div>
           <div class="form-group row">
             <label for="message" class="control-label col-sm-3"><?php echo $text_message ?></label>
-            <div class="col-sm-9"><textarea name="message" class="ckeditor form-control" spellcheck="false" id="message"></textarea>
-						<span class="text-danger" id="error-message"></span></div>
+            <div class="col-sm-9"><textarea name="message" class="ckeditor form-control" spellcheck="false" id="message"></textarea></div>
           </div>
           <div class="form-group row">
           	<label class="control-label col-sm-3">Attachment:</label>
@@ -686,7 +683,7 @@
          </form>
       </div>
       <div class="modal-footer">
-				<button type="button" id="send" class="btn btn-default"> <?php echo $button_send; ?></button>
+        <button class="btn btn-default" type="submit" form="formEmail" id="send"> <?php echo $button_send ?></button>
          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
@@ -1067,30 +1064,5 @@ function removeBanIP(ip) {
 };
 
 </script>
-<script>
-$('#send').on('click',function(e){
-	$.ajax({
-		url:'index.php?route=sale/customer/new_email&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>',
-		type:'post',
-		dataType:'json',
-		data:$('#formEmail').serialize(),
-		beforeSend:function(){
-			$('#send').button('loading');
-			$('#send').append($('<i>', {class:'icon-loading'}));
-		},
-		success:function(json){
-			$('#send').button('reset');
-			if(json['error']){
-				if(json['error']['to']){ $('#error-to').html(json['error']['to']); }
-				if(json['error']['subject']){ $('#error-subject').html(json['error']['subject']); }
-				if(json['error']['message']){ $('#error-message').html(json['error']['message']); }
-			}
-			if(json['success']){
-				$('#EmailModal').modal('hide');
-				alertMessage('success',json['success']);
-			}
-		}
-	});
-});
-</script>
+
 <?php echo $footer; ?>
