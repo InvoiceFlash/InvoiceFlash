@@ -2,7 +2,7 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a> 
 			<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
@@ -94,14 +94,6 @@
 				</div>
 				<div id="tab-payment" class="tab-pane">
 					<table class="table table-bordered table-striped table-hover info-page">
-						<tr>
-							<td class="col-sm-3"><?php echo $text_firstname; ?></td>
-							<td><?php echo $payment_firstname; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_lastname; ?></td>
-							<td><?php echo $payment_lastname; ?></td>
-						</tr>
 						<?php if ($payment_company) { ?>
 						<tr>
 							<td><?php echo $text_company; ?></td>
@@ -163,14 +155,6 @@
 				<?php if ($shipping_method) { ?>
 				<div id="tab-shipping" class="tab-pane">
 					<table class="table table-bordered table-striped table-hover info-page">
-						<tr>
-							<td class="col-sm-3"><?php echo $text_firstname; ?></td>
-							<td><?php echo $shipping_firstname; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_lastname; ?></td>
-							<td><?php echo $shipping_lastname; ?></td>
-						</tr>
 						<?php if ($shipping_company) { ?>
 						<tr>
 							<td><?php echo $text_company; ?></td>
@@ -221,11 +205,12 @@
 				</div>
 				<?php } ?>
 				<div id="tab-product" class="tab-pane">
+					<div class="table-responsive-sm">
 					<table class="table table-bordered table-striped table-hover">
 						<thead>
 							<tr>
 								<th><?php echo $column_product; ?></th>
-								<th><?php echo $column_model; ?></th>
+								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -242,7 +227,7 @@
 									<div class="help"><?php echo $option['name']; ?>: <a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></div>
 									<?php } ?>
 									<?php } ?></td>
-								<td><?php echo $product['model']; ?></td>
+								<td class="d-none d-sm-table-cell"><?php echo $product['model']; ?></td>
 								<td class="text-right"><?php echo $product['quantity']; ?></td>
 								<td class="text-right"><?php echo $product['price']; ?></td>
 								<td class="text-right"><?php echo $product['total']; ?></td>
@@ -250,19 +235,21 @@
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
-									<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>
+									<td class="d-none d-sm-table-cell"></td>
+									<td colspan="3" class="text-right"><?php echo $total['title']; ?>:</td>
 									<td class="text-right"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
 					</table>
+					</div>
 				</div>
 				<div id="tab-history" class="tab-pane">
 					<div id="history" data-href="index.php?route=sale/quote/history&token=<?php echo $token; ?>&quote_id=<?php echo $quote_id; ?>"></div>
 					<div class="form-horizontal">
-						<div class="form-group">
-							<label class="control-label col-sm-2"><?php echo $entry_invoice_status; ?></label>
-							<div class="control-field col-sm-4">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_invoice_status; ?></label>
+							<div class="col-sm-6">
 								<select name="quote_status_id" class="form-control">
 									<?php foreach ($invoice_statuses as $invoice_statuses) { ?>
 									<?php if ($invoice_statuses['invoice_status_id'] == $invoice_status_id) { ?>
@@ -274,19 +261,23 @@
 								</select>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-2" for="notify"><?php echo $entry_notify; ?></label>
-							<div class="control-field col-sm-4">
-								<label class="checkbox-inline"><input type="checkbox" name="notify" value="1" id="notify"></label>
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2" for="notify"><?php echo $entry_notify; ?></label>
+							<div class="col-sm-6">
+								<div class="toggle-flip"><label>
+									<input type="hidden" name="notify" value=""> 
+									<input type="checkbox">
+									<span class="flip-indecator" data-toggle-on="Yes" data-toggle-off="No"></span>
+								</label></div>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-2" for="comment"><?php echo $entry_comment; ?></label>
-							<div class="control-field col-sm-4">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2" for="comment"><?php echo $entry_comment; ?></label>
+							<div class="col-sm-6">
 								<textarea name="comment" class="form-control" rows="3" id="comment"></textarea>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group row">
 							<div class="control-field col-sm-4 col-sm-offset-2">
 								<button type="button" id="button-history" data-action="quote" data-target="sale" data-id="<?php echo $quote_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_history; ?></button>
 							</div>

@@ -245,7 +245,7 @@
 								<li class="nav-item"><a href="#tab-payment" class="nav-link" data-toggle="tab">Payment</a></li>
 								<li class="nav-item"><a href="#tab-shipping" class="nav-link" data-toggle="tab">Shipping</a></li>
 							</ul>
-							<div class="tab-content">
+							<div class="tab-content mt-2">
 								<div class="tab-pane" id="modal-tab-customer">
 									<div class="form-horizontal">
 										<div class="form-group">
@@ -260,24 +260,6 @@
 														<?php } ?>
 													<?php } ?>
 												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
-												<?php if ($error_firstname) { ?>
-													<div class="help-block error"><?php echo $error_firstname; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
-												<?php if ($error_lastname) { ?>
-													<div class="help-block error"><?php echo $error_lastname; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
@@ -314,27 +296,9 @@
 												<select name="payment_address" class="form-control">
 													<option value="0" selected=""><?php echo $text_none; ?></option>
 													<?php foreach ($addresses as $address) { ?>
-														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname'] . ' ' . $address['lastname'] . ', ' . $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
+														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
 													<?php } ?>
 												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="payment_firstname" value="<?php echo $payment_firstname; ?>" class="form-control">
-												<?php if ($error_payment_firstname) { ?>
-													<div class="help-block error"><?php echo $error_payment_firstname; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="payment_lastname" value="<?php echo $payment_lastname; ?>" class="form-control">
-												<?php if ($error_payment_lastname) { ?>
-													<div class="help-block error"><?php echo $error_payment_lastname; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
@@ -413,27 +377,9 @@
 												<select name="shipping_address" class="form-control">
 													<option value="0" selected=""><?php echo $text_none; ?></option>
 													<?php foreach ($addresses as $address) { ?>
-														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['firstname'] . ' ' . $address['lastname'] . ', ' . $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
+														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
 													<?php } ?>
 												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="shipping_firstname" value="<?php echo $shipping_firstname; ?>" class="form-control">
-												<?php if ($error_shipping_firstname) { ?>
-													<div class="help-block error"><?php echo $error_shipping_firstname; ?></div>
-												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="shipping_lastname" value="<?php echo $shipping_lastname; ?>" class="form-control">
-												<?php if ($error_shipping_lastname) { ?>
-													<div class="help-block error"><?php echo $error_shipping_lastname; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
@@ -552,48 +498,9 @@ function validateForm(){
 }
 </script>
 <script>
-$('#customer_group_id').change(function(){
-	$('input[name="customer_group_id"]').val(this.value);
-	
-	var customer_group = [];
-	
-<?php foreach ($customer_groups as $customer_group) { ?>
-	var i=<?php echo $customer_group['customer_group_id']; ?>;
-	customer_group[i]=[];
-	customer_group[i]['company_id_display']='<?php echo $customer_group['company_id_display']; ?>';
-	customer_group[i]['company_id_required']='<?php echo $customer_group['company_id_required']; ?>';
-	customer_group[i]['tax_id_display']='<?php echo $customer_group['tax_id_display']; ?>';
-	customer_group[i]['tax_id_required']='<?php echo $customer_group['tax_id_required']; ?>';
-<?php } ?>	
-
-	if(customer_group[this.value]){
-		if(customer_group[this.value]['company_id_display']==1){
-			$('#company-id-display').show();
-		}else{
-			$('#company-id-display').hide();
-		}
-		if(customer_group[this.value]['company_id_required']==1){
-			$('#company-id-required').show();
-		}else{
-			$('#company-id-required').hide();
-		}
-		if(customer_group[this.value]['tax_id_display']==1){
-			$('#tax-id-display').show();
-		}else{
-			$('#tax-id-display').hide();
-		}
-		if(customer_group[this.value]['tax_id_required']==1){
-			$('#tax-id-required').show();
-		}else{
-			$('#tax-id-required').hide();
-		}	
-	}
-}).change();
-</script>
-<script>
 $('#ProductModal').on('hidden.bs.modal', function () {
     $(this).find("#invoice-product").val('').end();
-    $(this).find("#product_id").val('');
+    $(this).find("#product_id").val(0);
 	$(this).find("#option").html('');
 });
 $('#addProduct').click(function(e){
