@@ -9,9 +9,9 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 
 ---
 ### 0.0.3 (next release)
-- [] Orders
-- [] Payments
-- [] Auto-update
+- [ ] Orders
+- [ ] Payments
+- [ ] Auto-update
 
 ### 0.0.2 (In development..)
 - [x] Manufacturers
@@ -21,7 +21,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [x] Multilanguage
 - [x] Returns
 - [x] Logo on invoice/quote template
-- [ ] Mails (send & receive) -> cron
+- [ ] Mails (send & receive)
 - [ ] Category filter on products.
 
 ### 0.0.1 
