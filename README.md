@@ -8,17 +8,20 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</b></p>
 
 ---
+### 0.0.3 (next release)
+- [] Orders
+- [] Payments
+- [] Auto-update
 
-### 0.0.2 (next release)
-
-- [x] Manufacturer
+### 0.0.2 (In development..)
+- [x] Manufacturers
 - [ ] web with download and docs
 - [ ] Option to erase demo data
 - [ ] Import Flash Software
 - [x] Multilanguage
 - [x] Returns
 - [x] Logo on invoice/quote template
-- [ ] Mails (send & receive)
+- [ ] Mails (send & receive) -> cron
 - [ ] Category filter on products.
 
 ### 0.0.1 
@@ -33,7 +36,6 @@ To use InvoiceFlash application you should have already installed:
 *   **MySQL** >=4.1 server 
 
 ### How to install
-
 Please read the installation instructions included in the repository or download file
 
 ## Credits / Technologies
