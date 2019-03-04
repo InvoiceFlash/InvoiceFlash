@@ -263,7 +263,7 @@
 							<label class="col-form-label col-sm-10 col-md-2" for="notify"><?php echo $entry_notify; ?></label>
 							<div class="col-sm-6">
 								<div class="toggle-flip"><label>
-									<input type="hidden" name="notify" value="<?php echo $notify; ?>"> 
+									<input type="hidden" name="notify"> 
 									<input type="checkbox">
 									<span class="flip-indecator" data-toggle-on="Yes" data-toggle-off="No"></span>
 								</label></div>
@@ -286,6 +286,38 @@
 		</div>
 	</div>
 </div>
+<script>
+$('#send').on('click',function(e){
+	var to = $('#to').val();
+	var subject = $('#subject').val();
+
+	var editor = CKEDITOR.instances.message;
+	var message = editor.getData();
+
+	$.ajax({
+		url:'index.php?route=sale/invoice/email&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>',
+		type:'post',
+		dataType:'json',
+		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),
+		beforeSend:function(){
+			$('#send').button('loading');
+			$('#send').append($('<i>', {class:'icon-loading'}));
+		},
+		success:function(json){
+			$('#send').button('reset');
+			if(json['error']){
+				if(json['error']['to']){ $('#error-to').html(json['error']['to']); }
+				if(json['error']['subject']){ $('#error-subject').html(json['error']['subject']); }
+				if(json['error']['message']){ $('#error-message').html(json['error']['message']); }
+			}
+			if(json['success']){
+				$('#EmailModal').modal('hide');
+				alertMessage('success',json['success']);
+			}
+		}
+	});
+});
+</script>
 <?php 
 $id = $invoice_id;
 include(DIR_TEMPLATE . 'sale/email_modal.tpl');
