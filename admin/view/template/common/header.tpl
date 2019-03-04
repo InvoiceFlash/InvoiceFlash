@@ -53,6 +53,7 @@
 								<a href="<?php echo $option; ?>" class="dropdown-item"><?php echo $text_option; ?></a>
 							</div>
 						</div>
+						<a href="<?php echo $manufacturer; ?>" class="dropdown-item"><?php echo $text_manufacturer; ?></a>
 						<a href="<?php echo $localisation_payment; ?>" class="dropdown-item"><?php echo $text_localisation_payment; ?></a>
 						<a href="<?php echo $localisation_shipping; ?>" class="dropdown-item"><?php echo $text_localisation_shipping; ?></a>
 					</div>
@@ -68,6 +69,7 @@
 						</div>
 						<a href="<?php echo $quote; ?>" class="dropdown-item"><?php echo $text_quote; ?></a>
 						<a href="<?php echo $invoice; ?>" class="dropdown-item"><?php echo $text_invoice; ?></a>
+						<a href="<?php echo $return; ?>" class="dropdown-item"><?php echo $text_return; ?></a>
 					</div>
 				</div>
 				<div id="reports" class="nav-item dropdown">
@@ -109,6 +111,13 @@
 								<a href="<?php echo $country; ?>" class="dropdown-item"><?php echo $text_country; ?></a>
 								<a href="<?php echo $zone; ?>" class="dropdown-item"><?php echo $text_zone; ?></a>
 								<a href="<?php echo $geo_zone; ?>" class="dropdown-item"><?php echo $text_geo_zone; ?></a>
+								<div class="dropdown-submenu"><a class="dropdowm-item dropdown-toggle">Return</a>
+									<div class="dropdown-menu">
+										<a href="<?php echo $return_status; ?>" class="dropdown-item"><?php echo $text_return_status; ?></a>
+										<a href="<?php echo $return_action; ?>" class="dropdown-item"><?php echo $text_return_action; ?></a>
+										<a href="<?php echo $return_reason; ?>" class="dropdown-item"><?php echo $text_return_reason; ?></a>
+									</div>
+								</div>
 								<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_tax; ?></a>
 									<div class="dropdown-menu">
 										<a href="<?php echo $tax_class; ?>" class="dropdown-item"><?php echo $text_tax_class; ?></a>
@@ -121,8 +130,9 @@
 							</div>
 						</div>
 						<a href="<?php echo $error_log; ?>" class="dropdown-item"><?php echo $text_error_log; ?></a>
-						<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
-						
+						<? if ($this->user->hasPermission('access', 'tool/backup')) { ?>
+							<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
+						<? } ?>
 					</div>
 				</div>
 				

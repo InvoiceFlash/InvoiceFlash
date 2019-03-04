@@ -8031,6 +8031,17 @@ CREATE TABLE `if_delivery` (
   PRIMARY KEY (`delivery_id`)
 ) ENGINE=MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_cron`;
+CREATE TABLE `if_cron` (
+  `cron_id` int(11) NOT NULL AUTO_INCREMENT,
+  `code` varchar(64) NOT NULL,
+  `cycle` varchar(12) NOT NULL,
+  `action` text NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `date_modified` datetime NOT NULL,
+  PRIMARY KEY (`cron_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --

@@ -18,7 +18,7 @@
 				<?php } ?>
 				<li class="nav-item"><a class="nav-link" href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li>
 			</ul>
-			<div class="tab-content">
+			<div class="tab-content mt-2">
 				<div id="tab-invoice" class="tab-pane active">
 					<table class="table table-bordered table-striped table-hover info-page">
 						<tr>
@@ -203,11 +203,12 @@
 				</div>
 				<?php } ?>
 				<div id="tab-product" class="tab-pane">
+				<div class="table-responsive-sm">
 					<table class="table table-bordered table-striped table-hover">
 						<thead>
 							<tr>
 								<th><?php echo $column_product; ?></th>
-								<th><?php echo $column_model; ?></th>
+								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -224,7 +225,7 @@
 									<div class="help"><?php echo $option['name']; ?>: <a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></div>
 									<?php } ?>
 									<?php } ?></td>
-								<td><?php echo $product['model']; ?></td>
+								<td class="d-none d-sm-table-cell"><?php echo $product['model']; ?></td>
 								<td class="text-right"><?php echo $product['quantity']; ?></td>
 								<td class="text-right"><?php echo $product['price']; ?></td>
 								<td class="text-right"><?php echo $product['total']; ?></td>
@@ -232,19 +233,21 @@
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
-									<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>
+									<td class="d-none d-sm-table-cell"></td>
+									<td colspan="3" class="text-right"><?php echo $total['title']; ?>:</td>
 									<td class="text-right"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
 					</table>
+					</div>
 				</div>
 				<div id="tab-history" class="tab-pane">
 					<div id="history" data-href="index.php?route=sale/invoice/history&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>"></div>
 					<div class="form-horizontal">
-						<div class="form-group">
-							<label class="control-label col-sm-2"><?php echo $entry_invoice_status; ?></label>
-							<div class="control-field col-sm-4">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_invoice_status; ?></label>
+							<div class="col-sm-6">
 								<select name="invoice_status_id" class="form-control">
 									<?php foreach ($invoice_statuses as $invoice_statuses) { ?>
 									<?php if ($invoice_statuses['invoice_status_id'] == $invoice_status_id) { ?>
@@ -256,20 +259,24 @@
 								</select>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-2" for="notify"><?php echo $entry_notify; ?></label>
-							<div class="control-field col-sm-4">
-								<label class="checkbox-inline"><input type="checkbox" name="notify" value="1" id="notify"></label>
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2" for="notify"><?php echo $entry_notify; ?></label>
+							<div class="col-sm-6">
+								<div class="toggle-flip"><label>
+									<input type="hidden" name="notify" value="<?php echo $notify; ?>"> 
+									<input type="checkbox">
+									<span class="flip-indecator" data-toggle-on="Yes" data-toggle-off="No"></span>
+								</label></div>
 							</div>
 						</div>
-						<div class="form-group">
-							<label class="control-label col-sm-2" for="comment"><?php echo $entry_comment; ?></label>
-							<div class="control-field col-sm-4">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2" for="comment"><?php echo $entry_comment; ?></label>
+							<div class="col-sm-6">
 								<textarea name="comment" class="form-control" rows="3" id="comment"></textarea>
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="control-field col-sm-4 col-sm-offset-2">
+						<div class="form-group row">
+							<div class="col-sm-6">
 								<button type="button" id="button-history" data-action="invoice" data-target="sale" data-id="<?php echo $invoice_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_history; ?></button>
 							</div>
 						</div>
