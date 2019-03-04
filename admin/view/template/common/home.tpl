@@ -21,6 +21,7 @@
 <noscript>
     <div class="alert alert-danger"><?php echo $error_javascript; ?></div>
 </noscript>
+<?php if ($view['quick_action']) { ?>
 <div class="row">
 <div class="col-sm-12">
 <div class="panel panel-default" id="actions">
@@ -44,6 +45,8 @@
 </div>
 </div>
 </div>
+<?php } ?>
+<?php if ($view['over']) { ?>
 <div class="row">
 	<div class="col-sm-6">
 		<div class="panel panel-default">
@@ -94,7 +97,9 @@
 		</div>
 	</div>
 </div>
+<?php } ?>
 <div class="row">
+<?php if($view['last_quotes']) { ?>
 <div class="col-sm-6"><div class="panel panel-default">
 	<div class="panel-heading clearfix">
 		<div class="h2"><i class="fa fa-edit"></i> <?php echo $text_latest_10_quotes; ?></div>
@@ -121,7 +126,7 @@
 					<td class="hidden-xs"><?php echo $quote['date_added']; ?></td>
 					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $quote['total']; ?></span></td>
 					<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
-						<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+						<a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fas fa-eye"></i> <span class="hidden-xs"><?php echo $action['text']; ?></span></a>
 					<?php } ?></td>
 				</tr>
 				<?php } ?>
@@ -134,6 +139,8 @@
 		</table>
 	</div>
 </div></div>
+<?php } ?>
+<?php if ($view['last_invoice']) { ?>
 <div class="col-sm-6"><div class="panel panel-default">
 	<div class="panel-heading clearfix">
 		<div class="h2"><i class="far fa-file-alt"></i> <?php echo $text_latest_10_orders; ?></div>
@@ -160,7 +167,7 @@
 					<td class="hidden-xs"><?php echo $invoice['date_added']; ?></td>
 					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $invoice['total']; ?></span></td>
 					<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
-						<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+						<a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fas fa-eye"></i> <span class="hidden-xs"><?php echo $action['text']; ?></span></a>
 					<?php } ?></td>
 				</tr>
 				<?php } ?>
@@ -173,6 +180,7 @@
 		</table>
 	</div>
 </div></div>
+<?php } ?>
 </div>
 <script src="view/javascript/chart/Chart.bundle.min.js"></script>
 <script>

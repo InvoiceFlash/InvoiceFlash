@@ -225,6 +225,36 @@ class ControllerCommonHome extends Controller {
 			$this->model_localisation_currency->updateCurrencies();
 		}
 
+		// Check permission for view each panel
+		$this->data['view'] = array();
+		// Quick Actions
+		if ($this->user->hasPermission('modify', 'sale/customer') || $this->user->hasPermission('modify', 'sale/quote') || $this->user->hasPermission('modify', 'sale/invoice')) {
+			$this->data['view']['quick_action'] = true;
+		} else {
+			$this->data['view']['quick_action'] = false;
+		}
+
+		// Overview & Statistics
+		if ($this->user->hasPermission('modify', 'sale/customer') && $this->user->hasPermission('modify', 'sale/invoice')) {
+			$this->data['view']['over'] = true;
+		} else {
+			$this->data['view']['over'] = false;
+		}
+		
+		// Latest Quotes
+		if ($this->user->hasPermission('modify', 'sale/quote')) {
+			$this->data['view']['last_quotes'] = true;
+		} else {
+			$this->data['view']['last_quotes'] = false;
+		}
+
+		// Latest Invoices
+		if ($this->user->hasPermission('modify', 'sale/invoice')) {
+			$this->data['view']['last_invoice'] = true;
+		} else {
+			$this->data['view']['last_invoice'] = false;
+		}
+
 		$this->template = 'common/home.tpl';
 		$this->children = array(
 			'common/header',

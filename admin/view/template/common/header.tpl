@@ -45,7 +45,7 @@
 				<div id="catalog" class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle"><?php echo $text_catalog; ?></a>
 					<div class="dropdown-menu">
-						
+						<a href="<?php echo $manufacturer; ?>" class="dropdown-item"><?php echo $text_manufacturer; ?></a>
 						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_category; ?></a>
 							<div class="dropdown-menu">
 								<a href="<?php echo $category; ?>" class="dropdown-item"><?php echo $text_category; ?></a>
@@ -53,7 +53,6 @@
 								<a href="<?php echo $option; ?>" class="dropdown-item"><?php echo $text_option; ?></a>
 							</div>
 						</div>
-						<a href="<?php echo $manufacturer; ?>" class="dropdown-item"><?php echo $text_manufacturer; ?></a>
 						<a href="<?php echo $localisation_payment; ?>" class="dropdown-item"><?php echo $text_localisation_payment; ?></a>
 						<a href="<?php echo $localisation_shipping; ?>" class="dropdown-item"><?php echo $text_localisation_shipping; ?></a>
 					</div>
@@ -108,9 +107,6 @@
 										<a href="<?php echo $invoice_status; ?>" class="dropdown-item"><?php echo $text_invoice_status; ?></a>
 									</div>
 								</div>
-								<a href="<?php echo $country; ?>" class="dropdown-item"><?php echo $text_country; ?></a>
-								<a href="<?php echo $zone; ?>" class="dropdown-item"><?php echo $text_zone; ?></a>
-								<a href="<?php echo $geo_zone; ?>" class="dropdown-item"><?php echo $text_geo_zone; ?></a>
 								<div class="dropdown-submenu"><a class="dropdowm-item dropdown-toggle">Return</a>
 									<div class="dropdown-menu">
 										<a href="<?php echo $return_status; ?>" class="dropdown-item"><?php echo $text_return_status; ?></a>
@@ -118,6 +114,9 @@
 										<a href="<?php echo $return_reason; ?>" class="dropdown-item"><?php echo $text_return_reason; ?></a>
 									</div>
 								</div>
+								<a href="<?php echo $country; ?>" class="dropdown-item"><?php echo $text_country; ?></a>
+								<a href="<?php echo $zone; ?>" class="dropdown-item"><?php echo $text_zone; ?></a>
+								<a href="<?php echo $geo_zone; ?>" class="dropdown-item"><?php echo $text_geo_zone; ?></a>
 								<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_tax; ?></a>
 									<div class="dropdown-menu">
 										<a href="<?php echo $tax_class; ?>" class="dropdown-item"><?php echo $text_tax_class; ?></a>
@@ -130,16 +129,15 @@
 							</div>
 						</div>
 						<a href="<?php echo $error_log; ?>" class="dropdown-item"><?php echo $text_error_log; ?></a>
-						<? if ($this->user->hasPermission('access', 'tool/backup')) { ?>
-							<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
-						<? } ?>
+						<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
+						
 					</div>
 				</div>
 				
 				<div id="help" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_help; ?></a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="http://www.invoiceflash.com" target="_blank"><?php echo $text_invoiceflash; ?></a>
-						<a class="dropdown-item" href="http://docs.invoiceflash.com/en-gb/introduction/" target="_blank"><?php echo $text_documentation; ?></a>
+						<a class="dropdown-item" href="http://docs.invoiceflash.com" target="_blank"><?php echo $text_documentation; ?></a>
 						<a class="dropdown-item" href="http://forum.invoiceflash.com/" target="_blank"><?php echo $text_support; ?></a>
 					</div>
 				</div>
