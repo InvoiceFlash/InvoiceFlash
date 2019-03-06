@@ -22,7 +22,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [x] Returns
 - [x] Logo on invoice/quote template
 - [ ] Mails (send & receive) -> cron
-- [ ] Category filter on products.
+- [x] Category filter on products.
 
 ### 0.0.1 
 - Customers

@@ -17,11 +17,12 @@
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th class="text-center"><?php echo $column_image; ?></th>
 						<th><a href="<?php echo $sort_name; ?>"><?php echo $column_name; echo ($sort == 'pd.name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_model; ?>"><?php echo $column_model; echo ($sort == 'p.model') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right hidden-xs"><a href="<?php echo $sort_price; ?>"><?php echo $column_price; echo ($sort == 'p.price') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right hidden-xs"><a href="<?php echo $sort_quantity; ?>"><?php echo $column_quantity; echo ($sort == 'p.quantity') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs"><a href="<?php echo $sort_model; ?>"><?php echo $column_model; echo ($sort == 'pd.model') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs"><a href="<?php echo $sort_price; ?>"><?php echo $column_price; echo ($sort == 'p.price') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs" style="width:15%; "><a href="<?php echo $sort_category; ?>"><?php echo $column_category; echo ($sort == 'p2c.category') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs"><a href="<?php echo $sort_quantity; ?>"><?php echo $column_quantity; echo ($sort == 'p.quantity') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'p.status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th><?php echo $column_action; ?></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
@@ -31,6 +32,12 @@
 						<td><input type="text" name="filter_name" value="<?php echo $filter_name; ?>" data-target="name" data-url="catalog/product" class="form-control"></td>
 						<td class="hidden-xs"><input type="text" name="filter_model" value="<?php echo $filter_model; ?>" class="form-control" data-target="model" data-url="catalog/product" class="form-control"></td>
 						<td class="text-right hidden-xs"><input type="text" name="filter_price" value="<?php echo $filter_price; ?>" class="form-control"></td>
+						<td class="hidden-xs"><select name="filter_category" class="form-control">
+							<option value="*">&ndash;</option>
+							<?php foreach ($categories as $category) { ?>
+							<option value="<?php echo $category['category_id']; ?>" <?php echo ($category['category_id']==$filter_category) ? 'selected' : ''; ?>><?php echo $category['name']; ?></option>
+							<?php } ?>
+						</select></td>
 						<td class="text-right hidden-xs"><input type="text" name="filter_quantity" value="<?php echo $filter_quantity; ?>" class="form-control text-right"></td>
 						<td class="hidden-xs"><select name="filter_status" class="form-control">
 							<option value="*">&ndash;</option>
@@ -63,6 +70,11 @@
 							<?php } else { ?>
 								<?php echo $product['price']; ?>
 							<?php } ?></td>
+						<td class="hidden-xs"><?php foreach($categories as $category) {
+							if(in_array($category['category_id'], $product['category'])) {
+								echo $category['name'];
+							}
+						} ?></td>
 						<td class="text-right hidden-xs"><?php if ($product['quantity'] <= 0) { ?>
 							<b class="text-danger"><?php echo $product['quantity']; ?></b>
 							<?php } elseif ($product['quantity'] <= 5) { ?>
