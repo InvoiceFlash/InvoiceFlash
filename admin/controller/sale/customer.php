@@ -944,28 +944,28 @@ class ControllerSaleCustomer extends Controller {
 			}
 
 			// Deliveries
-			$deliver_total = $this->model_sale_customer->getDeliveryCustomerTotal($this->request->get['customer_id']);
+			//$deliver_total = $this->model_sale_customer->getDeliveryCustomerTotal($this->request->get['customer_id']);
 			
-			$results = $this->model_sale_customer->getDeliveryCustomer($this->request->get['customer_id']);
+			//$results = $this->model_sale_customer->getDeliveryCustomer($this->request->get['customer_id']);
 				
 			$this->data['deliveries'] = array();
 			
-			foreach ($results as $result) {
+			// foreach ($results as $result) {
 					
-				$action = array();
+				// $action = array();
 					
-				$action[] = array(
-					'text' => $this->language->get('text_edit'),
-					'href' => HTTPS_SERVER . 'index.php?route=sale/delivery/update&token=' . $this->session->data['token'] . '&delivery_id=' . $result['delivery_id'] . $url
-				);
+				// $action[] = array(
+					// 'text' => $this->language->get('text_edit'),
+					// 'href' => HTTPS_SERVER . 'index.php?route=sale/delivery/update&token=' . $this->session->data['token'] . '&delivery_id=' . $result['delivery_id'] . $url
+				// );
 				
-				$this->data['deliveries'][] = array(
-					'delivery_id' => $result['delivery_id'] ,
-					'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-					'action'   => $action ,
-					'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
-				);
-			}
+				// $this->data['deliveries'][] = array(
+					// 'delivery_id' => $result['delivery_id'] ,
+					// 'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					// 'action'   => $action ,
+					// 'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
+				// );
+			// }
 			
 			// Invoices
 			$invoice_total = $this->model_sale_customer->getInvoicesCustomerTotal($this->request->get['customer_id']);
@@ -1277,7 +1277,7 @@ class ControllerSaleCustomer extends Controller {
 				$this->data['notes'][] = array(
 					'note_id'  => $result['customer_history_id'] ,
 					'date'     => $note_info['date_added'],
-					'user'     => $note_info['Login'],
+					'user'     => "",
 					'comment'  => $note_info['comment'], 
 					'delete'   => $this->url->link('sale/customer/deleteNote', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'] . '&note_id=' . $result['customer_history_id'], 'SSL')
 				);

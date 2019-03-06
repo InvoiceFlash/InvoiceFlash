@@ -22,11 +22,8 @@ class ModelSaleCustomer extends Model {
 					$this->db->query("UPDATE " . DB_PREFIX . "customer SET address_id = '" . $address_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 				}
-
 			}
-
 		}
-
 	}
 
 	public function editCustomer($customer_id, $data) {
@@ -763,7 +760,7 @@ class ModelSaleCustomer extends Model {
  	}
 
  	function getCustomerNote($note_id) {
- 		$sql = "SELECT ch.comment, ch.date_added, ch.user_id, u.Login FROM `" . DB_PREFIX . "customer_history` ch LEFT JOIN `" . DB_PREFIX . "gpu_user` u ON ch.user_id = u.UserId WHERE ch.customer_history_id = " . (int)$note_id;
+ 		$sql = "SELECT ch.comment, ch.date_added, ch.user_id FROM `" . DB_PREFIX . "customer_history` ch WHERE ch.customer_history_id = " . (int)$note_id;
 
  		$query = $this->db->query($sql);
 
