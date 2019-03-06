@@ -207,6 +207,12 @@ class ControllerStep3 extends Controller {
 			$this->data['email'] = '';
 		}
 
+		if (isset($this->request->post['demo_data'])) {
+			$this->data['demo_data'] = $this->request->post['demo_data'];
+		} else {
+			$this->data['demo_data'] = 0;
+		}
+
 		$this->data['back'] = $this->url->link('step_2');
 
 		$this->template = 'step_3.tpl';

@@ -25,7 +25,7 @@
 						<td><?php echo $customer_group['name']; ?></td>
 						<td class="text-right hidden-xs"><?php echo $customer_group['sort_order']; ?></td>
 						<td class="text-right"><?php foreach ($customer_group['action'] as $action) { ?>
-							<span class="bracket"><a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a></span>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>

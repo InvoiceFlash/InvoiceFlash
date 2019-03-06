@@ -49,6 +49,11 @@ class ModelInstall extends Model {
 			$db->query("INSERT INTO `" . $data['db_prefix'] . "setting` SET `group` = 'config', `key` = 'config_encryption', value = '" . $db->escape(md5(mt_rand())) . "'");
 			
 			$db->query("UPDATE `" . $data['db_prefix'] . "product` SET `viewed` = '0'");
+			
+			if (isset($data['demo_data'])) {
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product` ");
+			}
+			
 		}		
 	}	
 }

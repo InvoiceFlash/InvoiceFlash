@@ -8,18 +8,15 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</b></p>
 
 ---
-### 0.0.4
-- [ ] API
-
 ### 0.0.3 (next release)
 - [ ] Orders
 - [ ] Payments
 - [ ] Auto-update
 
-### 0.0.2 (In development.. -> Expected date -> 03.30.19)
+### 0.0.2 (In development..)
 - [x] Manufacturers
 - [ ] web with download and docs
-- [ ] Option to erase demo data
+- [x] Option to erase demo data
 - [ ] Import Flash Software
 - [x] Multilanguage
 - [x] Returns

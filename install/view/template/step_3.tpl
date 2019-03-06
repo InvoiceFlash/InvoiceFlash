@@ -102,6 +102,15 @@
         </tr>
       </table>
     </fieldset>
+    <fieldset>
+      <p>3. Select advanced options.</p>
+      <table class="form">
+        <tr>
+          <td>Remove Demo Data?</td>
+          <td><input type="checkbox" name="demo_data" value="<?php echo $demo_data; ?>" <?php  echo ($demo_data) ? 'checked' : ''; ?>> Yes, remove</td>
+        </tr>
+      </table>
+    </fieldset>
     <div class="buttons">
       <div class="left"><a href="<?php echo $back; ?>" class="button">Back</a></div>
       <div class="right">

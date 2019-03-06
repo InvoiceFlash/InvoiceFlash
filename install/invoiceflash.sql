@@ -3330,6 +3330,7 @@ CREATE TABLE `if_user` (
   `password` varchar(40) NOT NULL,
   `salt` varchar(9) NOT NULL,
   `firstname` varchar(32) NOT NULL,
+  `image` varchar(255) NOT NULL,
   `lastname` varchar(32) NOT NULL,
   `email` varchar(96) NOT NULL,
   `code` varchar(40) NOT NULL,

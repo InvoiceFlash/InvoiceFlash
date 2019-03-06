@@ -1,12 +1,7 @@
-<?php echo $header ?>
+<?php echo $header; ?>
+<?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-  <div class="panel-heading clearfix">
-    <div class="pull-left h2"><i class="hidden-xs"></i><?php echo $heading_contact; ?></div>
-    <div class="pull-right">
-     <button type="submit" form="contact-form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
-      <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
-    </div>
-  </div>
+	<?php $fa = 'user-friends'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
   <div class="panel-body">
     <form action="<?php echo $action ?>" class="form-horizontal" method="post" enctye="multipart/form-data" id="contact-form">
       <div class="form-group">
