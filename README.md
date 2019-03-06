@@ -8,6 +8,9 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</b></p>
 
 ---
+### 0.0.4
+- [ ] API
+
 ### 0.0.3 (next release)
 - [ ] Orders
 - [ ] Payments
