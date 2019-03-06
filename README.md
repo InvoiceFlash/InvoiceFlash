@@ -16,7 +16,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Payments
 - [ ] Auto-update
 
-### 0.0.2 (In development..)
+### 0.0.2 (In development.. -> Expected date -> 03.30.19)
 - [x] Manufacturers
 - [ ] web with download and docs
 - [ ] Option to erase demo data

@@ -64,32 +64,34 @@ class MailFetch{
 	}
 
 	// read the inbox
-	function inbox() {
-		$msgs = imap_search($this->conn, 'ALL');
-    	$no_of_msgs = $msgs ? count($msgs) : 0; 
+	function inbox($filter = 'ALL') {
+		$msgs = imap_search($this->conn, $filter);
+		$no_of_msgs = $msgs ? count($msgs) : 0;
 		$messages = array();
 	    for ($i = 0; $i < $no_of_msgs; $i++) {
-	        $header = imap_header($this->conn, $msgs[$i]);
-	        $from = $header->from;
-	        foreach ($from as $id => $object) {
-			    $fromaddress = $object->mailbox . "@" . $object->host;
-			}
+				$header = imap_header($this->conn, $msgs[$i]);
+				$from = $header->from;
+				foreach ($from as $id => $object) {
+					$fromaddress = $object->mailbox . "@" . $object->host;
+				}
 
-	        $subject = $this->mime_decode($header->subject);
-	        
-	        //Contenido del email
-	        $body = imap_fetchbody($this->conn, $msgs[$i], "1.1");
+				$subject = $this->mime_decode($header->subject);
+				
+				//Contenido del email
+				$body = imap_fetchbody($this->conn, $msgs[$i], "1.1");
 
-			if ($body == "") {
-			    $body = imap_fetchbody($this->conn, $msgs[$i], "1");
-			}
+				if ($body == "") {
+						$body = imap_fetchbody($this->conn, $msgs[$i], "1");
+				}
 
-			//Ficheros adjuntos
+			// //Ficheros adjuntos
 			$attachments = $this->email_attachmets($msgs[$i]);
 
-			$body = trim(substr(quoted_printable_decode($body), 0, 1000));
+			$body = quoted_printable_decode($body);
 
-	        array_push($messages, array('msg_no' => $msgs[$i],'from' => $fromaddress, 'subject' => $subject, 'body' => $body, 'attachments' => $attachments));
+					array_push($messages, array('msg_no' => $msgs[$i],'from' => $fromaddress, 'subject' => $subject, 'body' => $body,
+					 'attachments' => $attachments
+					));
 	    }
 	    return $messages;
 	}
@@ -160,27 +162,27 @@ class MailFetch{
 		$adjuntos = array();
 
 		 foreach($attachments as $attachment) {
-            if($attachment['is_attachment'] == 1) {
-                $filename = $attachment['name'];
-                if(empty($filename)) $filename = $attachment['filename'];
+				if($attachment['is_attachment'] == 1) {
+						$filename = $attachment['name'];
+						if(empty($filename)) $filename = $attachment['filename'];
 
-                if(empty($filename)) $filename = time() . ".dat";
+						if(empty($filename)) $filename = time() . ".dat";
 
-                $archivo = DIR_DOWNLOAD . $email_number . "_" . $filename;
-                $fp = fopen($archivo, "w+");
-                fwrite($fp, $attachment['attachment']);
-                fclose($fp);
-				
-				$partes_ruta = pathinfo($archivo);
-                
-                $adjuntos[] = array(
-                	'name' => str_replace("_", "", preg_replace('/[0-9]+/', '', $partes_ruta['filename'])),
-                	'filename' => str_replace('\\', '/', $archivo)
-                );
-            }
-        }
+						$archivo = 'downloads/' . $email_number . "_" . $filename;
+						$fp = fopen($archivo, "w+");
+						fwrite($fp, $attachment['attachment']);
+						fclose($fp);
+		
+					$partes_ruta = pathinfo($archivo);
+						
+						$adjuntos[] = array(
+							'name' => str_replace("_", "", preg_replace('/[0-9]+/', '', $partes_ruta['filename'])),
+							'filename' => str_replace('\\', '/', $archivo)
+						);
+				}
+		}
 
-        return $adjuntos;
-    }
+		return $adjuntos;
+	}
 }
 ?>
