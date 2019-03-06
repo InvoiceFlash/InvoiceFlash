@@ -3,7 +3,7 @@
 <div class="panel panel-default">
 	<?php $fa = 'file-contract'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
   <div class="panel-body">
-    <form action="<?php echo $action ?>" class="form-horizontal" method="post" enctye="multipart/form-data" id="contact-form">
+    <form action="<?php echo $action ?>" class="form-horizontal" method="post" enctye="multipart/form-data" id="form">
       <div class="form-group">
         <label class="control-label col-sm-2"><?php echo $entry_article ?></label>
         <div class="control-field col-sm-4">
