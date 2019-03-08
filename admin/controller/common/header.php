@@ -150,14 +150,11 @@ class ControllerCommonHeader extends Controller {
 		$this->data['text_balance_sheet'] = $this->language->get('text_balance_sheet');
 		$this->data['text_journal_book'] = $this->language->get('text_journal_book');
 		$this->data['text_report_journal_book'] = $this->language->get('text_report_journal_book');
+		$this->data['text_cron'] = $this->language->get('text_cron');
 
 		$this->data['text_statuses'] = $this->language->get('text_statuses');
 		$this->data['text_c_status'] = $this->language->get('text_c_status');
 		$this->data['text_invoice_status'] = $this->language->get('text_invoice_status');
-
-		// prueba roundecube mail
-		$this->data['text_roundcube'] = 'Roundcube';
-
 
 		if (!$this->user->isLogged() || !isset($this->request->get['token']) || !isset($this->session->data['token']) || ($this->request->get['token'] != $this->session->data['token'])) {
 			$this->data['logged'] = '';
@@ -274,6 +271,7 @@ class ControllerCommonHeader extends Controller {
 			$this->data['balance_sheet'] = $this->url->link('payroll/balance_sheet', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['journal_book'] = $this->url->link('payroll/journal_book', 'token=' . $this->session->data['token'], 'SSL');
 			$this->data['report_journal_book'] = $this->url->link('payroll/report_journal_book', 'token=' . $this->session->data['token'], 'SSL');
+			$this->data['cron'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'], 'SSL');
 			
 			$this->data['openbay_show_menu'] = $this->config->get('openbaymanager_show_menu');
 

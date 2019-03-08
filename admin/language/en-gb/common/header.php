@@ -100,6 +100,7 @@ $_['text_paypal_search']               = 'Search';
 $_['text_recurring_profile']           = 'Recurring Profiles';
 $_['text_localisation_payment']        = 'Payment';
 $_['text_localisation_shipping']       = 'Shipping';
+$_['text_cron']       				   = 'Scheduled Tasks';
 
 //add
 $_['text_invoice']                     = 'Invoices';
