@@ -157,7 +157,7 @@ class ControllerSettingCron extends Controller {
 		
 		$this->data['insert'] = $this->url->link('setting/cron/insert', 'token=' . $this->session->data['token'] . $url);
 		$this->data['delete'] = $this->url->link('setting/cron/delete', 'token=' . $this->session->data['token'] . $url);
-		$this->data['cron'] = $this->url->link('extension/cron');
+		$this->data['cron'] = $this->url->link('setting/cron');
 
 		$this->data['crons'] = array();
 
