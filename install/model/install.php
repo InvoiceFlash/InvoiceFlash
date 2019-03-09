@@ -51,6 +51,11 @@ class ModelInstall extends Model {
 			$db->query("UPDATE `" . $data['db_prefix'] . "product` SET `viewed` = '0'");
 			
 			if (isset($data['demo_data'])) {
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "attribute` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "attribute_description` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "attribute_group` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "attribute_group_description` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "category` ");
 				$db->query("DELETE FROM `" . $data['db_prefix'] . "product` ");
 			}
 			
