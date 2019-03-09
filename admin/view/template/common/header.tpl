@@ -130,7 +130,7 @@
 						</div>
 						<a href="<?php echo $error_log; ?>" class="dropdown-item"><?php echo $text_error_log; ?></a>
 						<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
-						
+						<a href="<?php echo $cron; ?>" class="dropdown-item"><?php echo $text_cron; ?></a>
 					</div>
 				</div>
 				
