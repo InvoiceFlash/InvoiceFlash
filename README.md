@@ -11,6 +11,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 ### 0.0.4 
 - [ ] API
 - [ ] Edit language
+- [ ] Delivery
 
 ### 0.0.3 (next release)
 - [ ] Orders
@@ -19,7 +20,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 
 ### 0.0.2 (In development.. Expected date: 03.30.19)
 - [x] Manufacturers
-- [ ] web with download and docs
+- [x] web with download and docs
 - [x] Option to erase demo data
 - [ ] Import Flash Software
 - [x] Multilanguage
