@@ -41,7 +41,7 @@ To use InvoiceFlash application you should have already installed:
 *   **MySQL** >=4.1 server 
 
 ### How to install
-Please read the installation instructions included in the repository or download file
+Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=10">read this doc</a>.
 
 ## Credits / Technologies
 
