@@ -17,6 +17,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Orders
 - [ ] Payments
 - [ ] Auto-update
+- [ ] More info on web
 
 ### 0.0.2 (In development.. Expected date: 03.30.19)
 - [x] Manufacturers
@@ -41,7 +42,7 @@ To use InvoiceFlash application you should have already installed:
 *   **MySQL** >=4.1 server 
 
 ### How to install
-Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=10">read this doc</a>.
+Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=10" target="_blank">read this doc</a>.
 
 ## Credits / Technologies
 
