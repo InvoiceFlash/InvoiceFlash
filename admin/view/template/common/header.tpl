@@ -128,9 +128,12 @@
 								<a href="<?php echo $total; ?>" class="dropdown-item"><?php echo $text_total; ?></a>
 							</div>
 						</div>
-						<a href="<?php echo $error_log; ?>" class="dropdown-item"><?php echo $text_error_log; ?></a>
-						<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
-						<a href="<?php echo $cron; ?>" class="dropdown-item"><?php echo $text_cron; ?></a>
+						<?php if ($this->user->hasPermission('access', 'tool/error_log')) { ?>
+							<a href="<?php echo $error_log; ?>" class="dropdown-item"><?php echo $text_error_log; ?></a>
+						<?php } ?>
+						<?php if ($this->user->hasPermission('access', 'tool/backup')) { ?>
+							<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
+						<?php } ?>
 					</div>
 				</div>
 				
