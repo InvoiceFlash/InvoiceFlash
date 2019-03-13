@@ -8045,6 +8045,18 @@ CREATE TABLE `if_cron` (
   PRIMARY KEY (`cron_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `if_fl_mail_files`;
+CREATE TABLE `if_fl_mail_files` (
+  `file_id` int(11) NOT NULL AUTO_INCREMENT,
+  `mail_id` int(11) NOT NULL,
+  `type` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `size` int(11) DEFAULT NULL,
+  `name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `data` mediumblob,
+  PRIMARY KEY (`file_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --
 -- ALTER TABLE `if_customer` ADD column `date_modified` datetime; --

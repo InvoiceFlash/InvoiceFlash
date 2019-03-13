@@ -18,6 +18,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Payments
 - [ ] Auto-update
 - [ ] More info on web
+- [ ] cron versus curl
 
 ### 0.0.2 (master) (In development.. Expected date: 03.30.19)
 - [x] Manufacturers

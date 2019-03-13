@@ -1,7 +1,7 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-  <?php include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
+  <?php $fa='clock'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
 	<div class="panel-body">
     <div clasS="panel panel-default" style="max-height:250px;">
       <div class="panel-heading"><i class="fa fa-question-circle"></i> <?php echo $text_instruction; ?></div>
@@ -25,7 +25,6 @@
                 <tr>
                   <th class="text-center" style="width:40px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').trigger('click');"/></th>
                   <th class="text-left"><?php if($sort == 'code'){ ?><a href="<?php echo $sort_code; ?>" class="<?php strtolower($order); ?>"><?php echo $column_code; ?></a><?php } else { ?><a href="<?php echo $sort_code; ?>"><?php echo $column_code; ?></a><?php } ?></th>
-                  <th class="text-left"><?php if($sort == 'cycle'){ ?><a href="<?php echo $sort_cycle; ?>" class="<?php strtolower($order); ?>"><?php echo $column_cycle; ?></a><?php } else { ?><a href="<?php echo $sort_cycle; ?>"><?php echo $column_cycle; ?></a><?php } ?></th>
                   <th class="text-left"><?php if($sort == 'action'){ ?><a href="<?php echo $sort_action; ?>" class="<?php strtolower($order); ?>"><?php echo $column_action; ?></a><?php } else { ?><a href="<?php echo $sort_action; ?>"><?php echo $column_action; ?></a><?php } ?></th>
                   <th class="text-left"><?php if($sort == 'status'){ ?><a href="<?php echo $sort_status; ?>" class="<?php strtolower($order); ?>"><?php echo $column_status; ?></a><?php } else { ?><a href="<?php echo $sort_status; ?>"><?php echo $column_status; ?></a><?php } ?></th>
                   <th class="text-left"><?php if($sort == 'date_added'){ ?><a href="<?php echo $sort_date_added; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_added; ?></a><?php } else { ?><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; ?></a><?php } ?></th>
@@ -39,13 +38,13 @@
                     <tr>
                       <td class="text-center"><input type="checkbox" name="selected[]" value="<?php echo $cron['cron_id']; ?>"<?php echo (in_array($cron['cron_id'], $selected)) ? ' checked="checked"' : ''; ?> ></td>
                         <td class="text-left"><?php echo $cron['code']; ?></td>
-                        <td class="text-left"><?php echo $cron['cycle']; ?></td>
-                        <td class="text-left"><?php echo $cron['action']; ?></td>
+                        <td class="text-left"><?php echo $cron['action']; ?><input type="hidden" id="action" value="<?php echo $cron['action']; ?>"></td>
                         <td class="text-left"><?php echo $cron['status']; ?></td>
                         <td class="text-left"><?php echo $cron['date_added']; ?></td>
                         <td class="text-left"><?php echo $cron['date_modified']; ?></td>
                         <td class="text-right">
-                          <button type="button" value="<?php echo $cron['cron_id']; ?>" data-toggle="tooltip" data-title="<?php echo $button_run; ?>" class="btn btn-warning"><i class="fa fa-play"></i></button>
+                          <?php echo $cron['edit']; ?>
+                          <a data-toggle="tooltip" id="btn-run" data-title="<?php echo $button_run; ?>" class="btn btn-warning"><i class="fa fa-play"></i></a>
                         </td>
                     </tr>
                   <?php } ?>
@@ -63,4 +62,28 @@
     </div>
   </div>
 </div>
+<script>
+$('#btn-run').click(function(){
+		$.ajax({
+			url:'index.php?route=setting/cron/run&token='+token,
+			type:'post',
+			dataType:'html',
+			data:$('#action').val(),
+			beforeSend:function(){
+				$(this).button('loading').append($('<i>',{class:'icon-loading'}));
+			},
+			complete:function(){
+				$(this).button('reset');
+			},
+			success:function(html){
+        if(json['error']) {
+          alertMessage('error', json['error']);
+        }
+        if(json['success']){
+          alertMessage('success',json['success']);
+        }
+			}
+		});
+	});
+</script>
 <?php echo $footer; ?>
