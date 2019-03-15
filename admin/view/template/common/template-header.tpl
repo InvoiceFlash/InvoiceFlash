@@ -5,6 +5,7 @@
 	<?php } ?>
 </ul>
 <?php } ?>
+<div id="notification"></div>
 <?php if (!empty($error)) { ?>
 <div class="alert alert-danger alert-dismissable"><?php echo $error; ?><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>
 <?php } ?>

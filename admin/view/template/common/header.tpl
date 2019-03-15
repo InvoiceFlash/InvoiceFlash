@@ -41,117 +41,61 @@
 		</div>
 		<div class="collapse navbar-collapse" id="menu">
 			<div class="navbar-nav mr-auto mt-2 mt-lg-0">
-				<div id="dashboard" class="nav-item"><a href="<?php echo $home; ?>" class="nav-link"><?php echo $text_dashboard; ?></a></div>
-				<div id="catalog" class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle"><?php echo $text_catalog; ?></a>
-					<div class="dropdown-menu">
-						<a href="<?php echo $manufacturer; ?>" class="dropdown-item"><?php echo $text_manufacturer; ?></a>
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_category; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $category; ?>" class="dropdown-item"><?php echo $text_category; ?></a>
-								<a href="<?php echo $product; ?>" class="dropdown-item"><?php echo $text_product; ?></a>
-								<a href="<?php echo $option; ?>" class="dropdown-item"><?php echo $text_option; ?></a>
-							</div>
-						</div>
-						<a href="<?php echo $localisation_payment; ?>" class="dropdown-item"><?php echo $text_localisation_payment; ?></a>
-						<a href="<?php echo $localisation_shipping; ?>" class="dropdown-item"><?php echo $text_localisation_shipping; ?></a>
-					</div>
-				</div>
-				<div id="sale" class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle"><?php echo $text_sale; ?></a>
-					<div class="dropdown-menu">
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_customer; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $customer; ?>" class="dropdown-item"><?php echo $text_customer; ?></a>
-								<a href="<?php echo $customer_group; ?>" class="dropdown-item"><?php echo $text_customer_group; ?></a>
-							</div>
-						</div>
-						<a href="<?php echo $quote; ?>" class="dropdown-item"><?php echo $text_quote; ?></a>
-						<a href="<?php echo $invoice; ?>" class="dropdown-item"><?php echo $text_invoice; ?></a>
-						<a href="<?php echo $return; ?>" class="dropdown-item"><?php echo $text_return; ?></a>
-					</div>
-				</div>
-				<div id="reports" class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle"><?php echo $text_reports; ?></a>
-					<div class="dropdown-menu">
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_sale; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $report_sale_invoice; ?>" class="dropdown-item"><?php echo $text_invoice; ?></a>
-								<a href="<?php echo $report_sale_tax; ?>" class="dropdown-item"><?php echo $text_report_sale_tax; ?></a>
-								<a href="<?php echo $report_sale_shipping; ?>" class="dropdown-item"><?php echo $text_report_sale_shipping; ?></a>
-							</div>
-						</div>
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_customer; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $report_customer_support; ?>" class="dropdown-item"><?php echo $text_report_customer_support; ?></a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div id="system" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_system; ?></a>
-					<div class="dropdown-menu">
-						<a href="<?php echo $setting; ?>" class="dropdown-item"><?php echo $text_setting; ?></a>
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_users; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $user; ?>" class="dropdown-item"><?php echo $text_user; ?></a>
-								<a href="<?php echo $user_group; ?>" class="dropdown-item"><?php echo $text_user_group; ?></a>
-							</div>
-						</div>
-						<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_localisation; ?></a>
-							<div class="dropdown-menu">
-								<a href="<?php echo $language; ?>" class="dropdown-item"><?php echo $text_language; ?></a>
-								<a href="<?php echo $currency; ?>" class="dropdown-item"><?php echo $text_currency; ?></a>
-								<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_statuses; ?></a>
-									<div class="dropdown-menu">
-										<a href="<?php echo $stock_status; ?>" class="dropdown-item"><?php echo $text_stock_status; ?></a>
-										<a href="<?php echo $invoice_status; ?>" class="dropdown-item"><?php echo $text_invoice_status; ?></a>
+			<?php foreach ($menus as $menu) { ?>
+				<?php if($menu['href']) { ?>
+					<div id="<?php echo $menu['id']; ?>" class="nav-item"><a href="<?php echo $menu['href']; ?>" class="nav-link"><?php echo $menu['name']; ?></a></div>
+				<?php } else { ?>
+					<div id="<?php echo $menu['id']; ?>" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $menu['name']; ?></a>
+						<div class="dropdown-menu">
+						<?php foreach ($menu['children'] as $children_1) { ?>
+							<?php if ($children_1['href']) { ?>
+							<a href="<?php echo $children_1['href']; ?>" class="dropdown-item"><?php echo $children_1['name']; ?></a>
+							<?php } else { ?>
+							<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $children_1['name']; ?></a>
+								<div class="dropdown-menu">
+								<?php foreach ($children_1['children'] as $children_2) { ?>
+									<?php if ($children_2['href']) { ?>
+									<a href="<?php echo $children_2['href']; ?>" class="dropdown-item"><?php echo $children_2['name']; ?></a>
+									<?php } else { ?>
+									<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $children_2['name']; ?></a>
+										<div class="dropdown-menu">
+										<?php foreach ($children_2['children'] as $children_3) { ?>
+										<a href="<?php echo $children_3['href']; ?>" class="dropdown-item"><?php echo $children_3['name']; ?></a>
+										<?php } ?>
+										</div>
 									</div>
+									<?php } ?>
+								<?php } ?>
 								</div>
-								<div class="dropdown-submenu"><a class="dropdowm-item dropdown-toggle">Return</a>
-									<div class="dropdown-menu">
-										<a href="<?php echo $return_status; ?>" class="dropdown-item"><?php echo $text_return_status; ?></a>
-										<a href="<?php echo $return_action; ?>" class="dropdown-item"><?php echo $text_return_action; ?></a>
-										<a href="<?php echo $return_reason; ?>" class="dropdown-item"><?php echo $text_return_reason; ?></a>
-									</div>
-								</div>
-								<a href="<?php echo $country; ?>" class="dropdown-item"><?php echo $text_country; ?></a>
-								<a href="<?php echo $zone; ?>" class="dropdown-item"><?php echo $text_zone; ?></a>
-								<a href="<?php echo $geo_zone; ?>" class="dropdown-item"><?php echo $text_geo_zone; ?></a>
-								<div class="dropdown-submenu"><a class="dropdown-item dropdown-toggle"><?php echo $text_tax; ?></a>
-									<div class="dropdown-menu">
-										<a href="<?php echo $tax_class; ?>" class="dropdown-item"><?php echo $text_tax_class; ?></a>
-										<a href="<?php echo $tax_rate; ?>" class="dropdown-item"><?php echo $text_tax_rate; ?></a>
-									</div>
-								</div>
-								<a href="<?php echo $length_class; ?>" class="dropdown-item"><?php echo $text_length_class; ?></a>
-								<a href="<?php echo $weight_class; ?>" class="dropdown-item"><?php echo $text_weight_class; ?></a>
-								<a href="<?php echo $total; ?>" class="dropdown-item"><?php echo $text_total; ?></a>
 							</div>
-						</div>
-						<?php if ($this->user->hasPermission('access', 'tool/error_log')) { ?>
-							<a href="<?php echo $error_log; ?>" class="dropdown-item"><?php echo $text_error_log; ?></a>
+							<?php } ?>
 						<?php } ?>
-						<?php if ($this->user->hasPermission('access', 'tool/backup')) { ?>
-							<a href="<?php echo $backup; ?>" class="dropdown-item"><?php echo $text_backup; ?></a>
+						</div>
+					</div>
+				<?php } ?>
+			<?php } ?>	
+			<div id="system" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_front; ?></a>
+					<div class="dropdown-menu">
+						<a href="<?php echo $store; ?>" target="_blank" class="dropdown-item"><?php echo $text_front; ?></a>
+						<?php foreach ($stores as $store) { ?>
+						<a href="<?php echo $store['href']; ?>" target="_blank" class="dropdown-item"><?php echo $store['name']; ?></a>
 						<?php } ?>
 					</div>
 				</div>
-				
 				<div id="help" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_help; ?></a>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="http://www.invoiceflash.com" target="_blank"><?php echo $text_invoiceflash; ?></a>
-						<a class="dropdown-item" href="http://docs.invoiceflash.com" target="_blank"><?php echo $text_documentation; ?></a>
-						<a class="dropdown-item" href="http://forum.invoiceflash.com/" target="_blank"><?php echo $text_support; ?></a>
+						<a class="dropdown-item" href="http://www.ramonea.com" target="_blank"><?php echo $text_invoiceflash; ?></a>
+						<a class="dropdown-item" href="http://docs.ramonea.com/en-gb/introduction/" target="_blank"><?php echo $text_documentation; ?></a>
+						<a class="dropdown-item" href="http://forum.ramonea.com/" target="_blank"><?php echo $text_support; ?></a>
 					</div>
 				</div>
-			</div>
+			</div>	
 			<div class="nav navbar-nav navbar-right">
-				<p class="navbar-text visible-lg"><i class="fa fa-lock fa-fw"></i>&nbsp;<?php echo $logged; ?></p>
+				<p class="navbar-text d-none d-xxl-inline-flex"><i class="fa fa-lock fa-fw"></i> <?php echo $logged; ?></p>
 				<a href="<?php echo $logout; ?>" class="nav-link"><?php echo $text_logout; ?></a>
-			</div>
+			</div>	
 		</div>
 	</nav>
 </div>
 <?php } ?>
 <div id="content" class="container-fluid clearfix">
-	<div id="notification"></div>

@@ -36,9 +36,9 @@ class ModelCatalogMail extends Model {
 	
 	public function getmails_in($data = array()) {
 	
-		$sql = "SELECT mails.*, customer.company FROM " . DB_PREFIX . "fl_mails AS mails  
-					LEFT JOIN " . DB_PREFIX . "customer ON customer.customer_id = mails.customer_id 
-					WHERE type= 'R' AND bleido <> 2";
+		$sql = "SELECT mails.*, c.company FROM " . DB_PREFIX . "fl_mails AS mails  
+					LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = mails.customer_id 
+					WHERE type= 'R' AND bleido <> 2 ORDER BY mails.date_added DESC";
 		
 		if (isset($data['start']) || isset($data['limit'])) {
 			if ($data['start'] < 0) {
@@ -75,9 +75,9 @@ class ModelCatalogMail extends Model {
 	
 	public function getmails_out($data = array()) {
 		
-		$sql = "SELECT mails.*, customer.company FROM " . DB_PREFIX . "fl_mails AS mails  
-					LEFT JOIN " . DB_PREFIX . "customer ON customer.customer_id = mails.customer_id 
-					WHERE type= 'E'" ;
+		$sql = "SELECT mails.*, c.company FROM " . DB_PREFIX . "fl_mails AS mails  
+					LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = mails.customer_id 
+					WHERE type= 'E' ORDER BY mails.date_added DESC" ;
 		
       	$query = $this->db->query($sql);
 				
@@ -208,18 +208,16 @@ class ModelCatalogMail extends Model {
 	public function addMailSended($data) {
 		$sql = "INSERT INTO `" . DB_PREFIX . "fl_mails` SET nusuario = " . (int)$this->user->getId() . ", date_added = now(), title = '" . $this->db->escape($data['subject']) . "', message = '" . $this->db->escape($data['text']) . "', type = 'E', code = '" . $this->db->escape($data['code']) . "', client = '" . $this->db->escape($data['to']) . "', bleido = 1, tag_id = 0, ";
 
-		if (isset($data['customer_id'])) {
+		if ($data['customer_id']!=0) {
 			$sql .= "customer_id = " . (int)$data['customer_id'] . ", supplier_id = 0, potential_id = 0";
-		} elseif (isset($data['supplier_id'])) {
+		} elseif ($data['supplier_id']!=0) {
 			$sql .= "customer_id = 0, supplier_id = " . (int)$data['supplier_id'] . ", potential_id = 0";
-		} elseif (isset($data['potential_id'])) {
+		} elseif ($data['potential_id']!=0) {
 			$sql .= "customer_id = 0, supplier_id = 0, potential_id = " . (int)$data['potential_id'];
 		} else {
 			$sql .= "customer_id = 0, supplier_id = 0, potential_id = 0";
 		}
 		
-		var_dump($sql);
-
 		$this->db->query($sql);
 	}
 }

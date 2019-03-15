@@ -7892,8 +7892,8 @@ CREATE TABLE `if_customer_contacts` (
 
 DROP TABLE IF EXISTS `if_fl_contracts`;
 CREATE TABLE `if_fl_contracts` (
-  `nid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ncliente` int(10) unsigned DEFAULT NULL,
+  `contracts_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `customer_id` int(10) unsigned DEFAULT NULL,
   `narticulo` int(10) unsigned DEFAULT NULL,
   `ncantidad` int(10) DEFAULT NULL,
   `dcompra` date DEFAULT NULL,
@@ -7907,8 +7907,8 @@ CREATE TABLE `if_fl_contracts` (
   `caplultmod` varchar(20) DEFAULT NULL,
   `date_added` datetime DEFAULT NULL,
   `contract_status` int(11) DEFAULT NULL,
-  PRIMARY KEY (`nid`),
-  KEY `NCLIENTE` (`ncliente`),
+  PRIMARY KEY (`contracts_id`),
+  KEY `ncliente` (`customer_id`),
   KEY `narticulo` (`narticulo`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -8056,6 +8056,17 @@ CREATE TABLE `if_fl_mail_files` (
   `data` mediumblob,
   PRIMARY KEY (`file_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_customer_mails`;
+CREATE TABLE `if_customer_mails` (
+  `customer_mail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) NOT NULL,
+  `subject` varchar(250) DEFAULT NULL,
+  `text` text,
+  `date_added` datetime DEFAULT NULL,
+  `email_customer` varchar(250) DEFAULT NULL,
+  PRIMARY KEY (`customer_mail_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --
