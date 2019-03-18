@@ -59,7 +59,7 @@
 											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
 											<?php $to = $email ?>
 											<?php if ($error_email) { ?>
-												<div class="help-block error"><?php echo $error_email; ?></div>
+												<div class="help-block text-danger"><?php echo $error_email; ?></div>
 											<?php	} ?>
 										</div>
 									</div>
@@ -68,7 +68,7 @@
 										<div class="col-sm-6">
 											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 											<?php if ($error_telephone) { ?>
-												<div class="help-block error"><?php echo $error_telephone; ?></div>
+												<div class="help-block text-danger"><?php echo $error_telephone; ?></div>
 											<?php	} ?>
 										</div>
 									</div>
@@ -230,7 +230,7 @@
 											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][tax_id]" value="<?php echo $address['tax_id']; ?>" class="form-control">
 												<?php if (isset($error_address_tax_id[$address_row])) { ?>
-													<div class="help-block error"><?php echo $error_address_tax_id[$address_row]; ?></div>
+													<div class="help-block text-danger"><?php echo $error_address_tax_id[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -239,7 +239,7 @@
 											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][address_1]" value="<?php echo $address['address_1']; ?>" class="form-control">
 												<?php if (isset($error_address_address_1[$address_row])) { ?>
-													<div class="help-block error"><?php echo $error_address_address_1[$address_row]; ?></div>
+													<div class="help-block text-danger"><?php echo $error_address_address_1[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -254,7 +254,7 @@
 											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][city]" value="<?php echo $address['city']; ?>" class="form-control">
 												<?php if (isset($error_address_city[$address_row])) { ?>
-													<div class="help-block error"><?php echo $error_address_city[$address_row]; ?></div>
+													<div class="help-block text-danger"><?php echo $error_address_city[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -278,7 +278,7 @@
 													<?php } ?>
 												</select>
 												<?php if (isset($error_address_country[$address_row])) { ?>
-													<div class="help-block error"><?php echo $error_address_country[$address_row]; ?></div>
+													<div class="help-block text-danger"><?php echo $error_address_country[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -288,7 +288,7 @@
 												<select name="address[<?php echo $address_row; ?>][zone_id]" class="form-control">
 												</select>
 												<?php if (isset($error_address_zone[$address_row])) { ?>
-													<div class="help-block error"><?php echo $error_address_zone[$address_row]; ?></div>
+													<div class="help-block text-danger"><?php echo $error_address_zone[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -539,7 +539,7 @@
 			                <?php if ($contracts): ?>
 			                  <?php foreach ($contracts as $contract): ?>
 			                    <tr>
-			                      <td><?php echo $contract['product']; ?><input type="hidden" name="contract_id" value="<?php echo $contract['nid']; ?>"></td>
+			                      <td><?php echo $contract['product']; ?><input type="hidden" name="contracts_id" value="<?php echo $contract['nid']; ?>"></td>
 			                      <td><?php echo $contract['quantity']; ?></td>
 			                      <td><?php echo $contract['end_support']; ?></td>
 			                       <td class="text-right"><?php foreach ($contract['action'] as $action): ?>

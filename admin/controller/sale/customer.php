@@ -944,28 +944,28 @@ class ControllerSaleCustomer extends Controller {
 			}
 
 			// Deliveries
-			//$deliver_total = $this->model_sale_customer->getDeliveryCustomerTotal($this->request->get['customer_id']);
+			$deliver_total = $this->model_sale_customer->getDeliveryCustomerTotal($this->request->get['customer_id']);
 			
-			//$results = $this->model_sale_customer->getDeliveryCustomer($this->request->get['customer_id']);
+			$results = $this->model_sale_customer->getDeliveryCustomer($this->request->get['customer_id']);
 				
 			$this->data['deliveries'] = array();
 			
-			// foreach ($results as $result) {
+			foreach ($results as $result) {
 					
-				// $action = array();
+				$action = array();
 					
-				// $action[] = array(
-					// 'text' => $this->language->get('text_edit'),
-					// 'href' => HTTPS_SERVER . 'index.php?route=sale/delivery/update&token=' . $this->session->data['token'] . '&delivery_id=' . $result['delivery_id'] . $url
-				// );
+				$action[] = array(
+					'text' => $this->language->get('text_edit'),
+					'href' => HTTPS_SERVER . 'index.php?route=sale/delivery/update&token=' . $this->session->data['token'] . '&delivery_id=' . $result['delivery_id'] . $url
+				);
 				
-				// $this->data['deliveries'][] = array(
-					// 'delivery_id' => $result['delivery_id'] ,
-					// 'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-					// 'action'   => $action ,
-					// 'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
-				// );
-			// }
+				$this->data['deliveries'][] = array(
+					'delivery_id' => $result['delivery_id'] ,
+					'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'action'   => $action ,
+					'total'    => $this->currency->format($result['total'], $this->config->get('config_currency'))
+				);
+			}
 			
 			// Invoices
 			$invoice_total = $this->model_sale_customer->getInvoicesCustomerTotal($this->request->get['customer_id']);
@@ -1035,12 +1035,12 @@ class ControllerSaleCustomer extends Controller {
 				foreach ($results as $result) {
 					$action = array();
 
-					$link = $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&contract_id=' . $result['nid'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
+					$link = $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
 					$action[] = array(
 						'link' => '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i> <span class="hidden-xs">'.$this->language->get('text_edit').'</span></a>'
 					);
 
-					$link = $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&contract_id=' . $result['nid'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
+					$link = $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
 					$action[] = array(
 						'link' => '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i> <span class="hidden-xs">'.$this->language->get('text_delete').'</span></a>'
 					);
@@ -1056,7 +1056,7 @@ class ControllerSaleCustomer extends Controller {
 					
 				
 					$this->data['contracts'][] = array(
-						'nid'			=> $result['nid'],
+						'contracts_id'	=> $result['contracts_id'],
 						'product'		=> $product_name,
 						'quantity'		=> $result['ncantidad'],
 						'end_support'	=> $result['dfinsoport'],
@@ -1277,7 +1277,6 @@ class ControllerSaleCustomer extends Controller {
 				$this->data['notes'][] = array(
 					'note_id'  => $result['customer_history_id'] ,
 					'date'     => $note_info['date_added'],
-					'user'     => "",
 					'comment'  => $note_info['comment'], 
 					'delete'   => $this->url->link('sale/customer/deleteNote', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'] . '&note_id=' . $result['customer_history_id'], 'SSL')
 				);
@@ -1800,7 +1799,7 @@ class ControllerSaleCustomer extends Controller {
 	}
 
 	public function getContactForm() {
-		$this->data['heading_contact'] 			= $this->language->get('heading_contact');
+		$this->data['heading_title'] 			= $this->language->get('heading_contact');
 
 		$this->data['entry_name']				= $this->language->get('entry_name');
 		$this->data['entry_email']				= $this->language->get('entry_email');
@@ -1811,6 +1810,20 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['button_save']				= $this->language->get('button_save');
 		$this->data['button_cancel']			= $this->language->get('button_cancel');
+
+		$this->data['breadcrumbs'] = array();
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
+		);
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_title'),
+			'href'      => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'),
+			'separator' => ' :: '
+		);
 
 		if (isset($this->request->get['contact_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
       		$contact_info = $this->model_sale_customer->getCustomerContact($this->request->get['contact_id']);
@@ -1905,12 +1918,12 @@ class ControllerSaleCustomer extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
 
-      	  	$this->model_sale_customer->editCustomerContract($this->request->post, $this->request->get['contract_id']);
+      	  	$this->model_sale_customer->editCustomerContract($this->request->post, $this->request->get['contracts_id']);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
 
-			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&contract_id=' . $this->request->get['contract_id'], 'SSL'));
+			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&contracts_id=' . $this->request->get['contracts_id'], 'SSL'));
 		}
 
 		$this->getContractForm();
@@ -1940,9 +1953,9 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->load->model('sale/customer');
 
-		if (isset($this->request->get['contract_id'])) {
+		if (isset($this->request->get['contracts_id'])) {
 
-      	  	$this->model_sale_customer->deleteCustomerContract($this->request->get['contract_id']);
+      	  	$this->model_sale_customer->deleteCustomerContract($this->request->get['contracts_id']);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -1955,7 +1968,7 @@ class ControllerSaleCustomer extends Controller {
 	public function getContractForm() {
 		$this->load->model('sale/customer');
 
-		$this->data['heading_title'] 			= $this->language->get('heading_title');
+		$this->data['heading_title'] 			= $this->language->get('heading_title_contract');
 
 		$this->data['entry_article'] 			= $this->language->get('entry_article');
 		$this->data['entry_quantity'] 			= $this->language->get('entry_quantity');
@@ -1969,14 +1982,28 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['text_select']				= $this->language->get('text_select');
 
-		if (isset($this->request->get['contract_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-      		$contract_info = $this->model_sale_customer->getCustomerContract($this->request->get['contract_id']);
+		$this->data['breadcrumbs'] = array();
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
+		);
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_title'),
+			'href'      => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'),
+			'separator' => ' :: '
+		);
+
+		if (isset($this->request->get['contracts_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+      		$contract_info = $this->model_sale_customer->getCustomerContract($this->request->get['contracts_id']);
 		}
 		
-		if (isset($this->request->get['contract_id'])) {
-			$this->data['contract_id'] = $this->request->get['contract_id'];
+		if (isset($this->request->get['contracts_id'])) {
+			$this->data['contracts_id'] = $this->request->get['contracts_id'];
 		} else {
-			$this->data['contract_id'] = 0;
+			$this->data['contracts_id'] = 0;
 		}
 		
 		if (isset($this->error['warning'])) {
@@ -2038,10 +2065,10 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['contract_status_id'] = 0;
 		}
 
-		if ($this->data['contract_id'] == 0) {
+		if ($this->data['contracts_id'] == 0) {
 			$this->data['action'] = $this->url->link('sale/customer/insertContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
 		} else {
-			$this->data['action'] = $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&contract_id=' . $this->data['contract_id'], 'SSL');
+			$this->data['action'] = $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&contracts_id=' . $this->data['contracts_id'], 'SSL');
 		}
 
 		$this->data['cancel'] = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');		
@@ -2100,6 +2127,20 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 
+		$this->data['breadcrumbs'] = array();
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
+		);
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_title'),
+			'href'      => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'),
+			'separator' => ' :: '
+		);
+
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
 		} else {
@@ -2157,18 +2198,21 @@ class ControllerSaleCustomer extends Controller {
 
 		if ($this->request->post['message']=='') {
 			$json['error']['message'] = $this->language->get('error_message');
-		} 
-		
+		}
+
 		if(empty($json['error'])){
 			$data['customer_id'] = $this->request->get['customer_id'];
+			$data['potential_id'] = 0;
+			$data['supplier_id'] = 0;
 			
 			$data['to'] = $this->request->post['to'];
 			$data['subject'] = $this->request->post['subject'];
+
 			$data['text'] = $this->request->post['message'];
 			$data['code'] = md5($this->request->post['message']);
 			
 			$data['file'] = '';
-			if (isset($this->request->post['filename']) && $this->request->post['filename']!=''){
+			if (is_file($this->request->post['filename'])){
 				$data['file'] = DIR_DOWNLOAD . $this->request->post['filename'];
 				
 				$newName = substr($data['file'], 0, strripos($data['file'], '.'));
@@ -2187,10 +2231,7 @@ class ControllerSaleCustomer extends Controller {
 			$json['success'] = $this->language->get('text_success_email');
 		}
 		
-		
-		//$this->response->setOutput(json_encode($json));
-		
-		$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->request->get['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'));
+		$this->response->setOutput(json_encode($json));
 	}
 
 	public function country() {

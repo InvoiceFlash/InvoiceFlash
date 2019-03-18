@@ -7912,6 +7912,14 @@ CREATE TABLE `if_fl_contracts` (
   KEY `narticulo` (`narticulo`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_fl_contracts_status`;
+CREATE TABLE `if_fl_contracts_status` (
+  `contract_status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(250) NOT NULL,
+  KEY `contract_status_id` (`contract_status_id`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `if_fl_customers`;
 CREATE TABLE `if_fl_customers` (
   `customer_id` int(11) NOT NULL,
@@ -8067,6 +8075,20 @@ CREATE TABLE `if_customer_mails` (
   `email_customer` varchar(250) DEFAULT NULL,
   PRIMARY KEY (`customer_mail_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `if_mail_out`;
+CREATE TABLE `if_mail_out` (
+  `mail_out_id` int(11) NOT NULL AUTO_INCREMENT,
+  `group_id` int(11) DEFAULT NULL,
+  `customer_or_potential_id` int(11) DEFAULT NULL,
+  `mailfrom` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `mailto` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+  `subject` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+  `message` text COLLATE utf8_bin,
+  `format` varchar(4) COLLATE utf8_bin DEFAULT 'text',
+  `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`mail_out_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --
