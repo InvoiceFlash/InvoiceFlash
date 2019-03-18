@@ -64,6 +64,10 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_nif; ?></label>
+										<div class="col-sm-6"><input type="text" name="nif" id="nif" value="<?php echo $nif; ?>" class="form-control"></div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_telephone; ?></label>
 										<div class="col-sm-6">
 											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">

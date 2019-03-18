@@ -25,22 +25,30 @@
 						<thead>
 							<tr>
 								<th></th>
-								<th class="d-none d-md-table-cell"><?php echo $column_from; ?></th>
-								<th><?php echo $column_customer; ?></th>
+								<th><?php echo $column_from; ?></th>
+								<th class="d-none d-md-table-cell"><?php echo $column_customer; ?></th>
 								<th class="d-none d-sm-table-cell"><?php echo $column_subject; ?></th>
 								<th class="d-none d-md-table-cell"><?php echo $column_received; ?></th>
-								<th><?php echo $column_action; ?></th>
+								<th class="text-right"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody data-link="row" class="rowlink">
+							<tr id="filter" class="info">
+								<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=catalog/mail&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+								<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" data-target="company" data-url="sale/customer" class="form-control"></td>
+								<td class="d-none d-md-table-cell"></td>
+								<td class="d-none d-sm-table-cell"></td>
+								<td class="d-none d-md-table-cell"></td>
+								<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+							</tr>
 							<?php if ($mails_ins) { ?>
 								<?php foreach ($mails_ins as $mail_in) { ?>
 									<tr>
 									<td class="rowlink-skip text-center">
 										<input type="checkbox" name="sel_mail_in[]" value="<?php echo $mail_in['mail_id']; ?>" <?php echo ($mail_in['sel_mail_in'] ? 'checked' : '')?>>
 									</td>
-									<td class="d-none d-md-table-cell"><?php echo $mail_in['company']; ?></td>
-									<td><?php echo $mail_in['mailfrom']; ?></td>
+									<td><?php echo $mail_in['company']; ?></td>
+									<td class="d-none d-md-table-cell"><?php echo $mail_in['mailfrom']; ?></td>
 									<td class="d-none d-sm-table-cell"><?php echo $mail_in['title']; ?></td>
 									<td class="d-none d-md-table-cell"><?php echo $mail_in['created']; ?></td>
 									<td class="text-right"><?php foreach ($mail_in['action'] as $action) { ?>

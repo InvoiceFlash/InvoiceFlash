@@ -38,7 +38,13 @@ class ModelCatalogMail extends Model {
 	
 		$sql = "SELECT mails.*, c.company FROM " . DB_PREFIX . "fl_mails AS mails  
 					LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = mails.customer_id 
-					WHERE type= 'R' AND bleido <> 2 ORDER BY mails.date_added DESC";
+					WHERE type= 'R' AND bleido <> 2";
+
+		if ($data['filter_company'] != '') {
+			$sql .= " AND c.company = '" . $this->db->escape($data['filter_company'])  . "'";
+		}
+
+		$sql .= " ORDER BY mails.date_added DESC";
 		
 		if (isset($data['start']) || isset($data['limit'])) {
 			if ($data['start'] < 0) {

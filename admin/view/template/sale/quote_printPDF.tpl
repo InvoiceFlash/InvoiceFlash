@@ -41,7 +41,7 @@ th {
 </head>
 <body style="padding-top:0;">
 <div class="container">
-<!-- <?php foreach ($quotes as $quotes) { ?> -->
+<?php foreach ($quotes as $quotes) { ?>
 	<div class="store_logo">
 		<div class="logo">
 			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $quotes['store_name']; ?>" /><br>
@@ -130,7 +130,7 @@ th {
 		</tr>
 	</table>
 	<?php } ?>
-<!-- <?php } ?> -->
+<?php } ?>
 </div>
 </body>
 </html>

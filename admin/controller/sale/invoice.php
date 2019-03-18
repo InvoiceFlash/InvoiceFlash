@@ -885,14 +885,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['addresses'] = array();
 		}
 
-    	if (isset($this->request->post['payment_lastname'])) {
-      		$this->data['payment_lastname'] = $this->request->post['payment_lastname'];
-    	} elseif (!empty($invoice_info)) { 
-			$this->data['payment_lastname'] = $invoice_info['payment_lastname'];
-		} else {
-      		$this->data['payment_lastname'] = '';
-    	}
-
     	if (isset($this->request->post['payment_company'])) {
       		$this->data['payment_company'] = $this->request->post['payment_company'];
     	} elseif (!empty($invoice_info)) { 
@@ -972,14 +964,6 @@ class ControllerSaleInvoice extends Controller {
 		} else {
       		$this->data['payment_code'] = '';
     	}			
-
-    	if (isset($this->request->post['shipping_lastname'])) {
-      		$this->data['shipping_lastname'] = $this->request->post['shipping_lastname'];
-    	} elseif (!empty($invoice_info)) { 
-			$this->data['shipping_lastname'] = $invoice_info['shipping_lastname'];
-		} else {
-      		$this->data['shipping_lastname'] = '';
-    	}
 
     	if (isset($this->request->post['shipping_company'])) {
       		$this->data['shipping_company'] = $this->request->post['shipping_company'];
@@ -1311,7 +1295,7 @@ class ControllerSaleInvoice extends Controller {
 
 			$this->data['printPDF'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=pdf', 'SSL');
 			$this->data['invoice'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=view', 'SSL');
-			$this->data['sendEmail'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=email', 'SSL');
+			$this->data['sendEmail'] = $this->url->link('sale/invoice/email', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 			// add print selection
@@ -1783,14 +1767,45 @@ class ControllerSaleInvoice extends Controller {
 			$this->renderPDF('sale/invoice_printPDF.tpl', 'pdf', 'invoice', $invoice_id);
 		} elseif ($lcFormat=='email') {
 			$this->renderPDF('sale/invoice_printPDF.tpl', 'email', 'invoice', $invoice_id);
-			$to = $this->request->post['to'];
-			$subject = $this->request->post['subject'];
-			$text = $this->request->post['message'];
 
-			$lcFile = DIR_DOWNLOAD . 'invoice_' . $invoice_id . '.pdf';
-			$this->sendnewmail($to, $subject, $text, $lcFile);
+			$json = array();
 
-			$this->redirect($this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] .'&invoice_id=' . $invoice_id, 'SSL'));
+			if ($this->request->post['to']=='' || filter_var($this->request->post['to'], FILTER_VALIDATE_EMAIL)==false) {
+				$json['error']['to'] = $this->language->get('error_to');
+			} 
+	
+			if ($this->request->post['subject']=='') {
+				$json['error']['subject'] = $this->language->get('error_subject');
+			}
+	
+			if ($this->request->post['message']=='') {
+				$json['error']['message'] = $this->language->get('error_message');
+			} 
+
+			if (empty($json['error'])) {
+				$data['customer_id'] = 0;
+				$data['potential_id'] = 0;
+				$data['supplier_id'] = 0;
+				
+				$data['invoice_id'] = $this->request->get['invoice_id'];
+				
+				$data['to'] = $this->request->post['to'];
+				$data['subject'] = $this->request->post['subject'];
+				$data['text'] = $this->request->post['message'];
+				$data['code'] = md5($this->request->post['message']);
+				
+				$data['file'] = DIR_DOWNLOAD . 'invoice_' . $invoice_id . '.pdf';
+				
+				$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+				
+				$this->load->model('catalog/mail');
+				
+				$this->model_catalog_mail->addMailSended($data);
+				
+				$json['success'] = $this->language->get('text_success_email');
+			}
+
+			$this->response->setOutput(json_encode($json));
 		} else {
 			if ($lcReport=='') {
 				$this->template = 'sale/invoice_invoice.tpl';

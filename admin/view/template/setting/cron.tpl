@@ -1,7 +1,7 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
-  <?php $fa='clock'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
+  <?php $fa = 'clock'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
 	<div class="panel-body">
     <div clasS="panel panel-default" style="max-height:250px;">
       <div class="panel-heading"><i class="fa fa-question-circle"></i> <?php echo $text_instruction; ?></div>
@@ -18,8 +18,8 @@
     <div class="panel panel-default mt-2" style="max-height:500px;">
       <div class="panel-heading"><i class="fa fa-list"></i> <?php echo $text_list; ?></div>
       <div class="panel-body">
-        <form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form-cron">
-          <div class="table-responsive">
+        <form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
+         
             <table class="table table-bordered table-hover">
               <thead>
                 <tr>

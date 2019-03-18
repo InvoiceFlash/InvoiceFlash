@@ -4,7 +4,7 @@ $_['heading_title']                           = 'Quotes';
 
 // Text
 $_['text_success']                            = 'Success: You have modified quotes!';
-$_['text_quote_id']                           = 'Quote ID:';
+$_['text_quote_id']                         = 'Quote ID:';
 $_['text_invoice_no']                         = 'Quote No.:';
 $_['text_invoice_date']                       = 'Quote Date:';
 $_['text_store_name']                         = 'Store Name:';
@@ -22,8 +22,6 @@ $_['text_comment']                            = 'Comment:';
 $_['text_commission']                         = 'Commission:';
 $_['text_date_added']                         = 'Date Added:';
 $_['text_date_modified']                      = 'Date Modified:';
-$_['text_firstname']                          = 'First Name:';
-$_['text_lastname']                           = 'Last Name:';
 $_['text_company']                            = 'Company:';
 $_['text_company_id']                         = 'Company ID:';
 $_['text_tax_id']                             = 'Tax ID:';
@@ -34,7 +32,7 @@ $_['text_city']                               = 'City:';
 $_['text_zone']                               = 'Region / State:';
 $_['text_zone_code']                          = 'Region / State Code:';
 $_['text_country']                            = 'Country:';
-$_['text_quote']                              = 'Quote';
+$_['text_quote']                            = 'Quote';
 $_['text_to']                                 = 'To';
 $_['text_ship_to']                            = 'Ship To (if different address)';
 $_['text_missing']                            = 'Missing Quotes';
@@ -42,7 +40,7 @@ $_['text_default']                            = 'Default';
 $_['text_wait']                               = 'Please Wait!';
 $_['text_product']                            = 'Add Product(s)';
 $_['text_voucher']                            = 'Add Voucher(s)';
-$_['text_quote_details']                      = 'Quote Details';
+$_['text_quote_details']                    = 'Quote Details';
 $_['text_generate']                           = 'Generate';
 $_['text_commission_add']                     = 'Add Commission';
 $_['text_commission_added']                   = 'Success: Commission added!';
@@ -75,7 +73,7 @@ $_['text_maxmind_id']                         = 'Maxmind ID:<br /><span class="h
 $_['text_error']                              = 'Error:<br /><span class="help">Returns an error string with a warning message or a reason why the request failed.</span>';
 
 // Column
-$_['column_quote_id']                         = 'Quote ID';
+$_['column_quote_id']                       = 'Quote ID';
 $_['column_customer']                         = 'Customer';
 $_['column_status']                           = 'Status';
 $_['column_date_added']                       = 'Date Added';
@@ -96,8 +94,6 @@ $_['entry_vat']                               = 'VAT number:';
 $_['entry_store']                             = 'Store:';
 $_['entry_customer']                          = 'Customer:';
 $_['entry_customer_group']                    = 'Group:';
-$_['entry_firstname']                         = 'Contact Name:';
-$_['entry_lastname']                          = 'Last Name:';
 $_['entry_email']                             = 'E-Mail:';
 $_['entry_telephone']                         = 'Telephone:';
 $_['entry_fax']                               = 'Fax:';
@@ -122,7 +118,7 @@ $_['entry_from_email']                        = 'Senders Email:';
 $_['entry_theme']                             = 'Gift Certificate Theme:';
 $_['entry_message']                           = 'Message:';
 $_['entry_amount']                            = 'Amount:';
-$_['entry_invoice_status']                    = 'Quote Status:';
+$_['entry_invoice_status']                      = 'Quote Status:';
 $_['entry_notify']                            = 'Notify Customer:';
 $_['entry_comment']                           = 'Comment:';
 $_['entry_shipping']                          = 'Shipping Method:';
@@ -138,8 +134,6 @@ $_['tab_quote']             				  = 'Quote';
 // Error
 $_['error_warning']                           = 'Warning: Please check the form carefully for errors!';
 $_['error_permission']                        = 'Warning: You do not have permission to modify quotes!';
-$_['error_firstname']                         = 'First Name must be between 1 and 32 characters!';
-$_['error_lastname']                          = 'Last Name must be between 1 and 32 characters!';
 $_['error_email']                             = 'E-Mail Address does not appear to be valid!';
 $_['error_telephone']                         = 'Telephone must be between 3 and 32 characters!';
 $_['error_password']                          = 'Password must be between 3 and 20 characters!';
@@ -158,8 +152,13 @@ $_['error_upload']                            = 'Upload required!';
 $_['error_filename']                          = 'Filename must be between 3 and 128 characters!';
 $_['error_filetype']                          = 'Invalid file type!';
 $_['error_action']                            = 'Warning: Could not complete this action!';
-$_['error_required']                          = '%s required!';
+$_['error_required']    = '%s required!';
 
-$_['button_quote'] 						      = 'Print Quote';
+$_['button_quote'] 						  = 'Print Quote';
+
+$_['text_success_email']                      = 'Success: The email has been sent without problems!';
+$_['error_to']                                = 'Error: E-mail to does no seem to be valid!';
+$_['error_subject']                           = 'Error: Subject can not be empty!';
+$_['error_message']                           = 'Error: Message can not be empty!';
 
 ?>

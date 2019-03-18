@@ -6,51 +6,23 @@
 <title><?php echo $title; ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <base href="<?php echo $base; ?>">
-<style>
-* {
-	padding: 0;
-	margin: 0;
-}
-.center {
-	text-align: center;
-}
-.right {
-	text-align: right;
-}
-.title {
-	font-size: 32px;
-	text-transform: uppercase;
-	padding-left: 20px;
-	text-align: right;
-}
-.table-bordered {
-	border: 1px solid grey;
-}
-.table {
-	width: 100%;
-	margin-bottom: 1rem;
-	background-color: white;
-	margin: 5px;
-	padding: 5px;
-}
-th {
-    font-weight: bold;
-	background-color: #dee2e6;
-}
-</style>
+<link href="view/stylesheet/stylesheet.css" rel="stylesheet">
+<link href="view/stylesheet/main.css" rel="stylesheet">
+<script src="view\javascript\jquery\jquery-3.3.1.min.js"></script>
+<script src="view\javascript\bootstrap\js\bootstrap.js"></script>
 </head>
 <body style="padding-top:0;">
 <div class="container">
 <?php foreach ($invoices as $invoices) { ?>
 	<div class="store_logo">
 		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" /><br>
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoice['store_name']; ?>" />
 			<span class="title"><?php echo $text_invoice; ?></span>
 		</div>
 	</div>
 	<table class="table table-bordered">
 		<tr>
-			<td width="50%"><strong><?php echo $invoices['store_name']; ?></strong><br>
+			<td width="50%"><?php echo $invoices['store_name']; ?><br>
 				<?php echo $invoices['store_address']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $invoices['store_telephone']; ?><br>
 				<?php if ($invoices['store_fax']) { ?>
@@ -96,9 +68,9 @@ th {
 		<tr>
 			<th><?php echo $column_product; ?></th>
 			<th><?php echo $column_model; ?></th>
-			<th class="center"><?php echo $column_quantity; ?></th>
-			<th class="right"><?php echo $column_price; ?></th>
-			<th class="right"><?php echo $column_total; ?></th>
+			<th class="text-right"><?php echo $column_quantity; ?></th>
+			<th class="text-right"><?php echo $column_price; ?></th>
+			<th class="text-right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($invoices['product'] as $product) { ?>
 		<tr>
@@ -108,15 +80,15 @@ th {
 				&nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
 				<?php } ?></td>
 			<td><?php echo $product['model']; ?></td>
-			<td class="center"><?php echo $product['quantity']; ?></td>
-			<td class="right"><?php echo $product['price']; ?></td>
-			<td class="right"><?php echo $product['total']; ?></td>
+			<td class="text-right"><?php echo $product['quantity']; ?></td>
+			<td class="text-right"><?php echo $product['price']; ?></td>
+			<td class="text-right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($invoices['total'] as $total) { ?>
 		<tr>
-			<td class="right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
-			<td class="right"><?php echo $total['text']; ?></td>
+			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="text-right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>
 	</table>
@@ -134,3 +106,6 @@ th {
 </div>
 </body>
 </html>
+<script type="text/javascript"><!--
+window.print()
+//--></script>

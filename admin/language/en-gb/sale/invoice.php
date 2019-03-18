@@ -22,8 +22,6 @@ $_['text_comment']                            = 'Comment:';
 $_['text_commission']                         = 'Commission:';
 $_['text_date_added']                         = 'Date Added:';
 $_['text_date_modified']                      = 'Date Modified:';
-$_['text_firstname']                          = 'First Name:';
-$_['text_lastname']                           = 'Last Name:';
 $_['text_company']                            = 'Company:';
 $_['text_company_id']                         = 'Company ID:';
 $_['text_tax_id']                             = 'Tax ID:';
@@ -73,6 +71,7 @@ $_['text_risk_score']                         = 'Risk Score:<br /><span class="h
 $_['text_queries_remaining']                  = 'Queries Remaining:<br /><span class="help">Number of queries remaining in your account, can be used to alert you when you may need to add more queries to your account.</span>';
 $_['text_maxmind_id']                         = 'Maxmind ID:<br /><span class="help">Unique identifier, used to reference transactions when reporting fraudulent activity back to MaxMind. This reporting will help MaxMind improve its service to you and will enable a planned feature to customize the fraud scoring formula based on your chargeback history.</span>';
 $_['text_error']                              = 'Error:<br /><span class="help">Returns an error string with a warning message or a reason why the request failed.</span>';
+$_['text_success_email']                      = 'Success: The email has been sent without problems!';
 
 // Column
 $_['column_invoice_id']                       = 'Invoice ID';
@@ -96,8 +95,6 @@ $_['entry_vat']                               = 'VAT number:';
 $_['entry_store']                             = 'Store:';
 $_['entry_customer']                          = 'Customer:';
 $_['entry_customer_group']                    = 'Group:';
-$_['entry_firstname']                         = 'Contact Name:';
-$_['entry_lastname']                          = 'Last Name:';
 $_['entry_email']                             = 'E-Mail:';
 $_['entry_telephone']                         = 'Telephone:';
 $_['entry_fax']                               = 'Fax:';
@@ -131,6 +128,7 @@ $_['entry_coupon']                            = 'Coupon:';
 $_['entry_voucher']                           = 'Voucher:';
 $_['entry_name_ext']          				  = 'Descripcion:';
 $_['entry_price']             				  = 'Nuevo Precio:';
+$_['error_required']    = '%s required!';
 
 //add
 $_['tab_invoice']             				  = 'Invoice';
@@ -138,8 +136,6 @@ $_['tab_invoice']             				  = 'Invoice';
 // Error
 $_['error_warning']                           = 'Warning: Please check the form carefully for errors!';
 $_['error_permission']                        = 'Warning: You do not have permission to modify invoices!';
-$_['error_firstname']                         = 'First Name must be between 1 and 32 characters!';
-$_['error_lastname']                          = 'Last Name must be between 1 and 32 characters!';
 $_['error_email']                             = 'E-Mail Address does not appear to be valid!';
 $_['error_telephone']                         = 'Telephone must be between 3 and 32 characters!';
 $_['error_password']                          = 'Password must be between 3 and 20 characters!';
@@ -158,6 +154,10 @@ $_['error_upload']                            = 'Upload required!';
 $_['error_filename']                          = 'Filename must be between 3 and 128 characters!';
 $_['error_filetype']                          = 'Invalid file type!';
 $_['error_action']                            = 'Warning: Could not complete this action!';
+
+$_['error_to']                                = 'E-mail to does no seem to be valid!';
+$_['error_subject']                           = 'Subject can not be empty!';
+$_['error_message']                           = 'Message can not be empty!';
 
 $_['button_invoice'] 						  = 'Print Invoice';
 

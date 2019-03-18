@@ -286,6 +286,11 @@
 		</div>
 	</div>
 </div>
+<?php 
+$id = $invoice_id;
+include(DIR_TEMPLATE . 'sale/email_modal.tpl');
+include(DIR_TEMPLATE . 'sale/print_modal.tpl');
+?>
 <script>
 $('#send').on('click',function(e){
 	var to = $('#to').val();
@@ -293,9 +298,9 @@ $('#send').on('click',function(e){
 
 	var editor = CKEDITOR.instances.message;
 	var message = editor.getData();
-
+	
 	$.ajax({
-		url:'index.php?route=sale/invoice/email&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>',
+		url:'index.php?route=sale/invoice/invoice&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>&format=email',
 		type:'post',
 		dataType:'json',
 		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),
@@ -318,8 +323,4 @@ $('#send').on('click',function(e){
 	});
 });
 </script>
-<?php 
-$id = $invoice_id;
-include(DIR_TEMPLATE . 'sale/email_modal.tpl');
-include(DIR_TEMPLATE . 'sale/print_modal.tpl');
-echo $footer; ?>
+<?php echo $footer; ?>

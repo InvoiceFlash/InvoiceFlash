@@ -66,10 +66,10 @@ class ControllerSaleQuote extends Controller {
 			
 			$this->redirect($this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
-		
-		if (!$this->user->hasPermission('modify', 'sale/quote')) {
-      		$this->error['warning'] = $this->language->get('error_permission');
 
+		if (!$this->user->hasPermission('modify', 'sale/quote')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		
 			$this->getList();
 		}else{
 			$this->getForm();
@@ -130,7 +130,13 @@ class ControllerSaleQuote extends Controller {
 			$this->redirect($this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
 		
-    	$this->getForm();
+		if (!$this->user->hasPermission('modify', 'sale/quote')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		
+			$this->getList();
+		}else{
+			$this->getForm();
+		}
     }
     	
   	public function delete() {
@@ -1555,7 +1561,7 @@ class ControllerSaleQuote extends Controller {
       	}			
 		
 		$history_total = $this->model_sale_quote->getTotalQuoteHistories($this->request->get['quote_id']);
-			
+		
 		$pagination = new Pagination();
 		$pagination->total = $history_total;
 		$pagination->page = $page;
@@ -1805,14 +1811,45 @@ class ControllerSaleQuote extends Controller {
 			$this->renderPDF('sale/quote_printPDF.tpl', 'pdf', 'quote', $quote_id);
 		} elseif ($lcFormat=='email') {
 			$this->renderPDF('sale/quote_printPDF.tpl', 'email', 'quote', $quote_id);
-			$to = $this->request->post['to'];
-			$subject = $this->request->post['subject'];
-			$text = $this->request->post['message'];
 
-			$lcFile = DIR_DOWNLOAD . 'quote_' . $quote_id . '.pdf';
-			$this->sendnewmail($to, $subject, $text, $lcFile);
+			$json = array();
 
-			$this->redirect($this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] .'&quote_id=' . $quote_id, 'SSL'));
+			if ($this->request->post['to']=='' || filter_var($this->request->post['to'], FILTER_VALIDATE_EMAIL)==false) {
+				$json['error']['to'] = $this->language->get('error_to');
+			} 
+	
+			if ($this->request->post['subject']=='') {
+				$json['error']['subject'] = $this->language->get('error_subject');
+			}
+	
+			if ($this->request->post['message']=='') {
+				$json['error']['message'] = $this->language->get('error_message');
+			} 
+
+			if (empty($json['error'])) {
+				$data['customer_id'] = 0;
+				$data['potential_id'] = 0;
+				$data['supplier_id'] = 0;
+				
+				$data['quote_id'] = $this->request->get['quote_id'];
+				
+				$data['to'] = $this->request->post['to'];
+				$data['subject'] = $this->request->post['subject'];
+				$data['text'] = $this->request->post['message'];
+				$data['code'] = md5($this->request->post['message']);
+				
+				$data['file'] = DIR_DOWNLOAD . 'quote_' . $quote_id . '.pdf';
+				
+				$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+				
+				$this->load->model('catalog/mail');
+				
+				$this->model_catalog_mail->addMailSended($data);
+				
+				$json['success'] = $this->language->get('text_success_email');
+			}
+
+			$this->response->setOutput(json_encode($json));
 		} else {
 			$this->template = 'sale/quote_invoice.tpl';
 			

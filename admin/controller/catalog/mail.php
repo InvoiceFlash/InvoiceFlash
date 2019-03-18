@@ -8,18 +8,6 @@ class ControllerCatalogMail extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 		    
 		$this->load->model('catalog/mail');
-
-		if (isset($this->request->get['page'])) {
-			$page = $this->request->get['page'];
-		} else {
-			$page = 1;
-		}
-		
-		$url = '';
-
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $page;
-		}
 		
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
@@ -62,6 +50,7 @@ class ControllerCatalogMail extends Controller {
 		$this->data['button_delete']  = $this->language->get('button_delete');
 		$this->data['button_cancel']  = $this->language->get('button_cancel');
 		$this->data['button_upload']  = $this->language->get('button_upload');
+		$this->data['button_filter']  = $this->language->get('button_filter');
 		
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -86,12 +75,29 @@ class ControllerCatalogMail extends Controller {
 			$this->data['success'] = '';
 		}
 		
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
-
 		$url = '';
 
+		if (isset($this->request->get['page_in'])) {
+			$page_in = $this->request->get['page_in'];
+			$url .= '&page_in=' . $page_in;
+		} else {
+			$page_in = 1;
+		}
+
+		if (isset($this->request->get['page_out'])) {
+			$page_out = $this->request->get['page_out'];
+			$url .= '&page_out=' . $page_out;
+		} else {
+			$page_out = 1;
+		}
+
+		if (isset($this->request->get['filter_company'])) {
+			$filter_company = $this->request->get['filter_company'];
+			$url .= '&filter_company=' . $filter_company;
+		} else {
+			$filter_company = '';
+		}
+		
 		$this->data['breadcrumbs'] = array();
 
 		$this->data['breadcrumbs'][] = array(
@@ -114,7 +120,8 @@ class ControllerCatalogMail extends Controller {
 		$this->data['token'] = $this->session->data['token'];
 
 		$data = array(
-			'start' => ($page - 1) * $this->config->get('config_admin_limit'),
+			'filter_company' => $filter_company,
+			'start' => ($page_in - 1) * $this->config->get('config_admin_limit'),
 			'limit' => $this->config->get('config_admin_limit')
 		);
 		
@@ -146,9 +153,14 @@ class ControllerCatalogMail extends Controller {
 	
 		$this->data['mails_outs'] = array();
 		
-		$mails_out_total = $this->model_catalog_mail->getTotalmails_out();
+		$data = array(
+			'start' => ($page_out - 1) * $this->config->get('config_admin_limit'),
+			'limit' => $this->config->get('config_admin_limit')
+		);
+		
+		$mails_out_total = $this->model_catalog_mail->getTotalmails_out($data);
 	
-		$results = $this->model_catalog_mail->getmails_out();
+		$results = $this->model_catalog_mail->getmails_out($data);
 		
 		foreach ($results as $result) {
 			$action = array();
@@ -181,17 +193,9 @@ class ControllerCatalogMail extends Controller {
       		$this->data['message'] = '' ;
     	}
 		
-		if (isset($this->request->get['page_in'])) {
-			$url .= '&page_in=' . $this->request->get['page_in'];
-		}
-
-		if (isset($this->request->get['page_out'])) {
-			$url .= '&page_out=' . $this->request->get['page_out'];
-		}
-		
 		$pag_mail_in = new Pagination();
 		$pag_mail_in->total = $mails_in_total;
-		$pag_mail_in->page  = $page;
+		$pag_mail_in->page  = $page_in;
 		$pag_mail_in->limit = $this->config->get('config_admin_limit');
 		$pag_mail_in->text  = $this->language->get('text_pagination');
 		$pag_mail_in->url   = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url . '&page_in={page_in}', 'SSL');
@@ -200,12 +204,14 @@ class ControllerCatalogMail extends Controller {
 
 		$pag_mail_out = new Pagination();
 		$pag_mail_out->total = $mails_out_total;
-		$pag_mail_out->page  = $page;
+		$pag_mail_out->page  = $page_out;
 		$pag_mail_out->limit = $this->config->get('config_admin_limit');
 		$pag_mail_out->text  = $this->language->get('text_pagination');
 		$pag_mail_out->url   = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url . '&page_out={page_out}', 'SSL');
 
 		$this->data['pag_mail_out'] = $pag_mail_out->render();
+
+		$this->data['filter_company'] = $filter_company;
 		
 		$this->template = 'catalog/mail_list.tpl';		
 		
@@ -252,13 +258,14 @@ class ControllerCatalogMail extends Controller {
 		if (!extension_loaded('imap')) {
 			echo 'Imap library is not installed.';
 		}else{
-			if ($this->config->get('config_smtp_host')== null ){
-				echo 'smtp_host is not configured';
+			if ($this->config->get('config_smtp_host')== null || $this->config->get('config_smtp_username')== null || $this->config->get('config_smtp_password')== null){
+				// return;
 			}else{
 				$this->model_catalog_mail->getmails();
-				$this->redirect($this->url->link('catalog/mail', 'token=' . $this->session->data['token'], 'SSL'));
 			}
 		}
+
+		$this->redirect($this->url->link('catalog/mail', 'token=' . $this->session->data['token'], 'SSL'));
 	}
 
 	public function send() {
