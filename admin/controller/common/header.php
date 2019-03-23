@@ -676,7 +676,7 @@ class ControllerCommonHeader extends Controller {
 			if ($this->user->hasPermission('access', 'report/customer_support')) {
 				$r_customers[] = array(
 					'name' => $this->language->get('text_report_customer_support'),
-					'href' => $this->url->link('report/customer_support'),
+					'href' => $this->url->link('report/customer_support', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
