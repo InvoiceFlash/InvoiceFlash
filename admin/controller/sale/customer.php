@@ -639,6 +639,8 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_description'] = $this->language->get('entry_description');
 		$this->data['entry_amount'] = $this->language->get('entry_amount');
 		$this->data['entry_points'] = $this->language->get('entry_points');
+		$this->data['entry_nif'] = $this->language->get('entry_nif');
+
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
 		$this->data['text_date_support'] = $this->language->get('text_date_support');
@@ -1247,6 +1249,18 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['address_id'] = '';
 		}
 
+		if (isset($this->request->post['nif'])) {
+			$this->data['nif'] = $this->request->post['nif'];
+		} elseif (!empty($customer_info)) {
+			$this->data['nif'] = $customer_info['nif'];
+		} else {
+			$this->data['nif'] = '';
+		}
+		
+		// $log=new Log('customer.log'); 
+		
+		// $log->write($customer_info);
+		
 		$this->data['ips'] = array();
 
 		if (!empty($customer_info)) {

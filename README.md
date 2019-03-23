@@ -19,7 +19,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Auto-update
 - [ ] More info on web
 - [ ] cron versus curl
-- [ ] customer VAT-ID
+- [x] customer VAT-ID
 - [ ] Complete erase demo data
 - [ ] Thermometer install database
 

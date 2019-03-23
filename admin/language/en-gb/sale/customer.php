@@ -120,6 +120,8 @@ $_['entry_comment']         = 'Comment:';
 $_['entry_description']     = 'Description:';
 $_['entry_amount']          = 'Amount:';
 $_['entry_points']          = '<a data-toggle="tooltip" title="Use minus to remove points"><i class="fas fa-question-circle"></i></a> Points:';
+$_['entry_nif']             = 'VAT-ID:';
+
 $_['text_datecreated']      = 'Created:' ;
 $_['text_date_modified']    = 'Last modified:' ;
 $_['text_date_support']     = 'Date Support:' ;
@@ -184,6 +186,7 @@ $_['entry_puesto'] = 'Job:';
 $_['entry_notas'] = 'Notes:';
 
 // contracts
+$_['heading_title_contract'] = 'Contracts';
 $_['tab_contracts'] = 'Contracts';
 $_['column_article'] = 'Article';
 $_['column_quantity'] = 'Quantity';
@@ -213,7 +216,7 @@ $_['button_send'] = 'Send';
 $_['button_upload'] = 'Upload';
 
 $_['text_alert_imap'] = 'Imap library is not installed!!';
-$_['text_success_email'] = 'Mail sended correctly to customer';
+$_['text_success_email'] = 'Mail sent correctly to customer';
 
 $_['error_to'] = 'The destination email is not valid!';
 $_['error_subject'] = 'Subject can not be empty!';
