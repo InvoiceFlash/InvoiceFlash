@@ -3336,6 +3336,7 @@ CREATE TABLE `if_user` (
   `code` varchar(40) NOT NULL,
   `ip` varchar(40) NOT NULL,
   `status` tinyint(1) NOT NULL,
+  `language_id` int(11) NOT NULL,
   `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`user_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -7895,7 +7896,7 @@ CREATE TABLE `if_fl_contracts` (
   `contracts_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `customer_id` int(10) unsigned DEFAULT NULL,
   `narticulo` int(10) unsigned DEFAULT NULL,
-  `ncantidad` int(10) DEFAULT NULL,
+  `quantity` int(10) DEFAULT NULL,
   `dcompra` date DEFAULT NULL,
   `dfinsoport` date DEFAULT NULL,
   `mnotas` mediumtext,

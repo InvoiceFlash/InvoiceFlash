@@ -21,7 +21,7 @@ class ModelSaleCustomer extends Model {
 
 		$customer_id = $this->db->getLastId();
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($data['bank_cc']) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "'");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($data['bank_cc']) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "'");
 
 		if (isset($data['address'])) {
 
@@ -55,7 +55,7 @@ class ModelSaleCustomer extends Model {
 			company = '" . $this->db->escape($data['company']) . "', 
 			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
-		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($data['bank_cc']) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "' WHERE customer_id = " . (int)$customer_id);
+		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($data['bank_cc']) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "' WHERE customer_id = " . (int)$customer_id);
 
 		// if ($data['password']) {
 
@@ -1198,7 +1198,7 @@ class ModelSaleCustomer extends Model {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_contracts SET 
 			customer_id = " . (int)$customer_id . ", 
 			narticulo = " . (int)$data['product_id'] . ", 
-			ncantidad = " . (int)$data['quantity'] . ", 
+			quantity = " . (int)$data['quantity'] . ", 
 			dcompra = DATE('" . $data['date_purchased'] . "'),
 			dfinsoport = DATE('" . $data['end_support'] . "'),
 			mnotas = '" . $this->db->escape($data['notes']) . "',
@@ -1211,7 +1211,7 @@ class ModelSaleCustomer extends Model {
 	public function editCustomerContract($data, $contracts_id) {
 		$this->db->query("UPDATE " . DB_PREFIX . "fl_contracts SET 
 			narticulo = " . (int)$data['product_id'] . ", 
-			ncantidad = " . (int)$data['quantity'] . ", 
+			quantity = " . (int)$data['quantity'] . ", 
 			dcompra = DATE('" . $data['date_purchased'] . "'),
 			dfinsoport = DATE('" . $data['end_support'] . "'),
 			mnotas = '" . $this->db->escape($data['notes']) . "',

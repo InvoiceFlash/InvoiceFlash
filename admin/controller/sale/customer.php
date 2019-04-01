@@ -1060,7 +1060,7 @@ class ControllerSaleCustomer extends Controller {
 					$this->data['contracts'][] = array(
 						'contracts_id'	=> $result['contracts_id'],
 						'product'		=> $product_name,
-						'quantity'		=> $result['ncantidad'],
+						'quantity'		=> $result['quantity'],
 						'end_support'	=> $result['dfinsoport'],
 						'action'		=> $action
 					);
@@ -1256,10 +1256,6 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['nif'] = '';
 		}
-		
-		// $log=new Log('customer.log'); 
-		
-		// $log->write($customer_info);
 		
 		$this->data['ips'] = array();
 
@@ -2040,7 +2036,7 @@ class ControllerSaleCustomer extends Controller {
 		if (isset($this->request->post['quantity'])) {
 			$this->data['quantity'] = $this->request->post['quantity'];
 		} elseif (isset($contract_info)) {
-			$this->data['quantity'] = $contract_info['ncantidad'];
+			$this->data['quantity'] = $contract_info['quantity'];
 		} else {
 			$this->data['quantity'] = 1;
 		}
