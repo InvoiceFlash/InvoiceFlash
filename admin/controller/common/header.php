@@ -285,10 +285,10 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 			// Sales - Remmitances
-			if ($this->user->hasPermission('access', 'sale/remmitance')) {
+			if ($this->user->hasPermission('access', 'sale/remittances')) {
 				$sales[] = array(
 					'name' => $this->language->get('text_remmitance'),
-					'href' => $this->url->link('sale/remmitance', 'token=' . $this->session->data['token'], 'SSL'),
+					'href' => $this->url->link('sale/remittances', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
