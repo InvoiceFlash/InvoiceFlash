@@ -4,16 +4,16 @@ class ModelLocalisationShipping extends Model {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "shipping_methods order by shipping_id desc limit 1");
 
 		$shipping_id = isset($query->row['shipping_id']) ? $query->row['shipping_id']+1 : 1;
-		
-		// A row for every language
+		// Por cada lenguaje insertamos una línea en la tabla
 		foreach ($data['ship_name'] as $language_id => $value) {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "shipping_methods SET shipping_id = " . (int)$shipping_id . ", name = '" . $this->db->escape($value['name']) . "', language_id = " . (int)$language_id);
 		}
+
 	}
 	
 	public function editShipping($shipping_id, $data) {
 
-		// Upadte languages
+		// Actualizamos todos los idiomas
 		foreach ($data['ship_name'] as $language_id => $value) {
 			$this->db->query("UPDATE " . DB_PREFIX . "shipping_methods SET name = '" . $this->db->escape($value['name']) . "' WHERE language_id = " . (int)$language_id . " AND shipping_id = " . (int)$shipping_id);
 		}

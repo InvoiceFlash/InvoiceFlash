@@ -262,6 +262,9 @@ class ControllerLocalisationPayment extends Controller {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
 		$this->data['entry_name'] = $this->language->get('entry_name');
+		$this->data['entry_nexpirations'] = $this->language->get('entry_nexpirations');
+		$this->data['entry_displacement'] = $this->language->get('entry_displacement');
+		$this->data['entry_days_between'] = $this->language->get('entry_days_between');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -328,7 +331,31 @@ class ControllerLocalisationPayment extends Controller {
 			$this->data['pay_name'] = $this->model_localisation_payment->getPaymentName($this->request->get['payment_id']);
 		} else {
 			$this->data['pay_name'] = array();
-		}	
+		}
+
+		if (isset($this->request->post['nexpirations'])) {
+			$this->data['nexpirations'] = $this->request->post['nexpirations'];
+		} elseif (!empty($payment_info)) {
+			$this->data['nexpirations'] = $payment_info['nexpirations'];
+		} else {
+			$this->data['nexpirations'] = 1;
+		}
+
+		if (isset($this->request->post['displacement'])) {
+			$this->data['displacement'] = $this->request->post['displacement'];
+		} elseif (!empty($payment_info)) {
+			$this->data['displacement'] = $payment_info['displacement'];
+		} else {
+			$this->data['displacement'] = 1;
+		}
+
+		if (isset($this->request->post['days_between'])) {
+			$this->data['days_between'] = $this->request->post['days_between'];
+		} elseif (!empty($payment_info)) {
+			$this->data['days_between'] = $payment_info['days_between'];
+		} else {
+			$this->data['days_between'] = 1;
+		}
 
 		$this->template = 'localisation/payment_form.tpl';
 		$this->children = array(

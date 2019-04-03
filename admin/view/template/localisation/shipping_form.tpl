@@ -12,7 +12,7 @@
 							<input type="text" name="ship_name[<?php echo $language['language_id'] ?>][name]" value="<?php echo isset($ship_name[$language['language_id']]['name']) ? $ship_name[$language['language_id']]['name'] : '' ?>" class="form-control">
 							<div class="input-group-append"><span class="input-group-text"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i></span></div>
 							<?php if (isset($error_name[$language['language_id']])) { ?>
-							<div class="help-block error"><?php echo $error_name[$language['language_id']]; ?></div>
+							<div class="help-block text-danger"><?php echo $error_name[$language['language_id']]; ?></div>
 							<?php } ?>
 						</div>
 					<?php } ?>
