@@ -169,7 +169,7 @@ class ModelSaleInvoice extends Model {
 	
 		// Receipt
 		$this->db->query("INSERT INTO " . DB_PREFIX . "receipt SET 
-			date_due = now(), date_added = now(), invoice_id = '" . (int)$invoice_id . "', amount='" . (float)$total . "'") ;
+			date_modified = now(), date_added = now(), invoice_id = '" . (int)$invoice_id . "', amount='" . (float)$total . "'") ;
 	}
 
 	public function getInvoiceTotals($invoice_id) {

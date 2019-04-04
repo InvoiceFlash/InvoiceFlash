@@ -90,7 +90,7 @@ class ModelSaleReceipt extends Model {
 	}
 
 	public function getReceipts($data = array()) {
-		$sql = "SELECT r.*, CONCAT(i.firstname, ' ', i.lastname) AS customer FROM " . DB_PREFIX . "receipt AS r LEFT JOIN " . DB_PREFIX . "invoice AS i ON i.invoice_id = r.invoice_id WHERE 1 = 1";
+		$sql = "SELECT r.*, c.company AS customer FROM " . DB_PREFIX . "receipt AS r LEFT JOIN " . DB_PREFIX . "invoice AS i ON i.invoice_id = r.invoice_id LEFT JOIN " . DB_PREFIX . "customer AS c ON c.customer_id = i.customer_id WHERE 1 = 1";
 		
 		if (isset($data['filter_receipt_id'])) {
 			$sql .= " AND receipt_id = " . (int)$data['filter_receipt_id'];
@@ -105,7 +105,7 @@ class ModelSaleReceipt extends Model {
 		}
 
 		if (isset($data['filter_customer'])) {
-			$sql .= " AND CONCAT(i.firstname, ' ', i.lastname) LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";
+			$sql .= " AND i.company LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";
 		}
 
 		if (isset($data['filter_status'])) {
