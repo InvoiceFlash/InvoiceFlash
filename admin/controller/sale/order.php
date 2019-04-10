@@ -451,7 +451,7 @@ class ControllerSaleOrder extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
-		$this->data['sort_invoice'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&sort=o.order_id' . $url, 'SSL');
+		$this->data['sort_order'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&sort=o.order_id' . $url, 'SSL');
 		$this->data['sort_company'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&sort=company' . $url, 'SSL');
 		$this->data['sort_status'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
 		$this->data['sort_total'] = $this->url->link('sale/order', 'token=' . $this->session->data['token'] . '&sort=o.total' . $url, 'SSL');

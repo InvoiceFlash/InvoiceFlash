@@ -93,7 +93,7 @@
 <script>
 function validate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Select a order to print');
+		alert('Select an order to print');
 	} else {
 		$('input[type="checkbox"]:checked').each(function(){
 			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');
