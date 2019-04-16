@@ -120,10 +120,10 @@ function generate() {
 		} 
 	);
 	if (nCon > 1) {
-		alert ('Solo puedes seleccionar una remesa') ;
+		alert ('<?php echo $text_select_one; ?>') ;
 	}
 	if (nCon == 0) {
-		alert ('Debes seleccionar alguna remesa') ;
+		alert ('<?php echo $text_select; ?>') ;
 	}
 	if (nCon == 1) {
 		url = 'index.php?route=sale/remittances/generateC19&token=<?php echo $token; ?>&remittance='+id ;
@@ -139,14 +139,14 @@ $('#form input').keydown(function(e) {
 });
 $("#btn-delete").click(function(){
     if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Select almost a remittance to delete');
+		alert(<?php echo $text_select; ?>);
 	}
 });
 //--></script>
 <script>
 function validate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione una remensa');
+		alert('<?php echo $text_select; ?>');
 	} else {
 		$('#form').attr('target', '_blank');
 		$('#form').submit();

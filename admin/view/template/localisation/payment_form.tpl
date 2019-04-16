@@ -18,25 +18,52 @@
 					<?php } ?>
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group number row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_nexpirations; ?></label>
-				<div class="col-sm-3">
-					<input type="number" name="nexpirations" value="<?php echo $nexpirations; ?>" class="form-control text-right" min="1">
+				<div class="col-sm-1">
+					<input type="number" class="form-control" name="nexpirations" value="<?php echo $nexpirations; ?>" class="form-control text-right" min="1" max="100">
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group number row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_displacement; ?></label>
-				<div class="col-sm-3">
-					<input type="number" name="displacement" value="<?php echo $displacement; ?>" class="form-control text-right" min="1">
+				<div class="col-sm-1">
+					<input type="number" class="form-control" name="displacement" value="<?php echo $displacement; ?>" class="form-control text-right" min="1" max="100">
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group number row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_days_between; ?></label>
-				<div class="col-sm-3">
-					<input type="number" name="days_between" value="<?php echo $days_between; ?>" class="form-control text-right" min="1">
+				<div class="col-sm-1">
+					<input type="number" class="form-control" name="days_between" value="<?php echo $days_between; ?>" class="form-control text-right" min="1" max="100">
 				</div>
 			</div>
 		</form>
 	</div>
 </div>
+<script>
+$('.number input[type="number"]').after('<div class="number-nav"><div class="num-button button-up"></div><div class="num-button button-down"></div></div>');
+$('.button-up').click(function(){
+	var div = $(this).parent().parent();
+
+	var input = $(div).children('input[type="number"]');
+	var num = input.val();
+
+	if (num < parseInt($(input).attr('max'))) {
+		num++;
+
+		$(input).val(num);
+	}
+});
+$('.button-down').click(function(){
+	var div = $(this).parent().parent();
+
+	var input = $(div).children('input[type="number"]');
+	var num = input.val();
+
+	if (num > parseInt($(input).attr('min'))) {
+		num--;
+
+		$(input).val(num);
+	}
+});
+</script>
 <?php echo $footer; ?>
