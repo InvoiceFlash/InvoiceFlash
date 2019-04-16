@@ -56,7 +56,22 @@ class ModelInstall extends Model {
 				$db->query("DELETE FROM `" . $data['db_prefix'] . "attribute_group` ");
 				$db->query("DELETE FROM `" . $data['db_prefix'] . "attribute_group_description` ");
 				$db->query("DELETE FROM `" . $data['db_prefix'] . "category` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "category_path` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "category_to_store` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "category_description` ");
 				$db->query("DELETE FROM `" . $data['db_prefix'] . "product` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_attribute` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_description` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_discount` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_image` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_option` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_option_value` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_related` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_reward` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_special` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_to_category` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "product_to_store` ");
+				$db->query("DELETE FROM `" . $data['db_prefix'] . "manufacturer` ");
 			}
 			
 		}		
