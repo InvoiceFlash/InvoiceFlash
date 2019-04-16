@@ -6,7 +6,6 @@
 <title><?php echo $title; ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <base href="<?php echo $base; ?>">
-<link href="view/stylesheet/stylesheet.css" rel="stylesheet">
 <link href="view/stylesheet/main.css" rel="stylesheet">
 <script src="view\javascript\jquery\jquery-3.3.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
@@ -14,7 +13,12 @@
 <body style="padding-top:0;">
 <div class="container">
 <?php foreach ($quotes as $quote) { ?>
-	<h1><?php echo $text_quote; ?></h1>
+	<div class="store_logo">
+		<div class="logo">
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $quote['store_name']; ?>" />
+			<span class="title"><?php echo $text_quote; ?></span>
+		</div>
+	</div>
 	<table class="table table-bordered">
 		<tr>
 			<td width="50%"><?php echo $quote['store_name']; ?><br>
