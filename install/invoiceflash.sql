@@ -7959,8 +7959,8 @@ CREATE TABLE `if_payment` (
   PRIMARY KEY (`payment_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `if_payment`(`payment_id`) VALUES (1);
-INSERT INTO `if_payment`(`payment_id`) VALUES (2);
+INSERT INTO `if_payment`(`payment_id`) VALUES (1,1,1,0);
+INSERT INTO `if_payment`(`payment_id`) VALUES (2,1,1,0);
 
 DROP TABLE IF EXISTS `if_payment_description`;
 CREATE TABLE `if_payment_description` (
@@ -8053,6 +8053,21 @@ CREATE TABLE `if_delivery` (
   `date_modified` DATETIME NOT NULL,
   PRIMARY KEY (`delivery_id`)
 ) ENGINE=MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_delivery_product`;
+CREATE TABLE `if_delivery_product` (
+  `delivery_product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `delivery_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `model` varchar(64) NOT NULL,
+  `quantity` int(4) NOT NULL,
+  `price` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `tax` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `reward` int(8) NOT NULL,
+  PRIMARY KEY (`delivery_product_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `if_cron`;
 CREATE TABLE `if_cron` (
