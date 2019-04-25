@@ -12,23 +12,25 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] API
 - [ ] Edit language
 - [ ] Delivery
-- [ ] Excel/csv Import/Export
-- [ ] Notifications
 
-### 0.0.3 (master)(In development.. Expected date: 04.30.19)
-- [x] Orders
-- [x] Payments
+### 0.0.3 (next release)
+- [ ] Orders
+- [ ] Payments
 - [ ] Auto-update
 - [ ] More info on web
 - [ ] cron versus curl
-- [x] customer VAT-ID
-- [x] Complete erase demo data on install
-- [x] Thermometer install database
+- [ ] customer VAT-ID
 
-### 0.0.2 
-- Manufacturers
-- Multilanguage
-- Returns
+### 0.0.2 (master) (In development.. Expected date: 03.30.19)
+- [x] Manufacturers
+- [x] web with download and docs
+- [x] Option to erase demo data
+- [ ] Import Flash Software
+- [x] Multilanguage
+- [x] Returns
+- [x] Logo on invoice/quote template
+- [ ] Mails (send & receive) -> cron
+- [x] Category filter on products.
 
 ### 0.0.1 
 - Customers

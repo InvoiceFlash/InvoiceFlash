@@ -8069,6 +8069,29 @@ CREATE TABLE `if_delivery_product` (
   PRIMARY KEY (`delivery_product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `if_delivery_total`;
+CREATE TABLE `if_delivery_total` (
+  `delivery_total_id` int(10) NOT NULL AUTO_INCREMENT,
+  `delivery_id` int(11) NOT NULL,
+  `code` varchar(32) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `value` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `sort_order` int(3) NOT NULL,
+  PRIMARY KEY (`delivery_total_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `if_delivery_history`;
+CREATE TABLE `if_delivery_history` (
+  `delivery_history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `delivery_id` int(11) NOT NULL,
+  `delivery_status_id` int(11) NOT NULL,
+  `notify` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text CHARACTER SET latin1,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`delivery_history_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `if_cron`;
 CREATE TABLE `if_cron` (
   `cron_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -8079,6 +8102,19 @@ CREATE TABLE `if_cron` (
   `date_added` datetime NOT NULL,
   `date_modified` datetime NOT NULL,
   PRIMARY KEY (`cron_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `if_delivery_option`;
+CREATE TABLE `if_delivery_option` (
+  `delivery_option_id` int(11) NOT NULL AUTO_INCREMENT,
+  `delivery_id` int(11) NOT NULL,
+  `delivery_product_id` int(11) NOT NULL,
+  `product_option_id` int(11) NOT NULL,
+  `product_option_value_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  `type` varchar(32) NOT NULL,
+  PRIMARY KEY (`delivery_option_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `if_fl_mail_files`;
