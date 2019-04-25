@@ -134,7 +134,6 @@ class ModelSaleOrder extends Model {
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$order_product['total']));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "order_product SET 
-				order_product_id = '" . (int)$order_product['order_product_id'] . "', 
 				order_id = '" . (int)$order_id . "', 
 				product_id = '" . (int)$order_product['product_id'] . "', 
 				name = '" . $this->db->escape($order_product['name']) . "', 
@@ -299,7 +298,7 @@ class ModelSaleOrder extends Model {
 	}
 
 	public function deleteOrder($order_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "order WHERE order_id = '" . (int)$order_id . "'");
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "order_product WHERE order_id = '" . (int)$order_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "order_option WHERE order_id = '" . (int)$order_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "order_total WHERE order_id = '" . (int)$order_id . "'");

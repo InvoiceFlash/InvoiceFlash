@@ -1146,7 +1146,7 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_payment_method'] = $this->language->get('text_payment_method');	
 			$this->data['text_download'] = $this->language->get('text_download');
 			$this->data['text_wait'] = $this->language->get('text_wait');
-			$this->data['text_generate'] = $this->language->get('text_generate');
+			$this->data['text_generate_order'] = $this->language->get('text_generate_order');
 			$this->data['text_commission_add'] = $this->language->get('text_commission_add');
 			$this->data['text_commission_remove'] = $this->language->get('text_commission_remove');
 			$this->data['text_credit_add'] = $this->language->get('text_credit_add');
@@ -1197,7 +1197,8 @@ class ControllerSaleQuote extends Controller {
 			$this->data['button_quote'] = $this->language->get('button_quote');
 			$this->data['button_cancel'] = $this->language->get('button_cancel');
 			$this->data['button_add_history'] = $this->language->get('button_add_history');
-		
+			$this->data['button_generate'] = $this->language->get('button_generate');
+
 			$this->data['tab_quote'] = $this->language->get('tab_quote');
 			$this->data['tab_payment'] = $this->language->get('tab_payment');
 			$this->data['tab_shipping'] = $this->language->get('tab_shipping');
@@ -1264,13 +1265,18 @@ class ControllerSaleQuote extends Controller {
 			$this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=view', 'SSL');
 			$this->data['sendEmail'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=email', 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL');
+			
 			$this->data['quote_id'] = $this->request->get['quote_id'];
 			
 			if ($quote_info['invoice_no']) {
 				$this->data['invoice_no'] = $quote_info['invoice_prefix'] . $quote_info['invoice_no'];
+				$this->data['generate'] = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$quote_info['invoice_no'], 'SSL');
 			} else {
+				$this->data['generate'] = $this->url->link('sale/quote/createOrder', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'], 'SSL');
 				$this->data['invoice_no'] = '';
 			}
+
+			$this->data['invoice_prefix'] = $this->config->get('config_invoice_prefix');
 			
 			$this->data['store_name'] = $quote_info['store_name'];
 			$this->data['store_url'] = $quote_info['store_url'];
@@ -1462,7 +1468,7 @@ class ControllerSaleQuote extends Controller {
 				} else {
 					$this->data['ship_city_postal_match'] = '';
 				}	
-								
+
 				$this->data['score'] = $fraud_info['score'];
 				$this->data['explanation'] = $fraud_info['explanation'];
 				$this->data['risk_score'] = $fraud_info['risk_score'];
@@ -2085,6 +2091,95 @@ class ControllerSaleQuote extends Controller {
 			}
 		}
 		return $tax_data;
+	}
+
+	public function createOrder() {
+		$quote_id = $this->request->get['quote_id'];
+
+		$this->load->model('sale/quote');
+
+		$quote_info = $this->model_sale_quote->getQuote($quote_id);
+
+		if ($quote_info && !$quote_info['invoice_no']) {
+
+			$quote_products = $this->model_sale_quote->getQuoteProducts($quote_id);
+
+			$order_products = array();		
+		
+			foreach ($quote_products as $quote_product) {
+				
+				$quote_option = $this->model_sale_quote->getQuoteOptions($quote_id, $quote_product['quote_product_id']);
+												
+				$order_products[] = array(
+					'order_product_id' => $quote_product['quote_product_id'],
+					'product_id'       => $quote_product['product_id'],
+					'name'             => $quote_product['name'],
+					'model'            => $quote_product['model'],
+					'order_option'     => $quote_option,
+					'quantity'         => $quote_product['quantity'],
+					'price'            => $quote_product['price'],
+					'total'            => $quote_product['total'],
+					'tax'              => $quote_product['tax'],
+					'reward'           => $quote_product['reward']
+				);
+			}
+
+			$order_totals = $this->model_sale_quote->getQuoteTotals($quote_id);
+			
+			$data = array(
+				'store_id' => $quote_info['store_id'],
+				'customer_id' => $quote_info['customer_id'],
+				'customer_group_id' => $quote_info['customer_group_id'],
+				'email' => $quote_info['email'],
+				'telephone' => $quote_info['telephone'],
+				'fax' => $quote_info['fax'],
+				'payment_company' => $quote_info['payment_company'],
+				'payment_company_id' => $quote_info['payment_company_id'],
+				'payment_tax_id' => $quote_info['payment_tax_id'],
+				'payment_address_1' => $quote_info['payment_address_1'],
+				'payment_address_2' => $quote_info['payment_address_2'],
+				'payment_city' => $quote_info['payment_city'],
+				'payment_postcode' => $quote_info['payment_postcode'],
+				'payment_country' => $quote_info['payment_country'],
+				'payment_country_id' => $quote_info['payment_country_id'],
+				'payment_zone' => $quote_info['payment_zone'],
+				'payment_zone_id' => $quote_info['payment_zone_id'],
+				'payment_address_format' => $quote_info['payment_address_format'],
+				'payment_method' => $quote_info['payment_method'],
+				'payment_code' => $quote_info['payment_code'],
+				'shipping_company' => $quote_info['shipping_company'],
+				'shipping_address_1' => $quote_info['shipping_address_1'],
+				'shipping_address_2' => $quote_info['shipping_address_2'],
+				'shipping_city' => $quote_info['shipping_city'],
+				'shipping_postcode' => $quote_info['shipping_postcode'],
+				'shipping_country' => $quote_info['shipping_country'],
+				'shipping_country_id' => $quote_info['shipping_country_id'],
+				'shipping_zone' => $quote_info['shipping_zone'],
+				'shipping_zone_id' => $quote_info['shipping_zone_id'],
+				'shipping_address_format' => $quote_info['shipping_address_format'],
+				'shipping_method' => $quote_info['shipping_method'],
+				'shipping_code' => $quote_info['shipping_code'],
+				'comment' => $quote_info['comment'],
+				'order_status_id' => $quote_info['invoice_status_id'],
+				'order_product' => $order_products,
+				'order_total' => $order_totals
+			);
+
+
+			$this->load->model('sale/order');
+
+
+			$this->model_sale_order->addOrder($data);
+
+			$query = $this->db->query("SELECT order_id, invoice_prefix FROM `" . DB_PREFIX . "order` ORDER BY order_id DESC LIMIT 1");
+
+			$invoice_no = $query->row['order_id'];
+			$invoice_prefix = $query->row['invoice_prefix'];
+
+			$this->db->query("UPDATE " . DB_PREFIX . "quote SET invoice_no = " . (int)$invoice_no . " WHERE quote_id = " . (int)$quote_id);
+
+			$this->redirect($this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$quote_id, 'SSL'));
+		} 
 	}
 }
 ?>

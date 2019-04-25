@@ -168,8 +168,7 @@ class ModelSaleInvoice extends Model {
 		$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET total = '" . (float)$total . "' WHERE invoice_id = '" . (int)$invoice_id . "'"); 	
 	
 		// Receipt
-		$this->db->query("INSERT INTO " . DB_PREFIX . "receipt SET 
-			date_modified = now(), date_added = now(), invoice_id = '" . (int)$invoice_id . "', amount='" . (float)$total . "'") ;
+		$this->createReceipt($invoice_id, $total);
 	}
 
 	public function getInvoiceTotals($invoice_id) {
@@ -680,7 +679,47 @@ class ModelSaleInvoice extends Model {
 		return $cshipping ;
 	}
 
-}
+	public function createReceipt($invoice_id, $total) {
+		// Buscar el codigo de pago de la factura creada
+		$qry = $this->db->query("SELECT payment_code, date_added, currency_code, currency_id, currency_value FROM `" . DB_PREFIX . "invoice` WHERE invoice_id = $invoice_id");
+		$payment_id = $qry->row['payment_code'];
+		$invoice_date = $qry->row['date_added'];
+		$currency_code = $qry->row['currency_code'];
+		$currency_id = $qry->row['currency_id'];
+		$currency_value = $qry->row['currency_value'];
 
+		// Buscar los datos del metodo de pago para la creación de los recibos
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "payment` WHERE payment_id = $payment_id");
+		$payment_info = $query->row;
+
+		// Calcular el importe de los recibos a crear
+		$n_receipts = $payment_info['nexpirations'];
+		$amount = $total / $n_receipts;
+
+		// Calcular la fecha para el primer pago
+		$date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s", strtotime($invoice_date))."+ ".$payment_info['displacement']." days"));
+
+		// Insertar una linea por cada recibo a crear
+		for ($i=1; $i <= $n_receipts; $i++) { 
+			$this->db->query("INSERT INTO `" . DB_PREFIX . "receipt` SET 
+				receipt_no = $i,
+				date_due = '" . $date . "',
+				amount = $amount,
+				paid = 0, 
+				invoice_id = $invoice_id,
+				currency_code = '$currency_code',
+				currency_id = $currency_id,
+				currency_value = $currency_value,
+				remittance_id = 0,
+				user_id_added = " . $this->user->getId() . ",
+				date_added = now(),
+				date_modified = now()");
+
+			// Calcular la fecha del siguente recibo antes de cambiar
+			$date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s", strtotime($date))."+ ".$payment_info['days_between']." days"));
+		}
+	}
+
+}
 
 ?>

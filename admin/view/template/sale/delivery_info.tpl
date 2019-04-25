@@ -6,12 +6,12 @@
 		<div class="pull-right">
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a> 
 			<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
-			<a class="btn btn-success" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_quote; ?></span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<a class="btn btn-success" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_delivery; ?></span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">
 		<div class="tabbable">
-			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-quote" data-toggle="tab"><?php echo $tab_quote; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-toggle="tab"><?php echo $tab_payment; ?></a></li>
+			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-delivery" data-toggle="tab"><?php echo $tab_delivery; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-toggle="tab"><?php echo $tab_payment; ?></a></li>
 				<?php if ($shipping_method) { ?>
 				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
@@ -21,14 +21,14 @@
 				<?php } ?>
 			</ul>
 			<div class="tab-content">
-				<div id="tab-quote" class="tab-pane active">
+				<div id="tab-delivery" class="tab-pane active">
 					<table class="table table-bordered table-striped table-hover info-page">
 						<tr>
-							<td class="col-sm-3"><?php echo $text_quote_id; ?></td>
-							<td>#<?php echo $quote_id; ?></td>
+							<td class="col-sm-3"><?php echo $text_delivery_id; ?></td>
+							<td>#<?php echo $delivery_id; ?></td>
 						</tr>
 						<tr>
-							<td><?php echo $text_generate_order; ?></td>
+							<td><?php echo $text_generate_invoice; ?></td>
 							<td><?php if ($invoice_no!='') { ?>
 								<a href="<?php echo $generate; ?>"><?php echo $invoice_no; ?></a>
 							<?php } else { ?>
@@ -254,12 +254,12 @@
 					</div>
 				</div>
 				<div id="tab-history" class="tab-pane">
-					<div id="history" data-href="index.php?route=sale/quote/history&token=<?php echo $token; ?>&quote_id=<?php echo $quote_id; ?>"></div>
+					<div id="history" data-href="index.php?route=sale/delivery/history&token=<?php echo $token; ?>&delivery_id=<?php echo $delivery_id; ?>"></div>
 					<div class="form-horizontal">
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_invoice_status; ?></label>
 							<div class="col-sm-6">
-								<select name="quote_status_id" class="form-control">
+								<select name="delivery_status_id" class="form-control">
 									<?php foreach ($invoice_statuses as $invoice_statuses) { ?>
 									<?php if ($invoice_statuses['invoice_status_id'] == $invoice_status_id) { ?>
 									<option value="<?php echo $invoice_statuses['invoice_status_id']; ?>" selected=""><?php echo $invoice_statuses['name']; ?></option>
@@ -288,7 +288,7 @@
 						</div>
 						<div class="form-group row">
 							<div class="control-field col-sm-4 col-sm-offset-2">
-								<button type="button" id="button-history" data-action="quote" data-target="sale" data-id="<?php echo $quote_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_history; ?></button>
+								<button type="button" id="button-history" data-action="delivery" data-target="sale" data-id="<?php echo $delivery_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_history; ?></button>
 							</div>
 						</div>
 					</div>
@@ -466,7 +466,7 @@
 	</div>
 </div>
 <?php 
-$id = $quote_id;
+$id = $delivery_id;
 include(DIR_TEMPLATE . 'sale/email_modal.tpl');
 ?>
 <script>
@@ -478,7 +478,7 @@ $('#send').on('click',function(e){
 	var message = editor.getData();
 	
 	$.ajax({
-		url:'index.php?route=sale/quote/invoice&token=<?php echo $token; ?>&quote_id=<?php echo $quote_id; ?>&format=email',
+		url:'index.php?route=sale/delivery/invoice&token=<?php echo $token; ?>&delivery_id=<?php echo $delivery_id; ?>&format=email',
 		type:'post',
 		dataType:'json',
 		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),
