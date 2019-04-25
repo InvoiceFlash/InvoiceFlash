@@ -12,6 +12,8 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] API
 - [ ] Edit language
 - [ ] Delivery
+- [ ] Excel/csv Import/Export
+- [ ] Notifications
 
 ### 0.0.3 (master)(In development.. Expected date: 04.30.19)
 - [x] Orders
@@ -20,7 +22,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] More info on web
 - [ ] cron versus curl
 - [x] customer VAT-ID
-- [ ] Complete erase demo data
+- [x] Complete erase demo data on install
 - [x] Thermometer install database
 
 ### 0.0.2 

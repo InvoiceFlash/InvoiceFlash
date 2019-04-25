@@ -1827,9 +1827,9 @@ class ControllerSaleQuote extends Controller {
 			} 
 
 			if (empty($json['error'])) {
-				$data['customer_id'] = 0;
-				$data['potential_id'] = 0;
-				$data['supplier_id'] = 0;
+				$data['customer_id'] = $quote_info['customer_id'];
+				$data['potential_id'] = $quote_info['potential_id'];
+				$data['supplier_id'] = $quote_info['supplier_id'];
 				
 				$data['quote_id'] = $this->request->get['quote_id'];
 				
@@ -1851,7 +1851,7 @@ class ControllerSaleQuote extends Controller {
 
 			$this->response->setOutput(json_encode($json));
 		} else {
-			$this->template = 'sale/quote_invoice.tpl';
+			$this->template = 'sale/quote_print.tpl';
 			
 			$this->response->setOutput($this->render());
 		}
