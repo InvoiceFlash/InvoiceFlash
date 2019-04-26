@@ -7959,8 +7959,8 @@ CREATE TABLE `if_payment` (
   PRIMARY KEY (`payment_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO `if_payment`(`payment_id`) VALUES (1,1,1,0);
-INSERT INTO `if_payment`(`payment_id`) VALUES (2,1,1,0);
+INSERT INTO `if_payment`(`payment_id`,`nexpirations`,`displacement`,`days_between`) VALUES (1,1,1,0);
+INSERT INTO `if_payment`(`payment_id`,`nexpirations`,`displacement`,`days_between`) VALUES (2,1,1,0);
 
 DROP TABLE IF EXISTS `if_payment_description`;
 CREATE TABLE `if_payment_description` (

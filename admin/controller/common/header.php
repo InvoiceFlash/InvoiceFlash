@@ -788,7 +788,7 @@ class ControllerCommonHeader extends Controller {
 					'children' => $support
 				);
 			}
-
+			
 			// Tools
 			$tools = array();
 
@@ -1190,7 +1190,16 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-
+			
+			// Upgrade
+			if ($this->user->hasPermission('access', 'tool/upgrade')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_upgrade'),
+					'href' => $this->url->link('tool/upgrade', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+			
 			if ($tools) {
 				$this->data['menus'][] = array(
 					'id' => 'tools',
