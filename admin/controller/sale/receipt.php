@@ -50,8 +50,8 @@ class ControllerSaleReceipt extends Controller {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
 			}
 			
-			if (isset($this->request->get['filter_date_added'])) {
-				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			if (isset($this->request->get['filter_date_due'])) {
+				$url .= '&filter_date_due=' . $this->request->get['filter_date_due'];
 			}
 			
 			if (isset($this->request->get['filter_date_modified'])) {
@@ -113,10 +113,10 @@ class ControllerSaleReceipt extends Controller {
 			$filter_total = null;
 		}
 		
-		if (isset($this->request->get['filter_date_added'])) {
-			$filter_date_added = $this->request->get['filter_date_added'];
+		if (isset($this->request->get['filter_date_due'])) {
+			$filter_date_due = $this->request->get['filter_date_due'];
 		} else {
-			$filter_date_added = null;
+			$filter_date_due = null;
 		}
 		
 		if (isset($this->request->get['filter_date_modified'])) {
@@ -128,13 +128,13 @@ class ControllerSaleReceipt extends Controller {
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
-			$sort = 'o.date_added';
+			$sort = 'o.date_due';
 		}
 
 		if (isset($this->request->get['order'])) {
 			$order = $this->request->get['order'];
 		} else {
-			$order = 'DESC';
+			$order = 'ASC';
 		}
 		
 		if (isset($this->request->get['page'])) {
@@ -169,8 +169,8 @@ class ControllerSaleReceipt extends Controller {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
 		}
 		
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+		if (isset($this->request->get['filter_date_due'])) {
+			$url .= '&filter_date_due=' . $this->request->get['filter_date_due'];
 		}
 		
 		if (isset($this->request->get['filter_date_modified'])) {
@@ -214,7 +214,7 @@ class ControllerSaleReceipt extends Controller {
 			'filter_customer' 			=> $filter_customer,
 			'filter_status'  			=> $filter_status,
 			'filter_total'      	 	=> $filter_total,
-			'filter_date_added'   	 	=> $filter_date_added,
+			'filter_date_due'   	 	=> $filter_date_due,
 			'filter_date_modified'   	=> $filter_date_modified,
 			'sort'                   	=> $sort,
 			'order'                  	=> $order,
@@ -241,7 +241,7 @@ class ControllerSaleReceipt extends Controller {
 				'customer'      => $result['customer'],
 				'status'        => $result['paid'],
 				'total'         => $this->currency->format($result['amount'], $result['currency_code'], $result['currency_value']),
-				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+				'date_due'    => date($this->language->get('date_format_short'), strtotime($result['date_due'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['receipt_id'], $this->request->post['selected']),
 				'action'		=> $action
@@ -259,7 +259,7 @@ class ControllerSaleReceipt extends Controller {
     	$this->data['column_customer'] = $this->language->get('column_customer');
 		$this->data['column_status'] = $this->language->get('column_status');
 		$this->data['column_total'] = $this->language->get('column_total');
-		$this->data['column_date_added'] = $this->language->get('column_date_added');
+		$this->data['column_date_due'] = $this->language->get('column_date_due');
 		$this->data['column_date_modified'] = $this->language->get('column_date_modified');
 		$this->data['column_action'] = $this->language->get('column_action');
 
@@ -308,8 +308,8 @@ class ControllerSaleReceipt extends Controller {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
 		}
 		
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+		if (isset($this->request->get['filter_date_due'])) {
+			$url .= '&filter_date_due=' . $this->request->get['filter_date_due'];
 		}
 
 		if (isset($this->request->get['filter_date_modified'])) {
@@ -332,7 +332,7 @@ class ControllerSaleReceipt extends Controller {
 		$this->data['sort_customer'] = $this->url->link('sale/receipt', 'token=' . $this->session->data['token'] . '&sort=customer' . $url, 'SSL');
 		$this->data['sort_status'] = $this->url->link('sale/receipt', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
 		$this->data['sort_total'] = $this->url->link('sale/receipt', 'token=' . $this->session->data['token'] . '&sort=o.total' . $url, 'SSL');
-		$this->data['sort_date_added'] = $this->url->link('sale/receipt', 'token=' . $this->session->data['token'] . '&sort=o.date_added' . $url, 'SSL');
+		$this->data['sort_date_due'] = $this->url->link('sale/receipt', 'token=' . $this->session->data['token'] . '&sort=o.date_due' . $url, 'SSL');
 		$this->data['sort_date_modified'] = $this->url->link('sale/receipt', 'token=' . $this->session->data['token'] . '&sort=o.date_modified' . $url, 'SSL');
 
 		$url = '';
@@ -361,8 +361,8 @@ class ControllerSaleReceipt extends Controller {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
 		}
 					
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+		if (isset($this->request->get['filter_date_due'])) {
+			$url .= '&filter_date_due=' . $this->request->get['filter_date_due'];
 		}
 		
 		if (isset($this->request->get['filter_date_modified'])) {
@@ -392,7 +392,7 @@ class ControllerSaleReceipt extends Controller {
 		$this->data['filter_customer'] = $filter_customer;
 		$this->data['filter_status'] = $filter_status;
 		$this->data['filter_total'] = $filter_total;
-		$this->data['filter_date_added'] = $filter_date_added;
+		$this->data['filter_date_due'] = $filter_date_due;
 		$this->data['filter_date_modified'] = $filter_date_modified;
 
 		$this->data['order_statuses'][] = array(
@@ -525,8 +525,8 @@ class ControllerSaleReceipt extends Controller {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
 		}
 					
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+		if (isset($this->request->get['filter_date_due'])) {
+			$url .= '&filter_date_due=' . $this->request->get['filter_date_due'];
 		}
 		
 		if (isset($this->request->get['filter_date_modified'])) {

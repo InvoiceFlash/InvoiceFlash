@@ -4,9 +4,9 @@ $_['heading_title']                           = 'Quotes';
 
 // Text
 $_['text_success']                            = 'Success: You have modified quotes!';
-$_['text_quote_id']                         = 'Quote ID:';
-$_['text_invoice_no']                         = 'Quote No.:';
-$_['text_invoice_date']                       = 'Quote Date:';
+$_['text_quote_id']                           = 'Quote ID:';
+$_['text_invoice_no']                         = 'Order No.:';
+$_['text_invoice_date']                       = 'Date:';
 $_['text_store_name']                         = 'Store Name:';
 $_['text_store_url']                          = 'Store Url:';
 $_['text_customer']                           = 'Customer:';
@@ -40,8 +40,8 @@ $_['text_default']                            = 'Default';
 $_['text_wait']                               = 'Please Wait!';
 $_['text_product']                            = 'Add Product(s)';
 $_['text_voucher']                            = 'Add Voucher(s)';
-$_['text_quote_details']                    = 'Quote Details';
-$_['text_generate']                           = 'Generate';
+$_['text_quote_details']                      = 'Quote Details';
+$_['text_generate_order']                     = 'Order No.:';
 $_['text_commission_add']                     = 'Add Commission';
 $_['text_commission_added']                   = 'Success: Commission added!';
 $_['text_commission_remove']                  = 'Remove Commission';
@@ -155,6 +155,7 @@ $_['error_action']                            = 'Warning: Could not complete thi
 $_['error_required']    = '%s required!';
 
 $_['button_quote'] 						  = 'Print Quote';
+$_['button_generate']                       = 'Generate Order';
 
 $_['text_success_email']                      = 'Success: The email has been sent without problems!';
 $_['error_to']                                = 'Error: E-mail to does no seem to be valid!';

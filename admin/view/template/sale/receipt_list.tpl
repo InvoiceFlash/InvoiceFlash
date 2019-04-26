@@ -19,7 +19,7 @@
 						<th class="d-none d-sm-table-cell"><a href="<?php echo $sort_customer ?>"><?php echo $column_customer; echo ($sort=='o.customer') ? '<i class="caret caret-"' . strtolower($order) . '></i>' : '' ?></a></th>
 						<th><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right d-none d-sm-table-cell"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="d-none d-md-table-cell"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="d-none d-md-table-cell"><a href="<?php echo $sort_date_due; ?>"><?php echo $column_date_due; echo ($sort == 'o.date_due') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="d-none d-md-table-cell"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'o.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right"><span ><?php echo $column_action; ?></span></th>
 					</tr>
@@ -39,7 +39,7 @@
 						</select></td>
 						<td class="text-right d-none d-sm-table-cell"><input type="text" class="form-control text-right" value="<?php echo $filter_total ?>"></td>
 						<td class="d-none d-md-table-cell"><div class="input-group">
-							<input type="text" name="filter_date_added" class="form-control date"/>
+							<input type="text" name="filter_date_due" class="form-control date"/>
 							<div class="input-group-append">
 							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 							</div>
@@ -66,7 +66,7 @@
 									<?php echo 'Pendiente' ?>
 								<?php endif ?></td>
 								<td class="text-right d-none d-sm-table-cell"><?php echo $receipt['total'] ?></td>
-								<td class="d-none d-md-table-cell"><?php echo $receipt['date_added'] ?></td>
+								<td class="d-none d-md-table-cell"><?php echo $receipt['date_due'] ?></td>
 								<td class="d-none d-md-table-cell"><?php echo $receipt['date_modified'] ?></td>
 								<td class="text-right"><?php foreach ($receipt['action'] as $action): ?>
 									<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="d-none d-sm-inline-block"> <?php echo $action['text']; ?></span></a>
@@ -126,10 +126,10 @@ function filter() {
 		url += '&filter_total=' + encodeURIComponent(filter_total);
 	}	
 	
-	var filter_date_added = $('input[name=\'filter_date_added\']').attr('value');
+	var filter_date_due = $('input[name=\'filter_date_due\']').attr('value');
 	
-	if (filter_date_added) {
-		url += '&filter_date_added=' + encodeURIComponent(filter_date_added);
+	if (filter_date_due) {
+		url += '&filter_date_due=' + encodeURIComponent(filter_date_due);
 	}
 	
 	var filter_date_modified = $('input[name=\'filter_date_modified\']').attr('value');
