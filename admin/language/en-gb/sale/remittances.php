@@ -8,7 +8,7 @@ $_['text_select']                             = 'Please, select a remittance';
 $_['text_select_one']                         = 'You can only select a remittance';
 
 //Column
-$_['column_order_id']                         = 'Remittance ID';
+$_['column_remittance_id']                         = 'Remittance ID';
 $_['column_customer']                         = 'Customer';
 $_['column_status']                           = 'Status';
 $_['column_date_added']                       = 'Date Added';

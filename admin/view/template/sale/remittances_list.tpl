@@ -10,55 +10,46 @@
 	    </div>
     </div>
     <div class="panel-body">
-      <form class="foe" action="<?php echo $invoice; ?>" method="post" enctype="multipart/form-data" id="form">
+      <form class="foe" action="<?php echo $print; ?>" method="post" enctype="multipart/form-data" id="form">
         <table class="table table-bordered table-striped table-hover">
           <thead>
             <tr>
               <th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-              <th class="text-right"><?php if ($sort == 'o.order_id') { ?>
-                <a href="<?php echo $sort_order; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_order_id; ?></a>
-                <?php } else { ?>
-                <a href="<?php echo $sort_order; ?>"><?php echo $column_order_id; ?></a>
-                <?php } ?></th>
-              <th class="text-right"><?php if ($sort == 'o.total') { ?>
-                <a href="<?php echo $sort_total; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_total; ?></a>
-                <?php } else { ?>
-                <a href="<?php echo $sort_total; ?>"><?php echo $column_total; ?></a>
-                <?php } ?></th>
-              <th class="text-left"><?php if ($sort == 'o.date_added') { ?>
-                <a href="<?php echo $sort_date_added; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_date_added; ?></a>
-                <?php } else { ?>
-                <a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; ?></a>
-                <?php } ?></th>
-              <th class="text-right"><?php echo $column_action; ?></th>
+							<th><a href="<?php echo $sort_remittance_id; ?>"><?php echo $column_remittance_id; echo ($sort=='r.remittance_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th><a href="<?php echo $sort_customer; ?>"><?php echo $column_customer; echo ($sort=='r.customer') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort=='r.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort=='r.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th><i class=""></i> <span class="d-none d-sm-block-inline"><?php echo $column_action; ?></span></th>
             </tr>
           </thead>
           <tbody data-link="row" class="rowlink">
            <tr id="filter" class="info">
-              <td></td>
-              <td class="text-right"><input type="text" class="form-control" name="filter_order_id" value="<?php echo $filter_order_id; ?>"></td>
-              <td class="text-right"><input type="text" class="form-control" name="filter_total" value="<?php echo $filter_total; ?>"></td>
-              <td class="hidden-xs"><div class="input-group">
-							<input type="text" name="filter_date_added" class="form-control date"/>
-							<div class="input-group-append">
-							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
-							</div>
-						</div></td>
-              <td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><?php echo $button_filter; ?></a></td>
-            </tr>
-            <?php if ($orders) { ?>
-            <?php foreach ($orders as $order) { ?>
+              <td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/remittances&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+              <td class="text-right"><input type="text" class="form-control" name="filter_remittance_id" value="<?php echo $filter_remittance_id; ?>"></td>
+              <td><input type="text" class="form-control" name="filter_customer" data-target="company" data-url="sale/customer" value="<?php echo $filter_customer; ?>"></td>
+              <td><input type="text" class="form-control text-right" name="filter_total" value="<?php echo $filter_total; ?>"></td>
+              <td class="d-none d-sm-table-cell"><div class="input-group">
+								<input type="text" name="filter_date_added" class="form-control date"/>
+								<div class="input-group-append">
+								<div class="input-group-text"><i class="fas fa-calendar"></i></div>
+								</div>
+							</div></td>
+              <td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+						</tr>
+            <?php if ($remittances) { ?>
+            <?php foreach ($remittances as $remittance) { ?>
             <tr>
-               <td class="rowlink-skip text-center"><?php if ($order['selected']) { ?>
-					<input type="checkbox" name="selected[]" value="<?php echo $order['order_id']; ?>" checked="">
+               <td class="rowlink-skip text-center"><?php if ($remittance['selected']) { ?>
+					<input type="checkbox" name="selected[]" value="<?php echo $remittance['remittance_id']; ?>" checked="">
 					<?php } else { ?>
-					<input type="checkbox" name="selected[]" value="<?php echo $order['order_id']; ?>">
+					<input type="checkbox" name="selected[]" value="<?php echo $remittance['remittance_id']; ?>">
 					<?php } ?></td>
-              <td class="text-right"><?php echo $order['order_id']; ?></td>
-              <td class="text-right"><?php echo $order['total']; ?></td>
-              <td class="text-left"><?php echo $order['date_added']; ?></td>
-              <td class="text-right"><?php foreach ($order['action'] as $action) { ?>
-                [ <a href="<?php echo $action['href']; ?>"><?php echo $action['text']; ?></a> ]
+              <td class="text-right"><?php echo $remittance['remittance_id']; ?></td>
+							<td class="text-left"><?php echo $remittance['customer']?></td>
+              <td class="text-right"><?php echo $remittance['total']; ?></td>
+              <td class="text-left"><?php echo $remittance['date_added']; ?></td>
+              <td class="text-right"><?php foreach ($remittance['action'] as $action) { ?>
+                <a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fa fa-eye"></i> <span class="d-xs-none d-sm-block-inline"><?php echo $action['text']; ?></span></a>
                 <?php } ?></td>
             </tr>
             <?php } ?>
@@ -78,10 +69,10 @@
 function filter() {
 	url = 'index.php?route=sale/remittances&token=<?php echo $token; ?>';
 	
-	var filter_order_id = $('input[name=\'filter_order_id\']').attr('value');
+	var filter_remittance_id = $('input[name=\'filter_remittance_id\']').attr('value');
 	
-	if (filter_order_id) {
-		url += '&filter_order_id=' + encodeURIComponent(filter_order_id);
+	if (filter_remittance_id) {
+		url += '&filter_remittance_id=' + encodeURIComponent(filter_remittance_id);
 	}
 	
 	var filter_order_status_id = $('select[name=\'filter_order_status_id\']').attr('value');

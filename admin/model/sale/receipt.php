@@ -12,7 +12,7 @@ class ModelSaleReceipt extends Model {
 	public function generateRemittance_lines($remittance_id,$order_id,$amount) {
 		$this->db->query("INSERT INTO `" . DB_PREFIX . "remittances_lines` 
 			SET remittance_id = '" .$remittance_id ."', 
-			customer_name = (SELECT i.firstname FROM receipt r LEFT JOIN invoice i ON r.invoice_id = i.invoice_id WHERE receipt_id = " .  (int)$order_id . "), 
+			customer_name = (SELECT i.firstname FROM ".DB_PREFIX."receipt r LEFT JOIN ".DB_PREFIX."invoice i ON r.invoice_id = i.invoice_id WHERE receipt_id = " .  (int)$order_id . "), 
 			amount = '" .$amount ."',
 			date_vto = now(),
 			receipt_id='" . (int)$order_id . "'");
@@ -21,7 +21,7 @@ class ModelSaleReceipt extends Model {
 	}
 	
 	public function checknoremittance($receipt_id) {
-		$query = $this->db->query("SELECT COUNT(receipt_id) AS total FROM remittances_lines WHERE receipt_id = " . (int)$receipt_id);
+		$query = $this->db->query("SELECT COUNT(receipt_id) AS total FROM " . DB_PREFIX . "remittances_lines WHERE receipt_id = " . (int)$receipt_id);
 
 		if ($query->row['total']==0) {
 			return true;
@@ -75,8 +75,8 @@ class ModelSaleReceipt extends Model {
 			$sql .= " AND amount = " . (float)$data['filter_total'];
 		}
 
-		if (isset($data['filter_date_added'])) {
-			$sql .= " AND date_added = " . $this->db->escape($data['filter_date_added']);
+		if (isset($data['filter_date_due'])) {
+			$sql .= " AND date_due = " . $this->db->escape($data['filter_date_due']);
 		}
 
 		if (isset($data['filter_date_modified'])) {
@@ -122,8 +122,8 @@ class ModelSaleReceipt extends Model {
 			$sql .= " AND amount = " . (float)$data['filter_total'];
 		}
 
-		if (isset($data['filter_date_added'])) {
-			$sql .= " AND date_added = " . $this->db->escape($data['filter_date_added']);
+		if (isset($data['filter_date_due'])) {
+			$sql .= " AND date_due = " . $this->db->escape($data['filter_date_due']);
 		}
 
 		if (isset($data['filter_date_modified'])) {
@@ -137,14 +137,14 @@ class ModelSaleReceipt extends Model {
 			'r.invoice_id',
 			'r.paid',
 			'r.amount',
-			'r.date_added',
+			'r.date_due',
 			'r.date_modified'
 		);
 
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY " . $data['sort'];	
 		} else {
-			$sql .= " ORDER BY r.receipt_id";	
+			$sql .= " ORDER BY r.date_due";	
 		}
 		
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {
