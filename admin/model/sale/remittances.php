@@ -116,10 +116,21 @@ class ModelSaleRemittances extends Model {
 	}
 	
 	public function generate($data) {
-		//$data = id de la remesa
-		require_once(DIR_SYSTEM . 'vendor/Classes/SEPA/SEPASDD.php');
 		
-		// Configuracion del Presenttador
+		//$data = id de la remesa
+		require_once(DIR_SYSTEM . 'vendor/classes/sepa/sepasdd.php');
+		
+		// Sample
+		//
+		// $config = array("name" => "Test",
+                // "IBAN" => "NL50BANK1234567890",
+                // "BIC" => "BANKNL2A",
+                // "batch" => true,
+                // "creditor_id" => "00000",
+                // "currency" => "EUR"
+                // );
+		
+		// Configuracion del Presentador
 		$config = array(
 			'name' => $this->config->get('config_title'),
 			'IBAN' => $this->config->get('iban'),
