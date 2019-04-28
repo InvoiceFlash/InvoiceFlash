@@ -235,21 +235,21 @@ class ControllerCommonHome extends Controller {
 		}
 
 		// Overview & Statistics
-		if ($this->user->hasPermission('modify', 'sale/customer') && $this->user->hasPermission('modify', 'sale/invoice')) {
+		if ($this->user->hasPermission('access', 'sale/customer') && $this->user->hasPermission('access', 'sale/invoice')) {
 			$this->data['view']['over'] = true;
 		} else {
 			$this->data['view']['over'] = false;
 		}
 		
 		// Latest Quotes
-		if ($this->user->hasPermission('modify', 'sale/quote')) {
+		if ($this->user->hasPermission('access', 'sale/quote')) {
 			$this->data['view']['last_quotes'] = true;
 		} else {
 			$this->data['view']['last_quotes'] = false;
 		}
 
 		// Latest Invoices
-		if ($this->user->hasPermission('modify', 'sale/invoice')) {
+		if ($this->user->hasPermission('access', 'sale/invoice')) {
 			$this->data['view']['last_invoice'] = true;
 		} else {
 			$this->data['view']['last_invoice'] = false;
