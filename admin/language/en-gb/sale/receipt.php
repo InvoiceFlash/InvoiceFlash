@@ -4,6 +4,8 @@ $_['heading_title']                           = 'Receipts';
 
 // Text
 $_['text_success']                            = 'Success: You have modified receipts!';
+$_['text_paid']                               ='Paid';
+$_['text_pending']                            ='Pending';
 
 //Column
 $_['column_receipt_id']                       = 'Receipt ID';

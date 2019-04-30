@@ -252,6 +252,8 @@ class ControllerSaleReceipt extends Controller {
 
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 		$this->data['text_missing'] = $this->language->get('text_missing');
+		$this->data['text_paid'] = $this->language->get('text_paid');
+		$this->data['text_pending'] = $this->language->get('text_pending');
 
 		$this->data['column_receipt_id'] = $this->language->get('column_receipt_id');
 		$this->data['column_remittance_id'] = $this->language->get('column_remittance_id');

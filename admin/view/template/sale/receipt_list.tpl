@@ -61,9 +61,9 @@
 								<td class="text-right d-none d-lg-table-cell"><?php echo $receipt['invoice_id'] ?></td>
 								<td class="d-none d-sm-table-cell"><?php echo $receipt['customer'] ?></td>
 								<td><?php if ($receipt['status']==1): ?>
-									<?php echo 'Pagado' ?>
+									<?php echo $text_paid; ?>
 								<?php else: ?>
-									<?php echo 'Pendiente' ?>
+									<?php echo $text_pending; ?>
 								<?php endif ?></td>
 								<td class="text-right d-none d-sm-table-cell"><?php echo $receipt['total'] ?></td>
 								<td class="d-none d-md-table-cell"><?php echo $receipt['date_due'] ?></td>

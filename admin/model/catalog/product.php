@@ -124,6 +124,8 @@ class ModelCatalogProduct extends Model {
 	}
 
 	public function editProduct($product_id, $data) {
+		$this->logChanges($product_id, $data);
+
 		$this->db->query("UPDATE " . DB_PREFIX . "product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . $this->db->escape($data['tax_class_id']) . "', sort_order = '" . (int)$data['sort_order'] . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
 
 		if (isset($data['image'])) {
@@ -739,6 +741,75 @@ class ModelCatalogProduct extends Model {
 		}
 
 		return $tax_rate_data;
+	}
+
+	private function logChanges($product_id, $data)	{
+		$log = new Log('product.log');
+		// Log de cambios en productos
+		// Products
+		$table = 'product';
+		$cols = $this->db->query("SELECT DISTINCT `COLUMN_NAME` FROM `information_schema`.`COLUMNS` WHERE `TABLE_NAME` LIKE '$table'");
+		$old_data = $this->db->query("SELECT * FROM `" . DB_PREFIX . "$table` WHERE `product_id` = $product_id");
+
+		$changes = array();
+		foreach ($cols->rows as $key => $value) {
+			$col_name = $value['COLUMN_NAME'];
+
+			if (array_key_exists($col_name, $data)) {
+				
+				$old = $old_data->row[$col_name];
+				$new = $data[$col_name];
+
+				if ($old != $new) {
+					$changes[$col_name] = array(
+						'old' => $old,
+						'new' => $new
+					);
+				}
+			}
+		}
+
+		if(!empty($changes)) { 
+			$this->db->query("INSERT INTO `" . DB_PREFIX . "log` SET user_id = " . $this->user->getId() . ", username = '" . $this->user->getUserName() . "', value = '" . serialize($changes) . "', date_added = now(), table_name = '$table'");
+		}
+
+		// Product Description
+		$table = 'product_description';
+		// $cols = $this->db->query("SELECT DISTINCT `COLUMN_NAME` FROM `information_schema`.`COLUMNS` WHERE `TABLE_NAME` LIKE '$table'"); - Servidor Localhost
+
+		$cols = $this->db->query("SHOW COLUMNS FROM " . DB_PREFIX . $table);
+		$old_data = $this->db->query("SELECT * FROM `" . DB_PREFIX . "$table` WHERE `product_id` = $product_id");
+
+		$changes = array();
+		foreach ($cols->rows as $key => $value) {
+			$col_name = $value['Field'];
+			
+			foreach ($data['product_description'] as $language_id => $value) {
+				if (array_key_exists($col_name, $value)) {
+					
+					$old = $old_data->rows[($language_id-1)][$col_name];
+					$new = $value[$col_name];
+
+					if ($old != $new) {
+						$changes[$col_name] = array(
+							'old' => $old,
+							'new' => $new
+						);
+					}
+				}
+			}
+		}
+
+		if(!empty($changes)) { 
+			$this->db->query("INSERT INTO `" . DB_PREFIX . "log` SET user_id = " . $this->user->getId() . ", username = '" . $this->user->getUserName() . "', value = '" . serialize($changes) . "', date_added = now(), table_name = '$table', table_id = $product_id");
+		}
+
+	}
+
+	public function getLog($product_id) {
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "log` WHERE table_name LIKE 'product%' AND table_id = $product_id ORDER BY date_added DESC");
+
+		return $query->rows;
 	}
 }
 ?>

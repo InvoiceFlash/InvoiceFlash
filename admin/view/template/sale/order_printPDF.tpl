@@ -31,7 +31,7 @@
   <div>
     <img src="<?php echo DIR_IMAGE . $logo ?>" alt="<?php echo $order['store_name'] ?>">
   </div>
-  <h1><?php echo $text_invoice; ?></h1>
+  <h1><?php echo $text_order; ?></h1>
   <table>
     <tr>
       <td width="50%"><strong><?php echo $order['store_name']; ?></strong><br>
