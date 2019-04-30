@@ -63,6 +63,12 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fax; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_fax" value="<?php echo $config_fax; ?>" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_vat_id; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_vat_id" value="<?php echo $config_vat_id; ?>" class="form-control">
