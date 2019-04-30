@@ -4,7 +4,7 @@
 
 [![InvoiceFlash](https://badge.fury.io/gh/InvoiceFlash%2FInvoiceFlash.svg)](https://badge.fury.io/gh/InvoiceFlash%2FInvoiceFlash)
 
-<p align="center" bgcolor="#429ae1"><b>InvoiceFlash is a self-hosted open source application for managing your invoices, clients and payments.<br>
+<p align="center" bgcolor="#429ae1"><b>InvoiceFlash is a self-hosted open source application for managing your quotes, orders, invoices, customers and payments.<br>
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</b></p>
 
 ---
@@ -13,6 +13,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
 - [ ] Mod Facturae
 - [ ] Attributes
+- [ ] Representatives
 
 ### 0.0.4 (master) (In development.. Expected date: 05.30.19)
 - [ ] API

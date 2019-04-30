@@ -1250,7 +1250,7 @@ class ModelSaleCustomer extends Model {
  	}
 
  	function getCustomerNote($note_id) {
- 		$sql = "SELECT ch.comment, ch.date_added, ch.user_id FROM " . DB_PREFIX . "customer_history ch WHERE ch.customer_history_id = " . (int)$note_id;
+ 		$sql = "SELECT ch.comment, ch.date_added, u.username AS user FROM " . DB_PREFIX . "customer_history ch LEFT JOIN `" . DB_PREFIX . "user` u ON ch.user_id = u.user_id WHERE ch.customer_history_id = " . (int)$note_id;
 
  		$query = $this->db->query($sql);
 

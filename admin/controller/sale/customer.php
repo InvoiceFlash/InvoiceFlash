@@ -1287,6 +1287,7 @@ class ControllerSaleCustomer extends Controller {
 				$this->data['notes'][] = array(
 					'note_id'  => $result['customer_history_id'] ,
 					'date'     => $note_info['date_added'],
+					'user'	   => $note_info['user'],
 					'comment'  => $note_info['comment'], 
 					'delete'   => $this->url->link('sale/customer/deleteNote', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'] . '&note_id=' . $result['customer_history_id'], 'SSL')
 				);
