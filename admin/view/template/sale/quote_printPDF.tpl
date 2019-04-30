@@ -61,9 +61,9 @@ th {
 			<td>
 				<b><?php echo $text_date_added; ?></b> <?php echo $quotes['date_added']; ?><br>
 				<?php if ($quotes['invoice_no']) { ?>
-					<b><?php echo $text_quote_no; ?></b> <?php echo $quotes['invoice_no']; ?><br>
+					<b><?php echo $text_order_no; ?></b> <?php echo $quotes['invoice_no']; ?><br>
 				<?php } ?>
-				<b><?php echo $text_quote_id; ?></b> <?php echo $quotes['invoice_prefix'] . $quotes['quote_id']; ?><br>
+				<b><?php echo $text_quote_id; ?></b> <?php echo $quotes['quote_id']; ?><br>
 				<b><?php echo $text_payment_method; ?></b> <?php echo $quotes['payment_method']; ?><br>
 				<?php if ($quotes['shipping_method']) { ?>
 				<b><?php echo $text_shipping_method; ?></b> <?php echo $quotes['shipping_method']; ?><br>

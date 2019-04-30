@@ -51,7 +51,9 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_address'] = $this->language->get('entry_address');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
-		$this->data['entry_fax'] = $this->language->get('entry_fax');		
+		// $this->data['entry_fax'] = $this->language->get('entry_fax');	
+		$this->data['entry_vat_id'] = $this->language->get('entry_vat_id');
+		$this->data['entry_geocode'] = $this->language->get('entry_geocode');
 		$this->data['entry_title'] = $this->language->get('entry_title');
 		$this->data['entry_meta_description'] = $this->language->get('entry_meta_description');
 		$this->data['entry_layout'] = $this->language->get('entry_layout');
@@ -387,11 +389,23 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_telephone'] = $this->config->get('config_telephone');
 		}
 
-		if (isset($this->request->post['config_fax'])) {
-			$this->data['config_fax'] = $this->request->post['config_fax'];
+		if (isset($this->request->post['config_vat_id'])) {
+			$this->data['config_vat_id'] = $this->request->post['config_vat_id'];
 		} else {
-			$this->data['config_fax'] = $this->config->get('config_fax');
+			$this->data['config_vat_id'] = $this->config->get('config_vat_id');
 		}
+
+		if (isset($this->request->post['config_geocode'])) {
+			$this->data['config_geocode'] = $this->request->post['config_geocode'];
+		} else {
+			$this->data['config_geocode'] = $this->config->get('config_geocode');
+		}
+
+		// if (isset($this->request->post['config_fax'])) {
+		// 	$this->data['config_fax'] = $this->request->post['config_fax'];
+		// } else {
+		// 	$this->data['config_fax'] = $this->config->get('config_fax');
+		// }
 
 		if (isset($this->request->post['config_title'])) {
 			$this->data['config_title'] = $this->request->post['config_title'];
@@ -1273,7 +1287,7 @@ class ControllerSettingSetting extends Controller {
         $mail->setSubject($this->language->get('text_mail_subject'));
         $mail->setText(html_entity_decode($this->language->get('text_mail_message'), ENT_QUOTES, 'UTF-8'));
 
-        $mail->send();
+		$mail->send();
 	}
 }
 ?>
