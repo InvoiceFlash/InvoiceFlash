@@ -564,5 +564,108 @@ class ControllerSaleRemittances extends Controller {
 		
 		$this->response->setOutput($this->render());
 	}
+
+	public function print() {
+		$this->load->language('sale/remittances');
+
+		$this->data['title'] = $this->language->get('heading_title');
+
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		$this->data['direction'] = $this->language->get('direction');
+		$this->data['language'] = $this->language->get('code');
+
+		$this->data['text_remittance_id'] = $this->language->get('text_remittance_id');
+		$this->data['text_remittance'] = $this->language->get('heading_title');
+		$this->data['text_telephone'] = $this->language->get('text_telephone');
+		$this->data['text_date'] = $this->language->get('text_date');
+
+		$this->data['column_customer_id'] = $this->language->get('column_customer_id');
+		$this->data['column_customer'] = $this->language->get('column_customer');
+		$this->data['column_bank_cc'] = $this->language->get('column_bank_cc');
+		$this->data['column_amount'] = $this->language->get('column_amount');
+
+		$this->load->model('sale/remittances');
+
+		$this->load->model('setting/setting');
+
+		$this->load->model('tool/image');
+
+		$logo = $this->config->get('config_logo');
+
+		if (isset($logo) && file_exists(DIR_IMAGE . $logo)) {
+			$this->data['logo'] = $this->model_tool_image->resize($logo, 100, 100);
+		} else {
+			$this->data['logo'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
+		}
+
+		$this->data['remittances'] = array();
+
+		$remittances = array();
+
+		if (isset($this->request->post['selected'])) {
+			$remittances = $this->request->post['selected'];
+		} elseif (isset($this->request->get['remittance_id'])) {
+			$remittances[] = $this->request->get['remittance_id'];
+		}
+
+		$remittances = array_unique($remittances);
+
+		foreach ($remittances as $remittance_id) {
+			$remittance_info = $this->model_sale_remittances->getRemittance($remittance_id);
+
+			if ($remittance_info) {
+				$store_info = $this->model_setting_setting->getSetting('config');
+				
+				if ($store_info) {
+					$store_address = $store_info['config_address'];
+					$store_email = $store_info['config_email'];
+					$store_telephone = $store_info['config_telephone'];
+				} else {
+					$store_address = $this->config->get('config_address');
+					$store_email = $this->config->get('config_email');
+					$store_telephone = $this->config->get('config_telephone');
+				}
+
+				$store_name = $this->config->get('config_title');
+				$store_nif = $this->config->get('config_nif');
+
+				$remittance_lines = array();
+
+				$lines = $this->model_sale_remittances->getRemittancesLines($remittance_id);
+
+				foreach ($lines as $line) {
+					$remittance_lines[] = array(
+						'customer_id'	=> $line['customer_id'],
+						'customer'		=> $line['company'],
+						'bank_cc'		=> $line['bank_cc'],
+						'amount'		=> $line['amount']
+					);
+				}
+			}
+
+			$this->data['remittances'][] = array(
+				'remittance_id' 	=> $remittance_id,
+				'date'				=> $remittance_info['date_added'],
+				'store_name'        => $store_name,
+				'store_url'         => rtrim(HTTP_CATALOG, '/'),
+				'store_address'     => nl2br($store_address),
+				'store_email'       => $store_email,
+				'store_telephone'   => $store_telephone,
+				'store_nif'         => $store_nif,
+				'remittance_lines'  => $remittance_lines
+			);
+		}
+		
+		$this->data['logo'] = $this->config->get('config_logo');
+
+		$this->template = 'sale/remittances_print.tpl';
+			
+		$this->response->setOutput($this->render());
+	}
 }
 ?>

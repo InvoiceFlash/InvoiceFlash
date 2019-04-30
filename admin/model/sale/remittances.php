@@ -9,10 +9,11 @@ class ModelSaleRemittances extends Model {
 	}
 
 	public function getRemittancesLines($remittance_id) {
-		$sql = "SELECT rl.receipt_id, c.company, rl.amount, rl.date_vto 
+		$sql = "SELECT rl.receipt_id, c.customer_id, c.company, rl.amount, rl.date_vto, re.bank_cc
 			FROM " . DB_PREFIX . "remittances_lines rl 
 			LEFT JOIN " . DB_PREFIX . "remittances r ON r.remittance_id = rl.remittance_id
-			LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = (SELECT invoice_id FROM `" . DB_PREFIX . "receipt` WHERE remittance_id = rl.remittance_id LIMIT 1)
+			LEFT JOIN `" . DB_PREFIX . "receipt` re ON rl.receipt_id = re.receipt_id
+			LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = re.invoice_id
 			LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = i.customer_id WHERE rl.remittance_id = $remittance_id";
 		
 		$query = $this->db->query($sql);
@@ -22,8 +23,7 @@ class ModelSaleRemittances extends Model {
 	}
 
 	public function getRemittanceLinesTotal($remittance_id) {
-		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "remittances_lines` rl WHERE remittance_id = $remittance_id
-		";
+		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "remittances_lines` rl WHERE remittance_id = $remittance_id";
 
 		$query = $this->db->query($sql);
 
@@ -114,23 +114,29 @@ class ModelSaleRemittances extends Model {
 
 		return $query->rows;
 	}
+
+	public function getRemittance($remittance_id) {
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "remittances` WHERE remittance_id = $remittance_id");
+
+		return $query->row;
+	}
 	
 	public function generate($data) {
-		
 		//$data = id de la remesa
-		require_once(DIR_SYSTEM . 'vendor/classes/sepa/sepasdd.php');
+		require_once(DIR_SYSTEM . 'vendor/classes/sepe/sepasdd.php');
 		
 		// Sample
-		//
-		// $config = array("name" => "Test",
-                // "IBAN" => "NL50BANK1234567890",
-                // "BIC" => "BANKNL2A",
-                // "batch" => true,
-                // "creditor_id" => "00000",
-                // "currency" => "EUR"
-                // );
-		
-		// Configuracion del Presentador
+		// 
+		// $config = array(
+		// 	'name' => "Test",
+		// 	'IBAN' => "NL50BANK1234567890",
+		// 	'BIC' => "BANNKL2A",
+		// 	'batch' => true,
+		// 	'creditor_id' => "0000",
+		// 	'currency' => "EUR"
+		// );
+
+		// Configuracion del Presenttador
 		$config = array(
 			'name' => $this->config->get('config_title'),
 			'IBAN' => $this->config->get('iban'),

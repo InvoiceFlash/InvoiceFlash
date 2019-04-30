@@ -13,8 +13,8 @@
 				<br>
 			<noscript>
 				<div class="alert alert-danger">
-					Javascript está deshabilitado en su navegador web.Por favor, para ver correctamente este sitio,<br />
-					<b><i>habilite javascript</i></b>.<br />
+					Javascript is disabled in your web browser. Please, to view this site correctly,<br />
+					<b><i>enable javascript</i></b>.<br />
 				</div>
 			</noscript>				
 			
