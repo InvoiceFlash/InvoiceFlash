@@ -13,7 +13,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
 - [ ] Mod Facturae
 - [ ] Attributes
-- [ ] Representatives
+- [ ] Sales Agent
 
 ### 0.0.4 (master) (In development.. Expected date: 05.30.19)
 - [ ] API

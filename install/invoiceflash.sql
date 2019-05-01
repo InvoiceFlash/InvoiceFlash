@@ -7983,6 +7983,7 @@ CREATE TABLE `if_receipt` (
   `invoice_id` int(11) NOT NULL,
   `currency_id` int(11) NOT NULL,
   `currency_code` varchar(3) NOT NULL,
+  `bank_cc` varchar(25) NOT NULL,
   `currency_value` decimal(15,8) NOT NULL DEFAULT '1.00000000',
   `remittance_id` int(11) NOT NULL,
   `user_id_added` int(11) NOT NULL,
@@ -8174,6 +8175,19 @@ CREATE TABLE `if_remittances_lines` (
   `receipt_id` int(11) NOT NULL,
   PRIMARY KEY (`remittance_lines_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_log`;
+CREATE TABLE `if_log` (
+`log_id` INT(11) NOT NULL AUTO_INCREMENT,
+`user_id` INT(11) DEFAULT NULL,
+`username` VARCHAR(25) DEFAULT NULL,
+`value` TEXT,
+`date_added` DATETIME DEFAULT NULL,
+`table_name` TINYTEXT,
+`table_id` INT(11) DEFAULT NULL,
+PRIMARY KEY (`log_id`),
+KEY KEY_table_id (`table_id`)
+) ENGINE=MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --

@@ -38,29 +38,11 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_firstname; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
-							<?php if ($error_firstname) { ?>
-								<div class="help-block error"><?php echo $error_firstname; ?></div>
-							<?php } ?>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_lastname; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
-							<?php if ($error_lastname) { ?>
-								<div class="help-block error"><?php echo $error_lastname; ?></div>
-							<?php } ?>
-						</div>
-					</div>
-					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_email; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
 							<?php if ($error_email) { ?>
-								<div class="help-block error"><?php echo $error_email; ?></div>
+								<div class="help-block text-danger"><?php echo $error_email; ?></div>
 							<?php	} ?>
 						</div>
 					</div>
@@ -69,7 +51,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 							<?php if ($error_telephone) { ?>
-								<div class="help-block error"><?php echo $error_telephone; ?></div>
+								<div class="help-block text-danger"><?php echo $error_telephone; ?></div>
 							<?php	} ?>
 						</div>
 					</div>
@@ -80,7 +62,7 @@
 							<input type="text" name="product" value="<?php echo $product; ?>" id="return-product" autocomplete="off" class="form-control">
 							<input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
 							<?php if ($error_product) { ?>
-								<div class="help-block error"><?php echo $error_product; ?></div>
+								<div class="help-block text-danger"><?php echo $error_product; ?></div>
 							<?php	} ?>
 						</div>
 					</div>

@@ -1604,7 +1604,7 @@ class ControllerSaleQuote extends Controller {
 
 		$this->data['text_quote'] = $this->language->get('text_quote');
 		$this->data['text_quote_id'] = $this->language->get('text_quote_id');
-		$this->data['text_invoice_no'] = $this->language->get('text_invoice_no');
+		$this->data['text_order_no'] = $this->language->get('text_order_no');
 		$this->data['text_invoice_date'] = $this->language->get('text_invoice_date');
 		$this->data['text_date_added'] = $this->language->get('text_date_added');
 		$this->data['text_telephone'] = $this->language->get('text_telephone');
