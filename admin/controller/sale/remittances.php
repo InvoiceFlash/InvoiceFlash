@@ -192,7 +192,7 @@ class ControllerSaleRemittances extends Controller {
 			'separator' => ' :: '
 		);
 
-		$this->data['print'] = $this->url->link('sale/remittances/print', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['printRemittances'] = $this->url->link('sale/remittances/printRemittances', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['generate'] = $this->url->link('sale/remittances/generateC19', 'token=' .  $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('sale/remittances/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
@@ -565,7 +565,7 @@ class ControllerSaleRemittances extends Controller {
 		$this->response->setOutput($this->render());
 	}
 
-	public function print() {
+	public function printRemittances() {
 		$this->load->language('sale/remittances');
 
 		$this->data['title'] = $this->language->get('heading_title');

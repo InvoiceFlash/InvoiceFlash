@@ -15,9 +15,9 @@
           <thead>
             <tr>
               <th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-							<th><a href="<?php echo $sort_remittance_id; ?>"><?php echo $column_remittance_id; echo ($sort=='r.remittance_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th class="text-right"><a href="<?php echo $sort_remittance_id; ?>"><?php echo $column_remittance_id; echo ($sort=='r.remittance_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
 							<th><a href="<?php echo $sort_customer; ?>"><?php echo $column_customer; echo ($sort=='r.customer') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
-							<th><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort=='r.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th class="text-right"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort=='r.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
 							<th><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort=='r.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
 							<th><i class=""></i> <span class="d-none d-sm-block-inline"><?php echo $column_action; ?></span></th>
             </tr>
