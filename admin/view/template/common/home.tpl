@@ -21,6 +21,31 @@
 <noscript>
     <div class="alert alert-danger"><?php echo $error_javascript; ?></div>
 </noscript>
+<div class="row">
+	<div class="col-sm-12">
+		<div class="panel panel-default" id="search">
+			<div class="panel-heading clearfix"><h5><i class="fa fa-search"></i> <?php echo $text_search; ?></h5></div>
+			<div class="panel-body">
+			<div class="row">
+				<div class="input-group col-sm-6">
+					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_customer; ?></span></span>
+					<input type="text" id="search-customer" class="form-control">
+					<div class="input-group-append">
+						<button class="btn btn-info" id="button-search-customer"><?php echo $button_search; ?></button>
+					</div>
+				</div>
+				<div class="input-group col-sm-6">
+					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_product; ?></span></span>
+					<input type="text" id="search-product" class="form-control">
+					<div class="input-group-append">
+						<button class="btn btn-info" id="button-search-product"><?php echo $button_search; ?></button>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+	</div>
+</div>
 <?php if ($view['quick_action']) { ?>
 <div class="row">
 <div class="col-sm-12">
@@ -233,5 +258,19 @@ $('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
 	});
 });
 $('#tabs-chart a:first').tab('show');
+</script>
+<script>
+var token = '<?php echo $token; ?>';
+$("#button-search-customer").click(function() {
+	var url = 'index.php?route=sale/customer&token='+token+'&filter_company='+$('#search-customer').val();
+
+	$(location)	.attr('href', url);
+});
+
+$('#button-search-product').click(function(){
+	var url = "index.php?route=catalog/product&token="+token+"&filter_name="+$('#search-product').val(); 
+
+	$(location).attr('href', url);
+});
 </script>
 <?php echo $footer; ?>

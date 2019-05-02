@@ -490,6 +490,8 @@ class ControllerSaleReceipt extends Controller {
 
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		
+		$this->data['text_bank_cc'] = $this->language->get('text_bank_cc');
+		
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 
@@ -571,6 +573,13 @@ class ControllerSaleReceipt extends Controller {
 			$this->data['status_id'] = $receipt_info['status_id'];
 		} else {
 			$this->data['status_id'] = 0;
+		}
+
+		$log=new Log('receipt.log'); $log->write($receipt_info);
+		if (!empty($receipt_info)) {
+			$this->data['bank_cc'] = $receipt_info['bank_cc'];
+		} else {
+			$this->data['bank_cc'] = '';
 		}
 
 		$this->data['statuses'] = array();

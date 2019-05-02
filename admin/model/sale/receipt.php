@@ -183,7 +183,7 @@ class ModelSaleReceipt extends Model {
 	}
 
 	public function getReceipt($receipt_id)	{
-		$query = $this->db->query("SELECT IF(paid = '1', 2,1) AS status_id FROM " . DB_PREFIX . "receipt WHERE receipt_id = " . (int)$receipt_id);
+		$query = $this->db->query("SELECT IF(paid = '1', 2,1) AS status_id, bank_cc FROM " . DB_PREFIX . "receipt WHERE receipt_id = " . (int)$receipt_id);
 
 		return $query->row;
 	}

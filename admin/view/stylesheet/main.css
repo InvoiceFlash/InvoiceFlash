@@ -9144,7 +9144,7 @@ a.btn.btn-danger {
   max-width: 1000px; }
 
 #actions {
-  max-height: 125px; }
+  max-height: 9rem; }
   #actions h5.buton {
     padding-top: 1em;
     text-align: center; }
@@ -9171,6 +9171,12 @@ a.btn.btn-danger {
   clear: both;
   margin-top: 1em;
   content: " "; }
+
+#search {
+  max-height: 9rem; }
+  #search .input-group-text {
+    background-color: transparent;
+    border-right-width: 0; }
 
 .navbar {
   padding-top: 0;

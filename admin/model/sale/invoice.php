@@ -296,7 +296,9 @@ class ModelSaleInvoice extends Model {
 		}
 
 		// Update invoice total			 
-		$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET total = '" . (float)$total . "' WHERE invoice_id = '" . (int)$invoice_id . "'"); 	
+		$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET total = '" . (float)$total . "' WHERE invoice_id = '" . (int)$invoice_id . "'");
+
+		$this->createReceipt($invoice_id, $total);
 
 	}
 
@@ -680,13 +682,21 @@ class ModelSaleInvoice extends Model {
 	}
 
 	public function createReceipt($invoice_id, $total) {
+		// Borrar los recibos anteriores para volver a crearlos en caso de modificacion de factura
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "receipt` WHERE invoice_id = $invoice_id");
+
 		// Buscar el codigo de pago de la factura creada
-		$qry = $this->db->query("SELECT payment_code, date_added, currency_code, currency_id, currency_value FROM `" . DB_PREFIX . "invoice` WHERE invoice_id = $invoice_id");
-		$payment_id = $qry->row['payment_code'];
-		$invoice_date = $qry->row['date_added'];
-		$currency_code = $qry->row['currency_code'];
-		$currency_id = $qry->row['currency_id'];
-		$currency_value = $qry->row['currency_value'];
+		$qry_invoice = $this->db->query("SELECT customer_id, payment_code, date_added, currency_code, currency_id, currency_value FROM `" . DB_PREFIX . "invoice` WHERE invoice_id = $invoice_id");
+		$payment_id = $qry_invoice->row['payment_code'];
+		$invoice_date = $qry_invoice->row['date_added'];
+		$currency_code = $qry_invoice->row['currency_code'];
+		$currency_id = $qry_invoice->row['currency_id'];
+		$currency_value = $qry_invoice->row['currency_value'];
+		$customer_id = $qry_invoice->row['customer_id'];
+
+		// Datos del cliente de la factura: bank_cc
+		$qry_customer = $this->db->query("SELECT bank_cc FROM `" . DB_PREFIX . "fl_customers` WHERE customer_id = $customer_id");
+		$bank_cc = $qry_customer->row['bank_cc'];
 
 		// Buscar los datos del metodo de pago para la creación de los recibos
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "payment` WHERE payment_id = $payment_id");
@@ -707,17 +717,24 @@ class ModelSaleInvoice extends Model {
 				amount = $amount,
 				paid = 0, 
 				invoice_id = $invoice_id,
-				currency_code = '$currency_code',
+				currency_code = '" . $this->db->escape($currency_code) . "',
 				currency_id = $currency_id,
 				currency_value = $currency_value,
 				remittance_id = 0,
 				user_id_added = " . $this->user->getId() . ",
+				bank_cc = '" . $this->db->escape(str_replace(array(" ", "-", "."), "", $bank_cc)) . "',
 				date_added = now(),
 				date_modified = now()");
 
 			// Calcular la fecha del siguente recibo antes de cambiar
 			$date = date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s", strtotime($date))."+ ".$payment_info['days_between']." days"));
 		}
+	}
+
+	public function getPaidReceipts($invoice_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "receipt` WHERE invoice_id = $invoice_id AND paid = 1");
+
+		return $query->row['total'];
 	}
 
 }

@@ -10,7 +10,7 @@
 	    </div>
     </div>
     <div class="panel-body">
-      <form class="foe" action="<?php echo $print; ?>" method="post" enctype="multipart/form-data" id="form">
+      <form class="foe" action="<?php echo $printRemittances; ?>" method="post" enctype="multipart/form-data" id="form">
         <table class="table table-bordered table-striped table-hover">
           <thead>
             <tr>

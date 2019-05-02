@@ -32,7 +32,14 @@ class ControllerCommonHome extends Controller {
 		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['entry_range'] = $this->language->get('entry_range');
-		
+
+		// Search
+		$this->data['text_search'] = $this->language->get('text_search');
+		$this->data['text_search_customer'] = $this->language->get('text_search_customer');
+		$this->data['text_search_product'] = $this->language->get('text_search_product');
+
+		$this->data['button_search'] = $this->language->get('button_search');
+
 		// Actions
 		$this->data['text_actions'] = $this->language->get('text_actions');
 		$this->data['text_add_customer'] = $this->language->get('text_add_customer');
