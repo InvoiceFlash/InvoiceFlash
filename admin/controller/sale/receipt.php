@@ -399,12 +399,12 @@ class ControllerSaleReceipt extends Controller {
 
 		$this->data['order_statuses'][] = array(
 			"order_status_id"  => 1,
-			"name" => 'Pendiente',
+			"name" => $this->language->get('text_pending'),
 		);
 
 		$this->data['order_statuses'][] = array(
 			"order_status_id"  => 2 ,
-			"name" => 'Pagado',
+			"name" => $this->language->get('text_paid'),
 		);
 		
 			
@@ -575,7 +575,6 @@ class ControllerSaleReceipt extends Controller {
 			$this->data['status_id'] = 0;
 		}
 
-		$log=new Log('receipt.log'); $log->write($receipt_info);
 		if (!empty($receipt_info)) {
 			$this->data['bank_cc'] = $receipt_info['bank_cc'];
 		} else {
@@ -586,12 +585,12 @@ class ControllerSaleReceipt extends Controller {
 
 		$this->data['statuses'][] = array(
 			"status_id"  => 1,
-			"name" => 'Pendiente',
+			"name" => $this->language->get('text_pending'),
 		);
 
 		$this->data['statuses'][] = array(
 			"status_id"  => 2 ,
-			"name" => 'Pagado',
+			"name" => $this->language->get('text_paid'),
 		);
 
 		$this->template = 'sale/receipt_form.tpl';
