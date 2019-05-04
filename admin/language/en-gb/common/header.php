@@ -149,6 +149,4 @@ $_['text_statuses']  	   		   	   = 'Statuses';
 $_['text_invoice_status']  	   		   = 'Invoice';
 $_['text_cron']                        = 'Cron Jobs';
 $_['text_api']                         = 'API';
-$_['text_remmitance']                  = 'Remmitance';
-
 ?>

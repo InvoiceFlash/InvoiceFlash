@@ -284,10 +284,10 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-			// Sales - Remmitances
+			// Sales - Remittances
 			if ($this->user->hasPermission('access', 'sale/remittances')) {
 				$sales[] = array(
-					'name' => $this->language->get('text_remmitance'),
+					'name' => $this->language->get('text_remittances'),
 					'href' => $this->url->link('sale/remittances', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
