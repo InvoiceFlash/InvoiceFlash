@@ -134,7 +134,6 @@ class ModelSaleDelivery extends Model {
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$delivery_product['total']));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "delivery_product SET 
-				delivery_product_id = '" . (int)$delivery_product['delivery_product_id'] . "', 
 				delivery_id = '" . (int)$delivery_id . "', 
 				product_id = '" . (int)$delivery_product['product_id'] . "', 
 				name = '" . $this->db->escape($delivery_product['name']) . "', 
@@ -229,7 +228,6 @@ class ModelSaleDelivery extends Model {
 		`payment_country` = '" . $this->db->escape($payment_country) . "', 
 		`payment_country_id` = '" . (int)$data['payment_country_id'] . "', 
 		`payment_zone` = '" . $this->db->escape($payment_zone) . "', 
-		`payment_zone_id` = '" . (int)$data['payment_zone_id'] . "', 
 		`payment_address_format` = '" . $this->db->escape($payment_address_format) . "', 
 		`payment_method` = '" . $this->db->escape($data['payment_method']) . "', 
 		`payment_code` = '" . $this->db->escape($data['payment_code']) . "', 
@@ -241,7 +239,6 @@ class ModelSaleDelivery extends Model {
 		`shipping_country` = '" . $this->db->escape($shipping_country) . "', 
 		`shipping_country_id` = '" . (int)$data['shipping_country_id'] . "', 
 		`shipping_zone` = '" . $this->db->escape($shipping_zone) . "', 
-		`shipping_zone_id` = '" . (int)$data['shipping_zone_id'] . "', 
 		`shipping_address_format` = '" . $this->db->escape($shipping_address_format) . "', 
 		`shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 		`shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
