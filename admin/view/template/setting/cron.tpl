@@ -11,7 +11,6 @@
         <div class="input-group">
           <div class="input-group-prepend"><span class="input-group-text"><?php echo $entry_cron; ?></span></div>
           <input type="text" value="wget &quot;<?php echo $cron; ?>&quot; --read-timeout=5400" id="input-cron" class="form-control">
-          <div class="input-group-append"><button class="btn btn-default"><i class="fa fa-file"></i></button></div>
         </div>
       </div>
     </div>
@@ -38,13 +37,13 @@
                     <tr>
                       <td class="text-center"><input type="checkbox" name="selected[]" value="<?php echo $cron['cron_id']; ?>"<?php echo (in_array($cron['cron_id'], $selected)) ? ' checked="checked"' : ''; ?> ></td>
                         <td class="text-left"><?php echo $cron['code']; ?></td>
-                        <td class="text-left"><?php echo $cron['action']; ?><input type="hidden" id="action" value="<?php echo $cron['action']; ?>"></td>
+                        <td class="text-left"><?php echo $cron['action']; ?><input type="hidden"></td>
                         <td class="text-left"><?php echo $cron['status']; ?></td>
                         <td class="text-left"><?php echo $cron['date_added']; ?></td>
                         <td class="text-left"><?php echo $cron['date_modified']; ?></td>
                         <td class="text-right">
                           <?php echo $cron['edit']; ?>
-                          <a data-toggle="tooltip" id="btn-run" data-title="<?php echo $button_run; ?>" class="btn btn-warning"><i class="fa fa-play"></i></a>
+                          <a data-toggle="tooltip" id="btn-run" data-title="<?php echo $button_run; ?>" data-id="<?php echo $cron['cron_id']; ?>" class="btn btn-warning"><i class="fa fa-play"></i></a>
                         </td>
                     </tr>
                   <?php } ?>
@@ -67,19 +66,15 @@ $('#btn-run').click(function(){
 		$.ajax({
 			url:'index.php?route=setting/cron/run&token='+token,
 			type:'post',
-			dataType:'html',
-			data:$('#action').val(),
-			beforeSend:function(){
-				$(this).button('loading').append($('<i>',{class:'icon-loading'}));
-			},
+			dataType:'json',
+			data:'id='+$(this).attr('data-id'),
 			complete:function(){
 				$(this).button('reset');
 			},
-			success:function(html){
-        if(json['error']) {
-          alertMessage('error', json['error']);
-        }
-        if(json['success']){
+			success:function(json){
+        if(json['error']){
+          alertMessage('danger', json['error']);
+        }else{
           alertMessage('success',json['success']);
         }
 			}
