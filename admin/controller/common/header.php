@@ -62,6 +62,15 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
+			
+			// Files - Agent
+			if ($this->user->hasPermission('access', 'sale/agent')) {
+				$files[] = array(
+					'name' => $this->language->get('text_agent'),
+					'href' => $this->url->link('sale/agent', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 
 			// Files - Categories
 			$categories = array();
@@ -145,10 +154,10 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			if ($this->user->hasPermission('access', 'sale/attribute_group')) {
+			if ($this->user->hasPermission('access', 'catalog/attribute_group')) {
 				$attributes[] = array(
 					'name' => $this->language->get('text_attribute_group'),
-					'href' => $this->url->link('sale/attribute_group', 'token=' . $this->session->data['token'], 'SSL'),
+					'href' => $this->url->link('catalog/attribute_group', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
