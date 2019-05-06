@@ -17,12 +17,6 @@ class ControllerReportCustomerSupport extends Controller {
 			$filter_date_end = '';
 		}
 		
-		if (isset($this->request->get['filter_order_status_id'])) {
-			$filter_order_status_id = $this->request->get['filter_order_status_id'];
-		} else {
-			$filter_order_status_id = 0;
-		}	
-        
         if (isset($this->request->get['uiemail'])) {
 			$uiemail = $this->request->get['uiemail'];
 		} else {
@@ -40,7 +34,8 @@ class ControllerReportCustomerSupport extends Controller {
 		} else {
 			$uitext = '';
 		}
-
+        //End add
+		
 		if (isset($this->request->get['page'])) {
 			$page = $this->request->get['page'];
 		} else {
@@ -57,10 +52,6 @@ class ControllerReportCustomerSupport extends Controller {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
 
-		if (isset($this->request->get['filter_order_status_id'])) {
-			$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
-		}
-		
 		if (isset($this->request->get['page'])) {
 			$url .= '&page=' . $this->request->get['page'];
 		}
@@ -75,7 +66,7 @@ class ControllerReportCustomerSupport extends Controller {
 
    		$this->data['breadcrumbs'][] = array(
        		'text'      => $this->language->get('heading_title'),
-			'href'      => $this->url->link('report/newreport', 'token=' . $this->session->data['token'] . $url, 'SSL'),
+			'href'      => $this->url->link('report/customer_support', 'token=' . $this->session->data['token'] . $url, 'SSL'),
       		'separator' => ' :: '
    		);		
 		
@@ -86,7 +77,6 @@ class ControllerReportCustomerSupport extends Controller {
 		$data = array(
 			'filter_date_start'	     => $filter_date_start, 
 			'filter_date_end'	     => $filter_date_end, 
-			'filter_order_status_id' => $filter_order_status_id,
 			'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
 			'limit'                  => $this->config->get('config_admin_limit')
 		);
@@ -103,18 +93,22 @@ class ControllerReportCustomerSupport extends Controller {
 				'text' => $this->language->get('text_edit'),
 				'href' => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $result['customer_id'] . $url, 'SSL')
 			);
-			
-			
-						
+
+			if ($result['date_support']=='0000-00-00' || $result['date_support']==null) {
+				$date_support = '';
+			} else {
+				$date_support = date($this->language->get('date_format_short'), strtotime($result['date_support']));
+			}
+
 			$this->data['customers'][] = array(
 				'customer'          => $result['company'],
 				'city'              => $result['city'],
-				'date_added'        => date($this->language->get('date_format_short'), strtotime($result['date_support'])),
+				'date_added'        => $date_support,
 				'email'             => $result['email'],
 				'telephone'         => $result['telephone'],
 				'status'            => $result['status'] ,
-				'text' 				=> $this->language->get('text_view'),
-				'href' 				=> $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $result['customer_id'], 'SSL'),
+				'text' => $this->language->get('text_view'),
+				'href' => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $result['customer_id'], 'SSL'),
 				'action'            => $action
 			);
 		}
@@ -124,6 +118,7 @@ class ControllerReportCustomerSupport extends Controller {
  		$this->data['heading_title'] = $this->language->get('heading_title');
 		 
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
+		// $this->data['text_print'] = $this->language->get('text_print');
 		
 		$this->data['column_customer'] = $this->language->get('column_customer');
 		$this->data['column_address'] = $this->language->get('column_address');
@@ -165,10 +160,6 @@ class ControllerReportCustomerSupport extends Controller {
 		if (isset($this->request->get['filter_date_end'])) {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
-
-		if (isset($this->request->get['filter_order_status_id'])) {
-			$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
-		}
 				
 		$pagination = new Pagination();
 		$pagination->total = $order_total;
@@ -181,25 +172,51 @@ class ControllerReportCustomerSupport extends Controller {
 		
 		$this->data['filter_date_start'] = $filter_date_start;
 		$this->data['filter_date_end'] = $filter_date_end;		
-		$this->data['filter_order_status_id'] = $filter_order_status_id;
 				 
 		$this->template = 'report/customer_support.tpl';
+		//$lcTemplate = $this->session->data['template'];
 		
 		$this->children = array(
 			'common/header',
 			'common/footer'
 		);
 
-		$pagination = new Pagination();
-    	$pagination->total = $order_total;
-    	$pagination->page = $page;
-    	$pagination->limit = $this->config->get('config_admin_limit');
-    	$pagination->text = $this->language->get('text_pagination');
-    	$pagination->url = HTTPS_SERVER . 'index.php?route=report/sale&token=' . $this->session->data['token'] . $url . '&page={page}';
+		//$this->response->setOutput($this->render());
+		
+		// if ($print==1){
+  //           $this->template = 'default/template/report/customer_support_print.tpl';
+  //           $this->response->setOutput($this->render(TRUE), $this->config->get('config_compression'));
+  //       }elseif($print==2){
+  //           $this->template = 'default/template/report/customer_support_pdf.tpl';
+  //           $this->response->setOutput($this->renderPDF(), $this->config->get('config_compression'));
+  //       }elseif($print==3){
+  //           $this->template = 'default/template/report/customer_support_pdf.tpl';
+  //           $this->response->setOutput($this->renderPDF($output = 'email'), $this->config->get('config_compression'));
+  //           $lcFile = DIR_DOWNLOAD . 'maintenances.pdf';
+
+  //           $this->sendnewmail($uiemail,$uisubject,$uitext,$lcFile) ;
+            
+  //           $this->redirect(HTTPS_SERVER . 'index.php?route=report/product_support&token=' . $this->session->data['token']);
+
+  //       }else{
+            $pagination = new Pagination();
+    		$pagination->total = $order_total;
+    		$pagination->page = $page;
+    		$pagination->limit = $this->config->get('config_admin_limit');
+    		$pagination->text = $this->language->get('text_pagination');
+    		$pagination->url = HTTPS_SERVER . 'index.php?route=report/sale&token=' . $this->session->data['token'] . $url . '&page={page}';
     			
-    	$this->data['pagination'] = $pagination->render();		
+    		$this->data['pagination'] = $pagination->render();		
 			
-		$this->response->setOutput($this->render());
+			
+			// if (file_exists(DIR_TEMPLATE . $lcTemplate . '/template/report/customer_support.tpl')) {
+				// $this->template = $lcTemplate . '/template/report/customer_support.tpl';
+			// } else {
+				// $this->template = 'default/template/report/customer_support.tpl';
+			// }
+			
+            $this->response->setOutput($this->render());
+        // }
 		
 	}
 }
