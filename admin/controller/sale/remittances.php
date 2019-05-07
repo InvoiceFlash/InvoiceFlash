@@ -583,11 +583,15 @@ class ControllerSaleRemittances extends Controller {
 		$this->data['text_remittance'] = $this->language->get('heading_title');
 		$this->data['text_telephone'] = $this->language->get('text_telephone');
 		$this->data['text_date'] = $this->language->get('text_date');
+		$this->data['text_iban'] = $this->language->get('text_iban');
+		$this->data['text_bic'] = $this->language->get('text_bic');
 
 		$this->data['column_customer_id'] = $this->language->get('column_customer_id');
 		$this->data['column_customer'] = $this->language->get('column_customer');
 		$this->data['column_bank_cc'] = $this->language->get('column_bank_cc');
 		$this->data['column_amount'] = $this->language->get('column_amount');
+		$this->data['column_date_due'] = $this->language->get('column_date_due');
+		$this->data['column_invoice_no'] = $this->language->get('column_invoice_no');
 
 		$this->load->model('sale/remittances');
 
@@ -634,6 +638,9 @@ class ControllerSaleRemittances extends Controller {
 				$store_name = $this->config->get('config_title');
 				$store_nif = $this->config->get('config_nif');
 
+				$bic = $this->config->get('bic');
+				$iban = $this->config->get('iban');
+
 				$remittance_lines = array();
 
 				$lines = $this->model_sale_remittances->getRemittancesLines($remittance_id);
@@ -642,6 +649,8 @@ class ControllerSaleRemittances extends Controller {
 					$remittance_lines[] = array(
 						'customer_id'	=> $line['customer_id'],
 						'customer'		=> $line['company'],
+						'date_due'		=> $line['date_due'],
+						'invoice_no'	=> $line['invoice_no'],
 						'bank_cc'		=> $line['bank_cc'],
 						'amount'		=> $line['amount']
 					);
@@ -655,6 +664,8 @@ class ControllerSaleRemittances extends Controller {
 				'store_url'         => rtrim(HTTP_CATALOG, '/'),
 				'store_address'     => nl2br($store_address),
 				'store_email'       => $store_email,
+				'bic'       		=> $bic,
+				'iban'       		=> $iban,
 				'store_telephone'   => $store_telephone,
 				'store_nif'         => $store_nif,
 				'remittance_lines'  => $remittance_lines

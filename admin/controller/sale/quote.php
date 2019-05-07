@@ -1633,12 +1633,6 @@ class ControllerSaleQuote extends Controller {
 
 		$this->load->model('tool/image');
 		
-		// if ($this->config->get('config_logo') && file_exists(DIR_IMAGE . $this->config->get('config_logo')) && is_file(DIR_IMAGE . $this->config->get('config_logo'))) {
-		// 	$this->data['logo'] = $this->model_tool_image->resize($this->config->get('config_logo'), 250, 50);		
-		// } else {
-		// 	$this->data['logo'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
-		// }
-
 		$logo = $this->config->get('config_logo');
 
 		if (isset($logo) && file_exists(DIR_IMAGE . $logo)) {
@@ -1833,9 +1827,9 @@ class ControllerSaleQuote extends Controller {
 			} 
 
 			if (empty($json['error'])) {
-				$data['customer_id'] = $quote_info['customer_id'];
-				$data['potential_id'] = $quote_info['potential_id'];
-				$data['supplier_id'] = $quote_info['supplier_id'];
+				$data['customer_id'] = isset($quote_info['customer_id']) ? $quote_info['customer_id'] : 0;
+				$data['potential_id'] = isset($quote_info['potential_id']) ? $quote_info['potential_id'] : 0;
+				$data['supplier_id'] = isset($quote_info['supplier_id']) ? $quote_info['supplier_id'] : 0;
 				
 				$data['quote_id'] = $this->request->get['quote_id'];
 				

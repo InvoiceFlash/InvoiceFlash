@@ -29,6 +29,8 @@
 			<td>
 				<b><?php echo $text_date; ?></b> <?php echo $remittance['date']; ?><br>
 				<b><?php echo $text_remittance_id; ?></b> <?php echo $remittance['remittance_id']; ?><br>
+				<b><?php echo $text_bic; ?></b> <?php echo $remittance['bic']; ?><br>
+				<b><?php echo $text_iban; ?></b> <?php echo $remittance['iban']; ?><br>
 			</td>
 		</tr>
 	</table>
@@ -36,6 +38,8 @@
 		<tr>
 			<th><?php echo $column_customer_id; ?></th>
 			<th><?php echo $column_customer; ?></th>
+			<th><?php echo $column_date_due; ?></th>
+			<th><?php echo $column_invoice_no; ?></th>
 			<th><?php echo $column_bank_cc; ?></th>
 			<th class="text-right"><?php echo $column_amount; ?></th>
 		</tr>
@@ -43,6 +47,8 @@
 		<tr>
 			<td><?php echo $line['customer_id']; ?></td>
 			<td><?php echo $line['customer']; ?></td>
+			<td><?php echo $line['date_due']; ?></td>
+			<td><?php echo $line['invoice_no']; ?></td>
 			<td><?php echo $line['bank_cc']; ?></td>
 			<td class="text-right"><?php echo $line['amount']; ?></td>
 		</tr>

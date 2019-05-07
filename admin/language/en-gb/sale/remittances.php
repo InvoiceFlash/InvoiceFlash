@@ -7,6 +7,8 @@ $_['text_success']                            = 'Success: You have modified remi
 $_['text_select']                             = 'Please, select a remittance';
 $_['text_select_one']                         = 'You can only select a remittance';
 $_['text_remittance_id']                      = 'Remittance ID:';
+$_['text_iban']                               = 'IBAN:';
+$_['text_bic']                                = 'BIC:';
 $_['text_telephone']                          = 'Telephone:';
 $_['text_date']                               = 'Date:';
 
@@ -20,6 +22,8 @@ $_['column_date_modified']                    = 'Date Modified';
 $_['column_total']                            = 'Total';
 $_['column_bank_cc']                          = 'Bank Account';
 $_['column_amount']                           = 'Amount';
+$_['column_date_due']                         = 'Date Due';
+$_['column_invoice_no']                       = 'Invoice No.';
 $_['column_action']							  = 'Action';
 
 $_['heading_title_lines']					  = 'Remittance Lines';

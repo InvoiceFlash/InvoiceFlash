@@ -9,12 +9,13 @@ class ModelSaleRemittances extends Model {
 	}
 
 	public function getRemittancesLines($remittance_id) {
-		$sql = "SELECT rl.receipt_id, c.customer_id, c.company, rl.amount, rl.date_vto, re.bank_cc
+		$sql = "SELECT rl.receipt_id, c.customer_id, c.company, rl.amount, rl.date_vto, fc.bank_cc, re.date_due, CONCAT(i.invoice_prefix, i.invoice_id) AS invoice_no
 			FROM " . DB_PREFIX . "remittances_lines rl 
 			LEFT JOIN " . DB_PREFIX . "remittances r ON r.remittance_id = rl.remittance_id
 			LEFT JOIN `" . DB_PREFIX . "receipt` re ON rl.receipt_id = re.receipt_id
 			LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = re.invoice_id
-			LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = i.customer_id WHERE rl.remittance_id = $remittance_id";
+			LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = i.customer_id 
+			LEFT JOIN `" . DB_PREFIX . "fl_customers` fc ON fc.customer_id = c.customer_id WHERE rl.remittance_id = $remittance_id";
 		
 		$query = $this->db->query($sql);
 
@@ -123,7 +124,7 @@ class ModelSaleRemittances extends Model {
 	
 	public function generate($data) {
 		//$data = id de la remesa
-		require_once(DIR_SYSTEM . 'vendor/classes/sepe/sepasdd.php');
+		require_once(DIR_SYSTEM . 'vendor/classes/sepa/sepasdd.php');
 		
 		// Sample
 		// 
@@ -150,7 +151,7 @@ class ModelSaleRemittances extends Model {
 		try{
 		    $sepa = new SEPASDD($config);
 
-		    $sql = "SELECT rl.amount, rl.receipt_id, rl.date_vto, i.shipping_company AS company, i.customer_id, c.bank_cc, c.bic FROM " . DB_PREFIX . "invoice i LEFT JOIN `". DB_PREFIX . "remittances_lines` rl ON rl.receipt_id = i.invoice_id LEFT JOIN " . DB_PREFIX . "fl_customers c ON c.customer_id = i.customer_id WHERE rl.remittance_id = " . (int)$data;
+		    $sql = "SELECT rl.amount, rl.receipt_id, rl.date_vto, c.company, i.customer_id, c.bank_cc, c.bic FROM " . DB_PREFIX . "invoice i LEFT JOIN `". DB_PREFIX . "remittances_lines` rl ON rl.receipt_id = i.invoice_id LEFT JOIN " . DB_PREFIX . "fl_customers c ON c.customer_id = i.customer_id WHERE rl.remittance_id = " . (int)$data;
 
 			$query = $this->db->query($sql);
 
