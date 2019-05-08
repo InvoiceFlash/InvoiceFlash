@@ -9,7 +9,7 @@ class ModelSaleRemittances extends Model {
 	}
 
 	public function getRemittancesLines($remittance_id) {
-		$sql = "SELECT rl.receipt_id, c.customer_id, c.company, rl.amount, rl.date_vto, fc.bank_cc, re.date_due, CONCAT(i.invoice_prefix, i.invoice_id) AS invoice_no
+		$sql = "SELECT rl.receipt_id, c.customer_id, c.company, rl.amount, rl.date_vto, fc.bank_cc, CONCAT(i.invoice_prefix, i.invoice_id) AS invoice_no
 			FROM " . DB_PREFIX . "remittances_lines rl 
 			LEFT JOIN " . DB_PREFIX . "remittances r ON r.remittance_id = rl.remittance_id
 			LEFT JOIN `" . DB_PREFIX . "receipt` re ON rl.receipt_id = re.receipt_id

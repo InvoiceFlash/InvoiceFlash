@@ -412,7 +412,7 @@ class ControllerSaleRemittances extends Controller {
 			$this->data['remittances_lines'][] = array(
 					'receipt_id'   => $line['receipt_id'],
 					'customer'     => $line['company'],
-					'date_vto'     => $line['date_vto'],
+					'date_vto'     => date($this->language->get('date_format_short'), strtotime($line['date_vto'])),
 					'amount'       => $this->currency->format($line['amount'])
 			);
 		}
@@ -649,17 +649,17 @@ class ControllerSaleRemittances extends Controller {
 					$remittance_lines[] = array(
 						'customer_id'	=> $line['customer_id'],
 						'customer'		=> $line['company'],
-						'date_due'		=> $line['date_due'],
+						'date_due'		=> date($this->language->get('date_format_short'), strtotime($line['date_vto'])),
 						'invoice_no'	=> $line['invoice_no'],
 						'bank_cc'		=> $line['bank_cc'],
-						'amount'		=> $line['amount']
+						'amount'		=> $this->currency->format($line['amount'])
 					);
 				}
 			}
 
 			$this->data['remittances'][] = array(
 				'remittance_id' 	=> $remittance_id,
-				'date'				=> $remittance_info['date_added'],
+				'date'				=> date($this->language->get('date_format_short'), strtotime($remittance_info['date_added'])),
 				'store_name'        => $store_name,
 				'store_url'         => rtrim(HTTP_CATALOG, '/'),
 				'store_address'     => nl2br($store_address),
