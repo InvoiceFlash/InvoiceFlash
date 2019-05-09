@@ -19,6 +19,7 @@ $_['text_amount']            = 'Fixed Amount';
 $_['column_name']            = 'Product Name';
 $_['column_model']           = 'Model';
 $_['column_category']        = 'Category';
+$_['column_manufacturer']        = 'Manufacturer';
 $_['column_image']           = 'Image';
 $_['column_price']           = 'Price';
 $_['column_quantity']        = 'Quantity';
@@ -102,4 +103,11 @@ $_['error_warning']          = 'Warning: Please check the form carefully for err
 $_['error_permission']       = 'Warning: You do not have permission to modify products!';
 $_['error_name']             = 'Product Name must be greater than 3 and less than 255 characters!';
 $_['error_model']            = 'Product Model must be greater than 3 and less than 64 characters!';
+
+// Tab Log
+$_['column_table'] = 'Table Name';
+$_['column_field'] = 'Changed Field';
+$_['column_old'] = 'Old Value';
+$_['column_new'] = 'New Value';
+$_['column_date'] = 'Change Date';
 ?>

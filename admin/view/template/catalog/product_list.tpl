@@ -20,6 +20,7 @@
 						<th class="hidden-xs"><a href="<?php echo $sort_model; ?>"><?php echo $column_model; echo ($sort == 'pd.model') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_price; ?>"><?php echo $column_price; echo ($sort == 'p.price') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs" style="width:15%; "><a href="<?php echo $sort_category; ?>"><?php echo $column_category; echo ($sort == 'p2c.category') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs" style="width:15%; "><a href="<?php echo $sort_manufacturer; ?>"><?php echo $column_manufacturer; echo ($sort == 'p.manufacturer_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_quantity; ?>"><?php echo $column_quantity; echo ($sort == 'p.quantity') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'p.status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><?php echo $column_action; ?></th>
@@ -36,6 +37,12 @@
 							<option value="*">&ndash;</option>
 							<?php foreach ($categories as $category) { ?>
 							<option value="<?php echo $category['category_id']; ?>" <?php echo ($category['category_id']==$filter_category) ? 'selected' : ''; ?>><?php echo $category['name']; ?></option>
+							<?php } ?>
+						</select></td>
+						<td class="hidden-xs"><select name="filter_manufacturer" class="form-control">
+							<option value="*">&ndash;</option>
+							<?php foreach ($manufacturers as $manufacturer) { ?>
+							<option value="<?php echo $manufacturer['manufacturer_id']; ?>" <?php echo ($manufacturer['manufacturer_id']==$filter_manufacturer) ? 'selected' : ''; ?>><?php echo $manufacturer['name']; ?></option>
 							<?php } ?>
 						</select></td>
 						<td class="text-right hidden-xs"><input type="text" name="filter_quantity" value="<?php echo $filter_quantity; ?>" class="form-control text-right"></td>
@@ -75,6 +82,7 @@
 								echo $category['name'];
 							}
 						} ?></td>
+						<td class="hidden-xs"><?php echo $product['manufacturer'] ?></td>
 						<td class="text-right hidden-xs"><?php if ($product['quantity'] <= 0) { ?>
 							<b class="text-danger"><?php echo $product['quantity']; ?></b>
 							<?php } elseif ($product['quantity'] <= 5) { ?>
