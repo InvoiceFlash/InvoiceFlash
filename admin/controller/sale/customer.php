@@ -46,10 +46,6 @@ class ControllerSaleCustomer extends Controller {
 				$url .= '&filter_status=' . $this->request->get['filter_status'];
 			}
 
-			if (isset($this->request->get['filter_approved'])) {
-				$url .= '&filter_approved=' . $this->request->get['filter_approved'];
-			}
-
 			if (isset($this->request->get['filter_date_added'])) {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
@@ -105,10 +101,6 @@ class ControllerSaleCustomer extends Controller {
 
 			if (isset($this->request->get['filter_status'])) {
 				$url .= '&filter_status=' . $this->request->get['filter_status'];
-			}
-
-			if (isset($this->request->get['filter_approved'])) {
-				$url .= '&filter_approved=' . $this->request->get['filter_approved'];
 			}
 
 			if (isset($this->request->get['filter_date_added'])) {
@@ -170,77 +162,6 @@ class ControllerSaleCustomer extends Controller {
 				$url .= '&filter_status=' . $this->request->get['filter_status'];
 			}
 
-			if (isset($this->request->get['filter_approved'])) {
-				$url .= '&filter_approved=' . $this->request->get['filter_approved'];
-			}
-
-			if (isset($this->request->get['filter_date_added'])) {
-				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
-			}
-
-			if (isset($this->request->get['order'])) {
-				$url .= '&order=' . $this->request->get['order'];
-			}
-
-			if (isset($this->request->get['page'])) {
-				$url .= '&page=' . $this->request->get['page'];
-			}
-
-			$this->redirect($this->url->link('sale/customer', 'token=' . $this->session->data['token'] . $url, 'SSL'));
-		}
-
-		$this->getList();
-	}
-
-	public function approve() {
-		$this->language->load('sale/customer');
-
-		$this->document->setTitle($this->language->get('heading_title'));
-
-		$this->load->model('sale/customer');
-
-		if (!$this->user->hasPermission('modify', 'sale/customer')) {
-			$this->error['warning'] = $this->language->get('error_permission');
-		} elseif (isset($this->request->post['selected'])) {
-			$approved = 0;
-
-			foreach ($this->request->post['selected'] as $customer_id) {
-				$customer_info = $this->model_sale_customer->getCustomer($customer_id);
-
-				if ($customer_info && !$customer_info['approved']) {
-					$this->model_sale_customer->approve($customer_id);
-					$approved++;
-				}
-			} 
-
-			$this->session->data['success'] = sprintf($this->language->get('text_approved'), $approved);
-
-			$url = '';
-
-			if (isset($this->request->get['filter_company'])) {
-				$url .= '&filter_company=' . $this->request->get['filter_company'];
-			}
-
-			if (isset($this->request->get['filter_telephone'])) {
-				$url .= '&filter_telephone=' . $this->request->get['filter_telephone'];
-			}
-
-			if (isset($this->request->get['filter_email'])) {
-				$url .= '&filter_email=' . $this->request->get['filter_email'];
-			}
-
-			if (isset($this->request->get['filter_customer_group_id'])) {
-				$url .= '&filter_customer_group_id=' . $this->request->get['filter_customer_group_id'];
-			}
-
-			if (isset($this->request->get['filter_status'])) {
-				$url .= '&filter_status=' . $this->request->get['filter_status'];
-			}
-
-			if (isset($this->request->get['filter_approved'])) {
-				$url .= '&filter_approved=' . $this->request->get['filter_approved'];
-			}
-
 			if (isset($this->request->get['filter_date_added'])) {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
@@ -290,12 +211,6 @@ class ControllerSaleCustomer extends Controller {
 			$filter_status = null;
 		}		
 
-		if (isset($this->request->get['filter_approved'])) {
-			$filter_approved = $this->request->get['filter_approved'];
-		} else {
-			$filter_approved = null;
-		}
-		
 		if (isset($this->request->get['filter_date_added'])) {
 			$filter_date_added = $this->request->get['filter_date_added'];
 		} else {
@@ -342,10 +257,6 @@ class ControllerSaleCustomer extends Controller {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
-		if (isset($this->request->get['filter_approved'])) {
-			$url .= '&filter_approved=' . $this->request->get['filter_approved'];
-		}
-
 		if (isset($this->request->get['filter_date_added'])) {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
@@ -376,7 +287,6 @@ class ControllerSaleCustomer extends Controller {
 			'separator' => ' :: '
 		);
 
-		$this->data['approve'] = $this->url->link('sale/customer/approve', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['insert'] = $this->url->link('sale/customer/insert', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('sale/customer/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
@@ -388,7 +298,6 @@ class ControllerSaleCustomer extends Controller {
 			'filter_email'             => $filter_email, 
 			'filter_customer_group_id' => $filter_customer_group_id, 
 			'filter_status'            => $filter_status, 
-			'filter_approved'          => $filter_approved, 
 			'filter_date_added'        => $filter_date_added,
 			'sort'                     => $sort,
 			'order'                    => $order,
@@ -415,7 +324,6 @@ class ControllerSaleCustomer extends Controller {
 				'email'          => $result['email'],
 				'customer_group' => $result['customer_group'],
 				'status'         => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
-				'approved'       => ($result['approved'] ? $this->language->get('text_yes') : $this->language->get('text_no')),
 				'ip'             => $result['ip'],
 				'date_added'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'selected'       => isset($this->request->post['selected']) && in_array($result['customer_id'], $this->request->post['selected']),
@@ -439,11 +347,9 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['column_email'] = $this->language->get('column_email');
 		$this->data['column_customer_group'] = $this->language->get('column_customer_group');
 		$this->data['column_status'] = $this->language->get('column_status');
-		$this->data['column_approved'] = $this->language->get('column_approved');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
 		$this->data['column_action'] = $this->language->get('column_action');	
 
-		$this->data['button_approve'] = $this->language->get('button_approve');
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
@@ -486,10 +392,6 @@ class ControllerSaleCustomer extends Controller {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
 
-		if (isset($this->request->get['filter_approved'])) {
-			$url .= '&filter_approved=' . $this->request->get['filter_approved'];
-		}
-
 		if (isset($this->request->get['filter_date_added'])) {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
@@ -509,7 +411,6 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['sort_email'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=c.email' . $url, 'SSL');
 		$this->data['sort_customer_group'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=customer_group' . $url, 'SSL');
 		$this->data['sort_status'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=c.status' . $url, 'SSL');
-		$this->data['sort_approved'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=c.approved' . $url, 'SSL');
         $this->data['sort_date_added'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . '&sort=c.date_added' . $url, 'SSL');
         
         $url = '';
@@ -532,10 +433,6 @@ class ControllerSaleCustomer extends Controller {
 
 		if (isset($this->request->get['filter_status'])) {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
-		}
-
-		if (isset($this->request->get['filter_approved'])) {
-			$url .= '&filter_approved=' . $this->request->get['filter_approved'];
 		}
 
 		if (isset($this->request->get['filter_date_added'])) {
@@ -564,7 +461,6 @@ class ControllerSaleCustomer extends Controller {
         $this->data['filter_email'] = $filter_email;
         $this->data['filter_customer_group_id'] = $filter_customer_group_id;
         $this->data['filter_status'] = $filter_status;
-        $this->data['filter_approved'] = $filter_approved;
         $this->data['filter_date_added'] = $filter_date_added;
 
         $this->load->model('sale/customer_group');
@@ -809,10 +705,6 @@ class ControllerSaleCustomer extends Controller {
 		if (isset($this->request->get['filter_status'])) {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
-
-		if (isset($this->request->get['filter_approved'])) {
-			$url .= '&filter_approved=' . $this->request->get['filter_approved'];
-		}	
 
 		if (isset($this->request->get['filter_date_added'])) {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
@@ -2199,47 +2091,52 @@ class ControllerSaleCustomer extends Controller {
 		$this->language->load('sale/customer');
 		$json = array();
 		
-		if ($this->request->post['to']=='' || filter_var($this->request->post['to'], FILTER_VALIDATE_EMAIL)==false) {
-			$json['error']['to'] = $this->language->get('error_to');
-		} 
+		if ($this->user->hasPermission('modify', 'catalog/mail')) {
 
-		if ($this->request->post['subject']=='') {
-			$json['error']['subject'] = $this->language->get('error_subject');
-		}
+			if ($this->request->post['to']=='' || filter_var($this->request->post['to'], FILTER_VALIDATE_EMAIL)==false) {
+				$json['error']['to'] = $this->language->get('error_to');
+			} 
 
-		if ($this->request->post['message']=='') {
-			$json['error']['message'] = $this->language->get('error_message');
-		}
-
-		if(empty($json['error'])){
-			$data['customer_id'] = $this->request->get['customer_id'];
-			$data['potential_id'] = 0;
-			$data['supplier_id'] = 0;
-			
-			$data['to'] = $this->request->post['to'];
-			$data['subject'] = $this->request->post['subject'];
-
-			$data['text'] = $this->request->post['message'];
-			$data['code'] = md5($this->request->post['message']);
-			
-			$data['file'] = '';
-			if (is_file($this->request->post['filename'])){
-				$data['file'] = DIR_DOWNLOAD . $this->request->post['filename'];
-				
-				$newName = substr($data['file'], 0, strripos($data['file'], '.'));
-				
-				if (rename($data['file'], $newName)) {
-					$data['file'] = $newName;
-				}
+			if ($this->request->post['subject']=='') {
+				$json['error']['subject'] = $this->language->get('error_subject');
 			}
-			
-			$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
-			
-			$this->load->model('catalog/mail');
-			
-			$this->model_catalog_mail->addMailSended($data);
-			
-			$json['success'] = $this->language->get('text_success_email');
+
+			if ($this->request->post['message']=='') {
+				$json['error']['message'] = $this->language->get('error_message');
+			}
+
+			if(empty($json['error'])){
+				$data['customer_id'] = $this->request->get['customer_id'];
+				$data['potential_id'] = 0;
+				$data['supplier_id'] = 0;
+				
+				$data['to'] = $this->request->post['to'];
+				$data['subject'] = $this->request->post['subject'];
+
+				$data['text'] = $this->request->post['message'];
+				$data['code'] = md5($this->request->post['message']);
+				
+				$data['file'] = '';
+				if (is_file($this->request->post['filename'])){
+					$data['file'] = DIR_DOWNLOAD . $this->request->post['filename'];
+					
+					$newName = substr($data['file'], 0, strripos($data['file'], '.'));
+					
+					if (rename($data['file'], $newName)) {
+						$data['file'] = $newName;
+					}
+				}
+				
+				$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+				
+				$this->load->model('catalog/mail');
+				
+				$this->model_catalog_mail->addMailSended($data);
+				
+				$json['success'] = $this->language->get('text_success_email');
+			}
+		} else {
+			$json['error']['permission'] = $this->language->get('error_permission_email');
 		}
 		
 		$this->response->setOutput(json_encode($json));

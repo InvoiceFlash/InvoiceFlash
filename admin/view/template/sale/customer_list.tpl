@@ -4,13 +4,12 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-user"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button type="submit" form="form" class="btn btn-success btn-spacer"><i class="fa fa-check"></i><span class="hidden-xs"> <?php echo $button_approve; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>
 	<div class="panel-body">
-		<form class="form-inline" action="<?php echo $approve; ?>" method="post" enctype="multipart/form-data" id="form">
+		<form class="form-inline" method="post" enctype="multipart/form-data" id="form">
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
@@ -21,7 +20,6 @@
 						<th><a href="<?php echo $sort_telephone; ?>"><?php echo $column_telephone; echo ($sort == 'telephone') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_customer_group; ?>"><?php echo $column_customer_group; echo ($sort == 'customer_group') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'c.status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_approved; ?>"><?php echo $column_approved; echo ($sort == 'c.approved') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'c.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
 					</tr>
@@ -55,19 +53,6 @@
 							<option value="0"><?php echo $text_disabled; ?></option>
 							<?php } ?>
 						</select></td>
-						<td class="hidden-xs"><select name="filter_approved" class="form-control">
-							<option value="*">&ndash;</option>
-							<?php if ($filter_approved) { ?>
-							<option value="1" selected=""><?php echo $text_yes; ?></option>
-							<?php } else { ?>
-							<option value="1"><?php echo $text_yes; ?></option>
-							<?php } ?>
-							<?php if (!is_null($filter_approved) && !$filter_approved) { ?>
-							<option value="0" selected=""><?php echo $text_no; ?></option>
-							<?php } else { ?>
-							<option value="0"><?php echo $text_no; ?></option>
-							<?php } ?>
-						</select></td>
 						<td class="hidden-xs"><div class="input-group">
 							<input type="text" name="filter_date_added" class="form-control date"/>
 							<div class="input-group-append">
@@ -89,8 +74,6 @@
 						<td><?php echo $customer['telephone']; ?></td>
 						<td class="hidden-xs"><?php echo $customer['customer_group']; ?></td>
 						<td class="hidden-xs text-<?php echo strtolower($customer['status']); ?>"><?php echo $customer['status']; ?></td>
-						<td class="hidden-xs"><?php echo $customer['approved']; ?></td>
-						<!-- <td class="visible-lg"><?php echo $customer['ip']; ?></td> -->
 						<td class="hidden-xs"><?php echo $customer['date_added']; ?></td>
 					 	<td class="text-right"><?php foreach ($customer['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>

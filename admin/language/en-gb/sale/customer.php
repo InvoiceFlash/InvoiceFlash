@@ -7,7 +7,6 @@ $_['heading_contact']		= 'Customer Contact';
 // Text
 $_['text_success']          = 'Success: You have modified customers!';
 $_['text_default']          = 'Default';
-$_['text_approved']         = 'You have approved %s accounts!';
 $_['text_wait']             = 'Please Wait!';
 $_['text_balance']          = 'Balance:';
 $_['text_add_ban_ip']       = 'Add Ban IP';
@@ -37,8 +36,6 @@ $_['column_customer_group'] = 'Customer Group';
 $_['column_status']         = 'Status'; 
 
 $_['column_login']          = 'Login into Store';
-
-$_['column_approved']       = 'Approved';
 
 $_['column_date_added']     = 'Date Added';
 
@@ -136,6 +133,7 @@ $_['text_paid']				= 'Paid Out:';
 $_['error_warning']         = 'Warning: Please check the form carefully for errors!';
 
 $_['error_permission']      = 'Warning: You do not have permission to modify customers!';
+$_['error_permission_email']      = 'Warning: You do not have permission to send emails!';
 
 $_['error_exists']          = 'Warning: E-Mail Address is already registered!';
 

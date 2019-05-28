@@ -8177,17 +8177,26 @@ CREATE TABLE `if_remittances_lines` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_log`;
-CREATE TABLE `if_log` (
-`log_id` INT(11) NOT NULL AUTO_INCREMENT,
-`user_id` INT(11) DEFAULT NULL,
-`username` VARCHAR(25) DEFAULT NULL,
-`value` TEXT,
-`date_added` DATETIME DEFAULT NULL,
-`table_name` TINYTEXT,
-`table_id` INT(11) DEFAULT NULL,
-PRIMARY KEY (`log_id`),
-KEY KEY_table_id (`table_id`)
-) ENGINE=MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+CREATE TABLE if_log (
+log_id int(11) NOT NULL AUTO_INCREMENT,
+table_name tinytext,
+field varchar(35) DEFAULT NULL,
+old_value text,
+new_value text,
+parent_table varchar(35) DEFAULT NULL,
+parent_table_id int(11) DEFAULT NULL,
+date_added datetime DEFAULT NULL,
+PRIMARY KEY (log_id)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_agent`;
+CREATE TABLE `if_agent` (
+  `agent_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`agent_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --

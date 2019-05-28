@@ -179,10 +179,6 @@ class ModelSaleCustomer extends Model {
 			$implode[] = "c.status = '" . (int)$data['filter_status'] . "'";
 		}	
 
-		if (isset($data['filter_approved']) && !is_null($data['filter_approved'])) {
-			$implode[] = "c.approved = '" . (int)$data['filter_approved'] . "'";
-		}	
-
 		if (!empty($data['filter_date_added'])) {
 			$implode[] = "DATE(c.date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
 		}
@@ -197,7 +193,6 @@ class ModelSaleCustomer extends Model {
 			'c.email',
 			'customer_group',
 			'c.status',
-			'c.approved',
 			'c.date_added'
 		);	
 
@@ -229,94 +224,6 @@ class ModelSaleCustomer extends Model {
 
 		return $query->rows;	
 	}
-
-	public function approve($customer_id) {
-
-		$customer_info = $this->getCustomer($customer_id);
-
-
-
-		if ($customer_info) {
-
-			$this->db->query("UPDATE " . DB_PREFIX . "customer SET approved = '1' WHERE customer_id = '" . (int)$customer_id . "'");
-
-
-
-			$this->language->load('mail/customer');
-
-
-
-			$this->load->model('setting/store');
-
-
-
-			$store_info = $this->model_setting_store->getStore($customer_info['store_id']);
-
-
-
-			if ($store_info) {
-
-				$store_name = $store_info['name'];
-
-				$store_url = $store_info['url'] . 'index.php?route=account/login';
-
-			} else {
-
-				$store_name = $this->config->get('config_name');
-
-				$store_url = HTTP_CATALOG . 'index.php?route=account/login';
-
-			}
-
-
-
-			$message  = sprintf($this->language->get('text_approve_welcome'), $store_name) . "\n\n";
-
-			$message .= $this->language->get('text_approve_login') . "\n";
-
-			$message .= $store_url . "\n\n";
-
-			$message .= $this->language->get('text_approve_services') . "\n\n";
-
-			$message .= $this->language->get('text_approve_thanks') . "\n";
-
-			$message .= $store_name;
-
-
-
-			$mail = new Mail();
-
-			$mail->protocol = $this->config->get('config_mail_protocol');
-
-			$mail->parameter = $this->config->get('config_mail_parameter');
-
-			$mail->hostname = $this->config->get('config_smtp_host');
-
-			$mail->username = $this->config->get('config_smtp_username');
-
-			$mail->password = $this->config->get('config_smtp_password');
-
-			$mail->port = $this->config->get('config_smtp_port');
-
-			$mail->timeout = $this->config->get('config_smtp_timeout');							
-
-			$mail->setTo($customer_info['email']);
-
-			$mail->setFrom($this->config->get('config_email'));
-
-			$mail->setSender($store_name);
-
-			$mail->setSubject(html_entity_decode(sprintf($this->language->get('text_approve_subject'), $store_name), ENT_QUOTES, 'UTF-8'));
-
-			$mail->setText(html_entity_decode($message, ENT_QUOTES, 'UTF-8'));
-
-			$mail->send();
-
-		}		
-
-	}
-
-
 
 	public function getAddress($address_id) {
 
@@ -509,14 +416,6 @@ class ModelSaleCustomer extends Model {
 
 
 
-		if (isset($data['filter_approved']) && !is_null($data['filter_approved'])) {
-
-			$implode[] = "approved = '" . (int)$data['filter_approved'] . "'";
-
-		}		
-
-
-
 		if (!empty($data['filter_date_added'])) {
 
 			$implode[] = "DATE(date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
@@ -534,18 +433,6 @@ class ModelSaleCustomer extends Model {
 
 
 		$query = $this->db->query($sql);
-
-
-
-		return $query->row['total'];
-
-	}
-
-
-
-	public function getTotalCustomersAwaitingApproval() {
-
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "customer WHERE status = '0' OR approved = '0'");
 
 
 
