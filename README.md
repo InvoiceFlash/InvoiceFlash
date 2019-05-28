@@ -11,7 +11,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 ### 0.0.5
 - [x] Mod SEPA SDD
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-- [ ] Mod Facturae
+- [x] Mod Facturae
 - [ ] Attributes
 - [x] Sales Agent
 - [ ] Status Order
@@ -21,7 +21,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Edit language
 - [x] Delivery
 - [x] Remittances
-- [x] Excel Import/Export
+- [x] Mod Excel Import/Export
 - [ ] More info on web
 - [ ] cron versus curl
 
