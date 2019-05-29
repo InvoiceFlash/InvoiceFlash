@@ -14,8 +14,9 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Edit language
 - [ ] More info on web
 - [ ] cron versus curl
+- [x] IBAN validator
 
-### 0.0.5
+### 0.0.5 (master) (In development.. Expected date: 06.30.19)
 - [x] Mod SEPA SDD
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
 - [x] Mod Facturae
@@ -23,10 +24,9 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [x] Sales Agent
 - [ ] Status Order
 
-### 0.0.4 (master) (In development.. Expected date: 05.30.19)
-- [x] Delivery
-- [x] Remittances
-- [x] Mod Excel Import/Export
+### 0.0.4 
+- Delivery
+- Remittances
 
 ### 0.0.3 
 - Orders
