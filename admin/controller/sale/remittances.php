@@ -12,54 +12,6 @@ class ControllerSaleRemittances extends Controller {
     	$this->getList();
 	}
 
-	public function generateC19() {
-		$this->load->language('sale/remittances');
-
-		$this->document->setTitle($this->language->get('heading_title'));
-
-		$this->load->model('sale/remittances');
-
-		$result = $this->model_sale_remittances->generate($this->request->get['remittance']);
-
-		if (is_file($result)) {
-			$this->session->data['success'] = $result;
-		} else {
-			$this->error['warning'] = $result;
-		}
-
-		$url = '';
-
-		if (isset($this->request->get['filter_remittance_id'])) {
-			$url .= '&filter_remittance_id=' . $this->request->get['filter_remittance_id'];
-		}
-
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . $this->request->get['filter_customer'];
-		}
-
-		if (isset($this->request->get['filter_total'])) {
-			$url .= '&filter_total=' . $this->request->get['filter_total'];
-		}
-
-		if (isset($this->request->get['filter_date_added'])) {
-			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
-		}
-
-		if (isset($this->request->get['sort'])) {
-			$url .= '&sort=' . $this->request->get['sort'];
-		}
-
-		if (isset($this->request->get['order'])) {
-			$url .= '&order=' . $this->request->get['order'];
-		}
-
-		if (isset($this->request->get['page'])) {
-			$url .= '&page=' . $this->request->get['page'];
-		}
-		
-		$this->getList();
-	}
-
 	public function delete() {
 		$this->load->language('sale/remittances');
 
@@ -78,10 +30,6 @@ class ControllerSaleRemittances extends Controller {
 
 			if (isset($this->request->get['filter_remittance_id'])) {
 				$url .= '&filter_remittance_id=' . $this->request->get['filter_remittance_id'];
-			}
-
-			if (isset($this->request->get['filter_customer'])) {
-				$url .= '&filter_customer=' . $this->request->get['filter_customer'];
 			}
 
 			if (isset($this->request->get['filter_total'])) {
@@ -113,11 +61,6 @@ class ControllerSaleRemittances extends Controller {
 			$filter_remittance_id = $this->request->get['filter_remittance_id'];
 		} else {
 			$filter_remittance_id = null;
-		}
-		if (isset($this->request->get['filter_customer'])) {
-			$filter_customer = $this->request->get['filter_customer'];
-		} else {
-			$filter_customer = null;
 		}
 		if (isset($this->request->get['filter_total'])) {
 			$filter_total = $this->request->get['filter_total'];
@@ -152,10 +95,6 @@ class ControllerSaleRemittances extends Controller {
 
 		if (isset($this->request->get['filter_remittance_id'])) {
 			$url .= '&filter_remittance_id=' . $this->request->get['filter_remittance_id'];
-		}
-
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . $this->request->get['filter_customer'];
 		}
 
 		if (isset($this->request->get['filter_total'])) {
@@ -193,14 +132,12 @@ class ControllerSaleRemittances extends Controller {
 		);
 
 		$this->data['printRemittances'] = $this->url->link('sale/remittances/printRemittances', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['generate'] = $this->url->link('sale/remittances/generateC19', 'token=' .  $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('sale/remittances/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		$this->data['remittances'] = array();
 
 		$data = array(
 			'filter_remittance_id' 	=> $filter_remittance_id,
-			'filter_customer'		=> $filter_customer,
 			'filter_total' 			=> $filter_total,
 			'filter_date_added' 	=> $filter_date_added,
 			'sort' 					=> $sort,
@@ -222,7 +159,6 @@ class ControllerSaleRemittances extends Controller {
 
 			$this->data['remittances'][] = array(
 				'remittance_id'		=> $result['remittance_id'],
-				'customer'			=> $result['customer'],
 				'total'				=> $this->currency->format($result['total']),
 				'date_added'		=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['remittance_id'], $this->request->post['selected']),
@@ -238,13 +174,11 @@ class ControllerSaleRemittances extends Controller {
 		$this->data['text_missing'] = $this->language->get('text_missing');
 
 		$this->data['column_remittance_id'] = $this->language->get('column_remittance_id');
-    	$this->data['column_customer'] = $this->language->get('column_customer');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
 		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['button_remittance'] = $this->language->get('button_remittance');
-		$this->data['button_generate'] = $this->language->get('button_generate');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 
@@ -270,10 +204,6 @@ class ControllerSaleRemittances extends Controller {
 			$url .= '&filter_remittance_id=' . $this->request->get['filter_remittance_id'];
 		}
 		
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . urlencode(html_entity_decode($this->request->get['filter_customer'], ENT_QUOTES, 'UTF-8'));
-		}
-					
 		if (isset($this->request->get['filter_total'])) {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
 		}
@@ -293,7 +223,6 @@ class ControllerSaleRemittances extends Controller {
 		}
 
 		$this->data['sort_remittance_id'] = $this->url->link('sale/remittances', 'token=' . $this->session->data['token'] . '&sort=r.remittance_id' . $url, 'SSL');
-		$this->data['sort_customer'] = $this->url->link('sale/remittances', 'token=' . $this->session->data['token'] . '&sort=company' . $url, 'SSL');
 		$this->data['sort_total'] = $this->url->link('sale/remittances', 'token=' . $this->session->data['token'] . '&sort=r.amount' . $url, 'SSL');
 		$this->data['sort_date_added'] = $this->url->link('sale/remittances', 'token=' . $this->session->data['token'] . '&sort=r.date_added' . $url, 'SSL');
 		
@@ -301,10 +230,6 @@ class ControllerSaleRemittances extends Controller {
 
 		if (isset($this->request->get['filter_remittance_id'])) {
 			$url .= '&filter_remittance_id=' . $this->request->get['filter_remittance_id'];
-		}
-
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . $this->request->get['filter_customer'];
 		}
 
 		if (isset($this->request->get['filter_total'])) {
@@ -333,7 +258,6 @@ class ControllerSaleRemittances extends Controller {
 		$this->data['pagination'] = $pagination->render();
 
 		$this->data['filter_remittance_id'] = $filter_remittance_id;
-		$this->data['filter_customer'] = $filter_customer;
 		$this->data['filter_total'] = $filter_total;
 		$this->data['filter_date_added'] = $filter_date_added;
 		
@@ -352,34 +276,6 @@ class ControllerSaleRemittances extends Controller {
 
 		$this->response->setOutput($this->render());
 
-	}
-
-	public function validateGenerate() {
-		if (!$this->user->hasPermission('modify', 'sale/remittances')) {
-			$this->error['warning'] = $this->language->get('error_permission');
-    	}
-
-		$orders = array();
-		
-		if (isset($this->request->post['selected'])) {
-			$orders = $this->request->post['selected'];
-		} elseif (isset($this->request->get['order_id'])) {
-			$orders[] = $this->request->get['order_id'];
-		}
-		
-		if (!isset($this->request->post['selected'])) {
-			$this->error['warning'] = 'Error';
-		}
-
-		if ($this->error && !isset($this->error['warning'])) {
-			$this->error['warning'] = $this->language->get('error_warning');
-		}
-		
-		if (!$this->error) {
-	  		return true;
-		} else {
-	  		return false;
-		}
 	}
 
 	public function validateDelete() {
@@ -497,13 +393,6 @@ class ControllerSaleRemittances extends Controller {
 			$filter_remittance_id = $this->request->get['filter_remittance_id'];
 		} else {
 			$filter_remittance_id = '';
-		}
-
-		if (isset($this->request->get['filter_customer'])) {
-			$url .= '&filter_customer=' . $this->request->get['filter_customer'];
-			$filter_customer = $this->request->get['filter_customer'];
-		} else {
-			$filter_customer = '';
 		}
 
 		if (isset($this->request->get['filter_total'])) {

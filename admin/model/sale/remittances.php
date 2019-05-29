@@ -34,15 +34,10 @@ class ModelSaleRemittances extends Model {
 	public function getTotalRemittances($data = array()) {
 		$sql = "SELECT COUNT(*) AS total
 		FROM `" . DB_PREFIX . "remittances` r
-		LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = (SELECT invoice_id FROM `" . DB_PREFIX . "receipt` WHERE remittance_id = r.remittance_id LIMIT 1)
-		LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = i.customer_id";
+		LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = (SELECT invoice_id FROM `" . DB_PREFIX . "receipt` WHERE remittance_id = r.remittance_id LIMIT 1)";
 
 		if (isset($data['filter_remittance_id'])) {
 			$sql .= " AND r.remittance_id = '" . (int)$data['filter_remittance_id'] . "'";
-		}
-
-		if (isset($data['filter_customer'])) {
-			$sql .= " AND c.company = '" . (int)$data['filter_customer'] . "'";
 		}
 
 		if (isset($data['filter_total'])) {
@@ -59,17 +54,12 @@ class ModelSaleRemittances extends Model {
 	}
 	
 	public function getRemittances($data = array()) {
-		$sql = "SELECT r.remittance_id, c.company AS customer, r.amount AS total, r.date_added
+		$sql = "SELECT r.remittance_id, r.amount AS total, r.date_added
 		FROM `" . DB_PREFIX . "remittances` r
-		LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = (SELECT invoice_id FROM `" . DB_PREFIX . "receipt` WHERE remittance_id = r.remittance_id LIMIT 1)
-		LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = i.customer_id WHERE 1 = 1";
+		LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = (SELECT invoice_id FROM `" . DB_PREFIX . "receipt` WHERE remittance_id = r.remittance_id LIMIT 1) WHERE 1 = 1";
 
 		if (isset($data['filter_remittance_id'])) {
 			$sql .= " AND r.remittance_id = '" . (int)$data['filter_remittance_id'] . "'";
-		}
-
-		if (isset($data['filter_customer'])) {
-			$sql .= " AND c.company = '" . (int)$data['filter_customer'] . "'";
 		}
 
 		if (isset($data['filter_total'])) {
@@ -82,7 +72,6 @@ class ModelSaleRemittances extends Model {
 				 
 		$sort_data = array(
 			'r.remittance_id',
-			'c.company',
 			'r.amount',
 			'r.date_added'
 		);
@@ -121,89 +110,7 @@ class ModelSaleRemittances extends Model {
 
 		return $query->row;
 	}
-	
-	public function generate($data) {
-		//$data = id de la remesa
-		require_once(DIR_SYSTEM . 'vendor/classes/sepa/sepasdd.php');
 		
-		// Sample
-		// 
-		// $config = array(
-		// 	'name' => "Test",
-		// 	'IBAN' => "NL50BANK1234567890",
-		// 	'BIC' => "BANNKL2A",
-		// 	'batch' => true,
-		// 	'creditor_id' => "0000",
-		// 	'currency' => "EUR"
-		// );
-
-		// Configuracion del Presenttador
-		$config = array(
-			'name' => $this->config->get('config_title'),
-			'IBAN' => $this->config->get('iban'),
-			'BIC' => $this->config->get('bic'),
-			'batch' => true,
-			'creditor_id' => $this->config->get('creditor_id'),
-			'currency' => $this->config->get('config_currency')
-		);
-
-		// Inicializacion de la clase SEPA
-		try{
-		    $sepa = new SEPASDD($config);
-
-		    $sql = "SELECT rl.amount, rl.receipt_id, rl.date_vto, c.company, i.customer_id, c.bank_cc, c.bic FROM " . DB_PREFIX . "invoice i LEFT JOIN `". DB_PREFIX . "remittances_lines` rl ON rl.receipt_id = i.invoice_id LEFT JOIN " . DB_PREFIX . "fl_customers c ON c.customer_id = i.customer_id WHERE rl.remittance_id = " . (int)$data;
-
-			$query = $this->db->query($sql);
-
-			$payment = array();
-
-			if ($query->row) {
-				// Datos de la remesa
-
-				$amount = round($query->row['amount']*100);
-				$date = date('Y-m-d', strtotime($query->row['date_vto']));
-
-				$payment = array(
-					"name" => $query->row['company'],
-		            "IBAN" => $query->row['bank_cc'],
-		            "BIC" => $query->row['bic'],
-		            "amount" => $amount,
-		            "type" => "FRST",
-		            "collection_date" => date('Y-m-d'),
-		            "mandate_id" => $query->row['receipt_id'],
-		            "mandate_date" => $date,
-		            "description" => "Payment"
-				);
-			}
-
-			// Añadir al archivo
-			if ($payment) {
-				try{
-				    $endToEndId = $sepa->addPayment($payment);
-				
-					// Save the file
-					try{
-					    $result = $sepa->save();
-
-					    $archivo_final = DIR_DOWNLOAD . 'sepa_' . date('dmY') . '.xml';
-
-					    $file = fopen($archivo_final, "a");
-					    fwrite($file, $result);
-					    fclose($file);
-					    return $archivo_final;
-					}catch(Exception $e){
-					    return $e->getMessage();
-					}
-				}catch(Exception $e){
-				    return $e->getMessage();
-				}
-
-			}
-		}catch(Exception $e){
-		    return $e->getMessage();
-		}
-			
-	}	
 	
 }
 ?>

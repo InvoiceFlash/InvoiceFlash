@@ -8,6 +8,13 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</b></p>
 
 ---
+### 0.0.6
+- [ ] Change price articles on invoice
+- [ ] API
+- [ ] Edit language
+- [ ] More info on web
+- [ ] cron versus curl
+
 ### 0.0.5
 - [x] Mod SEPA SDD
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
@@ -17,13 +24,9 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Status Order
 
 ### 0.0.4 (master) (In development.. Expected date: 05.30.19)
-- [ ] API
-- [ ] Edit language
 - [x] Delivery
 - [x] Remittances
 - [x] Mod Excel Import/Export
-- [ ] More info on web
-- [ ] cron versus curl
 
 ### 0.0.3 
 - Orders
