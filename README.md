@@ -14,15 +14,16 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] Edit language
 - [ ] More info on web
 - [ ] cron versus curl
+- [ ] Mod Purchases
 - [x] IBAN validator
 
 ### 0.0.5 (master) (In development.. Expected date: 06.30.19)
 - [x] Mod SEPA SDD
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
 - [x] Mod Facturae
-- [ ] Attributes
+- [x] Attributes
 - [x] Sales Agent
-- [ ] Status Order
+- [x] Status Order
 
 ### 0.0.4 
 - Delivery

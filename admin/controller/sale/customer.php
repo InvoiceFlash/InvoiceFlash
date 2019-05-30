@@ -487,14 +487,16 @@ class ControllerSaleCustomer extends Controller {
 	protected function getForm() {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
-		$this->data['text_enabled'] = $this->language->get('text_enabled');
-		$this->data['text_disabled'] = $this->language->get('text_disabled');
 		$this->data['text_select'] = $this->language->get('text_select');
 		$this->data['text_none'] = $this->language->get('text_none');
 		$this->data['text_wait'] = $this->language->get('text_wait');
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 		$this->data['text_add_ban_ip'] = $this->language->get('text_add_ban_ip');
 		$this->data['text_remove_ban_ip'] = $this->language->get('text_remove_ban_ip');
+		$this->data['text_valid'] = $this->language->get('text_valid');
+		$this->data['text_no_valid'] = $this->language->get('text_no_valid');
+		$this->data['text_yes'] = $this->language->get('text_yes');
+		$this->data['text_no'] = $this->language->get('text_no');
 
 		$this->data['column_order'] = $this->language->get('column_order');
 		$this->data['column_email'] = $this->language->get('column_email');
@@ -536,6 +538,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_amount'] = $this->language->get('entry_amount');
 		$this->data['entry_points'] = $this->language->get('entry_points');
 		$this->data['entry_nif'] = $this->language->get('entry_nif');
+		$this->data['entry_digital_invoice'] = $this->language->get('entry_digital_invoice');
 
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
@@ -545,6 +548,9 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['text_fiscal'] = $this->language->get('text_fiscal');
 		$this->data['text_receptor'] = $this->language->get('text_receptor');
 		$this->data['text_paid'] = $this->language->get('text_paid');
+		$this->data['text_disabled'] = $this->language->get('text_disabled');
+		$this->data['text_disabled'] = $this->language->get('text_disabled');
+		$this->data['text_enabled'] = $this->language->get('text_enabled');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -1087,6 +1093,14 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['efaccapa'] = $customer_info['efaccapa'];
 		} else {
 			$this->data['efaccapa'] = '';
+		}
+
+		if (isset($this->request->post['digital_invoice'])) {
+			$this->data['digital_invoice'] = $this->request->post['digital_invoice'];
+		} elseif (!empty($customer_info)) {
+			$this->data['digital_invoice'] = $customer_info['digital_invoice'];
+		} else {
+			$this->data['digital_invoice'] = 0;
 		}
 		
 		$this->load->model('sale/customer_group');

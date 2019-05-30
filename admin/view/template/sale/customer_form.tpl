@@ -170,10 +170,12 @@
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_bank_cc; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="bank_cc" value="<?php echo $bank_cc; ?>" class="form-control" >
-										</div>										
+										<div class="col-sm-6 input-group">
+											<input type="text" name="bank_cc" id="bank_cc" value="<?php echo $bank_cc; ?>" class="form-control" >
+											<div class="input-group-append"><button type="button" class="btn btn-info" id="validate-cc">Validate</button></div>
+										</div>
 									</div>
+									<div id="iban-res" class="offset-sm-10 offset-md-2"></div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_bic; ?></label>
 										<div class="col-sm-6">
@@ -196,6 +198,16 @@
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_paid ?></label>
 										<div class="col-sm-6">
 											<input type="text" name="efaccapa" value="<?php echo $efaccapa ?>" class="form-control">
+										</div>
+									</div>
+									 <div class="form-group row">
+										<label for="digital_invoice" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_digital_invoice; ?></label>
+										<div class="toggle-flip">
+											<label>
+												<input type="hidden" name="digital_invoice" value="<?php echo $digital_invoice; ?>"> 
+												<input type="checkbox" <?php echo ($digital_invoice) ? 'checked' : ''; ?>>
+												<span class="flip-indecator" data-toggle-on="<?php echo $text_yes ?>" data-toggle-off="<?php echo $text_no ?>"></span>
+											</label>
 										</div>
 									</div>
 								</div>
@@ -1096,6 +1108,10 @@ $('#send').on('click',function(e){
 				if(json['error']['to']){ $('#error-to').html(json['error']['to']); }
 				if(json['error']['subject']){ $('#error-subject').html(json['error']['subject']); }
 				if(json['error']['message']){ $('#error-message').html(json['error']['message']); }
+				if(json['error']['permission']) {
+					$('#EmailModal').modal('hide');
+					alertMessage('danger', json['error']['permission']);
+				}
 			}
 			if(json['success']){
 				$('#EmailModal').modal('hide');
@@ -1103,6 +1119,17 @@ $('#send').on('click',function(e){
 			}
 		}
 	});
+});
+</script>
+<script type="text/javascript" src="view/javascript/iban.js"></script>
+<script>
+$('#validate-cc').click(function(){
+	var valid = IBAN.isValid($('#bank_cc').val());
+	if (valid) {
+		$('#iban-res').html('<p class="text-success"><?php echo $text_valid; ?></p>');
+	} else {
+		$('#iban-res').html('<p class="text-danger"><?php echo $text_no_valid; ?></p>');
+	}
 });
 </script>
 <?php echo $footer; ?>
