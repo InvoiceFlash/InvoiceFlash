@@ -992,9 +992,9 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 		if (isset($this->request->post['price'])) {
-			$this->data['price'] = $this->request->post['price'];
+			$this->data['price'] = $this->currency->format($this->request->post['price']);
 		} elseif (!empty($product_info)) {
-			$this->data['price'] = $product_info['price'];
+			$this->data['price'] = $this->currency->format($product_info['price']);
 		} else {
 			$this->data['price'] = '';
 		}
