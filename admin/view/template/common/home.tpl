@@ -54,16 +54,16 @@
 	<div class="panel-body">
 		<div class="card-group d-flex justify-content-center">
 			<div class="card">
-				<a href="<?php echo $add_customer; ?>"><h5 class="buton"><i class="fas fa-user"></i> <span class="hidden-xs"><?php echo $text_add_customer; ?>	</span></h5></a>
+				<a href="<?php echo $add_customer; ?>"><h5 class="buton"><i class="fas fa-user"></i> <span class="hidden-xs"><?php echo $text_add_customer; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<a href="<?php echo $new_quote; ?>"><h5 class="buton"><i class="fas fa-edit"></i> <span class="hidden-xs"><?php echo $text_new_quote; ?>	</span></h5></a>
+				<a href="<?php echo $new_quote; ?>"><h5 class="buton"><i class="fas fa-edit"></i> <span class="hidden-xs"><?php echo $text_new_quote; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<a href="<?php echo $new_invoice; ?>"><h5 class="buton"><i class="far fa-file-alt"></i> <span class="hidden-xs"><?php echo $text_new_invoice; ?>	</span></h5></a>
+				<a href="<?php echo $new_invoice; ?>"><h5 class="buton"><i class="far fa-file-alt"></i> <span class="hidden-xs"><?php echo $text_new_invoice; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<h5 class="buton"><i class="fas fa-exclamation-triangle"></i> <span class="hidden-xs"><?php echo $text_comming; ?>	</span></h5>
+				<a href="<?php echo $add_product; ?>"><h5 class="buton"><i class="fas fa-box"></i> <span class="hidden-xs"><?php echo $text_add_product; ?></span></h5></a>
 			</div>
 		</div>
 	</div>

@@ -45,11 +45,12 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_add_customer'] = $this->language->get('text_add_customer');
 		$this->data['text_new_quote'] = $this->language->get('text_new_quote');
 		$this->data['text_new_invoice'] = $this->language->get('text_new_invoice');
-		$this->data['text_comming'] = $this->language->get('text_comming');
+		$this->data['text_add_product'] = $this->language->get('text_add_product');
 
 		$this->data['add_customer'] = $this->url->link('sale/customer/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['new_quote'] = $this->url->link('sale/quote/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['new_invoice'] = $this->url->link('sale/invoice/insert', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['add_product'] = $this->url->link('catalog/product/insert', 'token=' . $this->session->data['token'], 'SSL');
 
 		// Check javascript
 		$this->data['error_javascript'] = $this->language->get('error_javascript');

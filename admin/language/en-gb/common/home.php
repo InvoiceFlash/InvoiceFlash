@@ -52,5 +52,5 @@ $_['text_actions']                  = 'Quick Actions';
 $_['text_add_customer']             = 'Add Customer';
 $_['text_new_quote']                = 'Create Quote';
 $_['text_new_invoice']              = 'Create Invoice';
-$_['text_comming']                  = 'Comming soon...';
+$_['text_add_product']              = 'Add Product';
 ?>

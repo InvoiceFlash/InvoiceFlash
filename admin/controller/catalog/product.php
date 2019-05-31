@@ -1406,6 +1406,8 @@ class ControllerCatalogProduct extends Controller {
 					'date' => $res['date_added']
 				);
 			}
+		} else {
+			$this->data['product_id'] = 0;
 		}
 
 		if (isset($this->request->post['points'])) {
