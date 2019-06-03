@@ -63,7 +63,7 @@
 				<a href="<?php echo $new_invoice; ?>"><h5 class="buton"><i class="far fa-file-alt"></i> <span class="hidden-xs"><?php echo $text_new_invoice; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<a href="<?php echo $add_product; ?>"><h5 class="buton"><i class="fas fa-box"></i> <span class="hidden-xs"><?php echo $text_add_product; ?></span></h5></a>
+				<a href="<?php echo $add_product; ?>"><h5 class="buton"><i class="fas fa-box-open"></i> <span class="hidden-xs"><?php echo $text_add_product; ?></span></h5></a>
 			</div>
 		</div>
 	</div>
