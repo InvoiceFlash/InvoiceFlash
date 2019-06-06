@@ -2,7 +2,7 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><i class="hidden-xs fa fa-edit"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button onclick="validate();" class="btn btn-success btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_quote; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>

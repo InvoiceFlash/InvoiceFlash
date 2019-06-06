@@ -1,7 +1,7 @@
 <?php echo $header; ?>
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
-	<?php $fa='clipboard'; include DIR_TEMPLATE . 'common/template-title-form.tpl'; ?>
+	<?php $fa='edit'; include DIR_TEMPLATE . 'common/template-title-form.tpl'; ?>
 	<div class="panel-body">
 		<form action="<?php echo $action; ?>" method="post" onsubmit="return validateForm();" class="form-inline" enctype="multipart/form-data" id="form">
 			<div class="card" id="tab-customer" style="width:100%;">
@@ -69,7 +69,7 @@
 								<input type="hidden" name="shipping_method" value="<?php echo $shipping_method; ?>">
 								<input type="hidden" name="shipping_code" value="<?php echo $shipping_code; ?>">
 								<?php if ($error_shipping_method) { ?>
-									<div class="help-block error"><?php echo $error_shipping_method; ?></div>
+									<div class="help-block text-danger"><?php echo $error_shipping_method; ?></div>
 								<?php } ?>
 							</div>
 						</div>
@@ -85,7 +85,7 @@
 								<input type="hidden" name="payment_method" value="<?php echo $payment_method; ?>">
 								<input type="hidden" name="payment_code" value="<?php echo $payment_code; ?>">
 								<?php if ($error_payment_method) { ?>
-									<div class="help-block error"><?php echo $error_payment_method; ?></div>
+									<div class="help-block text-danger"><?php echo $error_payment_method; ?></div>
 								<?php } ?>
 							</div>
 						</div>
@@ -261,7 +261,7 @@
 											<div class="control-field col-sm-8">
 												<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
 												<?php if ($error_email) { ?>
-													<div class="help-block error"><?php echo $error_email; ?></div>
+													<div class="help-block text-danger"><?php echo $error_email; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -270,7 +270,7 @@
 											<div class="control-field col-sm-8">
 												<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 												<?php if ($error_telephone) { ?>
-													<div class="help-block error"><?php echo $error_telephone; ?></div>
+													<div class="help-block text-danger"><?php echo $error_telephone; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -306,7 +306,7 @@
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_address_1" value="<?php echo $payment_address_1; ?>" class="form-control">
 												<?php if ($error_payment_address_1) { ?>
-													<div class="help-block error"><?php echo $error_payment_address_1; ?></div>
+													<div class="help-block text-danger"><?php echo $error_payment_address_1; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -321,7 +321,7 @@
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_city" value="<?php echo $payment_city; ?>" class="form-control">
 												<?php if ($error_payment_city) { ?>
-													<div class="help-block error"><?php echo $error_payment_city; ?></div>
+													<div class="help-block text-danger"><?php echo $error_payment_city; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -330,7 +330,7 @@
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_postcode" value="<?php echo $payment_postcode; ?>" class="form-control">
 												<?php if ($error_payment_postcode) { ?>
-													<div class="help-block error"><?php echo $error_payment_postcode; ?></div>
+													<div class="help-block text-danger"><?php echo $error_payment_postcode; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -348,7 +348,7 @@
 													<?php } ?>
 												</select>
 												<?php if ($error_payment_country) { ?>
-													<div class="help-block error"><?php echo $error_payment_country; ?></div>
+													<div class="help-block text-danger"><?php echo $error_payment_country; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -357,7 +357,7 @@
 											<div class="control-field col-sm-8">
 												<select name="payment_zone_id" class="form-control"></select>
 												<?php if ($error_payment_zone) { ?>
-													<div class="help-block error"><?php echo $error_payment_zone; ?></div>
+													<div class="help-block text-danger"><?php echo $error_payment_zone; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -387,7 +387,7 @@
 											<div class="control-field col-sm-8">
 												<input type="text" name="shipping_address_1" value="<?php echo $shipping_address_1; ?>" class="form-control">
 												<?php if ($error_shipping_address_1) { ?>
-													<div class="help-block error"><?php echo $error_shipping_address_1; ?></div>
+													<div class="help-block text-danger"><?php echo $error_shipping_address_1; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -408,7 +408,7 @@
 											<div class="control-field col-sm-8">
 												<input type="text" name="shipping_postcode" value="<?php echo $shipping_postcode; ?>" class="form-control">
 												<?php if ($error_shipping_postcode) { ?>
-													<div class="help-block error"><?php echo $error_shipping_postcode; ?></div>
+													<div class="help-block text-danger"><?php echo $error_shipping_postcode; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -426,7 +426,7 @@
 													<?php } ?>
 												</select>
 												<?php if ($error_shipping_country) { ?>
-													<div class="help-block error"><?php echo $error_shipping_country; ?></div>
+													<div class="help-block text-danger"><?php echo $error_shipping_country; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -435,7 +435,7 @@
 											<div class="control-field col-sm-8">
 												<select name="shipping_zone_id" class="form-control"></select>
 												<?php if ($error_shipping_zone) { ?>
-													<div class="help-block error"><?php echo $error_shipping_zone; ?></div>
+													<div class="help-block text-danger"><?php echo $error_shipping_zone; ?></div>
 												<?php } ?>
 											</div>
 										</div>

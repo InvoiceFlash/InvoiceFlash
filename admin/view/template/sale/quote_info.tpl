@@ -2,7 +2,7 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><i class="hidden-xs fa fa-edit"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a> 
 			<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
