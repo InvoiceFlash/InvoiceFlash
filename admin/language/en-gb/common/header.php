@@ -49,6 +49,7 @@ $_['text_payment']                     = 'Payments';
 $_['text_product']                     = 'Products';
 $_['text_profile']                     = 'Profiles';
 $_['text_reports']                     = 'Reports';
+$_['text_contracts']                   = 'Contracts';
 $_['text_report_sale_order']           = 'Orders';
 $_['text_report_sale_tax']             = 'Tax';
 $_['text_report_sale_shipping']        = 'Shipping';
