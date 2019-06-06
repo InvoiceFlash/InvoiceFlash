@@ -319,71 +319,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			// Purchases
-			$purchases = array();
-			
-			// Purchases - Supplier
-			$supplier = array();
-			
-			if ($this->user->hasPermission('access', 'purchases/supplier')) {
-				$supplier[] = array(
-					'name' => $this->language->get('text_supplier'),
-					'href' => $this->url->link('purchases/supplier', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-			if ($this->user->hasPermission('access', 'purchases/supplier_group')) {
-				$supplier[] = array(
-					'name' => $this->language->get('text_supplier_group'),
-					'href' => $this->url->link('purchases/supplier_group', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($supplier) {
-				$purchases[] = array(
-					'name' => $this->language->get('text_supplier'),
-					'href' => '',
-					'children' => $supplier
-				);
-			}
-
-			// Purchases - Quotes
-			if ($this->user->hasPermission('access', 'purchases/quote')) {
-				$purchases[] = array(
-					'name' => $this->language->get('text_purchases_quotes'),
-					'href' => $this->url->link('purchases/quote', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-			
-			// Purchases - P. Orders
-			if ($this->user->hasPermission('access', 'purchases/order')) {
-				$purchases[] = array(
-					'name' => $this->language->get('text_purchases_orders'),
-					'href' => $this->url->link('purchases/order', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			// Purchases - Receptions
-			if ($this->user->hasPermission('access', 'purchases/receptions')) {
-				$purchases[] = array(
-					'name' => $this->language->get('text_purchases_receptions'),
-					'href' => $this->url->link('purchases/receptions', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($purchases) {
-				$this->data['menus'][] = array(
-					'id' => 'purchases',
-					'name' => $this->language->get('text_purchases'),
-					'href' => '',
-					'children' => $purchases
-				);
-			}
-
 			// Marketing
 			$marketing = array();
 
@@ -676,15 +611,6 @@ class ControllerCommonHeader extends Controller {
 					'name' => $this->language->get('text_tickets_status'),
 					'href' => $this->url->link('tickets/setting', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
-				);
-			}
-
-			if ($support) {
-				$this->data['menus'][] = array(
-					'id' => 'support',
-					'name' => $this->language->get('text_support'),
-					'href' => '',
-					'children' => $support
 				);
 			}
 			
