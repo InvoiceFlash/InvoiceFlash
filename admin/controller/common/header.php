@@ -31,7 +31,6 @@ class ControllerCommonHeader extends Controller {
 			
 			$this->data['home'] = $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL');
 		
-			// Sistema de menu de open2302
 			$this->data['menus'] = array();
 
 			// Menu
@@ -59,15 +58,6 @@ class ControllerCommonHeader extends Controller {
 				$files[] = array(
 					'name' => $this->language->get('text_manufacturer'),
 					'href' => $this->url->link('catalog/manufacturer', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-			
-			// Files - Agent
-			if ($this->user->hasPermission('access', 'sale/agent')) {
-				$files[] = array(
-					'name' => $this->language->get('text_agent'),
-					'href' => $this->url->link('sale/agent', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
@@ -123,14 +113,6 @@ class ControllerCommonHeader extends Controller {
 				$profiles[] = array(
 					'name' => $this->language->get('text_profile'),
 					'href' => $this->url->link('catalog/profile', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'sale/recurring')) {
-				$profiles[] = array(
-					'name' => $this->language->get('text_recurring'),
-					'href' => $this->url->link('sale/recurring', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
@@ -237,14 +219,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			if ($this->user->hasPermission('access', 'sale/customer_ban_ip')) {
-				$customers[] = array(
-					'name' => $this->language->get('text_customer_ban_ip'),
-					'href' => $this->url->link('sale/customer_ban_ip', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
 			if ($customers) {
 				$sales[] = array(
 					'name' => $this->language->get('text_customer'),
@@ -316,96 +290,6 @@ class ControllerCommonHeader extends Controller {
 					'name' => $this->language->get('text_sale'),
 					'href' => '',
 					'children' => $sales
-				);
-			}
-
-			// Marketing
-			$marketing = array();
-
-			// Marketing - Potentials
-			$potentials = array();
-
-			if ($this->user->hasPermission('access', 'sale/potentials')) {
-				$potentials[] = array(
-					'name' => $this->language->get('text_potentials'),
-					'href' => $this->url->link('sale/potentials', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-			
-			if ($this->user->hasPermission('access', 'sale/potentials_group')) {
-				$potentials[] = array(
-					'name' => $this->language->get('text_potentials_group'),
-					'href' => $this->url->link('sale/potentials_group', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($potentials) {
-				$marketing[] = array(
-					'name' => $this->language->get('text_potentials'),
-					'href' => '',
-					'children' => $potentials
-				);
-			}
-			
-			// Marketing - Mailings
-			if ($this->user->hasPermission('access', 'sale/contact')) {
-				$marketing[] = array(
-					'name' => $this->language->get('text_contact'),
-					'href' => $this->url->link('sale/contact', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-			// Marketing - Affiliates
-			if ($this->user->hasPermission('access', 'sale/affiliate')) {
-				$marketing[] = array(
-					'name' => $this->language->get('text_affiliate'),
-					'href' => $this->url->link('sale/affiliate', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-			// Marketing - Coupons
-			if ($this->user->hasPermission('access', 'sale/coupon')) {
-				$marketing[] = array(
-					'name' => $this->language->get('text_coupon'),
-					'href' => $this->url->link('sale/coupon', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-			// Marketing - Newsletter Subcribers
-			$newsletter = array();
-
-			if ($this->user->hasPermission('access', 'sale/newssubscribers')) {
-				$newsletter[] = array(
-					'name' => $this->language->get('text_newssubscribe'),
-					'href' => $this->url->link('sale/newssubcribers', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'sale/mailing_list')) {
-				$newsletter[] = array(
-					'name' => $this->language->get('text_mailing_list'),
-					'href' => $this->url->link('sale/mailing_list', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($newsletter) {
-				$marketing[] = array(
-					'name' => $this->language->get('text_newssubscribe'),
-					'href' => '',
-					'children' => $newsletter
-				);
-			}
-
-			if ($marketing) {
-				$this->data['menus'][] = array(
-					'id' => 'marketing',
-					'name' => $this->language->get('text_marketing'),
-					'href' => '',
-					'children' => $marketing
 				);
 			}
 
@@ -558,53 +442,7 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 			
-			// Reports - Affiliates
-			$r_affiliates = array();
-
-			if ($this->user->hasPermission('access', 'report/affiliate_commission')) {
-				$r_affiliates[] = array(
-					'name' => $this->language->get('text_report_affiliate_commission'),
-					'href' => $this->url->link('report/affiliate_commission', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($r_affiliates) {
-				$reports[] = array(
-					'name' => $this->language->get('text_affiliate'),
-					'href' => '',
-					'children' => $r_affiliates
-				);
-			}
-
-			// Reports - Purchases
-			$r_purchases = array();
-
-			if ($this->user->hasPermission('access', 'report/purchases_orders')) {
-				$r_purchases[] = array(
-					'name' => $this->language->get('text_report_purchases_orders'),
-					'href' => $this->url->link('report/purchases_orders', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($r_purchases) {
-				$reports[] = array(
-					'name' => $this->language->get('text_purchases'),
-					'href' => '',
-					'children' => $r_purchases
-				);
-			}
-
-			if ($reports) {
-				$this->data['menus'][] = array(
-					'id' => 'reports',
-					'name' => $this->language->get('text_reports'),
-					'href' => '',
-					'children' => $reports
-				);
-			}
-
+			
 			// Support - Setting
 			if ($this->user->hasPermission('access', 'tickets/setting')) {
 				$support[] = array(
