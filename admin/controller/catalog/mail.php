@@ -59,11 +59,11 @@ class ControllerCatalogMail extends Controller {
 		}
 		
 		if (!extension_loaded('imap')) {
-			$this->data['error_warning'] = 'Imap library is not installed.';
+			$this->data['error_warning'] = $this->language->get('text_alert_imap');
 		}
 
 		if (empty($this->config->get('config_smtp_host')) || empty($this->config->get('config_smtp_username')) || empty($this->config->get('config_smtp_password'))){
-			$this->data['error_config'] = 'Your Mail server is not configurated.' ;
+			$this->data['error_config'] = $this->language->get('error_config') ;
 		} else {
 			$this->data['error_config'] = '';
 		}

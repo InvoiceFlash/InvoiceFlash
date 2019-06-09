@@ -32,13 +32,13 @@ $_['entry_file'] 			= 'Attachment:';
 $_['button_reply']			= 'Reply';
 $_['button_delete'] 		= 'Delete';
 $_['button_getMails'] 		= 'Get Mails';
-$_['button_reset'] 			= 'Get Mails';
+$_['button_reset'] 			= 'Reset';
 $_['button_cancel'] 		= 'Cancel';
 $_['button_close'] 			= 'Close';
 $_['button_send'] 			= 'Send';
 
 // Errors
-
+$_['error_config']          = 'Your Mail server is not configurated.';
 $_['error_to']              = 'The destination email is not valid!';
 $_['error_subject']         = 'Subject can not be empty!';
 $_['error_message']         = 'Message can not be empty!';
