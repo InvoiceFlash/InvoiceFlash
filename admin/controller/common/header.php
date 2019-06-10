@@ -31,6 +31,7 @@ class ControllerCommonHeader extends Controller {
 			
 			$this->data['home'] = $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL');
 		
+			// Sistema de menu de open2302
 			$this->data['menus'] = array();
 
 			// Menu
@@ -58,6 +59,15 @@ class ControllerCommonHeader extends Controller {
 				$files[] = array(
 					'name' => $this->language->get('text_manufacturer'),
 					'href' => $this->url->link('catalog/manufacturer', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			// Files - Agent
+			if ($this->user->hasPermission('access', 'catalog/agent')) {
+				$files[] = array(
+					'name' => $this->language->get('text_agent'),
+					'href' => $this->url->link('catalog/agent', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
@@ -113,6 +123,14 @@ class ControllerCommonHeader extends Controller {
 				$profiles[] = array(
 					'name' => $this->language->get('text_profile'),
 					'href' => $this->url->link('catalog/profile', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'sale/recurring')) {
+				$profiles[] = array(
+					'name' => $this->language->get('text_recurring'),
+					'href' => $this->url->link('sale/recurring', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
@@ -219,6 +237,14 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			if ($this->user->hasPermission('access', 'sale/customer_ban_ip')) {
+				$customers[] = array(
+					'name' => $this->language->get('text_customer_ban_ip'),
+					'href' => $this->url->link('sale/customer_ban_ip', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($customers) {
 				$sales[] = array(
 					'name' => $this->language->get('text_customer'),
@@ -267,10 +293,10 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-			// Sales - Remittances
+			// Sales - Remmitances
 			if ($this->user->hasPermission('access', 'sale/remittances')) {
 				$sales[] = array(
-					'name' => $this->language->get('text_remittances'),
+					'name' => $this->language->get('text_remmitance'),
 					'href' => $this->url->link('sale/remittances', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
@@ -442,7 +468,88 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 			
-			
+			// Reports - Affiliates
+			$r_affiliates = array();
+
+			if ($this->user->hasPermission('access', 'report/affiliate_commission')) {
+				$r_affiliates[] = array(
+					'name' => $this->language->get('text_report_affiliate_commission'),
+					'href' => $this->url->link('report/affiliate_commission', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($r_affiliates) {
+				$reports[] = array(
+					'name' => $this->language->get('text_affiliate'),
+					'href' => '',
+					'children' => $r_affiliates
+				);
+			}
+
+			// Reports - Purchases
+			$r_purchases = array();
+
+			if ($this->user->hasPermission('access', 'report/purchases_orders')) {
+				$r_purchases[] = array(
+					'name' => $this->language->get('text_report_purchases_orders'),
+					'href' => $this->url->link('report/purchases_orders', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($r_purchases) {
+				$reports[] = array(
+					'name' => $this->language->get('text_purchases'),
+					'href' => '',
+					'children' => $r_purchases
+				);
+			}
+
+			if ($reports) {
+				$this->data['menus'][] = array(
+					'id' => 'reports',
+					'name' => $this->language->get('text_reports'),
+					'href' => '',
+					'children' => $reports
+				);
+			}
+
+			// Support
+			$support = array();
+
+			// Support - Tickets
+			if ($this->user->hasPermission('access', 'tickets/tickets')) {
+				$support[] = array(
+					'name' => $this->language->get('text_tickets'),
+					'href' => $this->url->link('tickets/tickets', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+			// Support - Help Topics
+			if ($this->user->hasPermission('access', 'tickets/helptopics')) {
+				$support[] = array(
+					'name' => $this->language->get('text_help_topics'),
+					'href' => $this->url->link('tickets/helptopics', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+			// Support - Tickets Priority
+			if ($this->user->hasPermission('access', 'tickets/priority')) {
+				$support[] = array(
+					'name' => $this->language->get('text_tickets_priority'),
+					'href' => $this->url->link('tickets/priority', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+			// Support - Tickets Status
+			if ($this->user->hasPermission('access', 'tickets/tickets_status')) {
+				$support[] = array(
+					'name' => $this->language->get('text_tickets_setting'),
+					'href' => $this->url->link('tickets/tickets_status', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 			// Support - Setting
 			if ($this->user->hasPermission('access', 'tickets/setting')) {
 				$support[] = array(
@@ -451,7 +558,16 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-			
+
+			if ($support) {
+				$this->data['menus'][] = array(
+					'id' => 'support',
+					'name' => $this->language->get('text_support'),
+					'href' => '',
+					'children' => $support
+				);
+			}
+
 			// Tools
 			$tools = array();
 
@@ -540,6 +656,44 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Blog
+			$blog = array();
+
+			// Blog - Articles
+			if ($this->user->hasPermission('access', 'catalog/blog')) {
+                $blog[] = array(
+                    'name' => $this->language->get('text_blog_articles'),
+                    'href' => $this->url->link('catalog/blog', 'token=' . $this->session->data['token'], 'SSL'),
+                    'children' => array()
+                );
+			}
+
+			// Blog - Comments
+			if ($this->user->hasPermission('access', 'catalog/comment')) {
+                $blog[] = array(
+                    'name' => $this->language->get('text_blog_comments'),
+                    'href' => $this->url->link('catalog/comment', 'token=' . $this->session->data['token'], 'SSL'),
+                    'children' => array()
+                );
+			}
+
+			// Blog - Setting
+			if ($this->user->hasPermission('access', 'catalog/blogsetting')) {
+                $blog[] = array(
+                    'name' => $this->language->get('text_blog_setting'),
+                    'href' => $this->url->link('catalog/blogsetting', 'token=' . $this->session->data['token'], 'SSL'),
+                    'children' => array()
+                );
+			}
+
+			if ($blog) {
+				$tools[] = array(
+					'name' => $this->language->get('text_blog'),
+					'href' => '',
+					'children' => $blog
+				);
+			}
+
 			// Users
 			$users = array();
 
@@ -609,7 +763,6 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-
 			// Localisation - Statuses - Order
 			if ($this->user->hasPermission('access', 'localisation/order_status')) {
 				$statuses[] = array(
@@ -618,7 +771,14 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-
+			// Localisation - Statuses - Purchase
+			if ($this->user->hasPermission('access', 'localisation/c_status')) {
+				$statuses[] = array(
+					'name' => $this->language->get('text_c_status'),
+					'href' => $this->url->link('localisation/c_status', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 			// Localisation - Statuses - Invoice
 			if ($this->user->hasPermission('access', 'localisation/invoice_status')) {
 				$statuses[] = array(
@@ -801,15 +961,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			// Export Import
-			if ($this->user->hasPermission('access', 'tool/export_import')) {
-				$tools[] = array(
-					'name' => $this->language->get('text_export_import'),
-					'href' => $this->url->link('tool/export_import', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
 			// Scheduled Task.
 			if ($this->user->hasPermission('access', 'setting/cron')) {
 				$tools[] = array(
@@ -818,7 +969,7 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-			
+
 			// Upgrade
 			if ($this->user->hasPermission('access', 'tool/upgrade')) {
 				$tools[] = array(
@@ -827,7 +978,7 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-			
+
 			if ($tools) {
 				$this->data['menus'][] = array(
 					'id' => 'tools',
