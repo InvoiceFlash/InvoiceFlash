@@ -188,7 +188,7 @@ class ModelReportCustomer extends Model {
 
 	// ADD
 	public function getTotalSupport($data = array()) {
-		$sql = "SELECT COUNT(DISTINCT c.customer_id) AS total FROM `" . DB_PREFIX . "customer` c where status = 1 ";
+		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "customer` c LEFT JOIN `" . DB_PREFIX . "address` a ON c.customer_id = a.customer_id WHERE c.status = 1";
 		
 		if (!empty($data['filter_date_start'])) {
 			$sql .= " and DATE(c.date_support) >= '" . $this->db->escape($data['filter_date_start']) . "'";
@@ -227,7 +227,7 @@ class ModelReportCustomer extends Model {
 			
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 		}
-		
+				
 		$query = $this->db->query($sql);
 	
 		return $query->rows;

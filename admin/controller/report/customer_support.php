@@ -83,10 +83,8 @@ class ControllerReportCustomerSupport extends Controller {
 		
 		$order_total = $this->model_report_customer->getTotalSupport($data);
 		$results = $this->model_report_customer->getSupport($data);
-		$order_total=0;
 		
 		foreach ($results as $result) {
-			$order_total += 1;
 			$action = array();
 		
 			$action[] = array(
@@ -166,57 +164,21 @@ class ControllerReportCustomerSupport extends Controller {
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_admin_limit');
 		$pagination->text = $this->language->get('text_pagination');
-		$pagination->url = $this->url->link('report/invoicelist', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
+		$pagination->url = $this->url->link('report/customer_support', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
 			
 		$this->data['pagination'] = $pagination->render();
-		
+				
 		$this->data['filter_date_start'] = $filter_date_start;
 		$this->data['filter_date_end'] = $filter_date_end;		
 				 
 		$this->template = 'report/customer_support.tpl';
-		//$lcTemplate = $this->session->data['template'];
 		
 		$this->children = array(
 			'common/header',
 			'common/footer'
 		);
 
-		//$this->response->setOutput($this->render());
-		
-		// if ($print==1){
-  //           $this->template = 'default/template/report/customer_support_print.tpl';
-  //           $this->response->setOutput($this->render(TRUE), $this->config->get('config_compression'));
-  //       }elseif($print==2){
-  //           $this->template = 'default/template/report/customer_support_pdf.tpl';
-  //           $this->response->setOutput($this->renderPDF(), $this->config->get('config_compression'));
-  //       }elseif($print==3){
-  //           $this->template = 'default/template/report/customer_support_pdf.tpl';
-  //           $this->response->setOutput($this->renderPDF($output = 'email'), $this->config->get('config_compression'));
-  //           $lcFile = DIR_DOWNLOAD . 'maintenances.pdf';
-
-  //           $this->sendnewmail($uiemail,$uisubject,$uitext,$lcFile) ;
-            
-  //           $this->redirect(HTTPS_SERVER . 'index.php?route=report/product_support&token=' . $this->session->data['token']);
-
-  //       }else{
-            $pagination = new Pagination();
-    		$pagination->total = $order_total;
-    		$pagination->page = $page;
-    		$pagination->limit = $this->config->get('config_admin_limit');
-    		$pagination->text = $this->language->get('text_pagination');
-    		$pagination->url = HTTPS_SERVER . 'index.php?route=report/sale&token=' . $this->session->data['token'] . $url . '&page={page}';
-    			
-    		$this->data['pagination'] = $pagination->render();		
-			
-			
-			// if (file_exists(DIR_TEMPLATE . $lcTemplate . '/template/report/customer_support.tpl')) {
-				// $this->template = $lcTemplate . '/template/report/customer_support.tpl';
-			// } else {
-				// $this->template = 'default/template/report/customer_support.tpl';
-			// }
-			
-            $this->response->setOutput($this->render());
-        // }
+		$this->response->setOutput($this->render());
 		
 	}
 }
