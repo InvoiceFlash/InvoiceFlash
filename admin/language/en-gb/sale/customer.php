@@ -118,6 +118,10 @@ $_['entry_description']     = 'Description:';
 $_['entry_amount']          = 'Amount:';
 $_['entry_points']          = '<a data-toggle="tooltip" title="Use minus to remove points"><i class="fas fa-question-circle"></i></a> Points:';
 $_['entry_nif']             = 'VAT-ID:';
+$_['entry_digital_invoice'] = 'Accept Digital Invoice:';
+$_['entry_web']            = 'Web:';
+$_['button_web']            = 'Go to web';
+$_['error_web']            = 'Error: Enter a valid url!';
 
 $_['text_datecreated']      = 'Created:' ;
 $_['text_date_modified']    = 'Last modified:' ;
@@ -127,6 +131,8 @@ $_['text_bic']   		    = 'BIC:';
 $_['text_fiscal']			= 'Fiscal:';
 $_['text_receptor']			= 'Receptor:';
 $_['text_paid']				= 'Paid Out:';
+$_['text_valid']            = 'Valid';
+$_['text_no_valid']         = 'Not Valid';
 
 // Error
 

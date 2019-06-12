@@ -562,6 +562,8 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['button_remove'] = $this->language->get('button_remove');
 		$this->data['button_email'] = $this->language->get('button_email');
 		$this->data['button_continue'] = $this->language->get('button_continue');
+		$this->data['button_web'] = $this->language->get('button_web');
+		$this->data['error_web'] = $this->language->get('error_web');
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
 		$this->data['tab_notes'] = $this->language->get('tab_notes');

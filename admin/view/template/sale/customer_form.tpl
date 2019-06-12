@@ -77,6 +77,15 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_web; ?></label>
+										<div class="col-sm-6 input-group">
+											<input type="text" name="web" value="<?php echo $web; ?>" id="web" class="form-control">
+											<div class="input-group-append">
+												<button type="button" id="button-web" class="btn btn-info" title="<?php echo $button_web?>"><i class="fas fa-globe"></i></button>
+											</div>
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fax; ?></label>
 										<div class="col-sm-6">
 											<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
@@ -555,7 +564,7 @@
 			                <?php if ($contracts): ?>
 			                  <?php foreach ($contracts as $contract): ?>
 			                    <tr>
-			                      <td><?php echo $contract['product']; ?><input type="hidden" name="contracts_id" value="<?php echo $contract['nid']; ?>"></td>
+			                      <td><?php echo $contract['product']; ?><input type="hidden" name="contracts_id" value="<?php echo $contract['contracts_id']; ?>"></td>
 			                      <td><?php echo $contract['quantity']; ?></td>
 			                      <td><?php echo $contract['end_support']; ?></td>
 			                       <td class="text-right"><?php foreach ($contract['action'] as $action): ?>
@@ -1129,6 +1138,15 @@ $('#validate-cc').click(function(){
 		$('#iban-res').html('<p class="text-success"><?php echo $text_valid; ?></p>');
 	} else {
 		$('#iban-res').html('<p class="text-danger"><?php echo $text_no_valid; ?></p>');
+	}
+});
+</script>
+<script>
+$('#button-web').click(function(){
+	if ($('#web').val().length > 0) {
+		window.open('https:/'+$('#web').val(), '_blank');
+	} else {
+		alert('<?php echo $error_web; ?>');
 	}
 });
 </script>
