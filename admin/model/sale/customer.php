@@ -23,7 +23,7 @@ class ModelSaleCustomer extends Model {
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "'");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', cwww = '" . $this->db->escape($data['web']) . "'");
 
 		if (isset($data['address'])) {
 
@@ -58,7 +58,7 @@ class ModelSaleCustomer extends Model {
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
 
-		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "' WHERE customer_id = " . (int)$customer_id);
+		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', digital_invoice = '" . (int)$data['digital_invoice'] . "', cwww = '" . $this->db->escape($data['web']) . "' WHERE customer_id = " . (int)$customer_id);
 
 		// if ($data['password']) {
 
@@ -1064,7 +1064,7 @@ class ModelSaleCustomer extends Model {
  	}
 
  	function getCustomerNotes($customer_id) {
- 		$sql = "SELECT customer_history_id, comment, date_added FROM `" . DB_PREFIX . "customer_history` WHERE customer_id = '" . (int)$customer_id . "'";
+ 		$sql = "SELECT customer_history_id, comment, date_added FROM `" . DB_PREFIX . "customer_history` WHERE customer_id = '" . (int)$customer_id . "' ORDER BY date_added DESC";
 
  		$query = $this->db->query($sql);
 

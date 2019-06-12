@@ -1,5 +1,5 @@
 ////////////////////////////////////
-///   InvoiceFlash v 0.0.0.1     ///
+///   InvoiceFlash v 0.0.5     ///
 ///    Install Instructions      ///
 /// http://www.invoiceflash.com  ///
 ////////////////////////////////////

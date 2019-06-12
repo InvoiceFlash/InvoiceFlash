@@ -208,7 +208,7 @@ class ControllerSaleCustomer extends Controller {
 		if (isset($this->request->get['filter_status'])) {
 			$filter_status = $this->request->get['filter_status'];
 		} else {
-			$filter_status = 1;
+			$filter_status = null;
 		}		
 
 		if (isset($this->request->get['filter_date_added'])) {
@@ -539,6 +539,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_points'] = $this->language->get('entry_points');
 		$this->data['entry_nif'] = $this->language->get('entry_nif');
 		$this->data['entry_digital_invoice'] = $this->language->get('entry_digital_invoice');
+		$this->data['entry_web'] = $this->language->get('entry_web');
 
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
@@ -959,7 +960,7 @@ class ControllerSaleCustomer extends Controller {
 						'contracts_id'	=> $result['contracts_id'],
 						'product'		=> $product_name,
 						'quantity'		=> $result['quantity'],
-						'end_support'	=> $result['dfinsoport'],
+						'end_support'	=> date($this->language->get('date_format_short'), strtotime($result['dfinsoport'])),
 						'action'		=> $action
 					);
 				}
@@ -998,6 +999,14 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 
 			$this->data['email'] = '';
+		}
+
+		if (isset($this->requeset->post['web'])) {
+			$this->data['web'] = $this->request->post['web'];
+		} elseif (!empty($customer_info)) {
+			$this->data['web'] = $customer_info['cwww'];
+		} else {
+			$this->data['web'] = '';
 		}
 		
 		if (isset($this->request->post['fax'])) {
@@ -1192,7 +1201,7 @@ class ControllerSaleCustomer extends Controller {
 
 				$this->data['notes'][] = array(
 					'note_id'  => $result['customer_history_id'] ,
-					'date'     => $note_info['date_added'],
+					'date'     => date($this->language->get('date_format_short'), strtotime($note_info['date_added'])),
 					'user'	   => $note_info['user'],
 					'comment'  => nl2br($note_info['comment']), 
 					'delete'   => $this->url->link('sale/customer/deleteNote', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'] . '&note_id=' . $result['customer_history_id'], 'SSL')

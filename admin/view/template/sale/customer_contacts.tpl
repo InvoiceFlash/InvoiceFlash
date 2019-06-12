@@ -37,7 +37,7 @@
       <div class="form-group">
         <label for="notas" class="control-label col-sm-2"><?php echo $entry_notas ?></label>
         <div class="control-field col-sm-4">
-          <input type="text" name="notas" id="notas" class="form-control" value="<?php echo $notas ?>">
+          <textarea name="notas" id="notas" cols="30" rows="10" class="form-control"><?php echo $notas; ?></textarea>
         </div>
       </div>
     </form>
