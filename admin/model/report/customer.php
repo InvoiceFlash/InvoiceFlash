@@ -172,7 +172,7 @@ class ModelReportCustomer extends Model {
 		if (isset($data['start']) || isset($data['limit'])) {
 			if ($data['start'] < 0) {
 				$data['start'] = 0;
-			}			
+			}
 
 			if ($data['limit'] < 1) {
 				$data['limit'] = 20;
@@ -188,33 +188,59 @@ class ModelReportCustomer extends Model {
 
 	// ADD
 	public function getTotalSupport($data = array()) {
-		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "customer` c LEFT JOIN `" . DB_PREFIX . "address` a ON c.customer_id = a.customer_id WHERE c.status = 1";
-		
+		$sql = "SELECT COUNT(*) AS total
+			FROM `" . DB_PREFIX . "fl_contracts` fc 
+			LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = fc.customer_id
+			LEFT JOIN `" . DB_PREFIX . "address` a ON a.address_id = c.address_id
+			LEFT JOIN `" . DB_PREFIX . "fl_contracts_status` fcs ON fc.contract_status = fcs.contract_status_id";
+		$implode = array();
+
 		if (!empty($data['filter_date_start'])) {
-			$sql .= " and DATE(c.date_support) >= '" . $this->db->escape($data['filter_date_start']) . "'";
+			$implode[] .= "DATE(fc.dfinsoport) >= '" . $this->db->escape(date('Y-m-d', strtotime($data['filter_date_start']))) . "'";
 		}
  
 		if (!empty($data['filter_date_end'])) {
-			$sql .= " and DATE(c.date_support) <= '" . $this->db->escape($data['filter_date_end']) . "'";
+			$implode[] .= "DATE(fc.dfinsoport) <= '" . $this->db->escape(date('Y-m-d', strtotime($data['filter_date_end']))) . "'";
 		}
-		
+
+		if (!empty($data['filter_status_id'])) {
+			$implode[] .= "fc.contract_status = '" . (int)$data['filter_status_id'] . "'";
+		}
+
+		if ($implode) {
+			$sql .= " WHERE " . implode(" AND ", $implode);
+		}
 		$query = $this->db->query($sql);
 		
 		return $query->row['total'];
 	}
 
 	public function getSupport($data = array()) {
-		$sql = "SELECT c.*, a.city FROM `" . DB_PREFIX . "customer` as c LEFT JOIN `" . DB_PREFIX . "address` as a ON c.customer_id = a.customer_id WHERE c.status = 1 ";
+		$sql = "SELECT c.customer_id, c.company, a.city, fc.dfinsoport, c.email, c.telephone, fcs.name AS `status` 
+			FROM `" . DB_PREFIX . "fl_contracts` fc 
+			LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = fc.customer_id
+			LEFT JOIN `" . DB_PREFIX . "address` a ON a.address_id = c.address_id
+			LEFT JOIN `" . DB_PREFIX . "fl_contracts_status` fcs ON fc.contract_status = fcs.contract_status_id";
 		
+		$implode = array();
+
 		if (!empty($data['filter_date_start'])) {
-			$sql .= " and DATE(c.date_support) >= '" . $this->db->escape($data['filter_date_start']) . "'";
+			$implode[] .= "DATE(fc.dfinsoport) >= '" . $this->db->escape(date('Y-m-d', strtotime($data['filter_date_start']))) . "'";
 		}
  
 		if (!empty($data['filter_date_end'])) {
-			$sql .= " and DATE(c.date_support) <= '" . $this->db->escape($data['filter_date_end']) . "'";
+			$implode[] .= "DATE(fc.dfinsoport) <= '" . $this->db->escape(date('Y-m-d', strtotime($data['filter_date_end']))) . "'";
+		}
+
+		if (!empty($data['filter_status_id'])) {
+			$implode[] .= "fc.contract_status = '" . (int)$data['filter_status_id'] . "'";
+		}
+
+		if ($implode) {
+			$sql .= " WHERE " . implode(" AND ", $implode);
 		}
 				
-		$sql .= " ORDER BY date_support DESC";
+		$sql .= " ORDER BY fc.dfinsoport ASC";
 				
 		if (isset($data['start']) || isset($data['limit'])) {
 			if ($data['start'] < 0) {
@@ -227,10 +253,16 @@ class ModelReportCustomer extends Model {
 			
 			$sql .= " LIMIT " . (int)$data['start'] . "," . (int)$data['limit'];
 		}
-				
+
 		$query = $this->db->query($sql);
 	
 		return $query->rows;
+	}
+
+	public function getContractStatusName($status_id) {
+		$query = $this->db->query("SELECT `name` FROM `" . DB_PREFIX . "fl_contracts_status` WHERE contract_status_id = " . (int)$status_id);
+
+		return $query->row['name'];
 	}
 }
 ?>

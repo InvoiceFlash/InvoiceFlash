@@ -33,7 +33,7 @@ class ModelLocalisationContract extends Model {
         return $query->row['total'];
     }
 
-    public function getContracts($data) {
+    public function getContracts($data = array()) {
         $sql = "SELECT * FROM `" . DB_PREFIX . "fl_contracts_status`";
 
         $sort_data = array(
@@ -44,7 +44,7 @@ class ModelLocalisationContract extends Model {
         if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
             $sql .= " ORDER BY " . $data['sort'];	
         } else {
-            $sql .= " ORDER BY contract_status_ids";	
+            $sql .= " ORDER BY contract_status_id";	
         }
 
         if (isset($data['order']) && ($data['order'] == 'DESC')) {

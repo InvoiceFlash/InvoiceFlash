@@ -16,26 +16,13 @@ class ControllerReportCustomerSupport extends Controller {
 		} else {
 			$filter_date_end = '';
 		}
-		
-        if (isset($this->request->get['uiemail'])) {
-			$uiemail = $this->request->get['uiemail'];
-		} else {
-			$uiemail = '';
-		}
 
-        if (isset($this->request->get['uisubject'])) {
-			$uisubject = $this->request->get['uisubject'];
+		if (isset($this->request->get['filter_status_id'])) {
+			$filter_status_id = $this->request->get['filter_status_id'];
 		} else {
-			$uisubject = '';
+			$filter_status_id = '';
 		}
-        
-        if (isset($this->request->get['uitext'])) {
-			$uitext = $this->request->get['uitext'];
-		} else {
-			$uitext = '';
-		}
-        //End add
-		
+				
 		if (isset($this->request->get['page'])) {
 			$page = $this->request->get['page'];
 		} else {
@@ -50,6 +37,10 @@ class ControllerReportCustomerSupport extends Controller {
 		
 		if (isset($this->request->get['filter_date_end'])) {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
+		}
+
+		if (isset($this->request->get['filter_status_id'])) {
+			$url .= '&filter_status_id=' . $this->request->get['filter_status_id'];
 		}
 
 		if (isset($this->request->get['page'])) {
@@ -77,6 +68,7 @@ class ControllerReportCustomerSupport extends Controller {
 		$data = array(
 			'filter_date_start'	     => $filter_date_start, 
 			'filter_date_end'	     => $filter_date_end, 
+			'filter_status_id'	     => $filter_status_id, 
 			'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
 			'limit'                  => $this->config->get('config_admin_limit')
 		);
@@ -92,16 +84,16 @@ class ControllerReportCustomerSupport extends Controller {
 				'href' => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $result['customer_id'] . $url, 'SSL')
 			);
 
-			if ($result['date_support']=='0000-00-00' || $result['date_support']==null) {
-				$date_support = '';
+			if ($result['dfinsoport']=='0000-00-00' || $result['dfinsoport']==null) {
+				$dfinsoport = '';
 			} else {
-				$date_support = date($this->language->get('date_format_short'), strtotime($result['date_support']));
+				$dfinsoport = date($this->language->get('date_format_short'), strtotime($result['dfinsoport']));
 			}
 
 			$this->data['customers'][] = array(
 				'customer'          => $result['company'],
 				'city'              => $result['city'],
-				'date_added'        => $date_support,
+				'date_added'        => $dfinsoport,
 				'email'             => $result['email'],
 				'telephone'         => $result['telephone'],
 				'status'            => $result['status'] ,
@@ -111,7 +103,7 @@ class ControllerReportCustomerSupport extends Controller {
 			);
 		}
 		
-		
+		$this->data['print_list'] = $this->url->link('report/customer_support/printList', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		 
  		$this->data['heading_title'] = $this->language->get('heading_title');
 		 
@@ -142,12 +134,23 @@ class ControllerReportCustomerSupport extends Controller {
 		$this->data['text_all_status'] = $this->language->get('text_all_status');
 
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['button_clear'] = $this->language->get('button_clear');
+		$this->data['button_print'] = $this->language->get('button_print');
 		
 		$this->data['token'] = $this->session->data['token'];
 		
-		$this->load->model('localisation/invoice_status');
+		$this->load->model('localisation/contract');
 		
-		$this->data['order_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
+		$this->data['statuses'] = array();
+
+		$results = $this->model_localisation_contract->getContracts();
+
+		foreach ($results as $status) {
+			$this->data['statuses'][] = array(
+				'status_id' => $status['contract_status_id'],
+				'name' => $status['name']
+			);
+		}
 			
 		$url = '';
 						
@@ -157,6 +160,10 @@ class ControllerReportCustomerSupport extends Controller {
 		
 		if (isset($this->request->get['filter_date_end'])) {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
+		}
+		
+		if (isset($this->request->get['filter_status_id'])) {
+			$url .= '&filter_status_id=' . $this->request->get['filter_status_id'];
 		}
 				
 		$pagination = new Pagination();
@@ -170,9 +177,10 @@ class ControllerReportCustomerSupport extends Controller {
 				
 		$this->data['filter_date_start'] = $filter_date_start;
 		$this->data['filter_date_end'] = $filter_date_end;		
+		$this->data['filter_status_id'] = $filter_status_id;		
 				 
 		$this->template = 'report/customer_support.tpl';
-		
+		 
 		$this->children = array(
 			'common/header',
 			'common/footer'
@@ -180,6 +188,87 @@ class ControllerReportCustomerSupport extends Controller {
 
 		$this->response->setOutput($this->render());
 		
+	}
+
+	public function printList() {
+		$this->load->language('report/customer_support');
+
+		$this->load->model('report/customer');
+
+		$this->data['title'] = $this->language->get('heading_title');
+
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		if (isset($this->request->get['filter_date_start'])) {
+			$this->data['filter_date_start'] = $this->request->get['filter_date_start'];
+			$filter_date_start = $this->request->get['filter_date_start'];
+		} else {
+			$filter_date_start = '';
+		}
+		
+		if (isset($this->request->get['filter_date_end'])) {
+			$this->data['filter_date_end'] = $this->request->get['filter_date_end'];
+			$filter_date_end = $this->request->get['filter_date_end'];
+		} else {
+			$filter_date_end = '';
+		}
+		
+		if (isset($this->request->get['filter_status_id'])) {
+			$filter_status_id = $this->request->get['filter_status_id'];
+			$this->data['filter_status_id'] = $filter_status_id;
+			$status_name = $this->model_report_customer->getContractStatusName($filter_status_id);
+		} else {
+			$filter_status_id = '';
+			$status_name = '';
+		}
+		
+		$data = array(
+			'filter_date_start'	     => $filter_date_start, 
+			'filter_date_end'	     => $filter_date_end, 
+			'filter_status_id'	     => $filter_status_id
+		);
+
+		$this->data['contracts'] = array();
+
+		$contracts = $this->model_report_customer->getSupport($data);
+
+		foreach ($contracts as $contract) {
+			if ($contract['dfinsoport']=='0000-00-00' || $contract['dfinsoport']==null) {
+				$dfinsoport = '';
+			} else {
+				$dfinsoport = date($this->language->get('date_format_short'), strtotime($contract['dfinsoport']));
+			}
+
+			$this->data['contracts'][] = array(
+				'customer'          => $contract['company'],
+				'city'              => $contract['city'],
+				'date'       		=> $dfinsoport,
+				'email'             => $contract['email'],
+				'telephone'         => $contract['telephone']
+			);
+		}
+		
+		$this->data['heading_title_print'] = $this->language->get('heading_title_print');
+
+		$this->data['column_date'] = $this->language->get('column_date_added');
+		$this->data['column_customer'] = $this->language->get('column_customer');
+		$this->data['column_city'] = $this->language->get('column_city');
+		$this->data['column_email'] = $this->language->get('column_email');
+		$this->data['column_telephone'] = $this->language->get('column_phone');
+
+		$this->data['text_date_start'] = sprintf($this->language->get('text_date_start'), $filter_date_start);
+		$this->data['text_date_end'] = sprintf($this->language->get('text_date_end'), $filter_date_end);
+		$this->data['text_status_id'] = sprintf($this->language->get('text_status_id'), $status_name);
+
+		$this->data['text_today'] = date($this->language->get('date_format_long'));
+
+		$this->template = 'report/customer_support_print.tpl';
+		
+		$this->response->setOutput($this->render());
 	}
 }
 ?>

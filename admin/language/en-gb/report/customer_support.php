@@ -1,9 +1,14 @@
 <?php
 // Heading
 $_['heading_title']         = 'Customer Support Contract';
+$_['heading_title_print']   = 'Support List';
 
 // Text
 $_['text_print']            = 'Print';
+$_['text_all_status']       = 'All Statuses';
+$_['text_date_start']       = '<b>Date Start:</b> %s';
+$_['text_date_end']         = '<b>Date End:</b> %s';
+$_['text_status_id']        = '<b>Status:</b> %s';
 
 // Column
 $_['column_orderid']        = 'Invoice:';
@@ -28,4 +33,9 @@ $_['column_action']         = 'Accion';
 $_['entry_date_start']      = 'From Date';
 $_['entry_date_end']        = 'Until Date';
 $_['entry_status']          = 'Status';
+
+// Button
+$_['button_clear']          = 'Clear';
+$_['button_print']          = 'Print List';
+
 ?>
