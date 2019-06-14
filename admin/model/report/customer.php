@@ -216,10 +216,10 @@ class ModelReportCustomer extends Model {
 	}
 
 	public function getSupport($data = array()) {
-		$sql = "SELECT c.customer_id, c.company, a.city, fc.dfinsoport, c.email, c.telephone, fcs.name AS `status` 
+		$sql = "SELECT c.customer_id, c.company, pd.name AS product, fc.dfinsoport, c.email, c.telephone, fcs.name AS `status` 
 			FROM `" . DB_PREFIX . "fl_contracts` fc 
 			LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = fc.customer_id
-			LEFT JOIN `" . DB_PREFIX . "address` a ON a.address_id = c.address_id
+			LEFT JOIN `" . DB_PREFIX . "product_description` pd ON pd.product_id = fc.narticulo
 			LEFT JOIN `" . DB_PREFIX . "fl_contracts_status` fcs ON fc.contract_status = fcs.contract_status_id";
 		
 		$implode = array();

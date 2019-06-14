@@ -19,8 +19,22 @@
 						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
 				</div>
-        <div class="col-sm-6 text-right">
-					<button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i> <?php echo $button_filter; ?></button>
+        <div class="col-sm-2">
+					<select name="filter_status_id" title="<?php echo $entry_status; ?>" class="form-control">
+						<option value="0"><?php echo $text_all_status; ?></option>
+						<?php foreach ($statuses as $status) { ?>
+						<?php if ($status['status_id'] == $filter_status_id) { ?>
+						<option value="<?php echo $status['status_id']; ?>" selected=""><?php echo $status['name']; ?></option>
+						<?php } else { ?>
+						<option value="<?php echo $status['status_id']; ?>"><?php echo $status['name']; ?></option>
+						<?php } ?>
+						<?php } ?>
+					</select>
+				</div>
+        <div class="col-sm-4 text-right">
+          <a href="<?php echo $print_list; ?>" target="_blank" class="btn btn-success"><i class="fas fa-print"></i> <?php echo $button_print; ?></a>
+          <button type="button" id="clear" class="btn btn-default"><i class="fas fa-eraser"></i> <?php echo $button_clear; ?></button>
+					<button type="button" onclick="filter();" id="filter" class="btn btn-info"><i class="fa fa-search"></i> <?php echo $button_filter; ?></button>
 				</div>
       </div>
     </div>
@@ -30,7 +44,7 @@
           <tr>
             <th class="text-left"><?php echo $column_date_added; ?></th>
             <th class="text-left"><?php echo $column_customer; ?></th>
-            <th class="text-left d-none d-sm-table-cell"><?php echo $column_city; ?></th>
+            <th class="text-left d-none d-sm-table-cell"><?php echo $column_product; ?></th>
             <th class="text-left d-none d-sm-table-cell"><?php echo $column_email; ?></th>
             <th class="text-left d-none d-sm-table-cell"><?php echo $column_phone; ?></th>
             <th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
@@ -42,7 +56,7 @@
               <tr>
                 <td class="text-left"><?php echo $customer['date_added'] ?></td>
                 <td class="text-left"><?php echo $customer['customer'] ?></td>
-                <td class="text-left d-none d-sm-table-cell"><?php echo $customer['city'] ?></td>
+                <td class="text-left d-none d-sm-table-cell"><?php echo $customer['product'] ?></td>
                 <td class="text-left d-none d-sm-table-cell"><?php echo $customer['email'] ?></td>
                 <td class="text-left d-none d-sm-table-cell"><?php echo $customer['telephone'] ?></td>
                 <td class="text-right"><a href="<?php echo $customer['href'] ?>" class="btn btn-info">
@@ -62,93 +76,35 @@
   </div>
   </div>
 </div>
-<script type="text/javascript"><!--
-function filter(opcion,email1,subject1,text1) {
+<script type="text/javascript">
+function filter() {
 	url = 'index.php?route=report/customer_support&token=<?php echo $token; ?>';
 	
-	var filter_date_start = $('input[name=\'filter_date_start\']').attr('value');
+	var filter_date_start = $('input[name="filter_date_start"]').val();
 	
 	if (filter_date_start) {
 		url += '&filter_date_start=' + encodeURIComponent(filter_date_start);
 	}
 
-	var filter_date_end = $('input[name=\'filter_date_end\']').attr('value');
+	var filter_date_end = $('input[name="filter_date_end"]').val();
 	
 	if (filter_date_end) {
 		url += '&filter_date_end=' + encodeURIComponent(filter_date_end);
 	}
 
-	if (opcion=='print'){
-       url += '&print=1';
-    }else if (opcion=='pdf'){
-       url += '&print=2';
-    }else if (opcion=='email'){
-       url += '&print=3';
-    }else{
-        url +='&print=0';
-    }
-    url +='&uiemail=' + email1 ;
-    url +='&uisubject=' + subject1 ;
-    url +='&uitext=' + encodeURIComponent(text1) ;
+  var filter_status_id = $('select[name="filter_status_id"] option:selected').val();
+
+  if (filter_status_id != 0) {
+    url += '&filter_status_id=' + encodeURIComponent(filter_status_id);
+  }
 	
 	location = url;
 } 
-//--></script> 
-<script type="text/javascript"><!--
-function checkLength( o, n, min, max ) {
-	if ( o.val().length > max || o.val().length < min ) {
-		alert ("Length of " + n + " must be between " +
-			min + " and " + max + "." );
-		return false;
-	} else {
-		return true;
-	}
-}
-$('#print').click(function() {
-    var $dialog2 = $('<div></div>')
-    .load('view/template/report/print.php')
-    .dialog({
-			autoOpen: false,
-            title: 'Send mail with report',
-			width:'auto',
-			buttons: {
-				"Cancel": function() {
-					$( this ).dialog( "close" );
-				},
-                "Send E-Mail": function() {
-                    var lctexto = $('#uitext').val();
-                    var bValid = true;
-                    bValid = bValid && checkLength( $('#uiemail'), "email", 6, 30 );
-					bValid = bValid && checkLength( $('#uisubject'), "subject", 5, 80 );
-                    bValid = bValid && checkLength( $('#uitext'), "Text", 3, 250 );
-
-                    if ( bValid ) {
-                        filter('email',$('#uiemail').val(),$('#uisubject').val(),lctexto);
-                    }
-                }
-			}
-	});
-    var $dialog = $('<div>Select Option</div>')
-    .dialog({
-        autoOpen: false,
-        title: 'Select Print Output',
-        buttons: {
-            "Cancel": function() {
-                $(this).dialog("close");
-            },
-            "Print": function() {
-                filter('print');
-            },
-            "PDF": function() {
-                filter('pdf');
-            },
-            "E-Mail": function() {
-                $(this).dialog("close");
-                $dialog2.dialog('open');
-            }
-        }
-    });
-    $dialog.dialog('open');
+</script>
+<script>
+$('#clear').click(function(){
+  $('.date').val('');
+  $("select[name='filter_status_id']").prop("selectedIndex", 0);
 });
-//--></script>
+</script>
 <?php echo $footer; ?>

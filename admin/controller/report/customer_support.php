@@ -92,7 +92,7 @@ class ControllerReportCustomerSupport extends Controller {
 
 			$this->data['customers'][] = array(
 				'customer'          => $result['company'],
-				'city'              => $result['city'],
+				'product'           => $result['product'],
 				'date_added'        => $dfinsoport,
 				'email'             => $result['email'],
 				'telephone'         => $result['telephone'],
@@ -112,7 +112,7 @@ class ControllerReportCustomerSupport extends Controller {
 		
 		$this->data['column_customer'] = $this->language->get('column_customer');
 		$this->data['column_address'] = $this->language->get('column_address');
-		$this->data['column_city'] = $this->language->get('column_city');
+		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
 		$this->data['column_state'] = $this->language->get('column_state');
 		$this->data['column_orderid'] = $this->language->get('column_orderid');
@@ -245,7 +245,7 @@ class ControllerReportCustomerSupport extends Controller {
 
 			$this->data['contracts'][] = array(
 				'customer'          => $contract['company'],
-				'city'              => $contract['city'],
+				'product'           => $contract['product'],
 				'date'       		=> $dfinsoport,
 				'email'             => $contract['email'],
 				'telephone'         => $contract['telephone']
@@ -256,7 +256,7 @@ class ControllerReportCustomerSupport extends Controller {
 
 		$this->data['column_date'] = $this->language->get('column_date_added');
 		$this->data['column_customer'] = $this->language->get('column_customer');
-		$this->data['column_city'] = $this->language->get('column_city');
+		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_email'] = $this->language->get('column_email');
 		$this->data['column_telephone'] = $this->language->get('column_phone');
 
