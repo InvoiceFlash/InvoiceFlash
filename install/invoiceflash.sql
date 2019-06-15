@@ -8199,6 +8199,17 @@ CREATE TABLE `if_agent` (
   PRIMARY KEY (`agent_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `if_api`;
+CREATE TABLE `if_api` (
+  `api_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(64) NOT NULL,
+  `key` TEXT NOT NULL,
+  `status` TINYINT(1) NOT NULL,
+  `date_added` DATETIME NOT NULL,
+  `date_modified` DATETIME NOT NULL,
+  PRIMARY KEY (`api_id`)
+) ENGINE=MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 -- tABLES MODIFIED ---
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --
 -- ALTER TABLE `if_customer` ADD column `date_modified` datetime; --
