@@ -9,7 +9,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 
 ---
 ### 0.0.6
-- [ ] Change price articles on invoice
+- [x] Change price articles on invoice
 - [ ] API
 - [ ] Edit language
 - [ ] More info on web
