@@ -798,8 +798,6 @@ class ControllerSaleCustomer extends Controller {
 				);
 			}
 			
-			
-			
 			// Quotes
 			$invoice_total = $this->model_sale_customer->getQuotesCustomerTotal($this->request->get['customer_id']);
 			
@@ -970,7 +968,6 @@ class ControllerSaleCustomer extends Controller {
 			}
 
 			$this->data['add_contract'] = $this->url->link('sale/customer/insertContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'], 'SSL');
-
 			
 		}
 		// end add
@@ -1316,8 +1313,6 @@ class ControllerSaleCustomer extends Controller {
 		}  
 	}
 
-
-
 	public function login() {
 
 		$json = array();
@@ -1512,7 +1507,6 @@ class ControllerSaleCustomer extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->user->hasPermission('modify', 'sale/customer')) { 
 			$this->model_sale_customer->addReward($this->request->get['customer_id'], $this->request->post['description'], $this->request->post['points']);
-
 			$this->data['success'] = $this->language->get('text_success');
 		} else {
 			$this->data['success'] = '';
@@ -1555,7 +1549,6 @@ class ControllerSaleCustomer extends Controller {
 
 		$reward_total = $this->model_sale_customer->getTotalRewards($this->request->get['customer_id']);
 
-
 		$pagination = new Pagination();
 		$pagination->total = $reward_total;
 		$pagination->page = $page;
@@ -1569,7 +1562,6 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->response->setOutput($this->render());
 	}
-
 
 	public function addBanIP() {
 
@@ -1589,7 +1581,6 @@ class ControllerSaleCustomer extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
-
 	public function removeBanIP() {
 
 		$this->language->load('sale/customer');
@@ -1605,13 +1596,9 @@ class ControllerSaleCustomer extends Controller {
 				$this->model_sale_customer->removeBanIP($this->request->post['ip']);
 				$json['success'] = $this->language->get('text_success');
 			}
-
 		}
-
 		$this->response->setOutput(json_encode($json));
 	}
-
-
 
 	public function autocomplete() {
 		$json = array();
@@ -1639,7 +1626,6 @@ class ControllerSaleCustomer extends Controller {
 
 			$results = $this->model_sale_customer->getCustomers($data);
 		}
-
 
 		foreach ($results as $result) {
 			$json[] = array(
@@ -1677,7 +1663,6 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->response->setOutput(json_encode($json));		
 	}
-
 
 	public function updateContact() {
 		$this->load->language('sale/customer');
@@ -1839,7 +1824,6 @@ class ControllerSaleCustomer extends Controller {
 				
 		$this->response->setOutput($this->render());
 	}
-
 
 	public function updateContract() {
 		$this->load->language('sale/customer');
@@ -2008,7 +1992,6 @@ class ControllerSaleCustomer extends Controller {
 		$this->template = 'sale/customer_contract.tpl';
 		$this->children = array(
 			'common/header',
-			
 			'common/footer',
 		);
 				
@@ -2196,5 +2179,4 @@ class ControllerSaleCustomer extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 }
-
 ?>
