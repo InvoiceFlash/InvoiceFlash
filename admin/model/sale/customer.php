@@ -8,6 +8,7 @@ class ModelSaleCustomer extends Model {
 
 		$sql = "INSERT INTO " . DB_PREFIX . "customer SET 
 			company = '" . $this->db->escape($data['company']) . "', 
+			brand = '" . $this->db->escape($data['brand']) . "', 
 			email = '" . $this->db->escape($data['email']) . "', 
 			telephone = '" . $this->db->escape($data['telephone']) . "', 
 			fax = '" . $this->db->escape($data['fax']) . "', 
@@ -54,6 +55,7 @@ class ModelSaleCustomer extends Model {
 
 		$this->db->query("UPDATE " . DB_PREFIX . "customer SET 
 			company = '" . $this->db->escape($data['company']) . "', 
+			brand = '" . $this->db->escape($data['brand']) . "', 
 			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);

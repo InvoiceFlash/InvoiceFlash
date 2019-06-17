@@ -54,6 +54,12 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_brand; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="brand" value="<?php echo $brand; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_email; ?></label>
 										<div class="col-sm-6">
 											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
@@ -341,7 +347,6 @@
 		                  <th><?php echo $column_name ?></th>
 		                  <th class="d-none d-sm-table-cell"><?php echo $column_contact_email ?></th>
 		                  <th><?php echo $column_telephone ?></th>
-		                  <th class="d-none d-sm-table-cell"><?php echo $column_date ?></th>
 		                  <th></th>
 		                </tr>
 		              </thead>
@@ -352,19 +357,18 @@
 		                      <td><?php echo $contact['name']; ?><input type="hidden" name="contact_id" value="<?php echo $contact['contact_id']; ?>"></td>
 		                      <td class="d-none d-sm-table-cell"><?php echo $contact['email']; ?></td>
 		                      <td><?php echo $contact['telephone']; ?></td>
-		                      <td class="d-none d-sm-table-cell"><?php echo $contact['date']; ?></td>
 		                      <td class="text-right"><?php foreach ($contact['action'] as $action): ?>
 		                        <?php echo $action['link']; ?>
 		                      <?php endforeach ?></td>
 		                    </tr>
 		                  <?php endforeach ?>
-										<?php else: ?>
-										<tr><td colspan="6" class="text-center"><?php echo $text_no_results; ?></td></tr>
+						<?php else: ?>
+							<tr><td colspan="4" class="text-center"><?php echo $text_no_results; ?></td></tr>
 		                <?php endif ?>
 		              </tbody>
 		              <tfoot>
 		                <tr>
-		                  <td class="text-right" colspan="6"><a href="<?php echo $add_contact ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact ?></a></td>
+		                  <td class="text-right" colspan="4"><a href="<?php echo $add_contact ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact ?></a></td>
 		                </tr>
 		              </tfoot>
 		            </table>
@@ -470,7 +474,7 @@
 							<tr>
 								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
 								<th class="text-left"><?php echo $column_email_subject; ?></th>
-								<th class="text-right"><?php echo $column_email_text; ?></th>
+								<th class="text-left"><?php echo $column_email_text; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -479,7 +483,7 @@
 							<tr>
 								<td class="text-left"><?php echo $email['date_added']; ?></td>
 								<td class="text-left"><?php echo $email['subject']; ?></td>
-								<td class="text-right hidden-xs"><?php echo $email['text']; ?></td>
+								<td class="text-left hidden-xs"><?php echo $email['text']; ?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>

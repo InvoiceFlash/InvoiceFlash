@@ -540,6 +540,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_nif'] = $this->language->get('entry_nif');
 		$this->data['entry_digital_invoice'] = $this->language->get('entry_digital_invoice');
 		$this->data['entry_web'] = $this->language->get('entry_web');
+		$this->data['entry_brand'] = $this->language->get('entry_brand');
 
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
@@ -771,7 +772,8 @@ class ControllerSaleCustomer extends Controller {
 					$this->data['emails'][] = array(
 						'email_id'   => $result['mail_id'],
 						'subject'    => $result['title'],
-						'text'       => strip_tags(html_entity_decode($result['message'])),
+						// 'text'       => strip_tags(html_entity_decode($result['message'])),
+						'text'       => html_entity_decode($result['message']),
 						'date_added' => date('d/m/y - h:i', strtotime($result['date_added']))
 					);
 				}
@@ -921,7 +923,6 @@ class ControllerSaleCustomer extends Controller {
 						'name' => $result['cname'],
 						'email' => $result['cemail'],
 						'telephone' => $result['ctelef1'],
-						'date' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 						'action' => $action
 					);
 				}
@@ -1010,18 +1011,21 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['web'] = '';
 		}
+
+		if (isset($this->request->post['brand'])) {
+			$this->data['brand'] = $this->request->post['brand'];
+		} elseif (!empty($customer_info)) {
+			$this->data['brand'] = $customer_info['brand'];
+		} else {
+			$this->data['brand'] = '';
+		}		
 		
 		if (isset($this->request->post['fax'])) {
 			$this->data['fax'] = $this->request->post['fax'];
-
 		} elseif (!empty($customer_info)) {
-
 			$this->data['fax'] = $customer_info['fax'];
-
 		} else {
-
 			$this->data['fax'] = '';
-
 		}
 
 		if (isset($this->request->post['notes'])) {

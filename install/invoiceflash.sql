@@ -1052,6 +1052,7 @@ CREATE TABLE `if_customer` (
   `email` varchar(96) NOT NULL,
   `date_support` date,
   `company` varchar(92) NOT NULL,
+  `brand` varchar(92) NOT NULL,
   `notes` text ,
   `telephone` varchar(32) NOT NULL,
   `fax` varchar(32) NOT NULL,
@@ -8214,5 +8215,6 @@ CREATE TABLE `if_api` (
 -- ALTER TABLE `if_customer` ADD column `date_support` datetime; --
 -- ALTER TABLE `if_customer` ADD column `date_modified` datetime; --
 -- ALTER TABLE `if_customer` ADD column `company` varchar(92) NOT NULL; --
+-- ALTER TABLE `if_customer` ADD column `brand` varchar(92) NOT NULL; --
 -- ALTER TABLE `if_customer` ADD column `notes` text ;--
 
