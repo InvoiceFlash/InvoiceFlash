@@ -1069,7 +1069,8 @@ CREATE TABLE `if_customer` (
   `token` varchar(255) NOT NULL,
   `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (`customer_id`)
+  PRIMARY KEY (`customer_id`),
+  KEY `email` (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
@@ -7889,7 +7890,8 @@ CREATE TABLE `if_customer_contacts` (
   `tultmod` datetime DEFAULT NULL,
   `nusuultmod` int(5) DEFAULT NULL,
   `caplultmod` varchar(20) DEFAULT NULL,
-   PRIMARY KEY (`customer_contacts_id`)
+   PRIMARY KEY (`customer_contacts_id`),
+   KEY `cemail` (`cemail`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_fl_contracts`;
