@@ -579,7 +579,16 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-
+			
+			// Modules
+			if ($this->user->hasPermission('access', 'extension/module')) {
+                $tools[] = array(
+                    'name' => $this->language->get('text_module'),
+                    'href' => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
+                    'children' => array()
+                );
+			}
+			
 			// Design
 			$design = array();
 
@@ -606,53 +615,6 @@ class ControllerCommonHeader extends Controller {
 					'name' => $this->language->get('text_design'),
 					'href' => '',
 					'children' => $design
-				);
-			}
-
-			// Web
-			$web = array();
-
-			// Web - Modules
-			if ($this->user->hasPermission('access', 'extension/module')) {
-                $web[] = array(
-                    'name' => $this->language->get('text_module'),
-                    'href' => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
-                    'children' => array()
-                );
-			}
-			
-			// Web - Reviews
-			if ($this->user->hasPermission('access', 'catalog/review')) {
-                $web[] = array(
-                    'name' => $this->language->get('text_review'),
-                    'href' => $this->url->link('catalog/review', 'token=' . $this->session->data['token'], 'SSL'),
-                    'children' => array()
-                );
-			}
-			
-			// Web - Information
-			if ($this->user->hasPermission('access', 'catalog/information')) {
-                $web[] = array(
-                    'name' => $this->language->get('text_information'),
-                    'href' => $this->url->link('catalog/information', 'token=' . $this->session->data['token'], 'SSL'),
-                    'children' => array()
-                );
-			}
-			
-			// Web - Product Feeds
-			if ($this->user->hasPermission('access', 'extension/feed')) {
-                $web[] = array(
-                    'name' => $this->language->get('text_feed'),
-                    'href' => $this->url->link('extension/feed', 'token=' . $this->session->data['token'], 'SSL'),
-                    'children' => array()
-                );
-			}			
-
-			if ($web) {
-				$tools[] = array(
-					'name' => $this->language->get('text_web'),
-					'href' => '',
-					'children' => $web
 				);
 			}
 
@@ -978,7 +940,16 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-
+			
+			// addon manager
+			if ($this->user->hasPermission('access', 'tool/mod_manager')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_vqmod'),
+					'href' => $this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+			
 			if ($tools) {
 				$this->data['menus'][] = array(
 					'id' => 'tools',

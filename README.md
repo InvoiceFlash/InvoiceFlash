@@ -16,6 +16,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] cron versus curl
 - [ ] addons manager
 - [ ] Mod Purchases
+- [ ] Mod Secure admin
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
 
 ### 0.0.5 
