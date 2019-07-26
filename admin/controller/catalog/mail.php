@@ -286,10 +286,19 @@ class ControllerCatalogMail extends Controller {
 		}
 
 		if (empty($json['error'])) {
-			$data['customer_id'] = 0;
+			
+			$this->load->model('sale/customer');
+			$customer = $this->model_sale_customer->getCustomerByEmail($this->request->post['to']);
+			
 			$data['potential_id'] = 0;
 			$data['supplier_id'] = 0;
-
+			
+			if (!empty($customer)) {
+				$data['customer_id'] = $customer['customer_id'];
+			} else {
+				$data['customer_id'] = 0;
+			}
+			
 			$data['to'] = $this->request->post['to'];
 			$data['subject'] = $this->request->post['subject'];
 
