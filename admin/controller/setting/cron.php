@@ -388,7 +388,10 @@ class ControllerSettingCron extends Controller {
 		return !$this->error;
 	}
 
-	public function run() {
+	public function runcron() {
+		
+		$log=new Log('cron.log'); 
+		
 		$this->load->language('setting/cron');
 
 		$json = array();
@@ -403,10 +406,12 @@ class ControllerSettingCron extends Controller {
 			$json['error'] = $this->language->get('error_permission');
 		} else {
 			$this->load->model('setting/cron');
-
+$log->write($cron_id);
 			$cron_info = $this->model_setting_cron->getCron($cron_id);
 
 			if ($cron_info) {
+				
+				$log->write(DIR_SYSTEM. 'vendor/cron/'. $cron_info['action']);
 				require_once(DIR_SYSTEM. 'vendor/cron/'. $cron_info['action']);
 			} else {
 				$json['error'] = $this->language->get('error_not_found');

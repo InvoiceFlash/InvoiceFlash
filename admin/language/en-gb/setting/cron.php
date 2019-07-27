@@ -17,7 +17,7 @@ $_['column_code']          = 'Name';
 $_['column_status']        = 'Status';
 $_['column_date_added']    = 'Date Added';
 $_['column_date_modified'] = 'Date Modified';
-$_['column_action']        = 'Action';
+$_['column_action']        = 'Action (filename)';
 
 // entry
 $_['entry_cron']             = 'Cron URL';

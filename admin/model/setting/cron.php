@@ -1,9 +1,13 @@
 <?php
 class ModelSettingCron extends Model {
-	public function addCron($code, $cycle = 'day', $action, $status) {
-		$this->db->query("INSERT INTO `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($code) . "', `cycle` = '" . $this->db->escape($cycle) . "', `action` = '" . $this->db->escape($action) . "', `status` = '" . (int)$status . "', `date_added` = NOW(), `date_modified` = NOW()");
+	public function addCron($data) {
+		$this->db->query("INSERT INTO `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($data['cron_code']) . "', `action` = '" . $this->db->escape($data['cron_action']) . "', `status` = '" . (int)$data['cron_status'] . "', `date_added` = now(), `date_modified` = now()");
 
 		return $this->db->getLastId();
+	}
+
+	public function editCron($data, $cron_id) {
+		$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($data['cron_code']) . "', `action` = '" . $this->db->escape($data['cron_action']) . "', `status` = '" . (int)$data['cron_status'] . "', `date_modified` = now() WHERE cron_id = '" . (int)$cron_id . "'");
 	}
 
 	public function deleteCron($cron_id) {
@@ -14,17 +18,13 @@ class ModelSettingCron extends Model {
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "cron` WHERE `code` = '" . $this->db->escape($code) . "'");
 	}
 
-	public function editCron($cron_id) {
-		$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `date_modified` = NOW() WHERE cron_id = '" . (int)$cron_id . "'");
-	}
-
 	public function editStatus($cron_id, $status) {
 		$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `status` = '" . (int)$status . "' WHERE cron_id = '" . (int)$cron_id . "'");
 	}
 
 	public function getCron($cron_id) {
 		$query = $this->db->query("SELECT DISTINCT * FROM `" . DB_PREFIX . "cron` WHERE `cron_id` = '" . (int)$cron_id . "'");
-
+		
 		return $query->row;
 	}
 
@@ -39,7 +39,6 @@ class ModelSettingCron extends Model {
 
 		$sort_data = array(
 			'code',
-			'cycle',
 			'action',
 			'status',
 			'date_added',
@@ -83,14 +82,13 @@ class ModelSettingCron extends Model {
 
 	public function install() {
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "cron` (
-  `cron_id` int(11) NOT NULL AUTO_INCREMENT,
-  `code` varchar(64) NOT NULL,
-  `cycle` varchar(12) NOT NULL,
-  `action` text NOT NULL,
-  `status` tinyint(1) NOT NULL,
-  `date_added` datetime NOT NULL,
-  `date_modified` datetime NOT NULL,
-  PRIMARY KEY (`cron_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
+			`cron_id` int(11) NOT NULL AUTO_INCREMENT,
+			`code` varchar(64) NOT NULL,
+			`action` text NOT NULL,
+			`status` tinyint(1) NOT NULL,
+			`date_added` datetime NOT NULL,
+			`date_modified` datetime NOT NULL,
+			PRIMARY KEY (`cron_id`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
 	}
 }

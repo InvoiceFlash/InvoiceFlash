@@ -13,7 +13,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</
 - [ ] API
 - [ ] Edit language
 - [ ] Resellers on web
-- [ ] cron versus curl
+- [x] cron support
 - [ ] addons manager
 - [ ] Mod Purchases
 - [x] Mod Secure admin

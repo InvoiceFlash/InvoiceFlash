@@ -64,8 +64,8 @@
 <script>
 $('#btn-run').click(function(){
 		$.ajax({
-			url:'index.php?route=setting/cron/run&token='+token,
-			type:'post',
+			url:'index.php?route=setting/cron/runcron&cron_id=<?php echo $cron['cron_id']; ?>&token='+token,
+			type:'get',
 			dataType:'json',
 			data:'id='+$(this).attr('data-id'),
 			complete:function(){

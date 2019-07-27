@@ -8101,13 +8101,14 @@ DROP TABLE IF EXISTS `if_cron`;
 CREATE TABLE `if_cron` (
   `cron_id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(64) NOT NULL,
-  `cycle` varchar(12) NOT NULL,
   `action` text NOT NULL,
   `status` tinyint(1) NOT NULL,
   `date_added` datetime NOT NULL,
   `date_modified` datetime NOT NULL,
   PRIMARY KEY (`cron_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+insert  into `if_cron`(`cron_id`,`code`,`action`,`status`,`date_added`,`date_modified`) values (1,'backup','backup.php',1,'2019-07-26 13:46:46','2019-07-26 13:51:29');
 
 DROP TABLE IF EXISTS `if_delivery_option`;
 CREATE TABLE `if_delivery_option` (
