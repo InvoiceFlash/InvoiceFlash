@@ -774,7 +774,7 @@ class ControllerSaleCustomer extends Controller {
 						'subject'    => $result['title'],
 						// 'text'       => strip_tags(html_entity_decode($result['message'])),
 						'text'       => html_entity_decode($result['message']),
-						'date_added' => date('d/m/y - h:i', strtotime($result['date_added']))
+						'date_added' => date('d/m/y - H:i', strtotime($result['date_added']))
 					);
 				}
 			}
