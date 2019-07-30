@@ -8,16 +8,19 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</b></p>
 
 ---
-### 0.0.6 (master) (In development.. Expected date: 07.30.19)
+### 0.0.7 (master) (In development.. Expected date: 08.30.19)
 - [x] Change price articles on invoice
 - [ ] API
 - [ ] Edit language
 - [ ] Resellers on web
-- [x] cron support
 - [ ] addons manager
-- [ ] Mod Purchases
-- [x] Mod Secure admin
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
+- [ ] Events
+- [ ] Multi Store
+
+### 0.0.6
+- cron support
+- minor fix bug
 
 ### 0.0.5 
 - IBAN validator
