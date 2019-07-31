@@ -8101,11 +8101,11 @@ DROP TABLE IF EXISTS `if_cron`;
 CREATE TABLE `if_cron` (
   `cron_id` int(11) NOT NULL AUTO_INCREMENT,
   `code` varchar(64) NOT NULL,
-  `cycle` varchar(12) NOT NULL,
+  `cycle` int(10) NOT NULL,
   `action` text NOT NULL,
   `status` tinyint(1) NOT NULL,
-  `date_added` datetime NOT NULL,
-  `date_modified` datetime NOT NULL,
+  `date_last` datetime NOT NULL,
+  `date_next` datetime NOT NULL,
   PRIMARY KEY (`cron_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 

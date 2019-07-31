@@ -960,7 +960,7 @@ class ControllerCommonHeader extends Controller {
 			}
 
 			// Front End
-			$this->data['text_front'] = $this->language->get('text_front');
+			//$this->data['text_front'] = $this->language->get('text_front');
 
 			// Help
 			$this->data['text_help'] = $this->language->get('text_help');

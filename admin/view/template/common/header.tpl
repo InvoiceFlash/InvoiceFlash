@@ -74,14 +74,7 @@
 					</div>
 				<?php } ?>
 			<?php } ?>	
-			<div id="system" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_front; ?></a>
-					<div class="dropdown-menu">
-						<a href="<?php echo $store; ?>" target="_blank" class="dropdown-item"><?php echo $text_front; ?></a>
-						<?php foreach ($stores as $store) { ?>
-						<a href="<?php echo $store['href']; ?>" target="_blank" class="dropdown-item"><?php echo $store['name']; ?></a>
-						<?php } ?>
-					</div>
-				</div>
+
 				<div id="help" class="nav-item dropdown"><a class="nav-link dropdown-toggle"><?php echo $text_help; ?></a>
 					<div class="dropdown-menu">
 						<a class="dropdown-item" href="http://www.invoiceflash.com" target="_blank"><?php echo $text_invoiceflash; ?></a>

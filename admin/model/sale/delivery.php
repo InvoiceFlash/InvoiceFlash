@@ -113,7 +113,7 @@ class ModelSaleDelivery extends Model {
 			 `shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 			 `shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
 			 `comment` = '" . $this->db->escape($data['comment']) . "', 
-			 `delivery_status_id` = '" . (int)$data['invoice_status_id'] . "', 
+			 `delivery_status_id` = '" . (int)$data['delivery_status_id'] . "', 
 			 `language_id` = '" . (int)$this->config->get('config_language_id') . "', 
 			 `currency_id` = '" . (int)$currency_id . "', 
 			 `currency_code` = '" . $this->db->escape($currency_code) . "', 
