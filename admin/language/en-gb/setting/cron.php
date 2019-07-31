@@ -15,14 +15,15 @@ $_['text_month']           = 'Month';
 // Column
 $_['column_code']          = 'Name';
 $_['column_status']        = 'Status';
-$_['column_date_added']    = 'Date Added';
-$_['column_date_modified'] = 'Date Modified';
+$_['column_date_last']    = 'Date Last action';
+$_['column_date_next'] = 'Date Next action';
 $_['column_action']        = 'Action (filename)';
 
 // entry
 $_['entry_cron']             = 'Cron URL';
 $_['entry_code']             = 'Name:';
-$_['entry_action']           = 'Action:';
+$_['entry_action']           = 'Action (filename with ext):';
+$_['entry_cycle']            = 'Cycle (in minutes):';
 $_['entry_status']           = 'Status:';
 
 // button

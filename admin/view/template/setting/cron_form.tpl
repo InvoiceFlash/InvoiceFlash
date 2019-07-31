@@ -22,9 +22,18 @@
                     <?php } ?>
                 </div>
             </div>
+			<div class="form-group row">
+                <label class="col-form-label col-sm-10 col-md-2"><span class="required">*</span> <?php echo $entry_cycle; ?></label>
+                <div class="col-sm-1">
+                    <input type="number" min="0" name="cron_cycle" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" class="form-control" value="<?php echo $cron_cycle; ?>">
+                    <?php if ($error_cycle) { ?>
+                        <div class="help-block text-danger"><?php echo $error_cicle; ?></div>
+                    <?php } ?>
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status?></label>
-                <div class="col-sm-6">
+                <div class="col-sm-2">
                     <select name="cron_status" class="form-control">
                         <option value="1" <?php echo $cron_status ? 'selected' : ''; ?>><?php echo $text_enabled; ?></option>
                         <option value="0" <?php echo $cron_status ? '' : 'selected'; ?>><?php echo $text_disabled; ?></option>

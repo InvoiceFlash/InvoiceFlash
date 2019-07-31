@@ -175,20 +175,21 @@ class ControllerSettingCron extends Controller {
 		$results = $this->model_setting_cron->getCrons($filter_data);
 
 		foreach ($results as $result) {
+
 			$this->data['crons'][] = array(
 				'cron_id'       => $result['cron_id'],
 				'code'          => $result['code'],
 				'action'        => $result['action'],
 				'status'        => $result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
-				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
+				'date_last'     => ($result['date_last'] == '0000-00-00 00:00:00' ? '': date($this->language->get('datetime_format'),strtotime($result['date_last']))),
+				'date_next'     => ($result['date_next'] == '0000-00-00 00:00:00' ? '': date($this->language->get('datetime_format'),strtotime($result['date_next']))),
 				'enabled'       => $result['status'],
 				'edit'			=> '<a class="btn btn-default" href="'.$this->url->link('setting/cron/edit', 'token=' . $this->session->data['token'] . '&cron_id=' . $result['cron_id'], 'SSL') . '" ><i class="fas fa-edit"></i></a>'
 			);
 		}
 
 		$this->data['token'] = $this->session->data['token'];
-
+		
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
 		} else {
@@ -224,8 +225,8 @@ class ControllerSettingCron extends Controller {
 		$this->data['sort_code'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'] . '&sort=code' . $url, 'SSL');
 		$this->data['sort_action'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'] . '&sort=action' . $url, 'SSL');
 		$this->data['sort_status'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
-		$this->data['sort_date_added'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'] . '&sort=date_added' . $url, 'SSL');
-		$this->data['sort_date_modified'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'] . '&sort=date_modified' . $url, 'SSL');
+		$this->data['sort_date_last'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'] . '&sort=date_last' . $url, 'SSL');
+		$this->data['sort_date_next'] = $this->url->link('setting/cron', 'token=' . $this->session->data['token'] . '&sort=date_next' . $url, 'SSL');
 
 		$url = '';
 
@@ -255,8 +256,8 @@ class ControllerSettingCron extends Controller {
 		$this->data['button_run'] = $this->language->get('button_run');
 		$this->data['column_action'] = $this->language->get('column_action');
 		$this->data['column_code'] = $this->language->get('column_code');
-		$this->data['column_date_added'] = $this->language->get('column_date_added');
-		$this->data['column_date_modified'] = $this->language->get('column_date_modified');
+		$this->data['column_date_last'] = $this->language->get('column_date_last');
+		$this->data['column_date_next'] = $this->language->get('column_date_next');
 		$this->data['column_status'] = $this->language->get('column_status');
 		$this->data['entry_cron'] = $this->language->get('entry_cron');
 		$this->data['heading_title'] = $this->language->get('heading_title');
@@ -267,7 +268,7 @@ class ControllerSettingCron extends Controller {
 		$this->data['text_list'] = $this->language->get('text_list');
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 
-		$this->template = 'setting/cron.tpl';
+		$this->template = 'setting/cron_list.tpl';
 		$this->children = array(
 			'common/header',
 			'common/footer'
@@ -281,6 +282,7 @@ class ControllerSettingCron extends Controller {
 
 		$this->data['entry_code'] = $this->language->get('entry_code');
 		$this->data['entry_action'] = $this->language->get('entry_action');
+		$this->data['entry_cycle'] = $this->language->get('entry_cycle');
 		$this->data['entry_status'] = $this->language->get('entry_status');
 
 		$this->data['text_enabled'] = $this->language->get('text_enabled');
@@ -299,6 +301,12 @@ class ControllerSettingCron extends Controller {
 			$this->data['error_action'] = $this->error['action'];
 		} else {
 			$this->data['error_action'] = '';
+		}
+		
+		if (isset($this->error['cycle'])) {
+			$this->data['error_cycle'] = $this->error['cycle'];
+		} else {
+			$this->data['error_cycle'] = '';
 		}
 
 		if (isset($this->error['code'])) {
@@ -362,7 +370,15 @@ class ControllerSettingCron extends Controller {
 		} else {
 			$this->data['cron_action'] = '';
 		}
-
+		
+		if (isset($this->request->post['cron_cycle'])) {
+			$this->data['cron_status'] = $this->request->post['cron_cycle'];
+		} elseif (!empty($cron_info)) {
+			$this->data['cron_cycle'] = $cron_info['cycle'];
+		} else {
+			$this->data['cron_cycle'] = '60';
+		}
+		
 		if (isset($this->request->post['cron_status'])) {
 			$this->data['cron_status'] = $this->request->post['cron_status'];
 		} elseif (!empty($cron_info)) {
@@ -390,7 +406,7 @@ class ControllerSettingCron extends Controller {
 
 	public function runcron() {
 		
-		$log=new Log('cron.log'); 
+		//$log=new Log('cron.log'); 
 		
 		$this->load->language('setting/cron');
 
@@ -406,13 +422,15 @@ class ControllerSettingCron extends Controller {
 			$json['error'] = $this->language->get('error_permission');
 		} else {
 			$this->load->model('setting/cron');
-$log->write($cron_id);
+
 			$cron_info = $this->model_setting_cron->getCron($cron_id);
 
 			if ($cron_info) {
 				
-				$log->write(DIR_SYSTEM. 'vendor/cron/'. $cron_info['action']);
+				//$log->write(DIR_SYSTEM. 'vendor/cron/'. $cron_info['action']);
 				require_once(DIR_SYSTEM. 'vendor/cron/'. $cron_info['action']);
+				
+				$this->model_setting_cron->executedCron($cron_id, $cron_info['cycle'] );
 			} else {
 				$json['error'] = $this->language->get('error_not_found');
 			}
@@ -424,55 +442,55 @@ $log->write($cron_id);
 		$this->response->setOutput(json_encode($json));
 	}
 
-	public function enable() {
-		$this->load->language('setting/cron');
+	// public function enable() {
+		// $this->load->language('setting/cron');
 
-		$json = array();
+		// $json = array();
 
-		if (isset($this->request->get['cron_id'])) {
-			$cron_id = $this->request->get['cron_id'];
-		} else {
-			$cron_id = 0;
-		}
+		// if (isset($this->request->get['cron_id'])) {
+			// $cron_id = $this->request->get['cron_id'];
+		// } else {
+			// $cron_id = 0;
+		// }
 
-		if (!$this->user->hasPermission('modify', 'setting/cron')) {
-			$json['error'] = $this->language->get('error_permission');
-		} else {
-			$this->load->model('setting/cron');
+		// if (!$this->user->hasPermission('modify', 'setting/cron')) {
+			// $json['error'] = $this->language->get('error_permission');
+		// } else {
+			// $this->load->model('setting/cron');
 
-			$this->model_setting_cron->editStatus($cron_id, 1);
+			// $this->model_setting_cron->editStatus($cron_id, 1);
 
-			$json['success'] = $this->language->get('text_success');
-		}
+			// $json['success'] = $this->language->get('text_success');
+		// }
 
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
+		// $this->response->addHeader('Content-Type: application/json');
+		// $this->response->setOutput(json_encode($json));
+	// }
 
-	public function disable() {
-		$this->load->language('setting/cron');
+	// public function disable() {
+		// $this->load->language('setting/cron');
 
-		$json = array();
+		// $json = array();
 
-		if (isset($this->request->get['cron_id'])) {
-			$cron_id = $this->request->get['cron_id'];
-		} else {
-			$cron_id = 0;
-		}
+		// if (isset($this->request->get['cron_id'])) {
+			// $cron_id = $this->request->get['cron_id'];
+		// } else {
+			// $cron_id = 0;
+		// }
 
-		if (!$this->user->hasPermission('modify', 'setting/cron')) {
-			$json['error'] = $this->language->get('error_permission');
-		} else {
-			$this->load->model('setting/cron');
+		// if (!$this->user->hasPermission('modify', 'setting/cron')) {
+			// $json['error'] = $this->language->get('error_permission');
+		// } else {
+			// $this->load->model('setting/cron');
 
-			$this->model_setting_cron->editStatus($cron_id, 0);
+			// $this->model_setting_cron->editStatus($cron_id, 0);
 
-			$json['success'] = $this->language->get('text_success');
-		}
+			// $json['success'] = $this->language->get('text_success');
+		// }
 
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
-	}
+		// $this->response->addHeader('Content-Type: application/json');
+		// $this->response->setOutput(json_encode($json));
+	// }
 
 	public function install() {
 		$this->load->model('setting/setting');
@@ -493,6 +511,10 @@ $log->write($cron_id);
 
 		if (strlen($this->request->post['cron_action']) < 3 || strlen($this->request->post['cron_action']) > 255) {
 			$this->error['action'] = $this->language->get('error_action');
+		}
+		
+		if (strlen($this->request->post['cron_cycle']) < 1 || strlen($this->request->post['cron_cycle']) > 6) {
+			$this->error['cycle'] = $this->language->get('error_code');
 		}
 		
 		if (strlen($this->request->post['cron_code']) < 3 || strlen($this->request->post['cron_code']) > 255) {

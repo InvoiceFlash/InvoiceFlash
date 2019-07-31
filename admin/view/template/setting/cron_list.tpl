@@ -26,8 +26,8 @@
                   <th class="text-left"><?php if($sort == 'code'){ ?><a href="<?php echo $sort_code; ?>" class="<?php strtolower($order); ?>"><?php echo $column_code; ?></a><?php } else { ?><a href="<?php echo $sort_code; ?>"><?php echo $column_code; ?></a><?php } ?></th>
                   <th class="text-left"><?php if($sort == 'action'){ ?><a href="<?php echo $sort_action; ?>" class="<?php strtolower($order); ?>"><?php echo $column_action; ?></a><?php } else { ?><a href="<?php echo $sort_action; ?>"><?php echo $column_action; ?></a><?php } ?></th>
                   <th class="text-left"><?php if($sort == 'status'){ ?><a href="<?php echo $sort_status; ?>" class="<?php strtolower($order); ?>"><?php echo $column_status; ?></a><?php } else { ?><a href="<?php echo $sort_status; ?>"><?php echo $column_status; ?></a><?php } ?></th>
-                  <th class="text-left"><?php if($sort == 'date_added'){ ?><a href="<?php echo $sort_date_added; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_added; ?></a><?php } else { ?><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; ?></a><?php } ?></th>
-                  <th class="text-left"><?php if($sort == 'date_modified'){ ?><a href="<?php echo $sort_date_modified; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_modified; ?></a><?php } else { ?><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; ?></a><?php } ?></th>
+                  <th class="text-left"><?php if($sort == 'date_last'){ ?><a href="<?php echo $sort_date_last; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_last; ?></a><?php } else { ?><a href="<?php echo $sort_date_last; ?>"><?php echo $column_date_last; ?></a><?php } ?></th>
+                  <th class="text-left"><?php if($sort == 'date_next'){ ?><a href="<?php echo $sort_date_next; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_next; ?></a><?php } else { ?><a href="<?php echo $sort_date_next; ?>"><?php echo $column_date_next; ?></a><?php } ?></th>
                   <th class="text-right"><?php echo $column_action; ?></th>
                 </tr>
               </thead>
@@ -39,8 +39,8 @@
                         <td class="text-left"><?php echo $cron['code']; ?></td>
                         <td class="text-left"><?php echo $cron['action']; ?><input type="hidden"></td>
                         <td class="text-left"><?php echo $cron['status']; ?></td>
-                        <td class="text-left"><?php echo $cron['date_added']; ?></td>
-                        <td class="text-left"><?php echo $cron['date_modified']; ?></td>
+                        <td class="text-left"><?php echo $cron['date_last']; ?></td>
+                        <td class="text-left"><?php echo $cron['date_next']; ?></td>
                         <td class="text-right">
                           <?php echo $cron['edit']; ?>
                           <a data-toggle="tooltip" id="btn-run" data-title="<?php echo $button_run; ?>" data-id="<?php echo $cron['cron_id']; ?>" class="btn btn-warning"><i class="fa fa-play"></i></a>
@@ -63,22 +63,26 @@
 </div>
 <script>
 $('#btn-run').click(function(){
+
+	<?php if($crons) { ?>
+		
 		$.ajax({
 			url:'index.php?route=setting/cron/runcron&cron_id=<?php echo $cron['cron_id']; ?>&token='+token,
-			type:'get',
-			dataType:'json',
-			data:'id='+$(this).attr('data-id'),
-			complete:function(){
-				$(this).button('reset');
-			},
-			success:function(json){
-        if(json['error']){
-          alertMessage('danger', json['error']);
-        }else{
-          alertMessage('success',json['success']);
-        }
-			}
+				type:'get',
+				dataType:'json',
+				data:'id='+$(this).attr('data-id'),
+				complete:function(){
+					$(this).button('reset');
+				},
+				success:function(json){
+					if(json['error']){
+					  alertMessage('danger', json['error']);
+					}else{
+					  alertMessage('success',json['success']);
+					}
+				}
 		});
-	});
+	<?php } ?>
+});
 </script>
 <?php echo $footer; ?>

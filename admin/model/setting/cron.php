@@ -1,31 +1,32 @@
 <?php
 class ModelSettingCron extends Model {
 	public function addCron($data) {
-		$this->db->query("INSERT INTO `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($data['cron_code']) . "', `action` = '" . $this->db->escape($data['cron_action']) . "', `status` = '" . (int)$data['cron_status'] . "', `date_added` = now(), `date_modified` = now()");
+		$this->db->query("INSERT INTO `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($data['cron_code']) . "', `action` = '" . $this->db->escape($data['cron_action']) . "', `cycle` = '" . (int)$data['cron_cycle'] . "',`status` = '" . (int)$data['cron_status'] . "', `date_last` = now(), `date_next` = now()");
 
 		return $this->db->getLastId();
 	}
 
 	public function editCron($data, $cron_id) {
-		$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($data['cron_code']) . "', `action` = '" . $this->db->escape($data['cron_action']) . "', `status` = '" . (int)$data['cron_status'] . "', `date_modified` = now() WHERE cron_id = '" . (int)$cron_id . "'");
+		if ($data['cron_status'] == 1 ){
+			$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($data['cron_code']) . "', `action` = '" . $this->db->escape($data['cron_action']) . "', `cycle` = '" . (int)$data['cron_cycle'] . "',`status` = '" . (int)$data['cron_status'] . "', `date_last` = NULL, `date_next` = now() + INTERVAL '" . (int)$data['cron_cycle'] . "' MINUTE WHERE cron_id = '" . (int)$cron_id . "'");
+		}else{
+			$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `code` = '" . $this->db->escape($data['cron_code']) . "', `action` = '" . $this->db->escape($data['cron_action']) . "', `cycle` = '" . (int)$data['cron_cycle'] . "',`status` = '" . (int)$data['cron_status'] . "', `date_last` = NULL, `date_next` = NULL WHERE cron_id = '" . (int)$cron_id . "'");
+		}
 	}
 
 	public function deleteCron($cron_id) {
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "cron` WHERE `cron_id` = '" . (int)$cron_id . "'");
-	}
-	
-	public function deleteCronByCode($code) {
-		$this->db->query("DELETE FROM `" . DB_PREFIX . "cron` WHERE `code` = '" . $this->db->escape($code) . "'");
-	}
-
-	public function editStatus($cron_id, $status) {
-		$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `status` = '" . (int)$status . "' WHERE cron_id = '" . (int)$cron_id . "'");
 	}
 
 	public function getCron($cron_id) {
 		$query = $this->db->query("SELECT DISTINCT * FROM `" . DB_PREFIX . "cron` WHERE `cron_id` = '" . (int)$cron_id . "'");
 		
 		return $query->row;
+	}
+	
+	public function executedCron($cron_id, $cycle) {
+		
+		$this->db->query("UPDATE `" . DB_PREFIX . "cron` SET `date_last` = now(),  `date_next` = now() + INTERVAL '" . (int)$cycle . "' MINUTE WHERE cron_id = '" . (int)$cron_id . "'");
 	}
 
 	public function getCronByCode($code) {
@@ -41,14 +42,14 @@ class ModelSettingCron extends Model {
 			'code',
 			'action',
 			'status',
-			'date_added',
-			'date_modified'
+			'date_last',
+			'date_next'
 		);
 
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY `" . $data['sort'] . "`";
 		} else {
-			$sql .= " ORDER BY `date_added`";
+			$sql .= " ORDER BY `date_last`";
 		}
 
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {
@@ -84,10 +85,11 @@ class ModelSettingCron extends Model {
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "cron` (
 			`cron_id` int(11) NOT NULL AUTO_INCREMENT,
 			`code` varchar(64) NOT NULL,
+			`cycle` int (11) NOT NULL,
 			`action` text NOT NULL,
 			`status` tinyint(1) NOT NULL,
-			`date_added` datetime NOT NULL,
-			`date_modified` datetime NOT NULL,
+			`date_last` datetime NOT NULL,
+			`date_next` datetime NOT NULL,
 			PRIMARY KEY (`cron_id`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
 	}
