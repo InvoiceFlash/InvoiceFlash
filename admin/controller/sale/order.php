@@ -361,7 +361,8 @@ class ControllerSaleOrder extends Controller {
 				'color' => 'info'
 			);
 			
-			if (strtotime($result['date_added']) > strtotime('-' . (int)$this->config->get('config_order_edit') . ' day')) {
+			// Si no se ha generado el delivery, se puede editar el order
+			if (!$this->model_sale_order->checkDelivery($result['order_id'])) {
 				$action[] = array(
 					'href' => $this->url->link('sale/order/update', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'] . $url, 'SSL'),
 					'icon' => 'fas fa-edit',

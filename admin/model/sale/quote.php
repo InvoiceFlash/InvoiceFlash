@@ -626,6 +626,16 @@ class ModelSaleQuote extends Model {
 		return $cshipping ;
 	}
 
+	public function checkOrder($quote_id) {
+		$query = $this->db->query("SELECT invoice_no FROM `" . DB_PREFIX . "quote` WHERE quote_id = '" . (int)$quote_id . "'");
+
+		if ($query->row['invoice_no'] == 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
 }
 
 

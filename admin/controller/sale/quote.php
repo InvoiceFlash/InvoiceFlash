@@ -336,8 +336,6 @@ class ControllerSaleQuote extends Controller {
 
 	  $results = $this->model_sale_quote->getQuotes($data);
 	  
-	  $log=new Log('quote.log'); $log->write($results);
-
       foreach ($results as $result) {
           $action = array();
                       
@@ -346,13 +344,15 @@ class ControllerSaleQuote extends Controller {
 			  'icon' => 'far fa-eye',
 			  'color' => 'info'
           );
-          
-          $action[] = array(
-              'href' => $this->url->link('sale/quote/update', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL'),
-			  'icon' => 'fas fa-edit',
-			  'color' => 'default'
-          );
-          
+		  
+		  if (!$this->model_sale_quote->checkOrder($result['quote_id'])) {
+			$action[] = array(
+				'href' => $this->url->link('sale/quote/update', 'token=' . $this->session->data['token'] . '&quote_id=' . $result['quote_id'] . $url, 'SSL'),
+				'icon' => 'fas fa-edit',
+				'color' => 'default'
+			);
+		  }
+		  
           $this->data['quotes'][] = array(
               'quote_id'      => $result['quote_id'],
               'company'       => $result['company'],

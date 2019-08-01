@@ -675,6 +675,15 @@ class ModelSaleOrder extends Model {
 		return $cshipping ;
 	}
 
+	public function checkDelivery($order_id) {
+		$query = $this->db->query("SELECT invoice_no FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'");
+
+		if ($query->row['invoice_no']==0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }
 
 

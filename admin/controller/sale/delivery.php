@@ -346,12 +346,14 @@ class ControllerSaledelivery extends Controller {
 			  'icon' => 'far fa-eye',
 			  'color' => 'info'
           );
-          
-          $action[] = array(
-              'href' => $this->url->link('sale/delivery/update', 'token=' . $this->session->data['token'] . '&delivery_id=' . $result['delivery_id'] . $url, 'SSL'),
-			  'icon' => 'fas fa-edit',
-			  'color' => 'default'
-          );
+		  
+		  if (!$this->model_sale_delivery->checkInvoice($result['delivery_id'])) {
+			$action[] = array(
+				'href' => $this->url->link('sale/delivery/update', 'token=' . $this->session->data['token'] . '&delivery_id=' . $result['delivery_id'] . $url, 'SSL'),
+				'icon' => 'fas fa-edit',
+				'color' => 'default'
+			);
+		  }
           
           $this->data['deliveries'][] = array(
               'delivery_id'      => $result['delivery_id'],

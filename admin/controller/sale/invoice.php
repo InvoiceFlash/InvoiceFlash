@@ -361,11 +361,13 @@ class ControllerSaleInvoice extends Controller {
 				'color' => 'info'
 			);
 			
-			$action[] = array(
-				'href' => $this->url->link('sale/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL'),
-				'icon' => 'fas fa-edit',
-				'color' => 'default'
-			);
+			if ($this->model_sale_invoice->getPaidReceipts($result['invoice_id']) == 0)	{
+				$action[] = array(
+					'href' => $this->url->link('sale/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL'),
+					'icon' => 'fas fa-edit',
+					'color' => 'default'
+				);
+			}
 			
 			$this->data['invoices'][] = array(
 				'invoice_id'      => $result['invoice_id'],

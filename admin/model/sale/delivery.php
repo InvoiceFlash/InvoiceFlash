@@ -623,6 +623,16 @@ class ModelSaleDelivery extends Model {
 		return $cshipping ;
 	}
 
+	public function checkInvoice($delivery_id) {
+		$query = $this->db->query("SELECT `invoice_no` FROM `" . DB_PREFIX . "delivery` WHERE `delivery_id` = '" . (int)$delivery_id . "'");
+
+		if ($query->row['invoice_no'] == 0) {
+			return false;	
+		} else {
+			return true;
+		}
+	}
+
 }
 
 
