@@ -64,7 +64,7 @@ class ModelSaleCustomer extends Model {
 
 		// if ($data['password']) {
 
-			$this->db->query("UPDATE " . DB_PREFIX . "customer SET salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "' WHERE customer_id = '" . (int)$customer_id . "'");
+			//$this->db->query("UPDATE " . DB_PREFIX . "customer SET salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 		// }
 

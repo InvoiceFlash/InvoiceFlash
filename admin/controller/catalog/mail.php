@@ -145,7 +145,7 @@ class ControllerCatalogMail extends Controller {
 				'mailfrom'    => $result['client'],
 				'title'       => $result['title'],
 				'message'     => $result['message'],
-				'created'     => $result['date_added'],
+				'created'     => date($this->language->get('datetime_format'), strtotime($result['date_added'])),
 				'sel_mail_in'    => isset($this->request->post['sel_mail_in']) && in_array($result['mail_id'], $this->request->post['sel_mail_in']),
 				'action'      => $action
 			);
@@ -175,7 +175,7 @@ class ControllerCatalogMail extends Controller {
 				'company'     => $result['company'],
 				'subject'     => $result['title'],
 				'message'     => $result['message'],
-				'date_added'  => $result['date_added'],
+				'date_added'  => date($this->language->get('datetime_format'), strtotime($result['date_added'])),
 				'sel_mail_out'=> isset($this->request->post['sel_mail_out']) && in_array($result['mail_id'], $this->request->post['sel_mail_out']),
 				'action'      => $action
 			);
@@ -428,9 +428,27 @@ class ControllerCatalogMail extends Controller {
 			$mail->setHtml($message);
 			$mail->send();
 			
-			// Insert in table mail_out
+			// Insert in table fl_mails
 			$this->load->model('catalog/mail');
-			$this->model_catalog_mail->writemail_out($this->config->get('config_email'), $lcTo, $lcmessage, $lcsubject);
+
+			// customer
+			$this->load->model('sale/customer');
+			$customer_info = $this->model_sale_customer->getCustomerByEmail($lcTo);
+			if ($customer_info) {
+				$customer_id = $customer_info['customer_id'];
+			} else {
+				$customer_id = 0;
+			}
+
+			$data = array(
+				'subject'		=> $lcsubject,
+				'text'			=> $message,
+				'code'			=> md5($message),
+				'to'			=> $lcTo,
+				'customer_id'	=> $customer_id
+			);
+
+			$this->model_catalog_mail->addMailSended($data);
 			
 			$this->redirect($this->url->link('catalog/mail', 'token=' . $this->session->data['token'], 'SSL'));
 		}

@@ -81,9 +81,27 @@ class ModelCatalogMail extends Model {
 	
 	public function getmails_out($data = array()) {
 		
-		$sql = "SELECT mails.*, c.company FROM " . DB_PREFIX . "fl_mails AS mails  
-					LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = mails.customer_id 
-					WHERE type= 'E' ORDER BY mails.date_added DESC" ;
+		$sql = "SELECT m.mail_id, 
+			CASE
+			WHEN m.customer_id != 0 THEN c.company
+			WHEN m.supplier_id != 0 THEN s.company";
+
+		if ($this->checkTableExists('fl_potentials')) {
+			$sql .= " WHEN m.potential_id != 0 THEN p.company";
+		}
+
+		$sql .= " ELSE `client`
+			END AS company
+			, m.title, m.message, m.date_added 
+			FROM " . DB_PREFIX . "fl_mails AS m 
+			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id 
+			LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";
+		
+		if ($this->checkTableExists('fl_potentials')) {
+			$sql .= " LEFT JOIN " . DB_PREFIX . "fl_potentials p ON p.potentials_id = m.potential_id";
+		}
+		
+		$sql .= " WHERE TYPE= 'E' ORDER BY m.date_added DESC";
 		
       	$query = $this->db->query($sql);
 				
@@ -226,5 +244,6 @@ class ModelCatalogMail extends Model {
 		
 		$this->db->query($sql);
 	}
+
 }
 ?>
