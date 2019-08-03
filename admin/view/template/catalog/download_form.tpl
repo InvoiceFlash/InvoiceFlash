@@ -24,7 +24,7 @@
 					<div class="input-group">
 						<input type="text" name="filename" value="<?php echo $filename; ?>" id="input-filename" class="form-control">
 						<span class="input-group-btn">
-							<button type="button" id="button-upload" class="btn btn-default"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
+							<button type="button" id="button-download" class="btn btn-default"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
 						</span>
 					</div>
 					<?php if ($error_filename){ ?>
