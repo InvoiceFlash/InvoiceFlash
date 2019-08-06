@@ -1,8 +1,8 @@
 <?php
 class ControllerSaleInvoice extends Controller {
 	private $error = array();
-	
-	public function index() {
+
+  	public function index() {
 		$this->load->language('sale/invoice');
 
 		$this->document->setTitle($this->language->get('heading_title'));
@@ -82,7 +82,7 @@ class ControllerSaleInvoice extends Controller {
 
 		$this->load->model('sale/invoice');
 
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateEdit()) {
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 
 			$this->model_sale_invoice->editInvoice($this->request->get['invoice_id'], $this->request->post);
 	  		
@@ -606,7 +606,7 @@ class ControllerSaleInvoice extends Controller {
 		} else {
 			$this->data['error_warning'] = '';
 		}
-
+		
 		if (isset($this->error['paid_out'])) {
 			$this->data['error_paid_out'] = $this->error['paid_out'];
 		} else {
@@ -1085,8 +1085,8 @@ class ControllerSaleInvoice extends Controller {
 				'model'            => $invoice_product['model'],
 				'option'           => $invoice_option,
 				'quantity'         => $invoice_product['quantity'],
-				'price'			   => $this->currency->format($invoice_product['price']),
-				'total'            => $this->currency->format($invoice_product['total']),
+				'price'			   => $this->currency->format($invoice_product['price'], $invoice_info['currency_code'], $invoice_info['currency_value']),
+				'total'            => $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value']),
 				'tax'              => $invoice_product['tax']
 			);
 		}
@@ -2062,7 +2062,7 @@ class ControllerSaleInvoice extends Controller {
 
 		return $tax_data;
 	}
-
+	
 	public function validateEdit() {
 		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
 			$this->error['warning'] = $this->language->get('error_permission');
@@ -2082,6 +2082,6 @@ class ControllerSaleInvoice extends Controller {
 			return false;
 	 	}
 	}
-
+	
 }
-?> 
+?>
