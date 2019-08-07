@@ -164,6 +164,7 @@ $('#btn-send').on('click',function(e){
 				if(json['error']['to']){ alertMessage('danger', json['error']['to']); }
 				if(json['error']['subject']){ alertMessage('danger', json['error']['subject']); }
 				if(json['error']['message']){ alertMessage('danger', json['error']['message']); }
+				if(json['error']['permis']){ alertMessage('danger', json['error']['permis']); }
 			}
 			if(json['success']){
 				alertMessage('success',json['success']);

@@ -42,5 +42,6 @@ $_['error_config']          = 'Your Mail server is not configurated.';
 $_['error_to']              = 'The destination email is not valid!';
 $_['error_subject']         = 'Subject can not be empty!';
 $_['error_message']         = 'Message can not be empty!';
+$_['error_permis']          = 'Permission Denied!';
 
  ?>

@@ -269,9 +269,16 @@ class ControllerCatalogMail extends Controller {
 	}
 
 	public function send() {
-		$this->language->load('catalog/mail');
-
+		
 		$json = array();
+		
+		$this->language->load('catalog/mail');
+		
+		$log=new Log('mail.log'); 
+
+		if (!$this->user->hasPermission('modify', 'catalog/mail')) {
+			$json['error']['permis'] = $this->language->get('error_permis');
+		}
 
 		if ($this->request->post['to']=='') {
 			$json['error']['to'] = $this->language->get('error_to');
@@ -286,7 +293,7 @@ class ControllerCatalogMail extends Controller {
 		}
 
 		if (empty($json['error'])) {
-			
+
 			$this->load->model('sale/customer');
 			$customer = $this->model_sale_customer->getCustomerByEmail($this->request->post['to']);
 			
@@ -324,6 +331,7 @@ class ControllerCatalogMail extends Controller {
 			
 			$json['success'] = $this->language->get('text_success_email');
 		}
+			
 		
 		$this->response->setOutput(json_encode($json));
 	}	
@@ -451,6 +459,19 @@ class ControllerCatalogMail extends Controller {
 			$this->model_catalog_mail->addMailSended($data);
 			
 			$this->redirect($this->url->link('catalog/mail', 'token=' . $this->session->data['token'], 'SSL'));
+		}
+	}
+	
+	protected function validateForm() {
+		
+		if (!$this->user->hasPermission('modify', 'catalog/mail')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		}
+		
+		if (!$this->error) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 }
