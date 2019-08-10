@@ -81,12 +81,17 @@ class ModelCatalogMail extends Model {
 	
 	public function getmails_out($data = array()) {
 		
+		$util=new util($this->registry);
+		
 		$sql = "SELECT m.mail_id, 
 			CASE
-			WHEN m.customer_id != 0 THEN c.company
-			WHEN m.supplier_id != 0 THEN s.company";
-
-		if ($this->checkTableExists('fl_potentials')) {
+			WHEN m.customer_id != 0 THEN c.company " ;
+			
+		if ($util->checkTableExists('supplier')) {
+			$sql .= "WHEN m.supplier_id != 0 THEN s.company";
+		}
+		
+		if ($util->checkTableExists('fl_potentials')) {
 			$sql .= " WHEN m.potential_id != 0 THEN p.company";
 		}
 
@@ -94,10 +99,12 @@ class ModelCatalogMail extends Model {
 			END AS company
 			, m.title, m.message, m.date_added 
 			FROM " . DB_PREFIX . "fl_mails AS m 
-			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id 
-			LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";
-		
-		if ($this->checkTableExists('fl_potentials')) {
+			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id " ;
+			
+		if ($util->checkTableExists('supplier')) {
+			$sql .= " LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";
+		}
+		if ($util->checkTableExists('fl_potentials')) {
 			$sql .= " LEFT JOIN " . DB_PREFIX . "fl_potentials p ON p.potentials_id = m.potential_id";
 		}
 		
