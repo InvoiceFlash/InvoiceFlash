@@ -1065,7 +1065,7 @@ class ControllerSaleInvoice extends Controller {
 		
 		$this->load->model('catalog/product');
 		
-		$this->document->addScript('view/javascript/jquery/ajaxupload.js');
+		//$this->document->addScript('view/javascript/jquery/ajaxupload.js');
 		
 		$this->data['invoice_products'] = array();		
 		

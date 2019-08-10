@@ -1054,7 +1054,7 @@ class ControllerSaleOrder extends Controller {
 		
 		$this->load->model('catalog/product');
 		
-		$this->document->addScript('view/javascript/jquery/ajaxupload.js');
+		//$this->document->addScript('view/javascript/jquery/ajaxupload.js');
 		
 		$this->data['order_products'] = array();		
 		
