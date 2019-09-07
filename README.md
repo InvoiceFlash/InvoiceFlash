@@ -8,17 +8,19 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a>.</b></p>
 
 ---
-### 0.0.7 (master) (In development.. Expected date: 08.30.19)
+### 0.0.7 (master) (In development.. Expected date: 09.30.19)
 - [x] Change price articles on invoice
 - [ ] API
 - [ ] Edit language
-- [ ] Resellers on web
 - [ ] addons manager
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
+- [ ] Mod Facturae
+- [ ] Mod PEPPOL support
 - [ ] Events
 - [ ] Multi Store
 
 ### 0.0.6
+- Resellers on web
 - cron support
 - minor fix bug
 
@@ -61,5 +63,4 @@ Please read the installation instructions included in the repository or <a href=
 *   **Bootstrap 4.x + SASS**
 *   **jQuery 3.x**
 *   **Font Awesome 5.x**
-
 
