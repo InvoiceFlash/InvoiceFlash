@@ -80,18 +80,18 @@ class ModelCatalogMail extends Model {
 	}
 	
 	public function getmails_out($data = array()) {
-		
-		$util=new util($this->registry);
+		$this->load->library('util');
+		$ut = Util::get_instance($this->registry);
 		
 		$sql = "SELECT m.mail_id, 
 			CASE
-			WHEN m.customer_id != 0 THEN c.company " ;
+			WHEN m.customer_id != 0 THEN c.company";
 			
-		if ($util->checkTableExists('supplier')) {
-			$sql .= "WHEN m.supplier_id != 0 THEN s.company";
+		if ($ut->checkTableExists('c_supplier')) {
+			$sql .= " WHEN m.supplier_id != 0 THEN s.company";
 		}
-		
-		if ($util->checkTableExists('fl_potentials')) {
+
+		if ($ut->checkTableExists('fl_potentials')) {
 			$sql .= " WHEN m.potential_id != 0 THEN p.company";
 		}
 
@@ -99,12 +99,13 @@ class ModelCatalogMail extends Model {
 			END AS company
 			, m.title, m.message, m.date_added 
 			FROM " . DB_PREFIX . "fl_mails AS m 
-			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id " ;
+			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id";
 			
-		if ($util->checkTableExists('supplier')) {
-			$sql .= " LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";
+		if ($ut->checkTableExists('c_supplier')) {	
+			$sql .= "LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";
 		}
-		if ($util->checkTableExists('fl_potentials')) {
+
+		if ($ut->checkTableExists('fl_potentials')) {
 			$sql .= " LEFT JOIN " . DB_PREFIX . "fl_potentials p ON p.potentials_id = m.potential_id";
 		}
 		
@@ -177,38 +178,33 @@ class ModelCatalogMail extends Model {
 			$query = $this->db->query($sql);
 	
 			if ($query->row['mail'] == 0){
-			
 				//Search customer by mail
-				$sql = "SELECT customer_id, firstname FROM " . DB_PREFIX . "customer where email='" .$fromaddress. "'" ; 
+				$sql_customer = "SELECT customer_id FROM " . DB_PREFIX . "customer where email='" .$fromaddress. "'" ; 
+				$query_customer = $this->db->query($sql_customer);
+
+				// Search contact by mail
+				$sql_contact = "SELECT customer_id FROM `" . DB_PREFIX . "customer_contacts` WHERE cemail = '" . $fromaddress . "'";
+				$query_contact = $this->db->query($sql_contact);
 				
-				$query = $this->db->query($sql);
-				
-				if (isset($query->row['firstname'])){
-					$firstname =  $query->row['firstname'];
-					
-					$sql = "INSERT INTO " . DB_PREFIX . "customer_mails (customer_id, email_customer, subject, text, date_added) 
-					values(". $query->row['customer_id'] . ",
-						 '" . $this->db->escape($fromaddress) . "',
-						 '" . $this->db->escape(iconv_mime_decode($header->subject,0, "ISO-8859-1")) . "',
-						 '" . $this->db->escape($body) . "', FROM_UNIXTIME('". $date. "' ))" ;
-				
-					$this->db->query($sql);
-					
-				}else{
-					$firstname = '' ;
+				if (isset($query_customer->row['customer_id'])){
+					$customer_id = $query_customer->row['customer_id'];					
+				} else if (isset($query_contact->row['customer_id'])) {
+					$customer_id = $query_contact->row['customer_id'];
+				} else {
+					$customer_id = 0;
 				}
-				
-				$sql = "INSERT INTO " . DB_PREFIX . "fl_mails (client, code, title, message, date_added, type) 
+
+				$sql = "INSERT INTO " . DB_PREFIX . "fl_mails (client, code, title, message, date_added, type, customer_id) 
 					values('". $this->db->escape($fromaddress) . "',
 						 '" . $this->db->escape($message_id) . "',
 						 '" . $this->db->escape(iconv_mime_decode($header->subject,0, "ISO-8859-1")) . "',
-						 '" . $this->db->escape($body) . "', FROM_UNIXTIME('". $date. "' ), 'R')" ;
+						 '" . $this->db->escape($body) . "', FROM_UNIXTIME('". $date. "' ), 'R', '" . $customer_id . "')" ;
 				
 				$this->db->query($sql);
 			}
 		}
 		
-		//echo $sql ;
+		//echo $sql;
 		
 		imap_close($connection); 
 

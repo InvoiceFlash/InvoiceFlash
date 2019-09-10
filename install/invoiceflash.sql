@@ -8134,17 +8134,6 @@ CREATE TABLE `if_fl_mail_files` (
   PRIMARY KEY (`file_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `if_customer_mails`;
-CREATE TABLE `if_customer_mails` (
-  `customer_mail_id` int(11) NOT NULL AUTO_INCREMENT,
-  `customer_id` int(11) NOT NULL,
-  `subject` varchar(250) DEFAULT NULL,
-  `text` text,
-  `date_added` datetime DEFAULT NULL,
-  `email_customer` varchar(250) DEFAULT NULL,
-  PRIMARY KEY (`customer_mail_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `if_mail_out`;
 CREATE TABLE `if_mail_out` (
   `mail_out_id` int(11) NOT NULL AUTO_INCREMENT,
