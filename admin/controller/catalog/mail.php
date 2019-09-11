@@ -77,18 +77,16 @@ class ControllerCatalogMail extends Controller {
 		
 		$url = '';
 
-		if (isset($this->request->get['page_in'])) {
-			$page_in = $this->request->get['page_in'];
-			$url .= '&page_in=' . $page_in;
+		if (isset($this->request->get['page'])) {
+			$page = $this->request->get['page'];
 		} else {
-			$page_in = 1;
+			$page = 1;
 		}
 
-		if (isset($this->request->get['page_out'])) {
-			$page_out = $this->request->get['page_out'];
-			$url .= '&page_out=' . $page_out;
+		if (isset($this->request->get['type'])) {
+			$type = $this->request->get['type'];
 		} else {
-			$page_out = 1;
+			$type = 'in';
 		}
 
 		if (isset($this->request->get['filter_company'])) {
@@ -118,6 +116,14 @@ class ControllerCatalogMail extends Controller {
 		$this->data['send'] = $this->url->link('catalog/mail/send', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		
 		$this->data['token'] = $this->session->data['token'];
+
+		if ($type=='in') {
+			$page_in = $page;
+			$page_out = 1;
+		} else {
+			$page_in = 1;
+			$page_out = $page;
+		}
 
 		$data = array(
 			'filter_company' => $filter_company,
@@ -198,7 +204,7 @@ class ControllerCatalogMail extends Controller {
 		$pag_mail_in->page  = $page_in;
 		$pag_mail_in->limit = $this->config->get('config_admin_limit');
 		$pag_mail_in->text  = $this->language->get('text_pagination');
-		$pag_mail_in->url   = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url . '&page_in={page_in}', 'SSL');
+		$pag_mail_in->url   = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url . '&page={page}' . '&type=in', 'SSL');
 
 		$this->data['pag_mail_in'] = $pag_mail_in->render();
 
@@ -207,7 +213,7 @@ class ControllerCatalogMail extends Controller {
 		$pag_mail_out->page  = $page_out;
 		$pag_mail_out->limit = $this->config->get('config_admin_limit');
 		$pag_mail_out->text  = $this->language->get('text_pagination');
-		$pag_mail_out->url   = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url . '&page_out={page_out}', 'SSL');
+		$pag_mail_out->url   = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url . '&page={page}' . '&type=out', 'SSL');
 
 		$this->data['pag_mail_out'] = $pag_mail_out->render();
 
