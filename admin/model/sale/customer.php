@@ -8,7 +8,7 @@ class ModelSaleCustomer extends Model {
 
 		$sql = "INSERT INTO " . DB_PREFIX . "customer SET 
 			company = '" . $this->db->escape($data['company']) . "', 
-			brand = '" . $this->db->escape($data['brand']) . "', 
+			approved = '1',
 			email = '" . $this->db->escape($data['email']) . "', 
 			telephone = '" . $this->db->escape($data['telephone']) . "', 
 			fax = '" . $this->db->escape($data['fax']) . "', 
@@ -55,7 +55,6 @@ class ModelSaleCustomer extends Model {
 
 		$this->db->query("UPDATE " . DB_PREFIX . "customer SET 
 			company = '" . $this->db->escape($data['company']) . "', 
-			brand = '" . $this->db->escape($data['brand']) . "', 
 			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
@@ -64,7 +63,7 @@ class ModelSaleCustomer extends Model {
 
 		// if ($data['password']) {
 
-			//$this->db->query("UPDATE " . DB_PREFIX . "customer SET salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "' WHERE customer_id = '" . (int)$customer_id . "'");
+			// $this->db->query("UPDATE " . DB_PREFIX . "customer SET salt = '" . $this->db->escape($salt = substr(md5(uniqid(rand(), true)), 0, 9)) . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 		// }
 
@@ -124,25 +123,9 @@ class ModelSaleCustomer extends Model {
 
 	}
 
-
-
-	// public function getCustomer($customer_id) {
-
-	// 	$query = $this->db->query("SELECT DISTINCT c.*  
-	// 								FROM " . DB_PREFIX . "customer c 
-	// 								LEFT JOIN " . DB_PREFIX . "customer_ext ce on ce.customer_id = c.customer_id 
-	// 								WHERE c.customer_id = '" . (int)$customer_id . "'");
-
-	// 	return $query->row;
-
-	// }
-
 	public function getCustomer($customer_id) {
 
-		$query = $this->db->query("SELECT DISTINCT *  
-									FROM " . DB_PREFIX . "customer c 
-									LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id 
-									WHERE c.customer_id = '" . (int)$customer_id . "'");
+		$query = $this->db->query("SELECT c.company, c.email, ce.nif, c.telephone, ce.cwww, c.fax, c.newsletter, c.customer_group_id, c.status, c.date_support, ce.bank_cc, ce.bic, ce.efaccafi, ce.efaccapa, ce.efaccare, ce.digital_invoice, c.date_added, c.date_modified, c.notes, c.address_id	FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id WHERE c.customer_id = '" . (int)$customer_id . "'");
 
 		return $query->row;
 
@@ -158,21 +141,22 @@ class ModelSaleCustomer extends Model {
 
 
 	public function getCustomers($data = array()) {
-		$sql = "SELECT *, cgd.name AS customer_group FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		$sql = "SELECT c.customer_id, c.company, c.telephone, c.customer_group_id, cgd.name AS customer_group , c.email, c.status, c.ip, c.date_added FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 
 		$implode = array();
-
 
 		if (!empty($data['filter_company'])) {
 			$implode[] = "c.company LIKE '%" . $this->db->escape($data['filter_company']) . "%'";
 		}
 
-	if (!empty($data['filter_telephone'])) {
+		if (!empty($data['filter_telephone'])) {
 			$implode[] = "telephone LIKE '%" . $this->db->escape($data['filter_telephone']) . "%'";
 		}
+
 		if (!empty($data['filter_email'])) {
 			$implode[] = "c.email LIKE '" . $this->db->escape($data['filter_email']) . "%'";
 		}
+
 		if (!empty($data['filter_customer_group_id'])) {
 			$implode[] = "c.customer_group_id = '" . (int)$data['filter_customer_group_id'] . "'";
 		}	
@@ -366,7 +350,6 @@ class ModelSaleCustomer extends Model {
 	public function getTotalCustomers($data = array()) {
 
 		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "customer";
-
 
 
 		$implode = array();
@@ -962,6 +945,12 @@ class ModelSaleCustomer extends Model {
 
 	public function getCustomerContact($customer_contacts_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer_contacts WHERE customer_contacts_id = " . $customer_contacts_id);
+
+		return $query->row;
+	}
+
+	public function getCustomerContactByEmail($email) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer_contacts WHERE LCASE(cemail) = '" . $this->db->escape(strtolower($email)) . "'");
 
 		return $query->row;
 	}

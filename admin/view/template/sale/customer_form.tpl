@@ -54,12 +54,6 @@
 										</div>
 									</div>
 									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_brand; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="brand" value="<?php echo $brand; ?>" class="form-control">
-										</div>
-									</div>
-									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_email; ?></label>
 										<div class="col-sm-6">
 											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
@@ -266,7 +260,7 @@
 											</div>
 										</div>
 										<div class="form-group row">
-											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_address_1; ?></label>
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_1; ?></label>
 											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][address_1]" value="<?php echo $address['address_1']; ?>" class="form-control">
 												<?php if (isset($error_address_address_1[$address_row])) { ?>
@@ -281,7 +275,7 @@
 											</div>
 										</div>
 										<div class="form-group row">
-											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_city; ?></label>
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>
 											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][city]" value="<?php echo $address['city']; ?>" class="form-control">
 												<?php if (isset($error_address_city[$address_row])) { ?>
@@ -290,13 +284,13 @@
 											</div>
 										</div>
 										<div class="form-group row">
-											<label class="col-form-label col-sm-10 col-md-2"><span id="postcode-required<?php echo $address_row; ?>" class="required">*</span> <?php echo $entry_postcode; ?></label>
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>
 											<div class="col-sm-6">
 												<input type="text" name="address[<?php echo $address_row; ?>][postcode]" value="<?php echo $address['postcode']; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group row">
-											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_country; ?></label>
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
 											<div class="col-sm-6">
 												<select name="address[<?php echo $address_row; ?>][country_id]" onchange="country(this,'<?php echo $address_row; ?>','<?php echo $address['zone_id']; ?>');" class="form-control">
 													<option value=""><?php echo $text_select; ?></option>
@@ -314,7 +308,7 @@
 											</div>
 										</div>
 										<div class="form-group row">
-											<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_zone; ?></label>
+											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
 											<div class="col-sm-6">
 												<select name="address[<?php echo $address_row; ?>][zone_id]" class="form-control">
 												</select>
@@ -474,7 +468,8 @@
 							<tr>
 								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
 								<th class="text-left"><?php echo $column_email_subject; ?></th>
-								<th class="text-left"><?php echo $column_email_text; ?></th>
+								<th class="text-left"><?php echo $column_email_sender; ?></th>
+								<th class="text-right"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -483,7 +478,13 @@
 							<tr>
 								<td class="text-left"><?php echo $email['date_added']; ?></td>
 								<td class="text-left"><?php echo $email['subject']; ?></td>
-								<td class="text-left hidden-xs"><?php echo $email['text']; ?></td>
+								<td class="text-left"><?php echo $email['sender']; ?></td>
+								<td class="d-none" id="mail-<?php echo $email['mail_id']; ?>"><?php echo $email['text']; ?></td>
+								<td class="text-right">
+									<button type="button" class="btn btn-info" onclick="viewMessage(<?php echo $email['mail_id']; ?>);">
+										<i class="fa fa-eye"></i> <?php echo $text_view; ?>
+									</button>
+								</td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>
@@ -665,6 +666,17 @@
 		</form>
 	</div>
 </div>
+<!-- MessagePopUp -->
+<div id="MessagePopUp" class="modal fade" tabindex="-1" role="dialog">
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal">&times;</button>
+		</div>
+		<div class="modal-body"><textarea readonly class="form-control-plaintext" id="message" rows="30"></textarea></div>
+	</div>
+</div>
+</div>
 <!-- Modal -->
 <div id="EmailModal" class="modal fade" tabindex="-1" role="dialog">
   <div class="modal-dialog">
@@ -678,6 +690,9 @@
     if (!extension_loaded('imap')) {?>
       <center><span class = "label label-danger"><?php echo $text_alert_imap ?></span>
     <?php } ?>
+	<?php if (isset($error_server)) { ?>
+		<center><span class="label label-danger"><?php echo $error_server; ?></span>
+	<?php } ?>
         <form class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
             <div class="form-group row">
               <label for="to" class="control-label col-sm-3"><?php echo $text_to ?></label>
@@ -715,8 +730,8 @@
          </form>
       </div>
       <div class="modal-footer">
-				<button type="button" id="send" class="btn btn-default"> <?php echo $button_send; ?></button>
-         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			<button type="button" id="send" class="btn btn-default"> <?php echo $button_send; ?></button>
+         	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -881,7 +896,7 @@ function addAddress(){
 
 	html+='<div class="form-group row">';
 
-	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_address_1; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_1; ?></label>';
 
 	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][address_1]" value="" class="form-control" class="form-control"></div>';
 
@@ -897,7 +912,7 @@ function addAddress(){
 
 	html+='<div class="form-group row">';
 
-	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_city; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>';
 
 	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][city]" value="" class="form-control" class="form-control"></div>';
 
@@ -905,7 +920,7 @@ function addAddress(){
 
 	html+='<div class="form-group row">';
 
-	html+='<label class="col-form-label col-sm-10 col-md-2"><span id="postcode-required'+address_row+'" class="required">*</span> <?php echo $entry_postcode; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>';
 
 	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][postcode]" value="" class="form-control" class="form-control"></div>';
 
@@ -913,7 +928,7 @@ function addAddress(){
 
 	html+='<div class="form-group row">';
 
-	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_country; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>';
 
 	html+='<div class="col-sm-6"><select name="address['+address_row+'][country_id]" onchange="country(this, \''+address_row+'\', \'0\');" class="form-control">';
 
@@ -931,7 +946,7 @@ function addAddress(){
 
 	html+='<div class="form-group row">';
 
-	html+='<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_zone; ?></label>';
+	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>';
 
 	html+='<div class="col-sm-6"><select name="address['+address_row+'][zone_id]" class="form-control"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></div>';
 
@@ -1153,5 +1168,11 @@ $('#button-web').click(function(){
 		alert('<?php echo $error_web; ?>');
 	}
 });
+</script>
+<script>
+function viewMessage(mail_id) {
+	$('#message').html($('#mail-'+mail_id).text());
+	$('#MessagePopUp').modal('show');
+}
 </script>
 <?php echo $footer; ?>

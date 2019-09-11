@@ -5,9 +5,12 @@
   <div class="panel-body">
     <form action="<?php echo $action ?>" class="form-horizontal" method="post" enctye="multipart/form-data" id="form">
       <div class="form-group">
-        <label for="name" class="control-label col-sm-2"><?php echo $entry_name ?></label>
+        <label for="name" class="control-label col-sm-2"><i class="text-danger">*</i> <?php echo $entry_name ?></label>
         <div class="control-field col-sm-4">
           <input type="text" name="name" id="name" class="form-control" value="<?php echo $name ?>">
+          <?php if ($error_name) { ?>
+          <span class="text-danger"><?php echo $error_name; ?></span>
+          <?php } ?>
         </div>
       </div>
       <div class="form-group">
