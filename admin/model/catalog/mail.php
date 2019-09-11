@@ -197,7 +197,7 @@ class ModelCatalogMail extends Model {
 				$sql = "INSERT INTO " . DB_PREFIX . "fl_mails (client, code, title, message, date_added, type, customer_id) 
 					values('". $this->db->escape($fromaddress) . "',
 						 '" . $this->db->escape($message_id) . "',
-						 '" . $this->db->escape(iconv_mime_decode($header->subject,0, "ISO-8859-1")) . "',
+						 '" . $this->db->escape(iconv_mime_decode($header->subject,0, "UTF-8")) . "',
 						 '" . $this->db->escape($body) . "', FROM_UNIXTIME('". $date. "' ), 'R', '" . $customer_id . "')" ;
 				
 				$this->db->query($sql);

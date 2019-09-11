@@ -1396,10 +1396,10 @@ class ControllerSaleCustomer extends Controller {
 			);
 		}
 
-		$transaction_total = $this->model_sale_customer->getTotalHistories($this->request->get['customer_id']);
+		$history_total = $this->model_sale_customer->getTotalHistories($this->request->get['customer_id']);
 
 		$pagination = new Pagination();
-		$pagination->total = $transaction_total;
+		$pagination->total = $history_total;
 		$pagination->page = $page;
 		$pagination->limit = 10; 
 		$pagination->text = $this->language->get('text_pagination');
@@ -1413,6 +1413,7 @@ class ControllerSaleCustomer extends Controller {
 	}
 
 	public function transaction() {
+		$log = new Log('transactions.log'); $log->write($this->request->post);
 
 		$this->language->load('sale/customer');
 

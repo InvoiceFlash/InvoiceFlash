@@ -125,7 +125,7 @@ class ModelSaleCustomer extends Model {
 
 	public function getCustomer($customer_id) {
 
-		$query = $this->db->query("SELECT c.company, c.email, ce.nif, c.telephone, ce.cwww, c.fax, c.newsletter, c.customer_group_id, c.status, c.date_support, ce.bank_cc, ce.bic, ce.efaccafi, ce.efaccapa, ce.efaccare, ce.digital_invoice, c.date_added, c.date_modified, c.notes, c.address_id	FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id WHERE c.customer_id = '" . (int)$customer_id . "'");
+		$query = $this->db->query("SELECT c.company, c.email, ce.nif, c.telephone, ce.cwww, c.fax, c.newsletter, c.customer_group_id, c.status, c.date_support, ce.bank_cc, ce.bic, ce.efaccafi, ce.efaccapa, ce.efaccare, ce.digital_invoice, c.date_added, c.date_modified, c.notes, c.address_id, c.store_id	FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id WHERE c.customer_id = '" . (int)$customer_id . "'");
 
 		return $query->row;
 

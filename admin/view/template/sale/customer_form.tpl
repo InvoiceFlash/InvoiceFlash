@@ -593,18 +593,18 @@
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_description; ?></label>
 							<div class="col-sm-6">
-								<input type="text" name="description" value="" class="form-control" class="form-control">
+								<input type="text" name="description" class="form-control">
 							</div>
 						</div>
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_amount; ?></label>
 							<div class="col-sm-6">
-								<input type="text" name="amount" value="" class="form-control" class="form-control">
+								<input type="text" name="amount" class="form-control">
 							</div>
 						</div>
 						<div class="form-group row">
 							<div class="col-sm-10 col-sm-offset-2">
-								<button type="button" id="button-transaction" data-target="customer" data-id="<?php echo $customer_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_transaction; ?></button>
+								<button type="button" id="button-transaction" data-action="customer" data-target="sale" data-id="<?php echo $customer_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_transaction; ?></button>
 							</div>
 						</div>
 					</div>
