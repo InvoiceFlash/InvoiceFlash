@@ -1,6 +1,6 @@
 <?php
 $time = date("G:i:s");
-$entry = "Información guardada a las $time.\n";
+$entry = "Informatión saved at $time.\n";
 
 require_once(str_replace('//','/',dirname(__FILE__).'/') .'../../../admin/config.php');
 
