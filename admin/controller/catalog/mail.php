@@ -131,6 +131,63 @@ class ControllerCatalogMail extends Controller {
 			'limit' => $this->config->get('config_admin_limit')
 		);
 		
+		// require_once(DIR_SYSTEM . 'vendor/imap/ImapConnect.php'); 
+		// require_once(DIR_SYSTEM . 'vendor/imap/ImapClient.php'); 
+		// require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessage.php');
+		// require_once(DIR_SYSTEM . 'vendor/imap/TypeAttachments.php');
+		// require_once(DIR_SYSTEM . 'vendor/imap/section.php');
+		// require_once(DIR_SYSTEM . 'vendor/imap/SubtypeBody.php');
+		// require_once(DIR_SYSTEM . 'vendor/imap/TypeBody.php');
+		// require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessageAttachment.php');
+		
+		
+		// $imap = new ImapClient([
+			// 'flags' => [
+				// 'service' => ImapConnect::SERVICE_IMAP,
+				// 'encrypt' => ImapConnect::ENCRYPT_SSL,
+				// /* This NOVALIDATE_CERT is used when the server connecting to the imap
+				 // * servers is not https but the imap is. This ignores the failure.
+				 // */
+				// 'validateCertificates' => ImapConnect::NOVALIDATE_CERT,
+			// ],
+			// 'mailbox' => [
+				// 'remote_system_name' => 'mail.coompras.com',
+			// ],
+			// 'connect' => [
+				// 'username' => 'pruebas@coompras.com',
+				// 'password' => 'MdATec0T'
+			// ]
+		// ]);
+	
+		// $imap->selectFolder('INBOX');
+		// $emails = $imap->getMessages();
+		
+		// $count = 0 ;
+		// foreach($emails as $email){
+			// $count = $count + 1;
+			// if ($count == 4){
+				
+				// echo $imap->incomingMessage->header->from ;
+				// echo '<BR>';
+				// echo $imap->incomingMessage->header->date;
+				// echo '<BR>';
+				// echo $imap->incomingMessage->header->subject ;
+				// echo '<BR>';
+				//*********************************
+				// echo '<pre>';
+				// var_dump ($imap->incomingMessage->message);
+				// echo'</pre>';
+				// echo $imap->incomingMessage->message->plain ;
+				// echo $imap->incomingMessage->message->plain->charset ;
+				// echo $imap->incomingMessage->message->plain->body ;
+				// echo $imap->incomingMessage->message->info[0]->body ;
+				// var_dump($imap->incomingMessage->message->info[1]->body) ;// este es el bueno
+				
+				
+			// }
+
+		// };
+				
 		$this->data['mails_ins'] = array();
 		
 		$mails_in_total = $this->model_catalog_mail->getTotalmails_in($data);
@@ -258,15 +315,25 @@ class ControllerCatalogMail extends Controller {
 	}
 	
 	public function getmails() {
-	
+
 		$this->load->model('catalog/mail');
 		
 		if (!extension_loaded('imap')) {
 			echo 'Imap library is not installed.';
 		}else{
 			if ($this->config->get('config_smtp_host')== null || $this->config->get('config_smtp_username')== null || $this->config->get('config_smtp_password')== null){
-				// return;
+				echo 'Imap library is not configurated.';
 			}else{
+				
+				require_once(DIR_SYSTEM . 'vendor/imap/ImapConnect.php'); 
+				require_once(DIR_SYSTEM . 'vendor/imap/ImapClient.php'); 
+				require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessage.php');
+				require_once(DIR_SYSTEM . 'vendor/imap/TypeAttachments.php');
+				require_once(DIR_SYSTEM . 'vendor/imap/Section.php');
+				require_once(DIR_SYSTEM . 'vendor/imap/SubtypeBody.php');
+				require_once(DIR_SYSTEM . 'vendor/imap/TypeBody.php');
+				require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessageAttachment.php');
+				
 				$this->model_catalog_mail->getmails();
 			}
 		}
@@ -386,11 +453,21 @@ class ControllerCatalogMail extends Controller {
 		
 		$this->data['from']    = $mail['client'] ;
 		$this->data['subject'] = $mail['title'] ;
-		$this->data['message'] = html_entity_decode($mail['message']);
-
-		$this->data['message'] = strip_tags($this->data['message'], '<br>');
-		$this->data['message'] = str_replace("\n", "<br />", $this->data['message']);
 		
+		//$message = $mail['message'];
+		$message = $this->remover_js($mail['message']);
+		
+		if (substr($message, 0, 1) == '<' or strpos($message, '<!doct') == true) {
+		}else{
+			$message = str_replace("\n", "<br />", $message); // Necesario para los ficheros de texto
+		}
+		//$message = quoted_printable_decode ($message);
+		
+		$message = preg_replace("/<p\s(.+?)>(.+?)<\/p>/is", "<span>$2</span><br>", $message);
+		
+		
+		$this->data['message'] = $message;
+
 		$this->template = 'catalog/mail_form.tpl';
 		$this->children = array(
 			'common/header',	
@@ -479,6 +556,15 @@ class ControllerCatalogMail extends Controller {
 		} else {
 			return false;
 		}
+	}
+
+	// añadido
+	public function remover_js($html) {
+		$javascript = '/<script[^>]*?>.*?<\/script>/si';
+		$html = preg_replace($javascript, '', $html);
+		$javascript = '/<script[^>]*?javascript{1}[^>]*?>.*?<\/script>/si';
+		$html = preg_replace($javascript, '', $html);
+		return $html;
 	}
 }
 ?>

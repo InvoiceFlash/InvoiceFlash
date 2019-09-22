@@ -102,7 +102,7 @@ class ModelCatalogMail extends Model {
 			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id";
 			
 		if ($ut->checkTableExists('c_supplier')) {	
-			$sql .= "LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";
+			$sql .= " LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";
 		}
 
 		if ($ut->checkTableExists('fl_potentials')) {
@@ -138,38 +138,50 @@ class ModelCatalogMail extends Model {
 				
 		$this->db->query($sql) ;
 	}
-	
 	public function getmails() {
 
-		if (strpos($this->config->get('config_smtp_username'), 'gmail') !== false){
-			$authhost=':993/imap/ssl/novalidate-cert';
-		}else{
-			$authhost=':110/pop3/notls';
-		}
-		// with certificate
-		$connection = imap_open('{'. $this->config->get('config_smtp_host') . $authhost . '}INBOX', $this->config->get('config_smtp_username'), $this->config->get('config_smtp_password')) or die("Problem : ". imap_last_error()); 
-
-		// control errores
-		$foo = imap_errors();
+		$imap = new ImapClient([
+			'flags' => [
+				'service' => ImapConnect::SERVICE_IMAP,
+				'encrypt' => ImapConnect::ENCRYPT_SSL,
+				/* This NOVALIDATE_CERT is used when the server connecting to the imap
+				 * servers is not https but the imap is. This ignores the failure.
+				 */
+				'validateCertificates' => ImapConnect::NOVALIDATE_CERT,
+			],
+			'mailbox' => [
+				'remote_system_name' => $this->config->get('config_smtp_host') ,
+			],
+			'connect' => [
+				'username' => $this->config->get('config_smtp_username') ,
+				'password' => $this->config->get('config_smtp_password')
+			]
+		]);
+	
+		$imap->selectFolder('INBOX');
+		$emails = $imap->getMessages();
 		
-		$count = imap_num_msg($connection);
-
-		for ($i = 1; $i <= $count; $i++) {
-
-			$header     = imap_header($connection, $i);
-			$date       = $header->udate;
-
-			 //Contenido del email
-	        $body = imap_fetchbody($connection, $i, "1.1");
-			if ($body == "") {
-			    $body = imap_fetchbody($connection, $i, "1");
-			}
-
-			$message_id = $header->Msgno;
-			$from       = $header->from;
+		foreach($emails as $email){
+						
+			$from = $email->header->details->from ;
 			foreach ($from as $id => $object) {
-				//$fromname = $object->personal ;
 				$fromaddress = $object->mailbox . "@" . $object->host;
+			}
+			
+			$message_id = $email->getID() ;
+
+			if(isset($email->header->date)){
+					$date = $email->header->date;
+			}else{
+					$date = date("Y-m-d H:i:s");
+			}
+			
+			$subject = mb_convert_encoding($email->header->subject,"UTF-8","auto") ;
+			
+			if (isset($email->message->info[1]) and strlen($email->message->info[1]->body) > 10){
+				$body    = $email->message->info[1]->body;
+			}else{
+				$body    = $email->message->info[0]->body;
 			}
 
 			//Search if stored that mail
@@ -178,10 +190,11 @@ class ModelCatalogMail extends Model {
 			$query = $this->db->query($sql);
 	
 			if ($query->row['mail'] == 0){
+				
 				//Search customer by mail
 				$sql_customer = "SELECT customer_id FROM " . DB_PREFIX . "customer where email='" .$fromaddress. "'" ; 
 				$query_customer = $this->db->query($sql_customer);
-
+				
 				// Search contact by mail
 				$sql_contact = "SELECT customer_id FROM `" . DB_PREFIX . "customer_contacts` WHERE cemail = '" . $fromaddress . "'";
 				$query_contact = $this->db->query($sql_contact);
@@ -193,20 +206,18 @@ class ModelCatalogMail extends Model {
 				} else {
 					$customer_id = 0;
 				}
-
-				$sql = "INSERT INTO " . DB_PREFIX . "fl_mails (client, code, title, message, date_added, type, customer_id) 
-					values('". $this->db->escape($fromaddress) . "',
-						 '" . $this->db->escape($message_id) . "',
-						 '" . $this->db->escape(iconv_mime_decode($header->subject,0, "UTF-8")) . "',
-						 '" . $this->db->escape(quoted_printable_decode($body)) . "',
-						 FROM_UNIXTIME('". $date. "' ), 'R', '" . $customer_id . "')" ;
 				
+				$sql = "INSERT INTO " . DB_PREFIX . "fl_mails (client, code, title, message, date_added, type, customer_id) 
+						values('". $this->db->escape($fromaddress) . "',
+							 '" . $this->db->escape($message_id) . "',
+							 '" . $this->db->escape(trim($subject)) . "',
+							 '" . $this->db->escape($body) . "','" . date('Y-m-d H:i:s', strtotime($date) ). "', 'R', '" . $customer_id . "')" ;
+					
 				$this->db->query($sql);
 			}
-		}
-		
-		imap_close($connection); 
 
+		};
+	
 	}
 	
 	public function editconfig($key, $value){
@@ -234,11 +245,11 @@ class ModelCatalogMail extends Model {
 	public function addMailSended($data) {
 		$sql = "INSERT INTO `" . DB_PREFIX . "fl_mails` SET nusuario = " . (int)$this->user->getId() . ", date_added = now(), title = '" . $this->db->escape($data['subject']) . "', message = '" . $this->db->escape($data['text']) . "', type = 'E', code = '" . $this->db->escape($data['code']) . "', client = '" . $this->db->escape($data['to']) . "', bleido = 1, tag_id = 0, ";
 
-		if ($data['customer_id']!=0) {
+		if (isset($data['customer_id']) && $data['customer_id']!=0) {
 			$sql .= "customer_id = " . (int)$data['customer_id'] . ", supplier_id = 0, potential_id = 0";
-		} elseif ($data['supplier_id']!=0) {
+		} elseif (isset($data['supplier_id']) && $data['supplier_id']!=0) {
 			$sql .= "customer_id = 0, supplier_id = " . (int)$data['supplier_id'] . ", potential_id = 0";
-		} elseif ($data['potential_id']!=0) {
+		} elseif (isset($data['potential_id']) && $data['potential_id']!=0) {
 			$sql .= "customer_id = 0, supplier_id = 0, potential_id = " . (int)$data['potential_id'];
 		} else {
 			$sql .= "customer_id = 0, supplier_id = 0, potential_id = 0";
