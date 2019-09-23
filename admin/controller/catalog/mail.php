@@ -131,63 +131,6 @@ class ControllerCatalogMail extends Controller {
 			'limit' => $this->config->get('config_admin_limit')
 		);
 		
-		// require_once(DIR_SYSTEM . 'vendor/imap/ImapConnect.php'); 
-		// require_once(DIR_SYSTEM . 'vendor/imap/ImapClient.php'); 
-		// require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessage.php');
-		// require_once(DIR_SYSTEM . 'vendor/imap/TypeAttachments.php');
-		// require_once(DIR_SYSTEM . 'vendor/imap/section.php');
-		// require_once(DIR_SYSTEM . 'vendor/imap/SubtypeBody.php');
-		// require_once(DIR_SYSTEM . 'vendor/imap/TypeBody.php');
-		// require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessageAttachment.php');
-		
-		
-		// $imap = new ImapClient([
-			// 'flags' => [
-				// 'service' => ImapConnect::SERVICE_IMAP,
-				// 'encrypt' => ImapConnect::ENCRYPT_SSL,
-				// /* This NOVALIDATE_CERT is used when the server connecting to the imap
-				 // * servers is not https but the imap is. This ignores the failure.
-				 // */
-				// 'validateCertificates' => ImapConnect::NOVALIDATE_CERT,
-			// ],
-			// 'mailbox' => [
-				// 'remote_system_name' => 'mail.coompras.com',
-			// ],
-			// 'connect' => [
-				// 'username' => 'pruebas@coompras.com',
-				// 'password' => 'MdATec0T'
-			// ]
-		// ]);
-	
-		// $imap->selectFolder('INBOX');
-		// $emails = $imap->getMessages();
-		
-		// $count = 0 ;
-		// foreach($emails as $email){
-			// $count = $count + 1;
-			// if ($count == 4){
-				
-				// echo $imap->incomingMessage->header->from ;
-				// echo '<BR>';
-				// echo $imap->incomingMessage->header->date;
-				// echo '<BR>';
-				// echo $imap->incomingMessage->header->subject ;
-				// echo '<BR>';
-				//*********************************
-				// echo '<pre>';
-				// var_dump ($imap->incomingMessage->message);
-				// echo'</pre>';
-				// echo $imap->incomingMessage->message->plain ;
-				// echo $imap->incomingMessage->message->plain->charset ;
-				// echo $imap->incomingMessage->message->plain->body ;
-				// echo $imap->incomingMessage->message->info[0]->body ;
-				// var_dump($imap->incomingMessage->message->info[1]->body) ;// este es el bueno
-				
-				
-			// }
-
-		// };
-				
 		$this->data['mails_ins'] = array();
 		
 		$mails_in_total = $this->model_catalog_mail->getTotalmails_in($data);
