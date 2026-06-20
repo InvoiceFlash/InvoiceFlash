@@ -8,8 +8,9 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ---
-### 0.0.7 (master) (In development.. Expected date: 10.30.19)
-- [x] Change price articles on invoice
+### 0.0.8 (bootstrap5-migration)
+- [x] Upgraded to Boostrap 5.x
+- [x] Copatible php 5 y php 8.3
 - [ ] API
 - [ ] Edit language
 - [ ] addons manager
@@ -18,6 +19,8 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or
 - [ ] Mod PEPPOL support
 - [ ] Events
 - [ ] Multi Store
+### 0.0.7 (master) (In development.. Expected date: 10.30.19)
+- [x] Change price articles on invoice
 
 ### 0.0.6
 - Resellers on web
