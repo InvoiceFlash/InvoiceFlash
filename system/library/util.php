@@ -1,6 +1,11 @@
 <?php
 class Util {
-	protected $registry;	
+	protected $registry;
+	private $template;
+	private $config;
+	private $db;
+	private $request;
+	private $session;
 	private static $instance;
 
 	public function __construct($registry) {

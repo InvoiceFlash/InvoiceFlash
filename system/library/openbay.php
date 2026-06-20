@@ -1,6 +1,9 @@
 <?php
 final class Openbay {
 	private $registry;
+	private $ebay;
+	private $amazon;
+	private $amazonus;
 	private $installed_modules = array();
 
 	public function __construct($registry) {

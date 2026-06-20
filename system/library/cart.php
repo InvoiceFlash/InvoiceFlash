@@ -2,6 +2,10 @@
 class Cart {
 	private $config;
 	private $db;
+	private $customer;
+	private $session;
+	private $tax;
+	private $weight;
 	private $data = array();
 	private $data_recurring = array();
 
