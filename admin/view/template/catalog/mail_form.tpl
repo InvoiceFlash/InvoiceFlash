@@ -14,7 +14,7 @@
 					<input type="text" readonly class="form-control-plaintext" value="<?php echo htmlentities($from); ?>">
 				</div>
 				<div class="col-sm-2">
-					<button class="btn btn-primary pull-right" data-toggle="modal" data-target="#EmailModal">Reply</button>
+					<button class="btn btn-primary pull-right" data-bs-toggle="modal" data-bs-target="#EmailModal">Reply</button>
 				</div>
 			</div>
 			<div class="form-group row">
@@ -39,7 +39,7 @@
     <div class="modal-content">
       <div class="modal-header">
 				<h4 class="modal-title">Reply Mail</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
 	    <?php

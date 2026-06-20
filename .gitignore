@@ -7,3 +7,8 @@ image/cache/index.html
 system/cache/index.htm
 InvoiceFlash0.rar
 InvoiceFlash1.rar
+system/cache/cache.*
+vqmod/vqcache/
+vqmod/checked.cache
+vqmod/mods.cache
+InvoiceFlash-master.zip

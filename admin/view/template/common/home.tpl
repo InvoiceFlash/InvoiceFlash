@@ -107,10 +107,10 @@
 			</div>
 			<div class="panel-body">
 				<ul class="nav nav-tabs" id="tabs-chart" title="<?php echo $entry_range; ?>">
-					<li class="nav-item"><a class="nav-link" href="#day" data-toggle="tab"><?php echo $text_day; ?></a></li>
-					<li class="nav-item"><a class="nav-link" href="#week" data-toggle="tab"><?php echo $text_week; ?></a></li>
-					<li class="nav-item"><a class="nav-link" href="#month" data-toggle="tab"><?php echo $text_month; ?></a></li>
-					<li class="nav-item"><a class="nav-link" href="#year" data-toggle="tab"><?php echo $text_year; ?></a></li>
+					<li class="nav-item"><a class="nav-link" href="#day" data-bs-toggle="tab"><?php echo $text_day; ?></a></li>
+					<li class="nav-item"><a class="nav-link" href="#week" data-bs-toggle="tab"><?php echo $text_week; ?></a></li>
+					<li class="nav-item"><a class="nav-link" href="#month" data-bs-toggle="tab"><?php echo $text_month; ?></a></li>
+					<li class="nav-item"><a class="nav-link" href="#year" data-bs-toggle="tab"><?php echo $text_year; ?></a></li>
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane" id="day"><canvas class="day" width="800" height="250"><canvas/></div>
@@ -209,7 +209,7 @@
 </div>
 <script src="view/javascript/chart/Chart.bundle.min.js"></script>
 <script>
-$('#tabs-chart a[data-toggle="tab"]').on('shown.bs.tab',function(e){
+$('#tabs-chart a[data-bs-toggle="tab"]').on('shown.bs.tab',function(e){
 	var $this=$(this);
 	var range=$this.attr('href').substr(1);
 	$.ajax({

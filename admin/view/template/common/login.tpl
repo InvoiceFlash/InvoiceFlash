@@ -19,10 +19,10 @@
 			</noscript>				
 			
 			<?php if ($success) { ?>
-			<div class="alert alert-success"><?php echo $success; ?><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>
+			<div class="alert alert-success"><?php echo $success; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
 			<?php } ?>
 			<?php if ($error_warning) { ?>
-			<div class="alert alert-danger"><?php echo $error_warning; ?><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>
+			<div class="alert alert-danger"><?php echo $error_warning; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
 			<?php } ?>
 			<form action="<?php echo $action; ?>" class="form-signin" method="post" enctype="multipart/form-data" autocomplete="off" id="form">
 			<div class="well well-lg">

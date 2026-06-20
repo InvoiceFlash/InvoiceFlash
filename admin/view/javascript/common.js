@@ -81,6 +81,33 @@ function filter(){
 		})
 	})
 }(window.jQuery);
+// Bootstrap 5 removed the jQuery .button('loading'/'reset') plugin; replicate it here
+// so existing $(...).button('loading')/.button('reset') call sites keep working unchanged.
+$.fn.button = function(action) {
+	return this.each(function() {
+		var $btn = $(this);
+		if (action === 'loading') {
+			if ($btn.data('original-html') === undefined) {
+				$btn.data('original-html', $btn.html());
+			}
+			$btn.prop('disabled', true);
+		} else if (action === 'reset') {
+			if ($btn.data('original-html') !== undefined) {
+				$btn.html($btn.data('original-html'));
+			}
+			$btn.prop('disabled', false);
+		}
+	});
+};
+// Bootstrap 5 also dropped the data-toggle="buttons" active-state toggling for
+// checkbox/radio button groups; replicate the 'active' class behaviour here.
+$(document).on('change', '.btn-group[data-toggle="buttons"] input[type="radio"]', function() {
+	$(this).closest('.btn-group').find('label.btn').removeClass('active');
+	$(this).closest('label.btn').addClass('active');
+});
+$(document).on('change', '.btn-group[data-toggle="buttons"] input[type="checkbox"]', function() {
+	$(this).closest('label.btn').toggleClass('active', this.checked);
+});
 // Habilitar Submenus
 $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
 	if (!$(this).next().hasClass('show')) {
@@ -96,7 +123,7 @@ $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
 	return false;
 });
 var alertMessage=function(state,msg){
-	var html='<div class="alert alert-'+state+' alert-dismissable" style="display:none;"><a class="close" data-dismiss="alert" href="#">&times;</a>'+msg+'</div>';
+	var html='<div class="alert alert-'+state+' alert-dismissable" style="display:none;"><a class="close" data-bs-dismiss="alert" href="#">&times;</a>'+msg+'</div>';
 	
 	$('#notification').html(html);
 	$('#notification>.alert').fadeIn('slow').delay(15000).fadeTo(2000,0,function(){
@@ -126,7 +153,10 @@ $(document).ajaxError(function(event,xhr,ajaxSettings,thrownError){
 $(document).ready(function() {
 	// Mostrar contenido primera pestaña
 	$('.nav-tabs,.nav-pills').each(function(){
-		$(this).find('[data-toggle="tab"]:first').tab('show');
+		var tabEl = $(this).find('[data-bs-toggle="tab"]:first')[0];
+		if (tabEl) {
+			bootstrap.Tab.getOrCreateInstance(tabEl).show();
+		}
 	});
 	$('.help-block.error').closest('.form-group').addClass('has-error');
 	$(document).on('click','.list-group .label-trash',function(){
@@ -174,16 +204,27 @@ $(document).ready(function() {
 		}
 	});
 	// tooltips on hover
-	$('[data-toggle=\'tooltip\']').tooltip({container: 'body', html: true});
+	$('[data-toggle=\'tooltip\']').each(function() {
+		if (!bootstrap.Tooltip.getInstance(this)) {
+			new bootstrap.Tooltip(this, {container: 'body', html: true});
+		}
+	});
 
 	// Makes tooltips work on ajax generated content
 	$(document).ajaxStop(function() {
-		$('[data-toggle=\'tooltip\']').tooltip({container: 'body'});
+		$('[data-toggle=\'tooltip\']').each(function() {
+			if (!bootstrap.Tooltip.getInstance(this)) {
+				new bootstrap.Tooltip(this, {container: 'body'});
+			}
+		});
 	});
 
 	// tooltip remove
 	$('[data-toggle=\'tooltip\']').on('remove', function() {
-		$(this).tooltip('dispose');
+		var instance = bootstrap.Tooltip.getInstance(this);
+		if (instance) {
+			instance.dispose();
+		}
 	});
 
 	// Tooltip remove fixed
@@ -648,7 +689,7 @@ $(function(){
             // update modal content
             $('.modal-body').text(data.someval);
             // show modal
-            $('#myModal').modal('show');
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('myModal')).show();
             
         },
         error:function(request, status, error) {
@@ -721,19 +762,24 @@ $(function(){
 	
 	$(document).on('click', 'a[data-toggle=\'image\']', function(e) {
 		var $element = $(this);
-		var $popover = $element.data('bs.popover'); // element has bs popover?
-		
+		var existing = bootstrap.Popover.getInstance(this); // element has bs popover?
+
 		e.preventDefault();
 
 		// destroy all image popovers
-		$('a[data-toggle="image"]').popover('dispose');
+		$('a[data-toggle="image"]').each(function() {
+			var instance = bootstrap.Popover.getInstance(this);
+			if (instance) {
+				instance.dispose();
+			}
+		});
 
 		// remove flickering (do not re-add popover when clicking for removal)
-		if ($popover) {
+		if (existing) {
 			return;
 		}
 
-		$element.popover({
+		var popover = new bootstrap.Popover(this, {
 			html: true,
 			placement: 'right',
 			trigger: 'manual',
@@ -742,12 +788,12 @@ $(function(){
 			}
 		});
 
-		$element.popover('show');
+		popover.show();
 
 		$('#button-image').on('click', function() {
 			var $button = $(this);
 			var $icon   = $button.find('> i');
-			
+
 			$('#modal-image').remove();
 			$.ajax({
 				url: 'index.php?route=common/filemanager&token=' + getURLVar('token') + '&target=' + $element.parent().find('input').attr('id') + '&thumb=' + $element.attr('id'),
@@ -767,11 +813,11 @@ $(function(){
 				success: function(html) {
 					$('body').append('<div id="modal-image" class="modal">' + html + '</div>');
 
-					$('#modal-image').modal('show');
+					bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-image')).show();
 				}
 			});
 
-			$element.popover('dispose');
+			popover.dispose();
 		});
 
 		$('#button-clear').on('click', function() {
@@ -779,7 +825,7 @@ $(function(){
 
 			$element.parent().find('input').val('');
 
-			$element.popover('dispose');
+			popover.dispose();
 		});
 	});
 

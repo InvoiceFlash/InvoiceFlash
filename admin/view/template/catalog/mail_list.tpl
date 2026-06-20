@@ -14,9 +14,9 @@
 	</div>
 	<div class="panel-body">
 		<ul class="nav nav-tabs">
-			<li class="nav-item"><a data-toggle="tab" href="#tab-inbox" class="nav-link"><?php echo $tab_inbox; ?></a></li>
-			<li class="nav-item"><a data-toggle="tab" href="#tab-out" class="nav-link"><?php echo $tab_out; ?></a></li>
-			<li class="nav-item"><a data-toggle="tab" href="#tab-mail" class="nav-link"><?php echo $tab_mail; ?></a></li>
+			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-inbox" class="nav-link"><?php echo $tab_inbox; ?></a></li>
+			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-out" class="nav-link"><?php echo $tab_out; ?></a></li>
+			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-mail" class="nav-link"><?php echo $tab_mail; ?></a></li>
 		</ul>
 		<form method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content mt-3">

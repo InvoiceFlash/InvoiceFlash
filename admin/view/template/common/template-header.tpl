@@ -7,11 +7,11 @@
 <?php } ?>
 <div id="notification"></div>
 <?php if (!empty($error)) { ?>
-<div class="alert alert-danger alert-dismissable"><?php echo $error; ?><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>
+<div class="alert alert-danger alert-dismissable"><?php echo $error; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
 <?php } ?>
 <?php if (!empty($error_warning)) { ?>
-<div class="alert alert-danger alert-dismissable"><?php echo $error_warning; ?><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>
+<div class="alert alert-danger alert-dismissable"><?php echo $error_warning; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
 <?php } ?>
 <?php if (!empty($success)) { ?>
-<div class="alert alert-success alert-dismissable"><?php echo $success; ?><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>
+<div class="alert alert-success alert-dismissable"><?php echo $success; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
 <?php } ?>

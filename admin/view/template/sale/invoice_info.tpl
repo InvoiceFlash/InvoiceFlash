@@ -5,18 +5,18 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a> 
-			<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
-			<button class="btn btn-success" data-toggle="modal" data-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Print</span></button>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
+			<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Print</span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">
 		<div class="tabbable">
-			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-invoice" data-toggle="tab"><?php echo $tab_invoice; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-toggle="tab"><?php echo $tab_payment; ?></a></li>
+			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-invoice" data-bs-toggle="tab"><?php echo $tab_invoice; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-bs-toggle="tab"><?php echo $tab_payment; ?></a></li>
 				<?php if ($shipping_method) { ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-toggle="tab"><?php echo $tab_shipping; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-bs-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li>
 			</ul>
 			<div class="tab-content mt-2">
 				<div id="tab-invoice" class="tab-pane active">

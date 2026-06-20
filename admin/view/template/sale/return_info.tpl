@@ -6,7 +6,7 @@
 		<div class="pull-right"><a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a></div>
 	</div>
 	<div class="panel-body">
-		<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-return" data-toggle="tab"><?php echo $tab_return; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li></ul>
+		<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-return" data-bs-toggle="tab"><?php echo $tab_return; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li></ul>
 		<div class="form-horizontal tab-content">
 			<div class="tab-pane" id="tab-return">
 				<table class="table table-bordered table-striped table-hover">
