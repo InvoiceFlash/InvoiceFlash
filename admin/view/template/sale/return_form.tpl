@@ -4,7 +4,7 @@
 	<?php $fa = 'undo'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
 	<div class="panel-body">
 		<ul class="nav nav-tabs">
-			<li class="nav-item"><a class="nav-link" href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 		</ul>
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-conten mt-2">

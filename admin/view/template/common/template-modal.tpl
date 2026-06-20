@@ -3,11 +3,11 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title"><?php echo $text_image_manager; ?></h4>
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
 			</div>
 			<div class="modal-body"></div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-warning btn-block" data-dismiss="modal"><?php echo $button_cancel; ?></button>
+				<button type="button" class="btn btn-warning btn-block" data-bs-dismiss="modal"><?php echo $button_cancel; ?></button>
 			</div>
 		</div>
 	</div>

@@ -4,27 +4,27 @@
 	<div class="card-header">
 		<div class="float-left h2"><i class="hidden-xs fa fa-user"></i><span> <?php echo $heading_title; ?></span></div>
 		<div class="float-right">
-			<button class="btn btn-default" data-toggle="modal" data-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
 			<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="card-body">
         <ul class="nav nav-tabs">
-			<li class="nav-item"><a class="nav-link" href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 			<?php if ($customer_id) { ?>
-			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-toggle="tab"><?php echo $tab_contacts; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-email" data-toggle="tab"><?php echo $tab_email; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-products" data-toggle="tab"><?php echo $tab_products; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-quotes" data-toggle="tab"><?php echo $tab_quotes; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-orders" data-toggle="tab"><?php echo $tab_orders; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-delivery" data-toggle="tab"><?php echo $tab_delivery; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-toggle="tab"><?php echo $tab_invoice; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-toggle="tab"><?php echo $tab_contracts; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-transaction" data-toggle="tab"><?php echo $tab_transaction; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-toggle="tab"><?php echo $tab_reward; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-email" data-bs-toggle="tab"><?php echo $tab_email; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-quotes" data-bs-toggle="tab"><?php echo $tab_quotes; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-orders" data-bs-toggle="tab"><?php echo $tab_orders; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-delivery" data-bs-toggle="tab"><?php echo $tab_delivery; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-bs-toggle="tab"><?php echo $tab_invoice; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-transaction" data-bs-toggle="tab"><?php echo $tab_transaction; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-bs-toggle="tab"><?php echo $tab_reward; ?></a></li>
 			<?php } ?>
-			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-toggle="tab"><?php echo $tab_ip; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-bs-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">				
@@ -32,16 +32,16 @@
 					<div class="row">
 						<div class="col-xs-4 col-sm-3">
 							<div class="nav flex-column" id="vtabs-address">
-								<a href="#tab-customer" class="nav-link active" role="tab" aria-selected="true" data-toggle="pill"><?php echo $tab_general; ?></a>
-								<a href="#tab-notas" class="nav-link" role="tab" aria-selected="false" data-toggle="pill"><?php echo $tab_notes; ?></a>
-								<a href="#tab-various" class="nav-link" role="tab" aria-selected="false" data-toggle="pill"><?php echo $tab_various; ?></a>
-								<a href="#tab-info" class="nav-link" role="tab" aria-selected="false" data-toggle="pill"><?php echo $tab_info; ?></a>
+								<a href="#tab-customer" class="nav-link active" role="tab" aria-selected="true" data-bs-toggle="pill"><?php echo $tab_general; ?></a>
+								<a href="#tab-notas" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_notes; ?></a>
+								<a href="#tab-various" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_various; ?></a>
+								<a href="#tab-info" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_info; ?></a>
 								<?php $address_row=1; ?>
 								<?php foreach ($addresses as $address) { ?>
-									<a href="#tab-address-<?php echo $address_row; ?>" id="address-<?php echo $address_row; ?>" class="nav-link" role="tab" aria-selected="false" data-toggle="pill"><span class="text-danger" onclick="$('#tab-general .nav-tabs a:first').trigger('click');$('#address-<?php echo $address_row; ?>').remove();$('#tab-address-<?php echo $address_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $tab_address . ' ' . $address_row; ?></a>
+									<a href="#tab-address-<?php echo $address_row; ?>" id="address-<?php echo $address_row; ?>" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><span class="text-danger" onclick="$('#tab-general .nav-tabs a:first').trigger('click');$('#address-<?php echo $address_row; ?>').remove();$('#tab-address-<?php echo $address_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $tab_address . ' ' . $address_row; ?></a>
 									<?php $address_row++; ?>
 								<?php } ?>
-								<a class="nav-link action" id="address-add" role="tab" aria-selected="false" data-toggle="pill"><button type="button" class="btn btn-info btn-block" onclick="addAddress();"><i class="fa fa-plus-circle"></i>&nbsp;<?php echo $button_add_address; ?></button></a>
+								<a class="nav-link action" id="address-add" role="tab" aria-selected="false" data-bs-toggle="pill"><button type="button" class="btn btn-info btn-block" onclick="addAddress();"><i class="fa fa-plus-circle"></i>&nbsp;<?php echo $button_add_address; ?></button></a>
 							</div>
 						</div>
 						<div class="col-xs-8 col-sm-9">
@@ -671,7 +671,7 @@
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal">&times;</button>
+			<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
 		</div>
 		<div class="modal-body"><textarea readonly class="form-control-plaintext" id="message" rows="30"></textarea></div>
 	</div>
@@ -683,7 +683,7 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
       <?php
@@ -731,7 +731,7 @@
       </div>
       <div class="modal-footer">
 			<button type="button" id="send" class="btn btn-default"> <?php echo $button_send; ?></button>
-         	<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+         	<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -972,7 +972,7 @@ function addAddress(){
 
 	
 
-	$('#address-add').before('<a class="nav-link" href="#tab-address-'+address_row+'" id="address-'+address_row+'" data-toggle="pill" role="tab" aria-selected="false"><span class="btn btn-danger" onclick="$(\'#vtab-address a:first\').trigger(\'click\'); $(\'#address-'+address_row+'\').remove();$(\'#tab-address-'+address_row+'\').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $tab_address; ?> '+address_row+'</a>');
+	$('#address-add').before('<a class="nav-link" href="#tab-address-'+address_row+'" id="address-'+address_row+'" data-bs-toggle="pill" role="tab" aria-selected="false"><span class="btn btn-danger" onclick="$(\'#vtab-address a:first\').trigger(\'click\'); $(\'#address-'+address_row+'\').remove();$(\'#tab-address-'+address_row+'\').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $tab_address; ?> '+address_row+'</a>');
 
 	
 	$('#address-'+address_row).trigger('click');
