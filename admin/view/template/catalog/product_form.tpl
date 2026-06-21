@@ -14,16 +14,16 @@
 </div>
 	<div class="panel-body">
 		<ul class="nav nav-tabs">
-			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-data" data-bs-toggle="tab"><?php echo $tab_data; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-links" data-bs-toggle="tab"><?php echo $tab_links; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-attribute" data-bs-toggle="tab"><?php echo $tab_attribute; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-option" data-bs-toggle="tab"><?php echo $tab_option; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-discount" data-bs-toggle="tab"><?php echo $tab_discount; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-special" data-bs-toggle="tab"><?php echo $tab_special; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-bs-toggle="tab"><?php echo $tab_reward; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-design" data-bs-toggle="tab"><?php echo $tab_design; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-data" data-toggle="tab"><?php echo $tab_data; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-links" data-toggle="tab"><?php echo $tab_links; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-attribute" data-toggle="tab"><?php echo $tab_attribute; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-option" data-toggle="tab"><?php echo $tab_option; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-discount" data-toggle="tab"><?php echo $tab_discount; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-special" data-toggle="tab"><?php echo $tab_special; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-image" data-toggle="tab"><?php echo $tab_image; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-toggle="tab"><?php echo $tab_reward; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-design" data-toggle="tab"><?php echo $tab_design; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
@@ -32,7 +32,7 @@
 						<div class="col-xs-4 col-sm-3">
 							<div id="vtab-language"  class="nav flex-column" role="tablist" aria-orientation="vertical">
 								<?php foreach ($languages as $language) { ?>
-									<a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-bs-toggle="pill" role="tab" aria-selected="false"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a>
+									<a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-toggle="pill" role="tab" aria-selected="false"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a>
 								<?php } ?>
 							</div>
 						</div>
@@ -445,7 +445,7 @@
 								<ul id="vtab-option" class="nav nav-tabs flex-column">
 									<?php $option_row = 0; ?>
 									<?php foreach ($product_options as $product_option) { ?>
-									<li class="nav-item"><a class="nav-link" href="#tab-option-<?php echo $option_row; ?>" id="option-<?php echo $option_row; ?>" data-bs-toggle="tab">
+									<li class="nav-item"><a class="nav-link" href="#tab-option-<?php echo $option_row; ?>" id="option-<?php echo $option_row; ?>" data-toggle="tab">
 										<span class="label label-danger" onclick="$('#vtab-option a:first').trigger('click');$('#option-<?php echo $option_row; ?>').remove();$('#tab-option-<?php echo $option_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $product_option['name']; ?>
 									</a></li>
 									<?php $option_row++; ?>
@@ -968,7 +968,7 @@ a.typeahead({
 		
 		$('#option-container').append(html);
 
-		$('#option-add').before('<li class="nav-item"><a class="nav-link" href="#tab-option-'+option_row+'" id="option-'+option_row+'" data-bs-toggle="tab"><span class="label label-danger" onclick="$(\'#vtab-option a:first\').trigger(\'click\'); $(\'#option-'+option_row+'\').remove();$(\'#tab-option-'+option_row+'\').remove();return false;"><i class="fa fa-trash"></i></span> '+item+'</a></li>');
+		$('#option-add').before('<li class="nav-item"><a class="nav-link" href="#tab-option-'+option_row+'" id="option-'+option_row+'" data-toggle="tab"><span class="label label-danger" onclick="$(\'#vtab-option a:first\').trigger(\'click\'); $(\'#option-'+option_row+'\').remove();$(\'#tab-option-'+option_row+'\').remove();return false;"><i class="fa fa-trash"></i></span> '+item+'</a></li>');
 
 		$('#option-'+option_row).click();
 

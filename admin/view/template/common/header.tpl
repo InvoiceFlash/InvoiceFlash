@@ -18,6 +18,7 @@
 	<link type="text/css" href="view/javascript/font-awesome/css/all.min.css" rel="stylesheet"/>
 	<script type="text/javascript" src="view/javascript/jquery/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="view/javascript/moment.js"></script>
+	<script type="text/javascript" src="view/javascript/popper.min.js"></script>
 	<script type="text/javascript" src="view/javascript/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="view/javascript/common.js"></script>
 	<script type="text/javascript" src="view/javascript/ckeditor/ckeditor.js"></script>
@@ -34,7 +35,7 @@
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand app-title" href="<?php echo $home; ?>">Invoice Flash</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 		</div>

@@ -5,7 +5,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Print Select</h4>
-        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
         <form action="<?php echo $print ?>" id="formPrint" method="post" target="_blank">
@@ -18,7 +18,7 @@
   	  </div>
       <div class="modal-footer">
         <button class="btn btn-success" type="submit" form="formPrint" id="send"><i class="fa fa-print"></i> Print</button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

@@ -8,7 +8,7 @@ CKEDITOR.plugins.add('invoiceflash', {
 					success: function(html) {
 						$('body').append(html);
 
-						bootstrap.Modal.getOrCreateInstance(document.getElementById('modal-image')).show();
+						$('#modal-image').modal('show');
 					}
 				});
 			}

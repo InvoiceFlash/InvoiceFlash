@@ -7,14 +7,14 @@
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
-					<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal"><i class="fas fa-comment"></i><span></span></button>
+					<button class="btn btn-info pull-right" type="button" data-toggle="modal" data-target="#CommentModal"><i class="fas fa-comment"></i><span></span></button>
 					<!-- Modal -->
 					<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="CommentModalLabel"><?php echo $entry_comment; ?></h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
@@ -52,7 +52,7 @@
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
-								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
+								<div class="input-group-append"><button class="btn btn-info" type="button" data-toggle="modal" data-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
 							</div>
 						</div>
 					</div>
@@ -192,7 +192,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><?php echo $text_product; ?></h5>
-							<button class="close" data-bs-dismiss="modal" arial-label="Close"><span aria-hidden="true">&times;</span></button>
+							<button class="close" data-dismiss="modal" arial-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div class="modal-body">
 							<div class="form-horizontal">
@@ -214,7 +214,7 @@
 						</div>
 						<div class="modal-footer">
 							<div class="control-field col-sm-4 col-sm-offset-2">
-								<button type="button" id="button-delivery-product" class="btn btn-info pull-right" data-bs-dismiss="modal">
+								<button type="button" id="button-delivery-product" class="btn btn-info pull-right" data-dismiss="modal">
 									<i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span>
 								</button>
 							</div>
@@ -229,15 +229,15 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><?php echo $tab_customer; ?></h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
 							<ul class="nav nav-tabs">
-								<li class="nav-item"><a href="#modal-tab-customer" class="nav-link" data-bs-toggle="tab">Customer</a></li>
-								<li class="nav-item"><a href="#tab-payment" class="nav-link" data-bs-toggle="tab">Payment</a></li>
-								<li class="nav-item"><a href="#tab-shipping" class="nav-link" data-bs-toggle="tab">Shipping</a></li>
+								<li class="nav-item"><a href="#modal-tab-customer" class="nav-link" data-toggle="tab">Customer</a></li>
+								<li class="nav-item"><a href="#tab-payment" class="nav-link" data-toggle="tab">Payment</a></li>
+								<li class="nav-item"><a href="#tab-shipping" class="nav-link" data-toggle="tab">Shipping</a></li>
 							</ul>
 							<div class="tab-content mt-2">
 								<div class="tab-pane" id="modal-tab-customer">
@@ -444,7 +444,7 @@
 							</div>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-success" data-bs-dismiss="modal">Save</button>
+							<button type="button" class="btn btn-success" data-dismiss="modal">Save</button>
 						</div>
 					</div>
 				</div>
