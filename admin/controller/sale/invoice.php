@@ -1910,42 +1910,48 @@ class ControllerSaleInvoice extends Controller {
 				}
 			}
 
-			if (isset($this->request->post['product_id'])) {
+			if (isset($this->request->post['product_id']) && $this->request->post['product_id'] != 0) {
 				$product_info = $this->model_catalog_product->getProduct($this->request->post['product_id']);
 
-				if (isset($this->request->post['quantity'])) {
-					$quantity = $this->request->post['quantity'];
-				} else {
-					$quantity = 1;
-				}
-	
-				if (isset($this->request->post['option'])) {
-					$option = $this->request->post['option'];
-				} else {
-					$option = array();
-				}
+				trigger_error('DEBUG checkInvoice product_id=' . $this->request->post['product_id'] . ' store_id=' . $this->request->post['store_id'] . ' config_language_id=' . $this->config->get('config_language_id') . ' product_info=' . json_encode($product_info));
 
-				$product_options = $this->model_catalog_product->getProductOptions($this->request->post['product_id']);
-				
-				foreach ($product_options as $product_option) {
-					if ($product_option['required'] && empty($option[$product_option['product_option_id']])) {
-						$json['error']['product']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+				if ($product_info) {
+					if (isset($this->request->post['quantity'])) {
+						$quantity = $this->request->post['quantity'];
+					} else {
+						$quantity = 1;
 					}
-				}
 
-				if (!isset($json['error']['product']['option'])) {
-					$this->session->data['cart'][] = array(
-						'product_id' 	=> $this->request->post['product_id'],
-						'name'		 	=> $product_info['name'], 
-						'model'		 	=> $product_info['model'], 
-						'quantity' 	 	=> $quantity, 
-						'option' 	 	=> $option, 
-						'price'		 	=> $product_info['price'], 
-						'tax_class_id'	=> $product_info['tax_class_id'], 
-						'total'		 	=> ($product_info['price']*$quantity),
-						'shipping'	 	=> $product_info['shipping']
-					);
-				
+					if (isset($this->request->post['option'])) {
+						$option = $this->request->post['option'];
+					} else {
+						$option = array();
+					}
+
+					$product_options = $this->model_catalog_product->getProductOptions($this->request->post['product_id']);
+
+					foreach ($product_options as $product_option) {
+						if ($product_option['required'] && empty($option[$product_option['product_option_id']])) {
+							$json['error']['product']['option'][$product_option['product_option_id']] = sprintf($this->language->get('error_required'), $product_option['name']);
+						}
+					}
+
+					if (!isset($json['error']['product']['option'])) {
+						$this->session->data['cart'][] = array(
+							'product_id' 	=> $this->request->post['product_id'],
+							'name'		 	=> $product_info['name'],
+							'model'		 	=> $product_info['model'],
+							'quantity' 	 	=> $quantity,
+							'option' 	 	=> $option,
+							'price'		 	=> $product_info['price'],
+							'tax_class_id'	=> $product_info['tax_class_id'],
+							'total'		 	=> ($product_info['price']*$quantity),
+							'shipping'	 	=> $product_info['shipping']
+						);
+
+					}
+				} else {
+					$json['error']['product']['not_found'] = $this->language->get('error_action');
 				}
 			}
 
