@@ -1913,8 +1913,6 @@ class ControllerSaleInvoice extends Controller {
 			if (isset($this->request->post['product_id']) && $this->request->post['product_id'] != 0) {
 				$product_info = $this->model_catalog_product->getProduct($this->request->post['product_id']);
 
-				trigger_error('DEBUG checkInvoice product_id=' . $this->request->post['product_id'] . ' store_id=' . $this->request->post['store_id'] . ' config_language_id=' . $this->config->get('config_language_id') . ' product_info=' . json_encode($product_info));
-
 				if ($product_info) {
 					if (isset($this->request->post['quantity'])) {
 						$quantity = $this->request->post['quantity'];

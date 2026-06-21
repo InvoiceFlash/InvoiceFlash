@@ -1203,6 +1203,13 @@ $(function(){
 		data+='#product input[type="text"],#product input[type="hidden"],#product input[type="radio"]:checked,#product input[type="checkbox"]:checked,#product select,#product textarea,';
 		
 		data+='#tab-total input[type="text"],#tab-total input[type="hidden"],#tab-total input[type="radio"]:checked,#tab-total input[type="checkbox"]:checked,#tab-total select,#tab-total textarea';
+		// Build the AJAX payload before dismissing the modal: data-bs-dismiss="modal"
+		// on this button used to hide (and reset) #ProductModal before this handler
+		// even ran, so product_id was always 0 by the time it got serialized below.
+		var $productModal = $('#ProductModal');
+		if ($productModal.length && $productModal.hasClass('show')) {
+			bootstrap.Modal.getInstance($productModal[0]).hide();
+		}
 		// console.log('index.php?route=checkout/manual&token='+token);
 		$.ajax({
 			url:'index.php?route=sale/order/checkOrder&token='+token,
@@ -1285,6 +1292,9 @@ $(function(){
 			});
 		},
 		updater:function(item){
+			if(!mapped[item]){
+				return item;
+			}
 			$('input[name="product_id"]').val(mapped[item].product_id);
 			if(mapped[item]['option']!=''){
 				var html='',s=$('#text_select').val();
@@ -1387,14 +1397,21 @@ $(function(){
         data='#tab-customer input[type="text"],#tab-customer input[type="hidden"],#tab-customer input[type="radio"]:checked,#tab-customer input[type="checkbox"]:checked,#tab-customer select,#tab-customer textarea,';
 		data+='#tab-payment input[type="text"],#tab-payment input[type="hidden"],#tab-payment input[type="radio"]:checked,#tab-payment input[type="checkbox"]:checked,#tab-payment select,#tab-payment textarea,';
         data+='#tab-shipping input[type="text"],#tab-shipping input[type="hidden"],#tab-shipping input[type="radio"]:checked,#tab-shipping input[type="checkbox"]:checked,#tab-shipping select,#tab-shipping textarea,';
-		
+
 		// Datos del modal
 		data+='#ProductModal input[type="text"],#ProductModal input[type="hidden"],#ProductModal input[type="radio"]:checked,#ProductModal input[type="checkbox"]:checked,#ProductModal select,#ProductModal textarea,';
-		
+
 		// datos de la tabla
 		data+='#product input[type="text"],#product input[type="hidden"],#product input[type="radio"]:checked,#product input[type="checkbox"]:checked,#product select,#product textarea,';
-		
+
 		data+='#tab-total input[type="text"],#tab-total input[type="hidden"],#tab-total input[type="radio"]:checked,#tab-total input[type="checkbox"]:checked,#tab-total select,#tab-total textarea';
+		// Build the AJAX payload before dismissing the modal: data-bs-dismiss="modal"
+		// on this button used to hide (and reset) #ProductModal before this handler
+		// even ran, so product_id was always 0 by the time it got serialized below.
+		var $productModal = $('#ProductModal');
+		if ($productModal.length && $productModal.hasClass('show')) {
+			bootstrap.Modal.getInstance($productModal[0]).hide();
+		}
 		// console.log('index.php?route=checkout/manual/checkInvoice&token='+token);
 		$.ajax({
 			url:'index.php?route=sale/invoice/checkInvoice&token='+token,
@@ -1586,6 +1603,13 @@ $(function(){
 		data+='#product input[type="text"],#product input[type="hidden"],#product input[type="radio"]:checked,#product input[type="checkbox"]:checked,#product select,#product textarea,';
 
 		data+='#tab-total input[type="text"],#tab-total input[type="hidden"],#tab-total input[type="radio"]:checked,#tab-total input[type="checkbox"]:checked,#tab-total select,#tab-total textarea';
+		// Build the AJAX payload before dismissing the modal: data-bs-dismiss="modal"
+		// on this button used to hide (and reset) #ProductModal before this handler
+		// even ran, so product_id was always 0 by the time it got serialized below.
+		var $productModal = $('#ProductModal');
+		if ($productModal.length && $productModal.hasClass('show')) {
+			bootstrap.Modal.getInstance($productModal[0]).hide();
+		}
 		$.ajax({
 			url:'index.php?route=sale/quote/checkQuote&token='+token,
 			type:'post',

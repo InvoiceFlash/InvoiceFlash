@@ -220,7 +220,7 @@
 						</div>
 						<div class="modal-footer">
 							<div class="control-field col-sm-4 col-sm-offset-2">
-								<button type="button" id="button-invoice-product" class="btn btn-info pull-right" data-bs-dismiss="modal">
+								<button type="button" id="button-invoice-product" class="btn btn-info pull-right">
 									<i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span>
 								</button>
 							</div>
