@@ -99,7 +99,7 @@ function validate() {
 			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');
 		});
 		
-		$('#PrintModal').modal('toggle');
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('PrintModal')).toggle();
 	}
 }
 $(document).ready(function(){

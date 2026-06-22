@@ -257,7 +257,7 @@ $('#tabs-chart a[data-bs-toggle="tab"]').on('shown.bs.tab',function(e){
 		}
 	});
 });
-$('#tabs-chart a:first').tab('show');
+bootstrap.Tab.getOrCreateInstance($('#tabs-chart a:first')[0]).show();
 </script>
 <script>
 var token = '<?php echo $token; ?>';

@@ -316,7 +316,10 @@ $('#send').on('click',function(e){
 				if(json['error']['message']){ $('#error-message').html(json['error']['message']); }
 			}
 			if(json['success']){
-				$('#EmailModal').modal('hide');
+				var emailModalInstance = bootstrap.Modal.getInstance(document.getElementById('EmailModal'));
+				if (emailModalInstance) {
+					emailModalInstance.hide();
+				}
 				alertMessage('success',json['success']);
 			}
 		}

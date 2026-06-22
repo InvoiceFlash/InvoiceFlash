@@ -508,7 +508,7 @@ $('#addProduct').click(function(e){
 		alert('Please, select a customer first');
 		$('#order-customer').focus();
 	} else {
-		$('#ProductModal').modal('show');
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
 	}
 });
 </script>

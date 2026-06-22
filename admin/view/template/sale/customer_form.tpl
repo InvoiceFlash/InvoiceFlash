@@ -1137,12 +1137,18 @@ $('#send').on('click',function(e){
 				if(json['error']['subject']){ $('#error-subject').html(json['error']['subject']); }
 				if(json['error']['message']){ $('#error-message').html(json['error']['message']); }
 				if(json['error']['permission']) {
-					$('#EmailModal').modal('hide');
+					var emailModalInstanceErr = bootstrap.Modal.getInstance(document.getElementById('EmailModal'));
+					if (emailModalInstanceErr) {
+						emailModalInstanceErr.hide();
+					}
 					alertMessage('danger', json['error']['permission']);
 				}
 			}
 			if(json['success']){
-				$('#EmailModal').modal('hide');
+				var emailModalInstance = bootstrap.Modal.getInstance(document.getElementById('EmailModal'));
+				if (emailModalInstance) {
+					emailModalInstance.hide();
+				}
 				alertMessage('success',json['success']);
 			}
 		}
@@ -1172,7 +1178,7 @@ $('#button-web').click(function(){
 <script>
 function viewMessage(mail_id) {
 	$('#message').html($('#mail-'+mail_id).text());
-	$('#MessagePopUp').modal('show');
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('MessagePopUp')).show();
 }
 </script>
 <?php echo $footer; ?>

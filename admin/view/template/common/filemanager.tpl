@@ -59,7 +59,10 @@ $('a.thumbnail').on('click', function(e) {
 
 	$('#<?php echo $target; ?>').val($(this).parent().find('input').val());
 
-	$('#modal-image').modal('hide');
+	var modalImageInstance = bootstrap.Modal.getInstance(document.getElementById('modal-image'));
+	if (modalImageInstance) {
+		modalImageInstance.hide();
+	}
 });
 <?php } ?>
 
