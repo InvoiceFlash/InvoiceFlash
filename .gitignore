@@ -13,3 +13,4 @@ vqmod/checked.cache
 vqmod/mods.cache
 InvoiceFlash-master.zip
 system/logs/error.txt
+system/logs/*.log
