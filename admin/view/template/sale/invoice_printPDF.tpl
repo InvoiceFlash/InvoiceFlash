@@ -42,6 +42,9 @@ th {
 <body style="padding-top:0;">
 <div class="container">
 <?php foreach ($invoices as $invoices) { ?>
+	<?php if (!empty($header_html)) { ?>
+	<div class="invoice-custom-header"><?php echo $header_html; ?></div>
+	<?php } ?>
 	<div class="store_logo">
 		<div class="logo">
 			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" /><br>
@@ -129,6 +132,9 @@ th {
 			<td><?php echo $invoices['comment']; ?></td>
 		</tr>
 	</table>
+	<?php } ?>
+	<?php if (!empty($footer_html)) { ?>
+	<div class="invoice-custom-footer"><?php echo $footer_html; ?></div>
 	<?php } ?>
 <?php } ?>
 </div>

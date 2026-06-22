@@ -588,6 +588,15 @@ class ControllerCommonHeader extends Controller {
                     'children' => array()
                 );
 			}
+
+			// Invoice Design
+			if ($this->user->hasPermission('access', 'tools/invoice_design')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_invoice_design'),
+					'href' => $this->url->link('tools/invoice_design', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 			
 			// Design
 			$design = array();

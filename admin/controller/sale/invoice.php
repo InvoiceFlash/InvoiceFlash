@@ -1599,6 +1599,12 @@ class ControllerSaleInvoice extends Controller {
 
 		$this->load->model('setting/setting');
 
+		// Custom header/footer content set in Sale > Invoice Design.
+		$invoice_design = $this->model_setting_setting->getSetting('invoice_design');
+
+		$this->data['header_html'] = isset($invoice_design['header_html']) ? $invoice_design['header_html'] : '';
+		$this->data['footer_html'] = isset($invoice_design['footer_html']) ? $invoice_design['footer_html'] : '';
+
 		$this->data['invoices'] = array();
 
 		$invoices = array();
