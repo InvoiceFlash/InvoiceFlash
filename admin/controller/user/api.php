@@ -190,7 +190,7 @@ class ControllerUserApi extends Controller {
 				'status'        => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'selected'      => isset($this->request->post['selected']) && in_array($result['api'], $this->request->post['selected']),
+				'selected'      => isset($this->request->post['selected']) && in_array($result['api_id'], $this->request->post['selected']),
 				'action'        => $action
 			);
 		}	
@@ -408,7 +408,15 @@ class ControllerUserApi extends Controller {
     }
 
     protected function validateDelete() {
+		if (!$this->user->hasPermission('modify', 'user/user')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		}
 
+		if (!$this->error) {
+			return true;
+		} else {
+			return false;
+		}
     }
 
     public function deleteSession() {
