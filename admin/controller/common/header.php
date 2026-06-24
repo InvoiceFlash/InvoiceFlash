@@ -319,6 +319,36 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Purchases
+			$purchases = array();
+
+			// Purchases - Supplier
+			if ($this->user->hasPermission('access', 'purchase/supplier')) {
+				$purchases[] = array(
+					'name' => $this->language->get('text_supplier'),
+					'href' => $this->url->link('purchase/supplier', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			// Purchases - Purchase Orders
+			if ($this->user->hasPermission('access', 'purchase/purchase_order')) {
+				$purchases[] = array(
+					'name' => $this->language->get('text_purchase_order'),
+					'href' => $this->url->link('purchase/purchase_order', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($purchases) {
+				$this->data['menus'][] = array(
+					'id' => 'purchase',
+					'name' => $this->language->get('text_purchases'),
+					'href' => '',
+					'children' => $purchases
+				);
+			}
+
 			// Reports
 			$reports = array();
 

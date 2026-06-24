@@ -113,6 +113,7 @@ $_['text_remmitance']                  = 'Remittances';
 $_['text_export_import']               = 'Export / Import';
 $_['text_mail']                        = 'Mails';
 $_['text_purchases']                   = 'Purchases';
+$_['text_purchase_order']              = 'Purchase Orders';
 $_['text_web']                		   = 'Web';
 $_['text_marketing']                   = 'Marketing';
 $_['text_report_customer_support']     = 'Customer Support Contract';

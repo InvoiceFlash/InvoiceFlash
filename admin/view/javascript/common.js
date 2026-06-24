@@ -1282,6 +1282,102 @@ $(function(){
 			}
 		});
 	});
+	/* purchase_order_form.tpl */
+	var a=$('#purchase-order-supplier'),mapped={};
+	a.typeahead({
+		source:function(q,process){
+			return $.getJSON('index.php?route=purchase/supplier/autocomplete&token='+token+'&filter_name='+encodeURIComponent(q),function(json){
+				var data=[];
+				$.each(json,function(i,item){
+					mapped[item.name]=item;
+					data.push(item.name);
+				});
+				process(data);
+			});
+		},
+		updater:function(item){
+			$('#purchase_order_supplier_id').val(mapped[item].supplier_id);
+			return item;
+		}
+	}).click(function(){
+		this.select();
+		this.setSelectionRange(0,0);
+	});
+	var a=$('#purchase-order-product'),mapped={};
+	a.typeahead({
+		source:function(q,process){
+			return $.getJSON('index.php?route=catalog/product/autocomplete&token='+token+'&filter_name='+encodeURIComponent(q),function(json){
+				var data=[];
+				$.each(json,function(i,item){
+					mapped[item.name]=item;
+					data.push(item.name);
+				});
+				process(data);
+			});
+		},
+		updater:function(item){
+			$('#purchase_order_product_id').val(mapped[item].product_id);
+			return item;
+		}
+	}).click(function(){
+		this.select();
+		this.setSelectionRange(0,0);
+	});
+	$('#button-purchase_order-product').on('click',function(){
+		var a=$(this);
+		var data='#PurchaseOrderProductModal input[type="text"],#PurchaseOrderProductModal input[type="hidden"],';
+		data+='#product input[type="hidden"]';
+		var ajaxData=$.param($(data));
+		var $productModal=$('#PurchaseOrderProductModal');
+		if($productModal.length&&$productModal.hasClass('show')){
+			bootstrap.Modal.getInstance($productModal[0]).hide();
+		}
+		$.ajax({
+			url:'index.php?route=purchase/purchase_order/checkOrder&token='+token,
+			type:'post',
+			data:ajaxData,
+			dataType:'json',
+			beforeSend:function(){
+				$('.alert,.text-error').remove();
+				a.button('loading').append($('<i>',{class:'icon-loading'}));
+			},
+			success:function(json){
+				if(json['purchase_order_product']!=''){
+					var product_row=0;
+					html='';
+					for(i=0;i<json['purchase_order_product'].length;i++){
+						product=json['purchase_order_product'][i];
+						html+='<tr id="product-row'+product_row+'">';
+						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();"><i class="fa fa-trash"></i></a></td>';
+						html+='<td>'+product['name']+'<br><input type="hidden" name="purchase_order_product['+product_row+'][purchase_order_product_id]" value=""><input type="hidden" name="purchase_order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="purchase_order_product['+product_row+'][name]" value="'+product['name']+'"></td>';
+						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="purchase_order_product['+product_row+'][model]" value="'+product['model']+'"></td>';
+						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="purchase_order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="purchase_order_product['+product_row+'][price]" value="'+product['price']+'"></td>';
+						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="purchase_order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="purchase_order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='</tr>';
+						product_row++;
+					}
+					$('#product').html(html);
+				}
+				if(json['purchase_order_total']!=''){
+					var total_row=0;
+					html='';
+					for(i in json['purchase_order_total']){
+						total=json['purchase_order_total'][i];
+						html+='<tr id="total-row'+total_row+'">';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="purchase_order_total['+total_row+'][purchase_order_total_id]" value=""><input type="hidden" name="purchase_order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="purchase_order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="purchase_order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="purchase_order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="purchase_order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='</tr>';
+						total_row++;
+					}
+					$('#total').html(html);
+				}
+			},
+			complete:function(){
+				a.button('reset');
+			}
+		});
+	});
 	/* invoice_form.tpl */
 	var a=$('#invoice-product'),mapped={};
 	a.typeahead({
