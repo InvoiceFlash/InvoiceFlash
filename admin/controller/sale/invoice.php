@@ -1308,6 +1308,7 @@ class ControllerSaleInvoice extends Controller {
 			);
 
 			$this->data['printPDF'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=pdf', 'SSL');
+			$this->data['facturae'] = $this->url->link('sale/invoice/facturae', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
 			$this->data['invoice'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=view', 'SSL');
 			$this->data['sendEmail'] = $this->url->link('sale/invoice/email', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -1835,6 +1836,295 @@ class ControllerSaleInvoice extends Controller {
 			
 			$this->response->setOutput($this->render());
 		}
+	}
+
+	public function facturae() {
+		$this->load->model('sale/invoice');
+
+		$invoice_id = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
+
+		$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
+
+		if (!$invoice_info) {
+			exit();
+		}
+
+		$this->load->model('localisation/country');
+		$this->load->model('localisation/zone');
+		$this->load->model('localisation/tax_rate');
+
+		$products = $this->model_sale_invoice->getInvoiceProducts($invoice_id);
+		$totals = $this->model_sale_invoice->getInvoiceTotals($invoice_id);
+
+		// Seller (issuer) party, taken from the store settings.
+		$seller_address = (string)$this->config->get('config_address');
+		$seller_postcode = '';
+		$seller_town = '';
+
+		if (preg_match('/(\d{5})\s*[\,\-]?\s*(.*)$/m', $seller_address, $matches)) {
+			$seller_postcode = $matches[1];
+			$seller_town = trim($matches[2]);
+			$seller_address = trim(str_replace($matches[0], '', $seller_address));
+		}
+
+		$seller_country = $this->model_localisation_country->getCountry($this->config->get('config_country_id'));
+		$seller_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+
+		$seller_nif = $this->config->get('config_nif');
+
+		if (!$seller_nif) {
+			$seller_nif = $this->config->get('config_vat_id');
+		}
+
+		$seller = array(
+			'name'     => $this->config->get('config_name'),
+			'nif'      => preg_replace('/[^A-Za-z0-9]/', '', (string)$seller_nif),
+			'address'  => $seller_address,
+			'postcode' => $seller_postcode,
+			'town'     => $seller_town,
+			'province' => $seller_zone ? $seller_zone['name'] : '',
+			'country'  => $seller_country && $seller_country['iso_code_3'] ? $seller_country['iso_code_3'] : 'ESP'
+		);
+
+		// Buyer party, taken from the billing details stored on the invoice.
+		$buyer_name = $invoice_info['payment_company'] ? $invoice_info['payment_company'] : $invoice_info['company'];
+		$buyer_nif = $invoice_info['payment_tax_id'] ? $invoice_info['payment_tax_id'] : $invoice_info['payment_company_id'];
+
+		$buyer = array(
+			'name'        => $buyer_name,
+			'nif'         => preg_replace('/[^A-Za-z0-9]/', '', (string)$buyer_nif),
+			'address'     => trim($invoice_info['payment_address_1'] . ' ' . $invoice_info['payment_address_2']),
+			'postcode'    => $invoice_info['payment_postcode'],
+			'town'        => $invoice_info['payment_city'],
+			'province'    => $invoice_info['payment_zone'],
+			'country'     => $invoice_info['payment_iso_code_3'] ? $invoice_info['payment_iso_code_3'] : 'ESP',
+			'person_type' => $buyer_name ? 'J' : 'F'
+		);
+
+		// Tax breakdown: the taxable base is derived from the tax amount and
+		// rate so it stays correct even when an invoice mixes several VAT rates.
+		$tax_rate_lookup = array();
+
+		foreach ($this->model_localisation_tax_rate->getTaxRates() as $tax_rate) {
+			$tax_rate_lookup[$tax_rate['name']] = $tax_rate;
+		}
+
+		$sub_total = 0;
+		$tax_total = 0;
+		$taxes = array();
+
+		foreach ($totals as $total) {
+			if ($total['code'] == 'sub_total') {
+				$sub_total = (float)$total['value'];
+			}
+
+			if ($total['code'] == 'tax') {
+				$rate = 0;
+
+				if (isset($tax_rate_lookup[$total['title']]) && $tax_rate_lookup[$total['title']]['type'] == 'P') {
+					$rate = (float)$tax_rate_lookup[$total['title']]['rate'];
+				}
+
+				$amount = (float)$total['value'];
+
+				$taxes[] = array(
+					'rate'   => $rate,
+					'base'   => $rate > 0 ? round($amount / ($rate / 100), 2) : $sub_total,
+					'amount' => $amount
+				);
+
+				$tax_total += $amount;
+			}
+		}
+
+		if (!$taxes) {
+			$taxes[] = array(
+				'rate'   => 0,
+				'base'   => $sub_total,
+				'amount' => 0
+			);
+		}
+
+		$lines = array();
+
+		foreach ($products as $product) {
+			$lines[] = array(
+				'name'     => $product['name'],
+				'quantity' => (float)$product['quantity'],
+				'price'    => (float)$product['price'],
+				'total'    => (float)$product['total']
+			);
+		}
+
+		$invoice_no = $invoice_info['invoice_no'] ? $invoice_info['invoice_no'] : $invoice_info['invoice_id'];
+
+		$xml = $this->buildFacturaeXml(array(
+			'invoice_no'     => $invoice_no,
+			'invoice_series' => $invoice_info['invoice_prefix'],
+			'date_added'     => $invoice_info['date_added'],
+			'seller'         => $seller,
+			'buyer'          => $buyer,
+			'lines'          => $lines,
+			'taxes'          => $taxes,
+			'sub_total'      => $sub_total,
+			'tax_total'      => $tax_total,
+			'total'          => (float)$invoice_info['total']
+		));
+
+		$this->response->addHeader('Content-Type: application/xml; charset=UTF-8');
+		$this->response->addHeader('Content-Disposition: attachment; filename="facturae_' . $invoice_info['invoice_prefix'] . $invoice_no . '.xml"');
+		$this->response->setOutput($xml);
+	}
+
+	protected function buildFacturaeXml($data) {
+		$doc = new DOMDocument('1.0', 'UTF-8');
+		$doc->formatOutput = true;
+
+		$root = $doc->createElementNS('http://www.facturae.es/Facturae/2014/v3.2.2/Facturae', 'fe:Facturae');
+		$doc->appendChild($root);
+
+		// FileHeader
+		$fileHeader = $doc->createElement('FileHeader');
+		$root->appendChild($fileHeader);
+
+		$fileHeader->appendChild($doc->createElement('SchemaVersion', '3.2.2'));
+		$fileHeader->appendChild($doc->createElement('Modality', 'I'));
+		$fileHeader->appendChild($doc->createElement('InvoiceIssuerType', 'EM'));
+
+		$batch = $doc->createElement('Batch');
+		$fileHeader->appendChild($batch);
+
+		$batch->appendChild($doc->createElement('BatchIdentifier', $data['invoice_series'] . $data['invoice_no']));
+		$batch->appendChild($doc->createElement('InvoicesCount', '1'));
+
+		$totalInvoicesAmount = $doc->createElement('TotalInvoicesAmount');
+		$totalInvoicesAmount->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($data['total'])));
+		$batch->appendChild($totalInvoicesAmount);
+
+		$totalOutstandingAmount = $doc->createElement('TotalOutstandingAmount');
+		$totalOutstandingAmount->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($data['total'])));
+		$batch->appendChild($totalOutstandingAmount);
+
+		$totalExecutableAmount = $doc->createElement('TotalExecutableAmount');
+		$totalExecutableAmount->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($data['total'])));
+		$batch->appendChild($totalExecutableAmount);
+
+		$batch->appendChild($doc->createElement('InvoiceCurrencyCode', 'EUR'));
+
+		// Parties
+		$parties = $doc->createElement('Parties');
+		$root->appendChild($parties);
+
+		$parties->appendChild($this->buildFacturaePartyXml($doc, 'SellerParty', $data['seller'], 'J'));
+		$parties->appendChild($this->buildFacturaePartyXml($doc, 'BuyerParty', $data['buyer'], $data['buyer']['person_type']));
+
+		// Invoices
+		$invoicesEl = $doc->createElement('Invoices');
+		$root->appendChild($invoicesEl);
+
+		$invoiceEl = $doc->createElement('Invoice');
+		$invoicesEl->appendChild($invoiceEl);
+
+		$invoiceHeader = $doc->createElement('InvoiceHeader');
+		$invoiceEl->appendChild($invoiceHeader);
+		$invoiceHeader->appendChild($doc->createElement('InvoiceNumber', $data['invoice_no']));
+
+		if ($data['invoice_series']) {
+			$invoiceHeader->appendChild($doc->createElement('InvoiceSeriesCode', $data['invoice_series']));
+		}
+
+		$invoiceHeader->appendChild($doc->createElement('InvoiceDocumentType', 'FC'));
+		$invoiceHeader->appendChild($doc->createElement('InvoiceClass', 'OO'));
+
+		$invoiceIssueData = $doc->createElement('InvoiceIssueData');
+		$invoiceEl->appendChild($invoiceIssueData);
+		$invoiceIssueData->appendChild($doc->createElement('IssueDate', date('Y-m-d', strtotime($data['date_added']))));
+		$invoiceIssueData->appendChild($doc->createElement('InvoiceCurrencyCode', 'EUR'));
+		$invoiceIssueData->appendChild($doc->createElement('TaxCurrencyCode', 'EUR'));
+		$invoiceIssueData->appendChild($doc->createElement('LanguageName', 'es'));
+
+		$taxesOutputs = $doc->createElement('TaxesOutputs');
+		$invoiceEl->appendChild($taxesOutputs);
+
+		foreach ($data['taxes'] as $tax) {
+			$taxEl = $doc->createElement('Tax');
+			$taxesOutputs->appendChild($taxEl);
+			$taxEl->appendChild($doc->createElement('TaxTypeCode', '01'));
+			$taxEl->appendChild($doc->createElement('TaxRate', $this->facturaeAmount($tax['rate'])));
+
+			$taxableBase = $doc->createElement('TaxableBase');
+			$taxableBase->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($tax['base'])));
+			$taxEl->appendChild($taxableBase);
+
+			$taxAmount = $doc->createElement('TaxAmount');
+			$taxAmount->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($tax['amount'])));
+			$taxEl->appendChild($taxAmount);
+		}
+
+		$invoiceTotals = $doc->createElement('InvoiceTotals');
+		$invoiceEl->appendChild($invoiceTotals);
+		$invoiceTotals->appendChild($doc->createElement('TotalGrossAmount', $this->facturaeAmount($data['sub_total'])));
+		$invoiceTotals->appendChild($doc->createElement('TotalGeneralDiscounts', $this->facturaeAmount(0)));
+		$invoiceTotals->appendChild($doc->createElement('TotalGeneralSurcharges', $this->facturaeAmount(0)));
+		$invoiceTotals->appendChild($doc->createElement('TotalGrossAmountBeforeTaxes', $this->facturaeAmount($data['sub_total'])));
+		$invoiceTotals->appendChild($doc->createElement('TotalTaxOutputs', $this->facturaeAmount($data['tax_total'])));
+		$invoiceTotals->appendChild($doc->createElement('TotalTaxesWithheld', $this->facturaeAmount(0)));
+		$invoiceTotals->appendChild($doc->createElement('InvoiceTotal', $this->facturaeAmount($data['total'])));
+		$invoiceTotals->appendChild($doc->createElement('TotalOutstandingAmount', $this->facturaeAmount($data['total'])));
+		$invoiceTotals->appendChild($doc->createElement('TotalExecutableAmount', $this->facturaeAmount($data['total'])));
+
+		$items = $doc->createElement('Items');
+		$invoiceEl->appendChild($items);
+
+		foreach ($data['lines'] as $line) {
+			$lineEl = $doc->createElement('InvoiceLine');
+			$items->appendChild($lineEl);
+			$lineEl->appendChild($doc->createElement('ItemDescription', $line['name']));
+			$lineEl->appendChild($doc->createElement('Quantity', $this->facturaeAmount($line['quantity'])));
+			$lineEl->appendChild($doc->createElement('UnitOfMeasure', '01'));
+			$lineEl->appendChild($doc->createElement('UnitPriceWithoutTax', $this->facturaeAmount($line['price'])));
+			$lineEl->appendChild($doc->createElement('TotalCost', $this->facturaeAmount($line['total'])));
+			$lineEl->appendChild($doc->createElement('GrossAmount', $this->facturaeAmount($line['total'])));
+		}
+
+		return $doc->saveXML();
+	}
+
+	protected function buildFacturaePartyXml($doc, $tagName, $party, $personType) {
+		$partyEl = $doc->createElement($tagName);
+
+		$isSpain = ($party['country'] == 'ESP');
+
+		$taxIdentification = $doc->createElement('TaxIdentification');
+		$partyEl->appendChild($taxIdentification);
+		$taxIdentification->appendChild($doc->createElement('PersonTypeCode', $personType));
+		$taxIdentification->appendChild($doc->createElement('ResidenceTypeCode', $isSpain ? 'R' : 'U'));
+		$taxIdentification->appendChild($doc->createElement('TaxIdentificationNumber', $party['nif']));
+
+		$legalEntity = $doc->createElement($personType == 'F' ? 'Individual' : 'LegalEntity');
+		$partyEl->appendChild($legalEntity);
+
+		if ($personType == 'F') {
+			$nameParts = explode(' ', trim($party['name']), 2);
+			$legalEntity->appendChild($doc->createElement('Name', $nameParts[0]));
+			$legalEntity->appendChild($doc->createElement('FirstSurname', isset($nameParts[1]) ? $nameParts[1] : ''));
+		} else {
+			$legalEntity->appendChild($doc->createElement('CorporateName', $party['name']));
+		}
+
+		$addressEl = $doc->createElement($isSpain ? 'AddressInSpain' : 'OverseasAddress');
+		$legalEntity->appendChild($addressEl);
+		$addressEl->appendChild($doc->createElement('Address', $party['address']));
+		$addressEl->appendChild($doc->createElement('PostCode', $party['postcode']));
+		$addressEl->appendChild($doc->createElement('Town', $party['town']));
+		$addressEl->appendChild($doc->createElement('Province', $party['province']));
+		$addressEl->appendChild($doc->createElement('CountryCode', $party['country']));
+
+		return $partyEl;
+	}
+
+	protected function facturaeAmount($value) {
+		return number_format((float)$value, 2, '.', '');
 	}
 
 	public function checkInvoice() {

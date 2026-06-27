@@ -10,6 +10,24 @@ class ControllerSettingSetting extends Controller {
 		$this->load->model('setting/setting');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			if (!empty($this->request->files['certificado_file']['name']) && ($this->request->files['certificado_file']['error'] == UPLOAD_ERR_OK)) {
+				$extension = strtolower(pathinfo($this->request->files['certificado_file']['name'], PATHINFO_EXTENSION));
+
+				if (in_array($extension, array('p12', 'pfx', 'pem', 'cer', 'crt'))) {
+					if (!is_dir(DIR_DOWNLOAD . 'certificado')) {
+						mkdir(DIR_DOWNLOAD . 'certificado', 0777, true);
+					}
+
+					$filename = 'certificado/cert_' . substr(md5(uniqid(rand(), true)), 0, 10) . '.' . $extension;
+
+					move_uploaded_file($this->request->files['certificado_file']['tmp_name'], DIR_DOWNLOAD . $filename);
+
+					$this->request->post['certificado'] = $filename;
+				}
+			} else {
+				$this->request->post['certificado'] = $this->config->get('certificado');
+			}
+
 			$this->model_setting_setting->editSetting('config', $this->request->post);
 
 			if ($this->config->get('config_currency_auto')) {
@@ -148,6 +166,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_iban'] = $this->language->get('entry_iban');
 		$this->data['entry_bic'] = $this->language->get('entry_bic');
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
+		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
+		$this->data['entry_clave'] = $this->language->get('entry_clave');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -1096,7 +1116,14 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$this->data['creditor_id'] = $this->config->get('creditor_id');
 		}
-		
+
+		$this->data['certificado'] = $this->config->get('certificado');
+
+		if (isset($this->request->post['clave'])) {
+			$this->data['clave'] = $this->request->post['clave'];
+		} else {
+			$this->data['clave'] = $this->config->get('clave');
+		}
 
 		$this->template = 'setting/setting.tpl';
 		$this->children = array(

@@ -160,6 +160,8 @@ $_['entry_accounting_period'] = 'Accounting Period:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
 $_['entry_creditor_id'] = 'Creditor Id:';
+$_['entry_certificado'] = 'Certificado:';
+$_['entry_clave'] = 'Clave:';
 
 $_['text_success_mail'] = 'Test Mail sent. Check your inbox.';
 ?>

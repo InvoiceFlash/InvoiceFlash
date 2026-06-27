@@ -937,6 +937,19 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?></label>
 						<div class="col-sm-6"><input type="text" name="creditor_id" value="<?php echo $creditor_id ?>" class="form-control"></div>
 					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_certificado ?></label>
+						<div class="col-sm-6">
+							<input type="file" name="certificado_file" class="form-control">
+							<?php if ($certificado) { ?>
+								<div class="form-text"><?php echo basename($certificado); ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_clave ?></label>
+						<div class="col-sm-6"><input type="text" name="clave" value="<?php echo $clave ?>" class="form-control"></div>
+					</div>
 				</div>
 				<div id="tab-fraud" class="tab-pane">
 					<div class="form-group row">

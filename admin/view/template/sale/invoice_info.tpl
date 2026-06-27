@@ -4,8 +4,9 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a> 
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
+			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a>
+			<a class="btn btn-default" href="<?php echo $facturae; ?>" target="_blank"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></a>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
 			<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Print</span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
