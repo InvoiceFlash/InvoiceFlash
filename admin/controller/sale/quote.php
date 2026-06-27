@@ -1679,7 +1679,10 @@ class ControllerSaleQuote extends Controller {
 				} else {
 					$invoice_no = '';
 				}
-				
+
+				$quote_no = 'QUO-' . date('Y', strtotime($quote_info['date_added'])) . '-' . sprintf('%03d', $quote_id);
+
+
 				if ($quote_info['shipping_address_format']) {
 					$format = $quote_info['shipping_address_format'];
 				} else {
@@ -1777,6 +1780,7 @@ class ControllerSaleQuote extends Controller {
 				
 				$this->data['quotes'][] = array(
 					'quote_id'	         => $quote_id,
+					'quote_no'           => $quote_no,
 					'invoice_no'         => $invoice_no,
 					'invoice_prefix'     => $quote_info['invoice_prefix'],
 					'date_added'         => date($this->language->get('date_format_short'), strtotime($quote_info['date_added'])),
