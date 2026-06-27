@@ -3,7 +3,8 @@ config.php
 system/cache/index.php
 system/logs/index.php
 image/data/index.html
-image/cache/index.html
+image/cache/*
+!image/cache/index.htm
 system/cache/index.htm
 InvoiceFlash0.rar
 InvoiceFlash1.rar
