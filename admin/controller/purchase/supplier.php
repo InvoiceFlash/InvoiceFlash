@@ -266,14 +266,19 @@ class ControllerPurchaseSupplier extends Controller {
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
 		$this->data['tab_contacts'] = $this->language->get('tab_contacts');
+		$this->data['tab_contracts'] = $this->language->get('tab_contracts');
 
 		$this->data['column_contact_name'] = $this->language->get('column_contact_name');
 		$this->data['column_contact_email'] = $this->language->get('column_contact_email');
 		$this->data['column_telephone'] = $this->language->get('column_telephone');
+		$this->data['column_article'] = $this->language->get('column_article');
+		$this->data['column_quantity'] = $this->language->get('column_quantity');
+		$this->data['column_end_support'] = $this->language->get('column_end_support');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_contact'] = $this->language->get('button_add_contact');
+		$this->data['button_add_contract'] = $this->language->get('button_add_contract');
 
 		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
 		$this->data['error_company'] = isset($this->error['company']) ? $this->error['company'] : '';
@@ -362,6 +367,45 @@ class ControllerPurchaseSupplier extends Controller {
 		}
 
 		$this->data['add_contact'] = $this->url->link('purchase/supplier/insertContact', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
+
+		$this->data['contracts'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getSupplierContracts($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$action = array();
+
+				$link = $this->url->link('purchase/supplier/updateContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&supplier_id=' . $supplier_info['supplier_id'], 'SSL');
+				$action[] = array(
+					'link' => '<a class="btn btn-default" href="' . $link . '"><i class="fa fa-edit"></i> <span class="hidden-xs">' . $this->language->get('text_edit') . '</span></a>'
+				);
+
+				$link = $this->url->link('purchase/supplier/deleteContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&supplier_id=' . $supplier_info['supplier_id'], 'SSL');
+				$action[] = array(
+					'link' => '<a class="btn btn-danger" href="' . $link . '"><i class="fa fa-trash"></i> <span class="hidden-xs">' . $this->language->get('text_delete') . '</span></a>'
+				);
+
+				$this->load->model('catalog/product');
+
+				if ($result['narticulo'] > 0) {
+					$product = $this->model_catalog_product->getProduct($result['narticulo']);
+					$product_name = $product['name'];
+				} else {
+					$product_name = '';
+				}
+
+				$this->data['contracts'][] = array(
+					'contracts_id' => $result['contracts_id'],
+					'product'      => $product_name,
+					'quantity'     => $result['quantity'],
+					'end_support'  => date($this->language->get('date_format_short'), strtotime($result['dfinsoport'])),
+					'action'       => $action
+				);
+			}
+		}
+
+		$this->data['add_contract'] = $this->url->link('purchase/supplier/insertContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
 
 		$this->template = 'purchase/supplier_form.tpl';
 
@@ -559,6 +603,172 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['cancel'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
 
 		$this->template = 'purchase/supplier_contacts.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer'
+		);
+
+		$this->response->setOutput($this->render());
+	}
+
+	public function insertContract() {
+		$this->load->language('purchase/supplier');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('purchase/supplier');
+
+		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+			$this->model_purchase_supplier->addSupplierContract($this->request->post, $this->request->get['supplier_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
+		}
+
+		$this->getContractForm();
+	}
+
+	public function updateContract() {
+		$this->load->language('purchase/supplier');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('purchase/supplier');
+
+		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+			$this->model_purchase_supplier->editSupplierContract($this->request->post, $this->request->get['contracts_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'] . '&contracts_id=' . $this->request->get['contracts_id'], 'SSL'));
+		}
+
+		$this->getContractForm();
+	}
+
+	public function deleteContract() {
+		$this->load->language('purchase/supplier');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('purchase/supplier');
+
+		if (isset($this->request->get['contracts_id']) && $this->validateDelete()) {
+			$this->model_purchase_supplier->deleteSupplierContract($this->request->get['contracts_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
+		}
+
+		$this->getForm();
+	}
+
+	protected function getContractForm() {
+		$this->load->model('purchase/supplier');
+
+		$this->data['heading_title'] = $this->language->get('heading_title_contract');
+
+		$this->data['entry_article'] = $this->language->get('entry_article');
+		$this->data['entry_quantity'] = $this->language->get('entry_quantity');
+		$this->data['entry_date'] = $this->language->get('entry_date');
+		$this->data['entry_end_support'] = $this->language->get('entry_end_support');
+		$this->data['entry_notes'] = $this->language->get('entry_notes');
+		$this->data['entry_status'] = $this->language->get('entry_status');
+
+		$this->data['button_save'] = $this->language->get('button_save');
+		$this->data['button_cancel'] = $this->language->get('button_cancel');
+
+		$this->data['text_select'] = $this->language->get('text_select');
+
+		$this->data['breadcrumbs'] = array(
+			array(
+				'text'      => $this->language->get('text_home'),
+				'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+				'separator' => false
+			),
+			array(
+				'text'      => $this->language->get('heading_title'),
+				'href'      => $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'),
+				'separator' => ' :: '
+			)
+		);
+
+		if (isset($this->request->get['contracts_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+			$contract_info = $this->model_purchase_supplier->getSupplierContract($this->request->get['contracts_id']);
+		}
+
+		if (isset($this->request->get['contracts_id'])) {
+			$this->data['contracts_id'] = $this->request->get['contracts_id'];
+		} else {
+			$this->data['contracts_id'] = 0;
+		}
+
+		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
+
+		$this->load->model('catalog/product');
+		$this->data['products'] = $this->model_catalog_product->getProducts();
+
+		if (isset($this->request->post['product_id'])) {
+			$this->data['product_id'] = $this->request->post['product_id'];
+		} elseif (isset($contract_info)) {
+			$this->data['product_id'] = $contract_info['narticulo'];
+		} else {
+			$this->data['product_id'] = 0;
+		}
+
+		if (isset($this->request->post['quantity'])) {
+			$this->data['quantity'] = $this->request->post['quantity'];
+		} elseif (isset($contract_info)) {
+			$this->data['quantity'] = $contract_info['quantity'];
+		} else {
+			$this->data['quantity'] = 1;
+		}
+
+		if (isset($this->request->post['date_purchased'])) {
+			$this->data['date_purchased'] = $this->request->post['date_purchased'];
+		} elseif (isset($contract_info)) {
+			$this->data['date_purchased'] = $contract_info['dcompra'];
+		} else {
+			$this->data['date_purchased'] = '';
+		}
+
+		if (isset($this->request->post['end_support'])) {
+			$this->data['end_support'] = $this->request->post['end_support'];
+		} elseif (isset($contract_info)) {
+			$this->data['end_support'] = $contract_info['dfinsoport'];
+		} else {
+			$this->data['end_support'] = '';
+		}
+
+		if (isset($this->request->post['notes'])) {
+			$this->data['notes'] = $this->request->post['notes'];
+		} elseif (isset($contract_info)) {
+			$this->data['notes'] = $contract_info['mnotas'];
+		} else {
+			$this->data['notes'] = '';
+		}
+
+		$this->data['contract_statuses'] = $this->model_purchase_supplier->getSupplierContractStatus();
+
+		if (isset($this->request->post['contract_status_id'])) {
+			$this->data['contract_status_id'] = $this->request->post['contract_status_id'];
+		} elseif (isset($contract_info)) {
+			$this->data['contract_status_id'] = $contract_info['contract_status'];
+		} else {
+			$this->data['contract_status_id'] = 0;
+		}
+
+		if ($this->data['contracts_id'] == 0) {
+			$this->data['action'] = $this->url->link('purchase/supplier/insertContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
+		} else {
+			$this->data['action'] = $this->url->link('purchase/supplier/updateContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'] . '&contracts_id=' . $this->data['contracts_id'], 'SSL');
+		}
+
+		$this->data['cancel'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
+
+		$this->template = 'purchase/supplier_contract.tpl';
 		$this->children = array(
 			'common/header',
 			'common/footer'

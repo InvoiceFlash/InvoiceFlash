@@ -50,6 +50,7 @@ $_['button_cancel']            = 'Cancel';
 // Tab
 $_['tab_general']              = 'General';
 $_['tab_contacts']              = 'Contacts';
+$_['tab_contracts']             = 'Contracts';
 
 // Contacts
 $_['button_add_contact']       = 'Add Contact';
@@ -60,6 +61,18 @@ $_['entry_puesto']              = 'Job:';
 $_['entry_notas']                = 'Notes:';
 $_['text_delete']               = 'Delete';
 $_['text_edit']                 = 'Edit';
+
+// Contracts
+$_['heading_title_contract']   = 'Contracts';
+$_['column_article']           = 'Article';
+$_['column_quantity']          = 'Quantity';
+$_['column_end_support']       = 'End Support';
+$_['button_add_contract']      = 'Add Contract';
+$_['entry_article']            = 'Article:';
+$_['entry_quantity']           = 'Quantity:';
+$_['entry_date']                = 'Date Purchased:';
+$_['entry_end_support']         = 'End Support:';
+$_['entry_notes']               = 'Notes:';
 
 // Error
 $_['error_warning']            = 'Warning: Please check the form carefully for errors!';

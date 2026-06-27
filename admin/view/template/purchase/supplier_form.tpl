@@ -13,6 +13,7 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 			<?php if ($supplier_id) { ?>
 			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
 			<?php } ?>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" id="form">
@@ -162,6 +163,39 @@
 						<tfoot>
 							<tr>
 								<td class="text-right" colspan="4"><a href="<?php echo $add_contact; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact; ?></a></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<div class="tab-pane" id="tab-contracts">
+					<table class="table table-bordered table-striped table-hover">
+						<thead>
+							<tr>
+								<th><?php echo $column_article; ?></th>
+								<th><?php echo $column_quantity; ?></th>
+								<th><?php echo $column_end_support; ?></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php if ($contracts) { ?>
+							<?php foreach ($contracts as $contract) { ?>
+							<tr>
+								<td><?php echo $contract['product']; ?></td>
+								<td><?php echo $contract['quantity']; ?></td>
+								<td><?php echo $contract['end_support']; ?></td>
+								<td class="text-right"><?php foreach ($contract['action'] as $action) { ?>
+									<?php echo $action['link']; ?>
+								<?php } ?></td>
+							</tr>
+							<?php } ?>
+							<?php } else { ?>
+							<tr><td colspan="4" class="text-center"><?php echo $text_no_results; ?></td></tr>
+							<?php } ?>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td class="text-right" colspan="4"><a href="<?php echo $add_contract; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contract; ?></a></td>
 							</tr>
 						</tfoot>
 					</table>

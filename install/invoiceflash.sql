@@ -8070,6 +8070,28 @@ CREATE TABLE `if_fl_contracts_status` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `if_fl_supplier_contracts`;
+CREATE TABLE `if_fl_supplier_contracts` (
+  `contracts_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `supplier_id` int(10) unsigned DEFAULT NULL,
+  `narticulo` int(10) unsigned DEFAULT NULL,
+  `quantity` int(10) DEFAULT NULL,
+  `dcompra` date DEFAULT NULL,
+  `dfinsoport` date DEFAULT NULL,
+  `mnotas` mediumtext,
+  `talta` datetime DEFAULT NULL,
+  `nusualta` int(5) DEFAULT NULL,
+  `caplalta` varchar(20) DEFAULT NULL,
+  `tultmod` datetime DEFAULT NULL,
+  `nusuultmod` int(5) DEFAULT NULL,
+  `caplultmod` varchar(20) DEFAULT NULL,
+  `date_added` datetime DEFAULT NULL,
+  `contract_status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`contracts_id`),
+  KEY `nproveedor` (`supplier_id`),
+  KEY `narticulo` (`narticulo`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 DROP TABLE IF EXISTS `if_fl_customers`;
 CREATE TABLE `if_fl_customers` (
   `customer_id` int(11) NOT NULL,

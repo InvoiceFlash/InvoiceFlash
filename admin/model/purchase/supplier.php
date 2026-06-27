@@ -200,5 +200,54 @@ class ModelPurchaseSupplier extends Model {
 	public function deleteSupplierContact($supplier_contacts_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "supplier_contacts WHERE supplier_contacts_id = " . (int)$supplier_contacts_id);
 	}
+
+	public function getSupplierContracts($supplier_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_supplier_contracts WHERE supplier_id = " . (int)$supplier_id);
+
+		return $query->rows;
+	}
+
+	public function getSupplierContract($contracts_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
+
+		return $query->row;
+	}
+
+	public function getSupplierContractStatus() {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_contracts_status");
+
+		return $query->rows;
+	}
+
+	public function addSupplierContract($data, $supplier_id) {
+		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_supplier_contracts SET
+			supplier_id = " . (int)$supplier_id . ",
+			narticulo = " . (int)$data['product_id'] . ",
+			quantity = " . (int)$data['quantity'] . ",
+			dcompra = DATE('" . $this->db->escape($data['date_purchased']) . "'),
+			dfinsoport = DATE('" . $this->db->escape($data['end_support']) . "'),
+			mnotas = '" . $this->db->escape($data['notes']) . "',
+			contract_status = " . (int)$data['contract_status_id'] . ",
+			talta = now(),
+			nusualta = " . (int)$this->user->getID() . ",
+			caplalta = 'web'");
+	}
+
+	public function editSupplierContract($data, $contracts_id) {
+		$this->db->query("UPDATE " . DB_PREFIX . "fl_supplier_contracts SET
+			narticulo = " . (int)$data['product_id'] . ",
+			quantity = " . (int)$data['quantity'] . ",
+			dcompra = DATE('" . $this->db->escape($data['date_purchased']) . "'),
+			dfinsoport = DATE('" . $this->db->escape($data['end_support']) . "'),
+			mnotas = '" . $this->db->escape($data['notes']) . "',
+			contract_status = " . (int)$data['contract_status_id'] . ",
+			tultmod = now(),
+			nusuultmod = " . (int)$this->user->getID() . ",
+			caplultmod = 'web' WHERE contracts_id = " . (int)$contracts_id);
+	}
+
+	public function deleteSupplierContract($contracts_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "fl_supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
+	}
 }
 ?>
