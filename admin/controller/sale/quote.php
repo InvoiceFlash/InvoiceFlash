@@ -1664,12 +1664,12 @@ class ControllerSaleQuote extends Controller {
 					$store_address = $store_info['config_address'];
 					$store_email = $store_info['config_email'];
 					$store_telephone = $store_info['config_telephone'];
-					$store_fax = $store_info['config_fax'];
+					$store_fax = isset($store_info['config_fax']) ? $store_info['config_fax'] : '';
 				} else {
 					$store_address = $this->config->get('config_address');
 					$store_email = $this->config->get('config_email');
 					$store_telephone = $this->config->get('config_telephone');
-					$store_fax = $this->config->get('config_fax');
+					$store_fax = (string)$this->config->get('config_fax');
 				}
 				
 				$store_nif = $this->config->get('config_nif');
