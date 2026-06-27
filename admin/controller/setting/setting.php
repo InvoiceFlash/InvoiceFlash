@@ -10,6 +10,10 @@ class ControllerSettingSetting extends Controller {
 		$this->load->model('setting/setting');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			if (isset($this->request->post['config_vat_id'])) {
+				$this->request->post['config_vat_id'] = preg_replace('/[^A-Za-z0-9]/', '', $this->request->post['config_vat_id']);
+			}
+
 			if (!empty($this->request->files['certificado_file']['name']) && ($this->request->files['certificado_file']['error'] == UPLOAD_ERR_OK)) {
 				$extension = strtolower(pathinfo($this->request->files['certificado_file']['name'], PATHINFO_EXTENSION));
 
@@ -410,7 +414,7 @@ class ControllerSettingSetting extends Controller {
 		}
 
 		if (isset($this->request->post['config_vat_id'])) {
-			$this->data['config_vat_id'] = $this->request->post['config_vat_id'];
+			$this->data['config_vat_id'] = preg_replace('/[^A-Za-z0-9]/', '', $this->request->post['config_vat_id']);
 		} else {
 			$this->data['config_vat_id'] = $this->config->get('config_vat_id');
 		}

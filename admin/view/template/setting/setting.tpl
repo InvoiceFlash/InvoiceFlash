@@ -65,7 +65,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_vat_id; ?></label>
 						<div class="col-sm-6">
-							<input type="text" name="config_vat_id" value="<?php echo $config_vat_id; ?>" class="form-control">
+							<input type="text" name="config_vat_id" value="<?php echo $config_vat_id; ?>" id="input-vat-id" class="form-control">
 						</div>
 					</div>
 					<div class="form-group row">
@@ -948,7 +948,12 @@
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_clave ?></label>
-						<div class="col-sm-6"><input type="text" name="clave" value="<?php echo $clave ?>" class="form-control"></div>
+						<div class="col-sm-6 input-group">
+							<input type="password" name="clave" value="<?php echo $clave ?>" id="input-clave" class="form-control">
+							<div class="input-group-append">
+								<button type="button" id="button-clave" class="btn btn-light border"><i class="fa fa-eye"></i></button>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div id="tab-fraud" class="tab-pane">
@@ -1130,6 +1135,23 @@
 <?php echo $footer; ?>
 
 <script>
+	$('#input-vat-id').on('input', function() {
+		this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
+	});
+
+	$('#button-clave').on('click', function() {
+		var $input = $('#input-clave');
+		var $icon = $(this).find('i');
+
+		if ($input.attr('type') == 'password') {
+			$input.attr('type', 'text');
+			$icon.attr('class', 'fa fa-eye-slash');
+		} else {
+			$input.attr('type', 'password');
+			$icon.attr('class', 'fa fa-eye');
+		}
+	});
+
 	function test() {
 		$('#mcResponse').html('<img src="view/image/ajax-loader.gif" width="25px" height="25px">');
 
