@@ -32,6 +32,7 @@ $_['text_confirm']                  = 'Are you sure?';
 // Button
 $_['button_insert']                 = 'Insert';
 $_['button_delete']                 = 'Delete';
+$_['button_export']                 = 'Export to Excel';
 $_['button_save']                   = 'Save';
 $_['button_cancel']                 = 'Cancel';
 $_['button_clear']                  = 'Clear Log';

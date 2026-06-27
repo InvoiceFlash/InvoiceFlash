@@ -139,6 +139,20 @@ class ModelSaleCustomer extends Model {
 
 
 
+	public function getCustomersByIds($customer_ids) {
+		if (!$customer_ids) {
+			return array();
+		}
+
+		$customer_ids = array_map('intval', $customer_ids);
+
+		$sql = "SELECT c.customer_id, c.company, c.telephone, c.email, cgd.name AS customer_group, c.status, c.date_added FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id AND cgd.language_id = '" . (int)$this->config->get('config_language_id') . "') WHERE c.customer_id IN (" . implode(',', $customer_ids) . ")";
+
+		$query = $this->db->query($sql);
+
+		return $query->rows;
+	}
+
 	public function getCustomers($data = array()) {
 		$sql = "SELECT c.customer_id, c.company, c.telephone, c.customer_group_id, cgd.name AS customer_group , c.email, c.status, c.ip, c.date_added FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
 

@@ -180,6 +180,46 @@ class ControllerSaleCustomer extends Controller {
 		$this->getList();
 	}
 
+	public function export() {
+		$this->language->load('sale/customer');
+
+		if (!$this->user->hasPermission('access', 'sale/customer') || empty($this->request->post['selected'])) {
+			$this->redirect($this->url->link('sale/customer', 'token=' . $this->session->data['token'], 'SSL'));
+		}
+
+		$this->load->model('sale/customer');
+
+		$customers = $this->model_sale_customer->getCustomersByIds($this->request->post['selected']);
+
+		require_once(DIR_SYSTEM . 'library/xlsx.php');
+
+		$xlsx = new Xlsx();
+
+		$xlsx->setHeaders(array(
+			$this->language->get('column_company'),
+			$this->language->get('column_email'),
+			$this->language->get('column_telephone'),
+			$this->language->get('column_customer_group'),
+			$this->language->get('column_status'),
+			$this->language->get('column_date_added')
+		));
+
+		foreach ($customers as $customer) {
+			$xlsx->addRow(array(
+				$customer['company'],
+				$customer['email'],
+				$customer['telephone'],
+				$customer['customer_group'],
+				$customer['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
+				date($this->language->get('date_format_short'), strtotime($customer['date_added']))
+			));
+		}
+
+		$this->response->addHeader('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		$this->response->addHeader('Content-Disposition: attachment; filename="customers_' . date('Y-m-d') . '.xlsx"');
+		$this->response->setOutput($xlsx->build($this->language->get('heading_title')));
+	}
+
 	protected function getList() {
 		if (isset($this->request->get['filter_company'])) {
 			$filter_company = $this->request->get['filter_company'];
@@ -289,6 +329,7 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['insert'] = $this->url->link('sale/customer/insert', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('sale/customer/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['export'] = $this->url->link('sale/customer/export', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		$this->data['customers'] = array();
 
@@ -352,6 +393,7 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
+		$this->data['button_export'] = $this->language->get('button_export');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 
 		$this->data['token'] = $this->session->data['token'];
