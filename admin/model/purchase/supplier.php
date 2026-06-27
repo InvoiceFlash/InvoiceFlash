@@ -59,6 +59,18 @@ class ModelPurchaseSupplier extends Model {
 		return $query->row;
 	}
 
+	public function getSuppliersByIds($supplier_ids) {
+		if (!$supplier_ids) {
+			return array();
+		}
+
+		$supplier_ids = array_map('intval', $supplier_ids);
+
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier WHERE supplier_id IN (" . implode(',', $supplier_ids) . ")");
+
+		return $query->rows;
+	}
+
 	public function getSuppliers($data = array()) {
 		$sql = "SELECT * FROM " . DB_PREFIX . "supplier";
 

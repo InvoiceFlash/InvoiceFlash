@@ -175,6 +175,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
 		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
+		$this->data['entry_aeat_active'] = $this->language->get('entry_aeat_active');
 		$this->data['entry_aeat_send'] = $this->language->get('entry_aeat_send');
 
 		$this->data['button_save'] = $this->language->get('button_save');
@@ -1137,6 +1138,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['clave'] = $this->request->post['clave'];
 		} else {
 			$this->data['clave'] = $this->config->get('clave');
+		}
+
+		if (isset($this->request->post['config_aeat_active'])) {
+			$this->data['config_aeat_active'] = $this->request->post['config_aeat_active'];
+		} else {
+			$this->data['config_aeat_active'] = $this->config->get('config_aeat_active');
 		}
 
 		if (isset($this->request->post['config_aeat_send'])) {
