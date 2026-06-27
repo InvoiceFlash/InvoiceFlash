@@ -1977,11 +1977,18 @@ class ControllerSaleInvoice extends Controller {
 		$lines = array();
 
 		foreach ($products as $product) {
+			$line_total = (float)$product['total'];
+			$line_tax = (float)$product['tax'] * (float)$product['quantity'];
+			$line_rate = $line_total > 0 ? round(($line_tax / $line_total) * 100, 2) : 0;
+
 			$lines[] = array(
 				'name'     => $product['name'],
 				'quantity' => (float)$product['quantity'],
 				'price'    => (float)$product['price'],
-				'total'    => (float)$product['total']
+				'total'    => $line_total,
+				'tax_rate' => $line_rate,
+				'tax'      => $line_tax,
+				'model'    => $product['model']
 			);
 		}
 
@@ -1991,6 +1998,7 @@ class ControllerSaleInvoice extends Controller {
 			'invoice_no'     => $invoice_no,
 			'invoice_series' => $invoice_info['invoice_prefix'],
 			'date_added'     => $invoice_info['date_added'],
+			'date_due'       => $invoice_info['date_due'],
 			'seller'         => $seller,
 			'buyer'          => $buyer,
 			'lines'          => $lines,
@@ -2009,21 +2017,27 @@ class ControllerSaleInvoice extends Controller {
 		$doc = new DOMDocument('1.0', 'UTF-8');
 		$doc->formatOutput = true;
 
-		$root = $doc->createElementNS('http://www.facturae.es/Facturae/2014/v3.2.2/Facturae', 'fe:Facturae');
+		$root = $doc->createElementNS('http://www.facturae.es/Facturae/2014/v3.2.1/Facturae', 'fe:Facturae');
+		$root->setAttribute('xmlns', 'http://uri.etsi.org/01903/v1.3.2#');
+		$root->setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:ds', 'http://www.w3.org/2000/09/xmldsig#');
 		$doc->appendChild($root);
+
+		$issue_date = date('Y-m-d', strtotime($data['date_added']));
+		$end_date = (!empty($data['date_due']) && strtotime($data['date_due']) > strtotime($issue_date)) ? date('Y-m-d', strtotime($data['date_due'])) : $issue_date;
 
 		// FileHeader
 		$fileHeader = $doc->createElement('FileHeader');
+		$fileHeader->setAttribute('xmlns', '');
 		$root->appendChild($fileHeader);
 
-		$fileHeader->appendChild($doc->createElement('SchemaVersion', '3.2.2'));
+		$fileHeader->appendChild($doc->createElement('SchemaVersion', '3.2.1'));
 		$fileHeader->appendChild($doc->createElement('Modality', 'I'));
 		$fileHeader->appendChild($doc->createElement('InvoiceIssuerType', 'EM'));
 
 		$batch = $doc->createElement('Batch');
 		$fileHeader->appendChild($batch);
 
-		$batch->appendChild($doc->createElement('BatchIdentifier', $data['invoice_series'] . $data['invoice_no']));
+		$batch->appendChild($doc->createElement('BatchIdentifier', $data['invoice_no'] . $data['invoice_series']));
 		$batch->appendChild($doc->createElement('InvoicesCount', '1'));
 
 		$totalInvoicesAmount = $doc->createElement('TotalInvoicesAmount');
@@ -2042,6 +2056,7 @@ class ControllerSaleInvoice extends Controller {
 
 		// Parties
 		$parties = $doc->createElement('Parties');
+		$parties->setAttribute('xmlns', '');
 		$root->appendChild($parties);
 
 		$parties->appendChild($this->buildFacturaePartyXml($doc, 'SellerParty', $data['seller'], 'J'));
@@ -2049,6 +2064,7 @@ class ControllerSaleInvoice extends Controller {
 
 		// Invoices
 		$invoicesEl = $doc->createElement('Invoices');
+		$invoicesEl->setAttribute('xmlns', '');
 		$root->appendChild($invoicesEl);
 
 		$invoiceEl = $doc->createElement('Invoice');
@@ -2067,8 +2083,25 @@ class ControllerSaleInvoice extends Controller {
 
 		$invoiceIssueData = $doc->createElement('InvoiceIssueData');
 		$invoiceEl->appendChild($invoiceIssueData);
-		$invoiceIssueData->appendChild($doc->createElement('IssueDate', date('Y-m-d', strtotime($data['date_added']))));
+		$invoiceIssueData->appendChild($doc->createElement('IssueDate', $issue_date));
+
+		$placeOfIssue = $doc->createElement('PlaceOfIssue');
+		$invoiceIssueData->appendChild($placeOfIssue);
+		$placeOfIssue->appendChild($doc->createElement('PostCode', $data['seller']['postcode'] ? $data['seller']['postcode'] : '00000'));
+		$placeOfIssue->appendChild($doc->createElement('PlaceOfIssueDescription'));
+
+		$invoicingPeriod = $doc->createElement('InvoicingPeriod');
+		$invoiceIssueData->appendChild($invoicingPeriod);
+		$invoicingPeriod->appendChild($doc->createElement('StartDate', $issue_date));
+		$invoicingPeriod->appendChild($doc->createElement('EndDate', $end_date));
+
 		$invoiceIssueData->appendChild($doc->createElement('InvoiceCurrencyCode', 'EUR'));
+
+		$exchangeRateDetails = $doc->createElement('ExchangeRateDetails');
+		$invoiceIssueData->appendChild($exchangeRateDetails);
+		$exchangeRateDetails->appendChild($doc->createElement('ExchangeRate', '1'));
+		$exchangeRateDetails->appendChild($doc->createElement('ExchangeRateDate', $issue_date));
+
 		$invoiceIssueData->appendChild($doc->createElement('TaxCurrencyCode', 'EUR'));
 		$invoiceIssueData->appendChild($doc->createElement('LanguageName', 'es'));
 
@@ -2076,29 +2109,17 @@ class ControllerSaleInvoice extends Controller {
 		$invoiceEl->appendChild($taxesOutputs);
 
 		foreach ($data['taxes'] as $tax) {
-			$taxEl = $doc->createElement('Tax');
-			$taxesOutputs->appendChild($taxEl);
-			$taxEl->appendChild($doc->createElement('TaxTypeCode', '01'));
-			$taxEl->appendChild($doc->createElement('TaxRate', $this->facturaeAmount($tax['rate'])));
-
-			$taxableBase = $doc->createElement('TaxableBase');
-			$taxableBase->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($tax['base'])));
-			$taxEl->appendChild($taxableBase);
-
-			$taxAmount = $doc->createElement('TaxAmount');
-			$taxAmount->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($tax['amount'])));
-			$taxEl->appendChild($taxAmount);
+			$taxesOutputs->appendChild($this->buildFacturaeTaxXml($doc, $tax));
 		}
 
 		$invoiceTotals = $doc->createElement('InvoiceTotals');
 		$invoiceEl->appendChild($invoiceTotals);
 		$invoiceTotals->appendChild($doc->createElement('TotalGrossAmount', $this->facturaeAmount($data['sub_total'])));
-		$invoiceTotals->appendChild($doc->createElement('TotalGeneralDiscounts', $this->facturaeAmount(0)));
-		$invoiceTotals->appendChild($doc->createElement('TotalGeneralSurcharges', $this->facturaeAmount(0)));
 		$invoiceTotals->appendChild($doc->createElement('TotalGrossAmountBeforeTaxes', $this->facturaeAmount($data['sub_total'])));
 		$invoiceTotals->appendChild($doc->createElement('TotalTaxOutputs', $this->facturaeAmount($data['tax_total'])));
 		$invoiceTotals->appendChild($doc->createElement('TotalTaxesWithheld', $this->facturaeAmount(0)));
 		$invoiceTotals->appendChild($doc->createElement('InvoiceTotal', $this->facturaeAmount($data['total'])));
+		$invoiceTotals->appendChild($doc->createElement('TotalFinancialExpenses', '0.00'));
 		$invoiceTotals->appendChild($doc->createElement('TotalOutstandingAmount', $this->facturaeAmount($data['total'])));
 		$invoiceTotals->appendChild($doc->createElement('TotalExecutableAmount', $this->facturaeAmount($data['total'])));
 
@@ -2108,15 +2129,51 @@ class ControllerSaleInvoice extends Controller {
 		foreach ($data['lines'] as $line) {
 			$lineEl = $doc->createElement('InvoiceLine');
 			$items->appendChild($lineEl);
+			$lineEl->appendChild($doc->createElement('ReceiverTransactionReference'));
 			$lineEl->appendChild($doc->createElement('ItemDescription', $line['name']));
 			$lineEl->appendChild($doc->createElement('Quantity', $this->facturaeAmount($line['quantity'])));
-			$lineEl->appendChild($doc->createElement('UnitOfMeasure', '01'));
 			$lineEl->appendChild($doc->createElement('UnitPriceWithoutTax', $this->facturaeAmount($line['price'])));
 			$lineEl->appendChild($doc->createElement('TotalCost', $this->facturaeAmount($line['total'])));
+
+			$discountsAndRebates = $doc->createElement('DiscountsAndRebates');
+			$lineEl->appendChild($discountsAndRebates);
+			$discount = $doc->createElement('Discount');
+			$discountsAndRebates->appendChild($discount);
+			$discount->appendChild($doc->createElement('DiscountReason', 'Descuento'));
+			$discount->appendChild($doc->createElement('DiscountAmount', $this->facturaeAmount(0)));
+
 			$lineEl->appendChild($doc->createElement('GrossAmount', $this->facturaeAmount($line['total'])));
+
+			$lineTaxesOutputs = $doc->createElement('TaxesOutputs');
+			$lineEl->appendChild($lineTaxesOutputs);
+			$lineTaxesOutputs->appendChild($this->buildFacturaeTaxXml($doc, array(
+				'rate'   => $line['tax_rate'],
+				'base'   => $line['total'],
+				'amount' => $line['tax']
+			)));
+
+			if ($line['model']) {
+				$lineEl->appendChild($doc->createElement('ArticleCode', str_pad($line['model'], 15, '0', STR_PAD_LEFT)));
+			}
 		}
 
 		return $doc->saveXML();
+	}
+
+	protected function buildFacturaeTaxXml($doc, $tax) {
+		$taxEl = $doc->createElement('Tax');
+		$taxEl->appendChild($doc->createElement('TaxTypeCode', '01'));
+		$taxEl->appendChild($doc->createElement('TaxRate', $this->facturaeAmount($tax['rate'])));
+
+		$taxableBase = $doc->createElement('TaxableBase');
+		$taxableBase->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($tax['base'])));
+		$taxEl->appendChild($taxableBase);
+
+		$taxAmount = $doc->createElement('TaxAmount');
+		$taxAmount->appendChild($doc->createElement('TotalAmount', $this->facturaeAmount($tax['amount'])));
+		$taxEl->appendChild($taxAmount);
+
+		return $taxEl;
 	}
 
 	protected function buildFacturaePartyXml($doc, $tagName, $party, $personType) {
@@ -2129,6 +2186,8 @@ class ControllerSaleInvoice extends Controller {
 		$taxIdentification->appendChild($doc->createElement('PersonTypeCode', $personType));
 		$taxIdentification->appendChild($doc->createElement('ResidenceTypeCode', $isSpain ? 'R' : 'U'));
 		$taxIdentification->appendChild($doc->createElement('TaxIdentificationNumber', $party['nif']));
+
+		$partyEl->appendChild($doc->createElement('PartyIdentification'));
 
 		$legalEntity = $doc->createElement($personType == 'F' ? 'Individual' : 'LegalEntity');
 		$partyEl->appendChild($legalEntity);
@@ -2153,7 +2212,13 @@ class ControllerSaleInvoice extends Controller {
 	}
 
 	protected function facturaeAmount($value) {
-		return number_format((float)$value, 2, '.', '');
+		$value = round((float)$value, 2);
+
+		if (fmod($value, 1) == 0) {
+			return number_format($value, 0, '.', '');
+		}
+
+		return rtrim(rtrim(number_format($value, 2, '.', ''), '0'), '.');
 	}
 
 	public function checkInvoice() {
