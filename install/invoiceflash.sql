@@ -8170,7 +8170,7 @@ CREATE TABLE `if_remittances_lines` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_log`;
-CREATE TABLE if_log (
+CREATE TABLE `if_log` (
 log_id int(11) NOT NULL AUTO_INCREMENT,
 table_name tinytext,
 field varchar(35) DEFAULT NULL,

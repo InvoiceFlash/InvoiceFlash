@@ -1082,7 +1082,7 @@ class ControllerSettingSetting extends Controller {
 		if (isset($this->request->post['iban'])) {
 			$this->data['iban'] = str_replace(array("-", " "), "", $this->request->post['iban']);
 		} else {
-			$this->data['iban'] = str_replace(array("-", " "), "", $this->config->get('iban'));
+			$this->data['iban'] = str_replace(array("-", " "), "", (string)$this->config->get('iban'));
 		}
 		
 		if (isset($this->request->post['bic'])) {
