@@ -20,6 +20,9 @@ $_['column_date_added']        = 'Date Added';
 $_['column_action']            = 'Action';
 $_['column_contact_name']      = 'Name';
 $_['column_contact_email']     = 'Email';
+$_['column_comment']           = 'Comment';
+$_['column_user']              = 'User';
+$_['column_date']              = 'Date';
 
 // Entry
 $_['entry_firstname']          = 'First Name:';
@@ -46,11 +49,18 @@ $_['button_delete']            = 'Delete';
 $_['button_filter']            = 'Filter';
 $_['button_save']              = 'Save';
 $_['button_cancel']            = 'Cancel';
+$_['button_add_note']          = 'Add Note';
 
 // Tab
 $_['tab_general']              = 'General';
+$_['tab_notes']                 = 'Notes';
 $_['tab_contacts']              = 'Contacts';
 $_['tab_contracts']             = 'Contracts';
+
+// Notes
+$_['heading_title_note']       = 'Note';
+$_['entry_user']                = 'User:';
+$_['entry_date_note']           = 'Date:';
 
 // Contacts
 $_['button_add_contact']       = 'Add Contact';

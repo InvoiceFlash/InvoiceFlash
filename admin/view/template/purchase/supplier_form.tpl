@@ -19,117 +19,160 @@
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" id="form">
 			<div class="tab-content">
 				<div class="tab-pane" id="tab-general">
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_company; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="company" value="<?php echo $company; ?>" class="form-control">
-							<?php if ($error_company) { ?>
-							<div class="help-block text-danger"><?php echo $error_company; ?></div>
-							<?php } ?>
+					<div class="row">
+						<div class="col-xs-4 col-sm-3">
+							<div class="nav flex-column" id="vtabs-supplier">
+								<a href="#tab-supplier-general" class="nav-link active" role="tab" aria-selected="true" data-bs-toggle="pill"><?php echo $tab_general; ?></a>
+								<a href="#tab-supplier-notes" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_notes; ?></a>
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_firstname; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_lastname; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_email; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
-							<?php if ($error_email) { ?>
-							<div class="help-block text-danger"><?php echo $error_email; ?></div>
-							<?php } ?>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_telephone; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_web; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="web" value="<?php echo $web; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="tax_id" value="<?php echo $tax_id; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_1; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="address_1" value="<?php echo $address_1; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_2; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="address_2" value="<?php echo $address_2; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="city" value="<?php echo $city; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><span id="supplier-postcode-required"></span> <?php echo $entry_postcode; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="postcode" value="<?php echo $postcode; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
-						<div class="col-sm-6">
-							<select name="country_id" id="supplier-country" class="form-control">
-								<option value=""><?php echo $text_select; ?></option>
-								<?php foreach ($countries as $country) { ?>
-								<?php if ($country['country_id'] == $country_id) { ?>
-								<option value="<?php echo $country['country_id']; ?>" selected=""><?php echo $country['name']; ?></option>
-								<?php } else { ?>
-								<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
-								<?php } ?>
-								<?php } ?>
-							</select>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
-						<div class="col-sm-6">
-							<select name="zone_id" class="form-control"></select>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status; ?></label>
-						<div class="col-sm-6">
-							<select name="status" class="form-control">
-								<?php if ($status) { ?>
-								<option value="1" selected=""><?php echo $text_enabled; ?></option>
-								<option value="0"><?php echo $text_disabled; ?></option>
-								<?php } else { ?>
-								<option value="1"><?php echo $text_enabled; ?></option>
-								<option value="0" selected=""><?php echo $text_disabled; ?></option>
-								<?php } ?>
-							</select>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_comment; ?></label>
-						<div class="col-sm-6">
-							<textarea name="comment" class="form-control" rows="3"><?php echo $comment; ?></textarea>
+						<div class="col-xs-8 col-sm-9">
+							<div class="tab-content" id="supplier-content">
+								<div class="tab-pane fade show active" role="tab-panel" id="tab-supplier-general">
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_company; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="company" value="<?php echo $company; ?>" class="form-control">
+											<?php if ($error_company) { ?>
+											<div class="help-block text-danger"><?php echo $error_company; ?></div>
+											<?php } ?>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_firstname; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_lastname; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_email; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
+											<?php if ($error_email) { ?>
+											<div class="help-block text-danger"><?php echo $error_email; ?></div>
+											<?php } ?>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_telephone; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_web; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="web" value="<?php echo $web; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="tax_id" value="<?php echo $tax_id; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_1; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="address_1" value="<?php echo $address_1; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_2; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="address_2" value="<?php echo $address_2; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="city" value="<?php echo $city; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><span id="supplier-postcode-required"></span> <?php echo $entry_postcode; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="postcode" value="<?php echo $postcode; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
+										<div class="col-sm-6">
+											<select name="country_id" id="supplier-country" class="form-control">
+												<option value=""><?php echo $text_select; ?></option>
+												<?php foreach ($countries as $country) { ?>
+												<?php if ($country['country_id'] == $country_id) { ?>
+												<option value="<?php echo $country['country_id']; ?>" selected=""><?php echo $country['name']; ?></option>
+												<?php } else { ?>
+												<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+												<?php } ?>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
+										<div class="col-sm-6">
+											<select name="zone_id" class="form-control"></select>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status; ?></label>
+										<div class="col-sm-6">
+											<select name="status" class="form-control">
+												<?php if ($status) { ?>
+												<option value="1" selected=""><?php echo $text_enabled; ?></option>
+												<option value="0"><?php echo $text_disabled; ?></option>
+												<?php } else { ?>
+												<option value="1"><?php echo $text_enabled; ?></option>
+												<option value="0" selected=""><?php echo $text_disabled; ?></option>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="tab-pane fade" role="tab-panel" id="tab-supplier-notes">
+									<table class="table table-bordered table-striped table-hover">
+										<thead>
+											<tr>
+												<th width="40" class="text-center"></th>
+												<th><?php echo $column_comment; ?></th>
+												<th><?php echo $column_user; ?></th>
+												<th class="d-none d-sm-table-cell"><?php echo $column_date; ?></th>
+											</tr>
+										</thead>
+										<tbody>
+											<?php if ($notes) { ?>
+											<?php foreach ($notes as $note) { ?>
+											<tr>
+												<td class="text-center"><input type="hidden" name="note_id" value="<?php echo $note['note_id']; ?>">
+													<a href="<?php echo $note['delete']; ?>" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+												</td>
+												<td><?php echo $note['comment']; ?></td>
+												<td><?php echo $note['user']; ?></td>
+												<td class="d-none d-sm-table-cell"><?php echo $note['date']; ?></td>
+											</tr>
+											<?php } ?>
+											<?php } else { ?>
+											<tr>
+												<td colspan="4" class="text-center"><?php echo $text_no_results; ?></td>
+											</tr>
+											<?php } ?>
+										</tbody>
+										<tfoot>
+											<tr>
+												<td class="text-right" colspan="4"><a href="<?php echo $add_note; ?>" class="btn btn-info"><?php echo $button_add_note; ?></a></td>
+											</tr>
+										</tfoot>
+									</table>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

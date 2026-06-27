@@ -147,7 +147,7 @@ class ControllerSaleInvoice extends Controller {
 
     	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
 			foreach ($this->request->post['selected'] as $invoice_id) {
-				$this->model_sale_invoice->deleteInvoice($invoice_id);
+				$this->model_sale_invoice->createNegativeInvoice($invoice_id);
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');

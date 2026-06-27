@@ -303,7 +303,6 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['entry_postcode'] = $this->language->get('entry_postcode');
 		$this->data['entry_country'] = $this->language->get('entry_country');
 		$this->data['entry_zone'] = $this->language->get('entry_zone');
-		$this->data['entry_comment'] = $this->language->get('entry_comment');
 		$this->data['entry_status'] = $this->language->get('entry_status');
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
@@ -361,7 +360,7 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['token'] = $this->session->data['token'];
 		$this->data['supplier_id'] = isset($this->request->get['supplier_id']) ? $this->request->get['supplier_id'] : 0;
 
-		$fields = array('firstname', 'lastname', 'company', 'company_id', 'tax_id', 'email', 'telephone', 'fax', 'web', 'address_1', 'address_2', 'city', 'postcode', 'country_id', 'zone_id', 'comment');
+		$fields = array('firstname', 'lastname', 'company', 'company_id', 'tax_id', 'email', 'telephone', 'fax', 'web', 'address_1', 'address_2', 'city', 'postcode', 'country_id', 'zone_id');
 
 		foreach ($fields as $field) {
 			if (isset($this->request->post[$field])) {
@@ -836,6 +835,101 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['cancel'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
 
 		$this->template = 'purchase/supplier_contract.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer'
+		);
+
+		$this->response->setOutput($this->render());
+	}
+
+	public function insertNote() {
+		$this->load->language('purchase/supplier');
+
+		$this->load->model('purchase/supplier');
+
+		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+			$this->model_purchase_supplier->addSupplierNote($this->request->post, $this->request->get['supplier_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
+		}
+
+		$this->getNoteForm();
+	}
+
+	public function deleteNote() {
+		$this->load->language('purchase/supplier');
+
+		$this->load->model('purchase/supplier');
+
+		if (isset($this->request->get['note_id']) && $this->validateDelete()) {
+			$this->model_purchase_supplier->deleteSupplierNote($this->request->get['note_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
+		}
+
+		$this->getForm();
+	}
+
+	protected function getNoteForm() {
+		$this->load->model('purchase/supplier');
+
+		$this->data['heading_title'] = $this->language->get('heading_title_note');
+
+		$this->data['entry_comment'] = $this->language->get('entry_comment');
+		$this->data['entry_date_note'] = $this->language->get('entry_date_note');
+		$this->data['entry_user'] = $this->language->get('entry_user');
+
+		$this->data['button_save'] = $this->language->get('button_save');
+		$this->data['button_cancel'] = $this->language->get('button_cancel');
+
+		$this->data['breadcrumbs'] = array(
+			array(
+				'text'      => $this->language->get('text_home'),
+				'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+				'separator' => false
+			),
+			array(
+				'text'      => $this->language->get('heading_title'),
+				'href'      => $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'),
+				'separator' => ' :: '
+			)
+		);
+
+		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
+
+		if (isset($this->request->post['comment'])) {
+			$this->data['comment'] = $this->request->post['comment'];
+		} else {
+			$this->data['comment'] = '';
+		}
+
+		if (isset($this->request->post['date_added'])) {
+			$this->data['date_added'] = $this->request->post['date_added'];
+		} else {
+			$this->data['date_added'] = date('Y-m-d');
+		}
+
+		if (isset($this->request->post['user_id'])) {
+			$this->data['user_id'] = $this->request->post['user_id'];
+		} else {
+			$this->data['user_id'] = $this->user->getId();
+		}
+
+		if (isset($this->request->post['user_name'])) {
+			$this->data['user_name'] = $this->request->post['user_name'];
+		} else {
+			$this->data['user_name'] = $this->user->getUserName();
+		}
+
+		$this->data['action'] = $this->url->link('purchase/supplier/insertNote', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
+		$this->data['cancel'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
+
+		$this->template = 'purchase/supplier_note_form.tpl';
 		$this->children = array(
 			'common/header',
 			'common/footer'

@@ -18,7 +18,6 @@ class ModelPurchaseSupplier extends Model {
 			postcode = '" . $this->db->escape($data['postcode']) . "',
 			country_id = '" . (int)$data['country_id'] . "',
 			zone_id = '" . (int)$data['zone_id'] . "',
-			comment = '" . $this->db->escape($data['comment']) . "',
 			status = '" . (isset($data['status']) ? (int)$data['status'] : 0) . "',
 			date_added = NOW(),
 			date_modified = NOW()");
@@ -43,7 +42,6 @@ class ModelPurchaseSupplier extends Model {
 			postcode = '" . $this->db->escape($data['postcode']) . "',
 			country_id = '" . (int)$data['country_id'] . "',
 			zone_id = '" . (int)$data['zone_id'] . "',
-			comment = '" . $this->db->escape($data['comment']) . "',
 			status = '" . (isset($data['status']) ? (int)$data['status'] : 0) . "',
 			date_modified = NOW()
 			WHERE supplier_id = '" . (int)$supplier_id . "'");
