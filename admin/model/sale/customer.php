@@ -10,9 +10,8 @@ class ModelSaleCustomer extends Model {
 			company = '" . $this->db->escape($data['company']) . "', 
 			approved = '1',
 			email = '" . $this->db->escape($data['email']) . "', 
-			telephone = '" . $this->db->escape($data['telephone']) . "', 
-			fax = '" . $this->db->escape($data['fax']) . "', 
-			customer_group_id = '" . (int)$data['customer_group_id'] . "', 
+			telephone = '" . $this->db->escape($data['telephone']) . "',
+			customer_group_id = '" . (int)$data['customer_group_id'] . "',
 			`status` = '" . (int)$data['status'] . "', 
 			date_added = NOW(), 
 			date_modified = NOW(), 
@@ -55,7 +54,7 @@ class ModelSaleCustomer extends Model {
 
 		$this->db->query("UPDATE " . DB_PREFIX . "customer SET 
 			company = '" . $this->db->escape($data['company']) . "', 
-			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', fax = '" . $this->db->escape($data['fax']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
+			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
 
@@ -125,7 +124,7 @@ class ModelSaleCustomer extends Model {
 
 	public function getCustomer($customer_id) {
 
-		$query = $this->db->query("SELECT c.company, c.email, ce.nif, c.telephone, ce.cwww, c.fax, c.newsletter, c.customer_group_id, c.status, c.date_support, ce.bank_cc, ce.bic, ce.efaccafi, ce.efaccapa, ce.efaccare, ce.digital_invoice, c.date_added, c.date_modified, c.notes, c.address_id, c.store_id	FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id WHERE c.customer_id = '" . (int)$customer_id . "'");
+		$query = $this->db->query("SELECT c.company, c.email, ce.nif, c.telephone, ce.cwww, c.newsletter, c.customer_group_id, c.status, c.date_support, ce.bank_cc, ce.bic, ce.efaccafi, ce.efaccapa, ce.efaccare, ce.digital_invoice, c.date_added, c.date_modified, c.notes, c.address_id, c.store_id	FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id WHERE c.customer_id = '" . (int)$customer_id . "'");
 
 		return $query->row;
 

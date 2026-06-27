@@ -271,8 +271,7 @@
 							<label class="col-form-label col-sm-10 col-md-2" for="notify"><?php echo $entry_notify; ?></label>
 							<div class="col-sm-6">
 								<div class="toggle-flip"><label>
-									<input type="hidden" name="notify"> 
-									<input type="checkbox">
+									<input type="checkbox" name="notify">
 									<span class="flip-indecator" data-toggle-on="Yes" data-toggle-off="No"></span>
 								</label></div>
 							</div>

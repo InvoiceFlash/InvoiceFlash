@@ -93,7 +93,7 @@ abstract class Controller {
 	}
 
 	//add
-	protected function renderPDF($template, $output, $name, $id) {
+	protected function renderPDF($template, $output, $name, $id, $watermark = '') {
 		require_once(DIR_SYSTEM.'external/tcpdf/tcpdf.php');
 
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -110,7 +110,22 @@ abstract class Controller {
 		// output the HTML content
 		$pdf->writeHTML($this->render(), true, false, true, false, '');
 
-		if ($output == 'email'){	 
+		if ($watermark) {
+			$page_width = $pdf->getPageWidth();
+			$page_height = $pdf->getPageHeight();
+
+			$pdf->SetAlpha(0.2);
+			$pdf->SetFont('helvetica', 'BI', 70);
+			$pdf->SetTextColor(150, 150, 150);
+			$pdf->StartTransform();
+			$pdf->Rotate(45, $page_width / 2, $page_height / 2);
+			$pdf->SetXY(0, ($page_height / 2) - 15);
+			$pdf->Cell($page_width, 30, $watermark, 0, 0, 'C');
+			$pdf->StopTransform();
+			$pdf->SetAlpha(1);
+		}
+
+		if ($output == 'email'){
 		    //$this->output =  $pdf->Output(DIR_DOWNLOAD . $name . '.pdf', 'F');
 			$this->output =  $pdf->Output(DIR_DOWNLOAD . $name . '_' . $id . '.pdf', 'F');
 		}else{		 

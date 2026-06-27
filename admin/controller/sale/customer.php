@@ -518,7 +518,6 @@ class ControllerSaleCustomer extends Controller {
 		
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
-		$this->data['entry_fax'] = $this->language->get('entry_fax');
 		$this->data['entry_password'] = $this->language->get('entry_password');
 		$this->data['entry_confirm'] = $this->language->get('entry_confirm');
 		$this->data['entry_newsletter'] = $this->language->get('entry_newsletter');
@@ -1034,14 +1033,6 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['web'] = '';
 		}
 		
-		if (isset($this->request->post['fax'])) {
-			$this->data['fax'] = $this->request->post['fax'];
-		} elseif (!empty($customer_info)) {
-			$this->data['fax'] = $customer_info['fax'];
-		} else {
-			$this->data['fax'] = '';
-		}
-
 		if (isset($this->request->post['notes'])) {
       		$this->data['notes'] = $this->request->post['notes'];
     	} elseif (isset($customer_info)) { 

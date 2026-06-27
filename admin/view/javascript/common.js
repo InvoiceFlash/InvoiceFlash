@@ -703,7 +703,7 @@ $(function(){
 			url:'index.php?route='+d+'/'+b+'/history&token='+token+'&'+b+'_id='+c,
 			type:'post',
 			dataType:'html',
-			data:b+'_status_id='+encodeURIComponent($('select[name="'+b+'_status_id"]').val())+'&notify='+encodeURIComponent($('input[name="notify"]').attr('checked') ? 1 :0)+'&append='+encodeURIComponent($('input[name="append"]').attr('checked') ? 1 :0)+'&comment='+encodeURIComponent($('textarea[name="comment"]').val()),
+			data:b+'_status_id='+encodeURIComponent($('select[name="'+b+'_status_id"]').val())+'&notify='+encodeURIComponent($('input[name="notify"]').prop('checked') ? 1 :0)+'&append='+encodeURIComponent($('input[name="append"]').prop('checked') ? 1 :0)+'&comment='+encodeURIComponent($('textarea[name="comment"]').val()),
 			beforeSend:function(){
 				a.button('loading').append($('<i>',{class:'icon-loading'}));
 			},

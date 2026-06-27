@@ -3366,7 +3366,7 @@ CREATE TABLE `if_user_group` (
 --
 
 INSERT INTO `if_user_group` (`user_group_id`, `name`, `permission`) VALUES
-(1,'Top Administrator','a:2:{s:6:"access";a:58:{i:0;s:17:"catalog/attribute";i:1;s:23:"catalog/attribute_group";i:2;s:16:"catalog/category";i:3;s:16:"catalog/download";i:4;s:12:"catalog/mail";i:5;s:20:"catalog/manufacturer";i:6;s:14:"catalog/option";i:7;s:15:"catalog/product";i:8;s:18:"common/filemanager";i:9;s:15:"extension/total";i:10;s:21:"localisation/contract";i:11;s:20:"localisation/country";i:12;s:21:"localisation/currency";i:13;s:21:"localisation/geo_zone";i:14;s:27:"localisation/invoice_status";i:15;s:21:"localisation/language";i:16;s:25:"localisation/length_class";i:17;s:25:"localisation/order_status";i:18;s:20:"localisation/payment";i:19;s:26:"localisation/return_action";i:20;s:26:"localisation/return_reason";i:21;s:26:"localisation/return_status";i:22;s:21:"localisation/shipping";i:23;s:25:"localisation/stock_status";i:24;s:22:"localisation/tax_class";i:25;s:21:"localisation/tax_rate";i:26;s:25:"localisation/weight_class";i:27;s:17:"localisation/zone";i:28;s:23:"report/customer_support";i:29;s:19:"report/sale_invoice";i:30;s:20:"report/sale_shipping";i:31;s:15:"report/sale_tax";i:32;s:13:"sale/customer";i:33;s:19:"sale/customer_group";i:34;s:13:"sale/delivery";i:35;s:12:"sale/invoice";i:36;s:10:"sale/order";i:37;s:10:"sale/quote";i:38;s:12:"sale/receipt";i:39;s:16:"sale/remittances";i:40;s:11:"sale/return";i:41;s:12:"setting/cron";i:42;s:15:"setting/setting";i:43;s:13:"setting/store";i:44;s:11:"tool/backup";i:45;s:14:"tool/error_log";i:46;s:12:"total/coupon";i:47;s:12:"total/credit";i:48;s:14:"total/handling";i:49;s:19:"total/low_order_fee";i:50;s:12:"total/reward";i:51;s:14:"total/shipping";i:52;s:15:"total/sub_total";i:53;s:9:"total/tax";i:54;s:11:"total/total";i:55;s:8:"user/api";i:56;s:9:"user/user";i:57;s:20:"user/user_permission";}s:6:"modify";a:58:{i:0;s:17:"catalog/attribute";i:1;s:23:"catalog/attribute_group";i:2;s:16:"catalog/category";i:3;s:16:"catalog/download";i:4;s:12:"catalog/mail";i:5;s:20:"catalog/manufacturer";i:6;s:14:"catalog/option";i:7;s:15:"catalog/product";i:8;s:18:"common/filemanager";i:9;s:15:"extension/total";i:10;s:21:"localisation/contract";i:11;s:20:"localisation/country";i:12;s:21:"localisation/currency";i:13;s:21:"localisation/geo_zone";i:14;s:27:"localisation/invoice_status";i:15;s:21:"localisation/language";i:16;s:25:"localisation/length_class";i:17;s:25:"localisation/order_status";i:18;s:20:"localisation/payment";i:19;s:26:"localisation/return_action";i:20;s:26:"localisation/return_reason";i:21;s:26:"localisation/return_status";i:22;s:21:"localisation/shipping";i:23;s:25:"localisation/stock_status";i:24;s:22:"localisation/tax_class";i:25;s:21:"localisation/tax_rate";i:26;s:25:"localisation/weight_class";i:27;s:17:"localisation/zone";i:28;s:23:"report/customer_support";i:29;s:19:"report/sale_invoice";i:30;s:20:"report/sale_shipping";i:31;s:15:"report/sale_tax";i:32;s:13:"sale/customer";i:33;s:19:"sale/customer_group";i:34;s:13:"sale/delivery";i:35;s:12:"sale/invoice";i:36;s:10:"sale/order";i:37;s:10:"sale/quote";i:38;s:12:"sale/receipt";i:39;s:16:"sale/remittances";i:40;s:11:"sale/return";i:41;s:12:"setting/cron";i:42;s:15:"setting/setting";i:43;s:13:"setting/store";i:44;s:11:"tool/backup";i:45;s:14:"tool/error_log";i:46;s:12:"total/coupon";i:47;s:12:"total/credit";i:48;s:14:"total/handling";i:49;s:19:"total/low_order_fee";i:50;s:12:"total/reward";i:51;s:14:"total/shipping";i:52;s:15:"total/sub_total";i:53;s:9:"total/tax";i:54;s:11:"total/total";i:55;s:8:"user/api";i:56;s:9:"user/user";i:57;s:20:"user/user_permission";}}'),
+(1,'Top Administrator','a:2:{s:6:"access";a:59:{i:0;s:17:"catalog/attribute";i:1;s:23:"catalog/attribute_group";i:2;s:16:"catalog/category";i:3;s:16:"catalog/download";i:4;s:12:"catalog/mail";i:5;s:20:"catalog/manufacturer";i:6;s:14:"catalog/option";i:7;s:15:"catalog/product";i:8;s:18:"common/filemanager";i:9;s:15:"extension/total";i:10;s:21:"localisation/contract";i:11;s:20:"localisation/country";i:12;s:21:"localisation/currency";i:13;s:21:"localisation/geo_zone";i:14;s:27:"localisation/invoice_status";i:15;s:21:"localisation/language";i:16;s:25:"localisation/length_class";i:17;s:25:"localisation/order_status";i:18;s:20:"localisation/payment";i:19;s:26:"localisation/return_action";i:20;s:26:"localisation/return_reason";i:21;s:26:"localisation/return_status";i:22;s:21:"localisation/shipping";i:23;s:25:"localisation/stock_status";i:24;s:22:"localisation/tax_class";i:25;s:21:"localisation/tax_rate";i:26;s:25:"localisation/weight_class";i:27;s:17:"localisation/zone";i:28;s:23:"report/customer_support";i:29;s:19:"report/sale_invoice";i:30;s:20:"report/sale_shipping";i:31;s:15:"report/sale_tax";i:32;s:13:"sale/customer";i:33;s:19:"sale/customer_group";i:34;s:13:"sale/delivery";i:35;s:12:"sale/invoice";i:36;s:10:"sale/order";i:37;s:10:"sale/quote";i:38;s:12:"sale/receipt";i:39;s:16:"sale/remittances";i:40;s:11:"sale/return";i:41;s:12:"setting/cron";i:42;s:15:"setting/setting";i:43;s:13:"setting/store";i:44;s:11:"tool/backup";i:45;s:14:"tool/error_log";i:46;s:12:"total/coupon";i:47;s:12:"total/credit";i:48;s:14:"total/handling";i:49;s:19:"total/low_order_fee";i:50;s:12:"total/reward";i:51;s:14:"total/shipping";i:52;s:15:"total/sub_total";i:53;s:9:"total/tax";i:54;s:11:"total/total";i:55;s:8:"user/api";i:56;s:9:"user/user";i:57;s:20:"user/user_permission";i:58;s:10:"sale/draft";}s:6:"modify";a:59:{i:0;s:17:"catalog/attribute";i:1;s:23:"catalog/attribute_group";i:2;s:16:"catalog/category";i:3;s:16:"catalog/download";i:4;s:12:"catalog/mail";i:5;s:20:"catalog/manufacturer";i:6;s:14:"catalog/option";i:7;s:15:"catalog/product";i:8;s:18:"common/filemanager";i:9;s:15:"extension/total";i:10;s:21:"localisation/contract";i:11;s:20:"localisation/country";i:12;s:21:"localisation/currency";i:13;s:21:"localisation/geo_zone";i:14;s:27:"localisation/invoice_status";i:15;s:21:"localisation/language";i:16;s:25:"localisation/length_class";i:17;s:25:"localisation/order_status";i:18;s:20:"localisation/payment";i:19;s:26:"localisation/return_action";i:20;s:26:"localisation/return_reason";i:21;s:26:"localisation/return_status";i:22;s:21:"localisation/shipping";i:23;s:25:"localisation/stock_status";i:24;s:22:"localisation/tax_class";i:25;s:21:"localisation/tax_rate";i:26;s:25:"localisation/weight_class";i:27;s:17:"localisation/zone";i:28;s:23:"report/customer_support";i:29;s:19:"report/sale_invoice";i:30;s:20:"report/sale_shipping";i:31;s:15:"report/sale_tax";i:32;s:13:"sale/customer";i:33;s:19:"sale/customer_group";i:34;s:13:"sale/delivery";i:35;s:12:"sale/invoice";i:36;s:10:"sale/order";i:37;s:10:"sale/quote";i:38;s:12:"sale/receipt";i:39;s:16:"sale/remittances";i:40;s:11:"sale/return";i:41;s:12:"setting/cron";i:42;s:15:"setting/setting";i:43;s:13:"setting/store";i:44;s:11:"tool/backup";i:45;s:14:"tool/error_log";i:46;s:12:"total/coupon";i:47;s:12:"total/credit";i:48;s:14:"total/handling";i:49;s:19:"total/low_order_fee";i:50;s:12:"total/reward";i:51;s:14:"total/shipping";i:52;s:15:"total/sub_total";i:53;s:9:"total/tax";i:54;s:11:"total/total";i:55;s:8:"user/api";i:56;s:9:"user/user";i:57;s:20:"user/user_permission";i:58;s:10:"sale/draft";}}'),
 (10, 'Demonstration', '');
 
 -- --------------------------------------------------------
@@ -7678,6 +7678,152 @@ CREATE TABLE `if_invoice_status` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `if_invoice_status` (`invoice_status_id`, `language_id`, `name`) VALUES
+(2, 1, 'Processing'),
+(3, 1, 'Shipped'),
+(7, 1, 'Canceled'),
+(5, 1, 'Complete'),
+(8, 1, 'Denied'),
+(9, 1, 'Canceled Reversal'),
+(10, 1, 'Failed'),
+(11, 1, 'Refunded'),
+(12, 1, 'Reversed'),
+(13, 1, 'Chargeback'),
+(1, 1, 'Pending'),
+(16, 1, 'Voided'),
+(15, 1, 'Processed'),
+(14, 1, 'Expired');
+
+/*Table structure for table `draft` */
+
+DROP TABLE IF EXISTS `if_draft`;
+CREATE TABLE `if_draft` (
+  `draft_id` int(11) NOT NULL AUTO_INCREMENT,
+  `draft_no` int(11) NOT NULL DEFAULT '0',
+  `draft_prefix` varchar(26) NOT NULL,
+  `store_id` int(11) NOT NULL DEFAULT '0',
+  `store_name` varchar(64) NOT NULL,
+  `store_url` varchar(255) NOT NULL,
+  `customer_id` int(11) NOT NULL DEFAULT '0',
+  `customer_group_id` int(11) NOT NULL DEFAULT '0',
+  `firstname` varchar(32) NOT NULL,
+  `lastname` varchar(32) NOT NULL,
+  `email` varchar(96) NOT NULL,
+  `telephone` varchar(32) NOT NULL,
+  `fax` varchar(32) NOT NULL,
+  `payment_firstname` varchar(32) NOT NULL,
+  `payment_lastname` varchar(32) NOT NULL,
+  `payment_company` varchar(32) NOT NULL,
+  `payment_company_id` varchar(32) NOT NULL,
+  `payment_tax_id` varchar(32) NOT NULL,
+  `payment_address_1` varchar(128) NOT NULL,
+  `payment_address_2` varchar(128) NOT NULL,
+  `payment_city` varchar(128) NOT NULL,
+  `payment_postcode` varchar(10) NOT NULL,
+  `payment_country` varchar(128) NOT NULL,
+  `payment_country_id` int(11) NOT NULL,
+  `payment_zone` varchar(128) NOT NULL,
+  `payment_zone_id` int(11) NOT NULL,
+  `payment_address_format` text NOT NULL,
+  `payment_method` varchar(128) NOT NULL,
+  `payment_code` varchar(128) NOT NULL,
+  `shipping_firstname` varchar(32) NOT NULL,
+  `shipping_lastname` varchar(32) NOT NULL,
+  `shipping_company` varchar(32) NOT NULL,
+  `shipping_address_1` varchar(128) NOT NULL,
+  `shipping_address_2` varchar(128) NOT NULL,
+  `shipping_city` varchar(128) NOT NULL,
+  `shipping_postcode` varchar(10) NOT NULL,
+  `shipping_country` varchar(128) NOT NULL,
+  `shipping_country_id` int(11) NOT NULL,
+  `shipping_zone` varchar(128) NOT NULL,
+  `shipping_zone_id` int(11) NOT NULL,
+  `shipping_address_format` text NOT NULL,
+  `shipping_method` varchar(128) NOT NULL,
+  `shipping_code` varchar(128) NOT NULL,
+  `comment` text NOT NULL,
+  `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `draft_status_id` int(11) NOT NULL DEFAULT '0',
+  `affiliate_id` int(11) NOT NULL,
+  `commission` decimal(15,4) NOT NULL,
+  `language_id` int(11) NOT NULL,
+  `currency_id` int(11) NOT NULL,
+  `currency_code` varchar(3) NOT NULL,
+  `currency_value` decimal(15,8) NOT NULL DEFAULT '1.0000',
+  `ip` varchar(40) NOT NULL,
+  `forwarded_ip` varchar(40) NOT NULL,
+  `user_agent` varchar(255) NOT NULL,
+  `accept_language` varchar(255) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `date_modified` datetime NOT NULL,
+  PRIMARY KEY (`draft_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+/*Table structure for table `draft_product` */
+
+DROP TABLE IF EXISTS `if_draft_product`;
+CREATE TABLE `if_draft_product` (
+  `draft_product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `draft_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `model` varchar(64) NOT NULL,
+  `quantity` int(4) NOT NULL,
+  `price` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `tax` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `reward` int(8) NOT NULL,
+  PRIMARY KEY (`draft_product_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_draft_option`;
+CREATE TABLE `if_draft_option` (
+  `draft_option_id` int(11) NOT NULL AUTO_INCREMENT,
+  `draft_id` int(11) NOT NULL,
+  `draft_product_id` int(11) NOT NULL,
+  `product_option_id` int(11) NOT NULL,
+  `product_option_value_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `value` text NOT NULL,
+  `type` varchar(32) NOT NULL,
+  PRIMARY KEY (`draft_option_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+/*Table structure for table `draft_total` */
+
+DROP TABLE IF EXISTS `if_draft_total`;
+CREATE TABLE `if_draft_total` (
+  `draft_total_id` int(10) NOT NULL AUTO_INCREMENT,
+  `draft_id` int(11) NOT NULL,
+  `code` varchar(32) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `value` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `sort_order` int(3) NOT NULL,
+  PRIMARY KEY (`draft_total_id`),
+  KEY `order_id` (`draft_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_draft_history`;
+CREATE TABLE `if_draft_history` (
+  `draft_history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `draft_id` int(11) NOT NULL,
+  `draft_status_id` int(5) NOT NULL,
+  `notify` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text NOT NULL,
+  `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`draft_history_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `if_draft_status`;
+CREATE TABLE `if_draft_status` (
+  `draft_status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `language_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `color` varchar(50),
+  PRIMARY KEY (`draft_status_id`,`language_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+INSERT INTO `if_draft_status` (`draft_status_id`, `language_id`, `name`) VALUES
 (2, 1, 'Processing'),
 (3, 1, 'Shipped'),
 (7, 1, 'Canceled'),

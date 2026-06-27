@@ -104,6 +104,7 @@ $_['text_upgrade']           		   = 'Upgrade';
 
 //add
 $_['text_cron']						   = 'Scheduled tasks';
+$_['text_draft']                       = 'Drafts';
 $_['text_invoice']                     = 'Invoices';
 $_['text_invoice_design']              = 'Invoice Design';
 $_['text_quote']                       = 'Quotes';

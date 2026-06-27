@@ -277,6 +277,14 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
+			// Sales - Drafts
+			if ($this->user->hasPermission('access', 'sale/draft')) {
+				$sales[] = array(
+					'name' => $this->language->get('text_draft'),
+					'href' => $this->url->link('sale/draft', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 			// Sales - Invoices
 			if ($this->user->hasPermission('access', 'sale/invoice')) {
 				$sales[] = array(

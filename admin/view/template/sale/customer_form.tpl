@@ -86,12 +86,6 @@
 										</div>
 									</div>
 									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fax; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
-										</div>
-									</div>
-									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_newsletter; ?></label>
 										<div class="col-sm-6">
 											<select name="newsletter" class="form-control">
