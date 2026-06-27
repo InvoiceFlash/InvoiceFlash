@@ -163,6 +163,9 @@ $_['entry_bic'] = 'BIC:';
 $_['entry_creditor_id'] = 'Creditor Id:';
 $_['entry_certificado'] = 'Certificado:';
 $_['entry_clave'] = 'Clave:';
+$_['entry_aeat_send'] = 'Envio facturas a la AEAT:';
+$_['text_aeat_test'] = 'Pruebas';
+$_['text_aeat_production'] = 'Produccion';
 
 $_['text_success_mail'] = 'Test Mail sent. Check your inbox.';
 ?>

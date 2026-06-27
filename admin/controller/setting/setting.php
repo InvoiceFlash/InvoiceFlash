@@ -51,6 +51,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['text_none'] = $this->language->get('text_none');
 		$this->data['text_yes'] = $this->language->get('text_yes');
 		$this->data['text_no'] = $this->language->get('text_no');
+		$this->data['text_aeat_test'] = $this->language->get('text_aeat_test');
+		$this->data['text_aeat_production'] = $this->language->get('text_aeat_production');
 		$this->data['text_items'] = $this->language->get('text_items');
 		$this->data['text_product'] = $this->language->get('text_product');
 		$this->data['text_voucher'] = $this->language->get('text_voucher');
@@ -173,6 +175,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
 		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
+		$this->data['entry_aeat_send'] = $this->language->get('entry_aeat_send');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -1134,6 +1137,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['clave'] = $this->request->post['clave'];
 		} else {
 			$this->data['clave'] = $this->config->get('clave');
+		}
+
+		if (isset($this->request->post['config_aeat_send'])) {
+			$this->data['config_aeat_send'] = $this->request->post['config_aeat_send'];
+		} else {
+			$this->data['config_aeat_send'] = $this->config->get('config_aeat_send');
 		}
 
 		$this->template = 'setting/setting.tpl';

@@ -961,6 +961,18 @@
 							</div>
 						</div>
 					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_aeat_send; ?></label>
+						<div class="col-sm-6">
+							<?php if ($config_aeat_send == 'production') { ?>
+							<label class="radio-inline"><input type="radio" name="config_aeat_send" value="test"><?php echo $text_aeat_test; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_aeat_send" value="production" checked=""><?php echo $text_aeat_production; ?></label>
+							<?php } else { ?>
+							<label class="radio-inline"><input type="radio" name="config_aeat_send" value="test" checked=""><?php echo $text_aeat_test; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_aeat_send" value="production"><?php echo $text_aeat_production; ?></label>
+							<?php } ?>
+						</div>
+					</div>
 				</div>
 				<div id="tab-fraud" class="tab-pane">
 					<div class="form-group row">
