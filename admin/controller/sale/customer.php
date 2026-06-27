@@ -585,6 +585,7 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
+		$this->data['text_last_modified_by'] = $this->language->get('text_last_modified_by');
 		$this->data['text_date_support'] = $this->language->get('text_date_support');
 		$this->data['text_bank_cc'] = $this->language->get('text_bank');
 		$this->data['text_bic'] = $this->language->get('text_bic');
@@ -1093,6 +1094,12 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['date_modified'] = date($this->language->get('datetime_format'), strtotime($customer_info['date_modified']));
 		} else {
 			$this->data['date_modified'] = '';
+		}
+
+		if (isset($customer_info) && !empty($customer_info['last_modified_by'])) {
+			$this->data['last_modified_by'] = $customer_info['last_modified_by'];
+		} else {
+			$this->data['last_modified_by'] = '';
 		}
 		
 		if (isset($customer_info)) {

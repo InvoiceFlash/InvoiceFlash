@@ -21,15 +21,39 @@ class ControllerCommonHeader extends Controller {
 	
 		$this->data['heading_title'] = $this->language->get('heading_title');
 		$this->data['text_confirm'] = $this->language->get('text_confirm');
-		
+
+		$this->data['update_available'] = false;
+		$this->data['update_compare_url'] = '';
+		$this->data['update_url'] = '';
+		$this->data['update_can_upgrade'] = false;
+		$this->data['update_latest_short'] = '';
+		$this->data['text_update_available'] = $this->language->get('text_update_available');
+		$this->data['text_update_upgrade'] = $this->language->get('text_update_upgrade');
+		$this->data['text_update_view'] = $this->language->get('text_update_view');
+		$this->data['text_update_dismiss'] = $this->language->get('text_update_dismiss');
+		$this->data['text_update_confirm'] = $this->language->get('text_update_confirm');
+
 		if (!$this->user->isLogged() || !isset($this->request->get['token']) || !isset($this->session->data['token']) || ($this->request->get['token'] != $this->session->data['token'])) {
 			$this->data['logged'] = '';
 
 			$this->data['home'] = $this->url->link('common/login', '', 'SSL');
 		} else {
 			$this->data['logged'] = sprintf($this->language->get('text_logged'), $this->user->getUserName());
-			
+
 			$this->data['home'] = $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL');
+
+			// Check GitHub for a newer commit on master than the one currently deployed
+			$this->load->model('tool/upgrade');
+
+			$status = $this->model_tool_upgrade->getStatus();
+
+			if ($status['latest_commit'] && $status['current_commit'] && ($status['latest_commit'] != $status['current_commit'])) {
+				$this->data['update_available'] = true;
+				$this->data['update_compare_url'] = $this->model_tool_upgrade->getCompareUrl($status);
+				$this->data['update_can_upgrade'] = $this->user->hasPermission('modify', 'tool/upgrade');
+				$this->data['update_url'] = $this->url->link('tool/upgrade/upgrade', 'token=' . $this->session->data['token'], 'SSL');
+				$this->data['update_latest_short'] = substr($status['latest_commit'], 0, 7);
+			}
 		
 			// Sistema de menu de open2302
 			$this->data['menus'] = array();

@@ -125,6 +125,7 @@ $_['error_web']            = 'Error: Enter a valid url!';
 
 $_['text_datecreated']      = 'Created:' ;
 $_['text_date_modified']    = 'Last modified:' ;
+$_['text_last_modified_by'] = 'Last modified by:' ;
 $_['text_date_support']     = 'Date Support:' ;
 $_['text_bank']     		= 'Bank Account:';
 $_['text_bic']   		    = 'BIC:';

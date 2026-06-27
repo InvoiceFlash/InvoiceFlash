@@ -16,3 +16,5 @@ InvoiceFlash-master.zip
 system/logs/error.txt
 *.log
 download/certificado/
+system/backup/
+system/cache/update_*

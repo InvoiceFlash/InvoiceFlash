@@ -154,4 +154,11 @@ $_['text_statuses']  	   		   	   = 'Statuses';
 $_['text_invoice_status']  	   		   = 'Invoice';
 $_['text_cron']                        = 'Cron Jobs';
 $_['text_api']                         = 'API';
+
+// Update notice
+$_['text_update_available']            = 'There is an update available.';
+$_['text_update_upgrade']              = 'Update now';
+$_['text_update_view']                 = 'View changes';
+$_['text_update_dismiss']              = 'Dismiss';
+$_['text_update_confirm']              = 'This will download and apply the latest version from GitHub. A backup of the replaced files will be kept under system/backup/. Continue?';
 ?>

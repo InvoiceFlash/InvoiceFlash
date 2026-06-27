@@ -89,5 +89,44 @@
 		</div>
 	</nav>
 </div>
+<?php if ($update_available) { ?>
+<div class="container-fluid">
+	<div id="update-banner" class="alert alert-info d-flex justify-content-between align-items-center mb-0" role="alert">
+		<span><?php echo $text_update_available; ?></span>
+		<span>
+			<a href="<?php echo $update_compare_url; ?>" target="_blank" class="btn btn-sm btn-link"><?php echo $text_update_view; ?></a>
+			<?php if ($update_can_upgrade) { ?>
+			<a href="<?php echo $update_url; ?>" id="update-banner-button" class="btn btn-sm btn-primary"><?php echo $text_update_upgrade; ?></a>
+			<?php } ?>
+			<button type="button" class="btn btn-sm btn-light" onclick="dismissUpdateBanner('<?php echo $update_latest_short; ?>')"><?php echo $text_update_dismiss; ?></button>
+		</span>
+	</div>
+</div>
+<script>
+(function () {
+	var banner = document.getElementById('update-banner');
+
+	if (banner && localStorage.getItem('if_update_dismissed') === '<?php echo $update_latest_short; ?>') {
+		banner.parentNode.style.display = 'none';
+	}
+
+	var button = document.getElementById('update-banner-button');
+
+	if (button) {
+		button.addEventListener('click', function (e) {
+			if (!confirm('<?php echo $text_update_confirm; ?>')) {
+				e.preventDefault();
+			}
+		});
+	}
+})();
+
+function dismissUpdateBanner(commit) {
+	localStorage.setItem('if_update_dismissed', commit);
+
+	document.getElementById('update-banner').parentNode.style.display = 'none';
+}
+</script>
+<?php } ?>
 <?php } ?>
 <div id="content" class="container-fluid clearfix">

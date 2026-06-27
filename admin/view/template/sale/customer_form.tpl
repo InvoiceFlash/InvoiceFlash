@@ -227,6 +227,12 @@
 											<input type="text" name="date_modified" value="<?php echo $date_modified; ?>" class="form-control" disabled>
 										</div>
 									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_last_modified_by; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="last_modified_by" value="<?php echo $last_modified_by; ?>" class="form-control" disabled>
+										</div>
+									</div>
 								</div>
 								<?php $address_row=1; ?>
 								<?php foreach ($addresses as $address) { ?>
