@@ -8086,6 +8086,7 @@ CREATE TABLE `if_fl_customers` (
   `cwww` char(50) DEFAULT NULL,
   `crazonsoci` char(60) DEFAULT NULL,
   `digital_invoice` tinyint(1) DEFAULT 0,
+  `nusuultmod` int(11) DEFAULT NULL,
   PRIMARY KEY (`customer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

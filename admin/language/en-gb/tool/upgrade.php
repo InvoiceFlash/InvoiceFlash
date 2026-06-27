@@ -1,21 +1,19 @@
 <?php
 
-$_['heading_title']     = 'Upgrade';
+$_['heading_title']        = 'Upgrade';
 
-$_['button_check']      = 'Check';
-$_['button_upgrade']    = 'Upgrade';
+$_['button_check']         = 'Check now';
+$_['button_upgrade']       = 'Update now';
 
-$_['text_check']        = 'Check if there is a new version';
-$_['text_updated']      = 'Success! You have the latest version';
-$_['text_outdated']     = 'There is an update available.';
-$_['text_version']      = 'You are now in the %s version';
-$_['text_found']        = 'Update file found';
-$_['text_success']      = 'Success! The files have been updated correctly.';
+$_['text_current_commit']  = 'Current version';
+$_['text_latest_commit']   = 'Latest version on GitHub';
+$_['text_up_to_date']      = 'You have the latest version.';
+$_['text_update_available']= 'There is an update available.';
+$_['text_view_changes']    = 'View changes';
+$_['text_loading']         = 'Checking...';
+$_['text_confirm_upgrade'] = 'This will download and apply the latest version from GitHub. A backup of the replaced files will be kept under system/backup/. Continue?';
+$_['text_success']         = 'Success! The application has been updated.';
 
-$_['error_ftp']         = 'Error: The FTP server has not been configured.';
-$_['error_ftp_conexion']= 'Error: Could not connect to the server.';
-$_['error_ftp_login']   = 'Error: The connection data is not correct, check your configuration.';
-$_['error_not_found']   = 'Error: No update found.';
-$_['error_upgrade']     = 'Error: An error occurred while updating files';
+$_['error_permission']     = 'Warning: You do not have permission to update the application.';
 
 ?>
