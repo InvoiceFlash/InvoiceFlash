@@ -244,6 +244,7 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['text_none'] = $this->language->get('text_none');
 		$this->data['text_enabled'] = $this->language->get('text_enabled');
 		$this->data['text_disabled'] = $this->language->get('text_disabled');
+		$this->data['text_no_results'] = $this->language->get('text_no_results');
 
 		$this->data['entry_firstname'] = $this->language->get('entry_firstname');
 		$this->data['entry_lastname'] = $this->language->get('entry_lastname');
@@ -264,9 +265,15 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['entry_status'] = $this->language->get('entry_status');
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
+		$this->data['tab_contacts'] = $this->language->get('tab_contacts');
+
+		$this->data['column_contact_name'] = $this->language->get('column_contact_name');
+		$this->data['column_contact_email'] = $this->language->get('column_contact_email');
+		$this->data['column_telephone'] = $this->language->get('column_telephone');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
+		$this->data['button_add_contact'] = $this->language->get('button_add_contact');
 
 		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
 		$this->data['error_company'] = isset($this->error['company']) ? $this->error['company'] : '';
@@ -326,6 +333,36 @@ class ControllerPurchaseSupplier extends Controller {
 
 		$this->data['countries'] = $this->model_localisation_country->getCountries();
 
+		$this->data['contacts'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getSupplierContacts($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$action = array();
+
+				$link = $this->url->link('purchase/supplier/updateContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['supplier_contacts_id'] . '&supplier_id=' . $supplier_info['supplier_id'], 'SSL');
+				$action[] = array(
+					'link' => '<a class="btn btn-default" href="' . $link . '"><i class="fa fa-edit"></i><span class="hidden-xs"> ' . $this->language->get('text_edit') . '</span></a>'
+				);
+
+				$link = $this->url->link('purchase/supplier/deleteContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['supplier_contacts_id'] . '&supplier_id=' . $supplier_info['supplier_id'], 'SSL');
+				$action[] = array(
+					'link' => '<a class="btn btn-danger" href="' . $link . '"><i class="fa fa-trash"></i><span class="hidden-xs"> ' . $this->language->get('text_delete') . '</span></a>'
+				);
+
+				$this->data['contacts'][] = array(
+					'contact_id' => $result['supplier_contacts_id'],
+					'name'       => $result['cname'],
+					'email'      => $result['cemail'],
+					'telephone'  => $result['ctelef1'],
+					'action'     => $action
+				);
+			}
+		}
+
+		$this->data['add_contact'] = $this->url->link('purchase/supplier/insertContact', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
+
 		$this->template = 'purchase/supplier_form.tpl';
 
 		$this->children = array(
@@ -358,6 +395,176 @@ class ControllerPurchaseSupplier extends Controller {
 		}
 
 		return !$this->error;
+	}
+
+	public function insertContact() {
+		$this->load->language('purchase/supplier');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('purchase/supplier');
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateContactForm()) {
+			$this->model_purchase_supplier->addSupplierContact($this->request->post, $this->request->get['supplier_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
+		}
+
+		$this->getContactForm();
+	}
+
+	public function updateContact() {
+		$this->load->language('purchase/supplier');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('purchase/supplier');
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateContactForm()) {
+			$this->model_purchase_supplier->editSupplierContact($this->request->post, $this->request->get['contact_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
+		}
+
+		$this->getContactForm();
+	}
+
+	public function deleteContact() {
+		$this->load->language('purchase/supplier');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('purchase/supplier');
+
+		if (isset($this->request->get['contact_id']) && $this->validateDelete()) {
+			$this->model_purchase_supplier->deleteSupplierContact($this->request->get['contact_id']);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
+		}
+
+		$this->getForm();
+	}
+
+	private function validateContactForm() {
+		if (!$this->user->hasPermission('modify', 'purchase/supplier')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		}
+
+		if (utf8_strlen($this->request->post['name']) < 3 || utf8_strlen($this->request->post['name']) > 50) {
+			$this->error['name'] = $this->language->get('error_contact_name');
+		}
+
+		return !$this->error;
+	}
+
+	protected function getContactForm() {
+		$this->data['heading_title'] = $this->language->get('heading_contact');
+
+		$this->data['entry_name'] = $this->language->get('entry_name');
+		$this->data['entry_email'] = $this->language->get('entry_email');
+		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
+		$this->data['entry_telephone2'] = $this->language->get('entry_telephone2');
+		$this->data['entry_puesto'] = $this->language->get('entry_puesto');
+		$this->data['entry_notas'] = $this->language->get('entry_notas');
+
+		$this->data['button_save'] = $this->language->get('button_save');
+		$this->data['button_cancel'] = $this->language->get('button_cancel');
+
+		$this->data['breadcrumbs'] = array(
+			array(
+				'text'      => $this->language->get('text_home'),
+				'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+				'separator' => false
+			),
+			array(
+				'text'      => $this->language->get('heading_title'),
+				'href'      => $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'),
+				'separator' => ' :: '
+			)
+		);
+
+		if (isset($this->request->get['contact_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+			$contact_info = $this->model_purchase_supplier->getSupplierContact($this->request->get['contact_id']);
+		}
+
+		if (isset($this->request->get['contact_id'])) {
+			$this->data['contact_id'] = $this->request->get['contact_id'];
+		} else {
+			$this->data['contact_id'] = 0;
+		}
+
+		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
+		$this->data['error_name'] = isset($this->error['name']) ? $this->error['name'] : '';
+
+		if (isset($this->request->post['name'])) {
+			$this->data['name'] = $this->request->post['name'];
+		} elseif (isset($contact_info)) {
+			$this->data['name'] = $contact_info['cname'];
+		} else {
+			$this->data['name'] = '';
+		}
+
+		if (isset($this->request->post['email'])) {
+			$this->data['email'] = $this->request->post['email'];
+		} elseif (isset($contact_info)) {
+			$this->data['email'] = $contact_info['cemail'];
+		} else {
+			$this->data['email'] = '';
+		}
+
+		if (isset($this->request->post['telef1'])) {
+			$this->data['telef1'] = $this->request->post['telef1'];
+		} elseif (isset($contact_info)) {
+			$this->data['telef1'] = $contact_info['ctelef1'];
+		} else {
+			$this->data['telef1'] = '';
+		}
+
+		if (isset($this->request->post['telef2'])) {
+			$this->data['telef2'] = $this->request->post['telef2'];
+		} elseif (isset($contact_info)) {
+			$this->data['telef2'] = $contact_info['ctelef2'];
+		} else {
+			$this->data['telef2'] = '';
+		}
+
+		if (isset($this->request->post['puesto'])) {
+			$this->data['puesto'] = $this->request->post['puesto'];
+		} elseif (isset($contact_info)) {
+			$this->data['puesto'] = $contact_info['cpuesto'];
+		} else {
+			$this->data['puesto'] = '';
+		}
+
+		if (isset($this->request->post['notas'])) {
+			$this->data['notas'] = $this->request->post['notas'];
+		} elseif (isset($contact_info)) {
+			$this->data['notas'] = $contact_info['mnotas'];
+		} else {
+			$this->data['notas'] = '';
+		}
+
+		if ($this->data['contact_id'] == 0) {
+			$this->data['action'] = $this->url->link('purchase/supplier/insertContact', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
+		} else {
+			$this->data['action'] = $this->url->link('purchase/supplier/updateContact', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'] . '&contact_id=' . $this->data['contact_id'], 'SSL');
+		}
+
+		$this->data['cancel'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
+
+		$this->template = 'purchase/supplier_contacts.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer'
+		);
+
+		$this->response->setOutput($this->render());
 	}
 }
 ?>

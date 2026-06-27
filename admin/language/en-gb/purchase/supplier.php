@@ -49,10 +49,22 @@ $_['button_cancel']            = 'Cancel';
 
 // Tab
 $_['tab_general']              = 'General';
+$_['tab_contacts']              = 'Contacts';
+
+// Contacts
+$_['button_add_contact']       = 'Add Contact';
+$_['heading_contact']          = 'Supplier Contact';
+$_['entry_name']                = 'Name:';
+$_['entry_telephone2']          = 'Telephone 2:';
+$_['entry_puesto']              = 'Job:';
+$_['entry_notas']                = 'Notes:';
+$_['text_delete']               = 'Delete';
+$_['text_edit']                 = 'Edit';
 
 // Error
 $_['error_warning']            = 'Warning: Please check the form carefully for errors!';
 $_['error_permission']         = 'Warning: You do not have permission to modify suppliers!';
 $_['error_company']            = 'Company must be between 1 and 92 characters!';
 $_['error_email']              = 'E-Mail Address does not appear to be valid!';
+$_['error_contact_name']       = 'Warning: Name field must have between 3 and 50 characters!';
 ?>
