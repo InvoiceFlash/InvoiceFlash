@@ -8419,6 +8419,17 @@ CREATE TABLE `if_supplier_contacts` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
+DROP TABLE IF EXISTS `if_supplier_history`;
+CREATE TABLE `if_supplier_history` (
+  `supplier_history_id` int(11) NOT NULL AUTO_INCREMENT,
+  `supplier_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `comment` text NOT NULL,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`supplier_history_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
 DROP TABLE IF EXISTS `if_purchase_order_status`;
 CREATE TABLE `if_purchase_order_status` (
   `purchase_order_status_id` int(11) NOT NULL AUTO_INCREMENT,

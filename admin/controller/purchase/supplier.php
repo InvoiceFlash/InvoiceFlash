@@ -307,6 +307,7 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['entry_status'] = $this->language->get('entry_status');
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
+		$this->data['tab_notes'] = $this->language->get('tab_notes');
 		$this->data['tab_contacts'] = $this->language->get('tab_contacts');
 		$this->data['tab_contracts'] = $this->language->get('tab_contracts');
 
@@ -316,11 +317,15 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['column_article'] = $this->language->get('column_article');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_end_support'] = $this->language->get('column_end_support');
+		$this->data['column_comment'] = $this->language->get('column_comment');
+		$this->data['column_user'] = $this->language->get('column_user');
+		$this->data['column_date'] = $this->language->get('column_date');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_contact'] = $this->language->get('button_add_contact');
 		$this->data['button_add_contract'] = $this->language->get('button_add_contract');
+		$this->data['button_add_note'] = $this->language->get('button_add_note');
 
 		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
 		$this->data['error_company'] = isset($this->error['company']) ? $this->error['company'] : '';
@@ -409,6 +414,26 @@ class ControllerPurchaseSupplier extends Controller {
 		}
 
 		$this->data['add_contact'] = $this->url->link('purchase/supplier/insertContact', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
+
+		$this->data['notes'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getSupplierNotes($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$note_info = $this->model_purchase_supplier->getSupplierNote($result['supplier_history_id']);
+
+				$this->data['notes'][] = array(
+					'note_id' => $result['supplier_history_id'],
+					'date'    => date($this->language->get('date_format_short'), strtotime($note_info['date_added'])),
+					'user'    => $note_info['user'],
+					'comment' => nl2br($note_info['comment']),
+					'delete'  => $this->url->link('purchase/supplier/deleteNote', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'] . '&note_id=' . $result['supplier_history_id'], 'SSL')
+				);
+			}
+		}
+
+		$this->data['add_note'] = $this->url->link('purchase/supplier/insertNote', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
 
 		$this->data['contracts'] = array();
 

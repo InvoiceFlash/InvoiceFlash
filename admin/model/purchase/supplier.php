@@ -261,5 +261,48 @@ class ModelPurchaseSupplier extends Model {
 	public function deleteSupplierContract($contracts_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "fl_supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
 	}
+
+	public function addSupplierNote($data, $supplier_id) {
+		$this->installNotes();
+
+		$this->db->query("INSERT INTO `" . DB_PREFIX . "supplier_history` SET
+			`supplier_id` = '" . (int)$supplier_id . "',
+			`comment` = '" . $this->db->escape($data['comment']) . "',
+			`date_added` = NOW(),
+			`user_id` = '" . (int)$this->user->getId() . "'");
+	}
+
+	public function deleteSupplierNote($note_id) {
+		$this->installNotes();
+
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "supplier_history` WHERE supplier_history_id = '" . (int)$note_id . "'");
+	}
+
+	public function getSupplierNotes($supplier_id) {
+		$this->installNotes();
+
+		$query = $this->db->query("SELECT supplier_history_id, comment, date_added FROM `" . DB_PREFIX . "supplier_history` WHERE supplier_id = '" . (int)$supplier_id . "' ORDER BY date_added DESC");
+
+		return $query->rows;
+	}
+
+	public function getSupplierNote($note_id) {
+		$this->installNotes();
+
+		$query = $this->db->query("SELECT sh.comment, sh.date_added, u.username AS user FROM " . DB_PREFIX . "supplier_history sh LEFT JOIN `" . DB_PREFIX . "user` u ON sh.user_id = u.user_id WHERE sh.supplier_history_id = " . (int)$note_id);
+
+		return $query->row;
+	}
+
+	private function installNotes() {
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "supplier_history` (
+			`supplier_history_id` int(11) NOT NULL AUTO_INCREMENT,
+			`supplier_id` int(11) NOT NULL,
+			`user_id` int(11) NOT NULL,
+			`comment` text NOT NULL,
+			`date_added` datetime NOT NULL,
+			PRIMARY KEY (`supplier_history_id`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
+	}
 }
 ?>
