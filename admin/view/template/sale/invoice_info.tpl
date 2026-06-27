@@ -5,7 +5,7 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a>
-			<a class="btn btn-default" href="<?php echo $facturae; ?>" target="_blank"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></a>
+			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></button>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
 			<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Print</span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
@@ -293,6 +293,24 @@ include(DIR_TEMPLATE . 'sale/email_modal.tpl');
 include(DIR_TEMPLATE . 'sale/print_modal.tpl');
 ?>
 <script>
+$('#button-facturae').on('click',function(e){
+	e.preventDefault();
+
+	var url = $(this).data('href');
+
+	$.ajax({
+		url:'index.php?route=sale/invoice/checkFacturae&token=<?php echo $token; ?>',
+		type:'get',
+		dataType:'json',
+		success:function(json){
+			if(json['error']){
+				alertMessage('danger',json['error']);
+			} else {
+				window.open(url,'_blank');
+			}
+		}
+	});
+});
 $('#send').on('click',function(e){
 	var to = $('#to').val();
 	var subject = $('#subject').val();

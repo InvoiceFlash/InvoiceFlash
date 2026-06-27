@@ -1838,7 +1838,36 @@ class ControllerSaleInvoice extends Controller {
 		}
 	}
 
+	public function checkFacturae() {
+		$this->load->language('sale/invoice');
+
+		$json = array();
+
+		if (!$this->config->get('config_vat_id')) {
+			$json['error'] = $this->language->get('error_facturae_vat_id');
+		} elseif (!$this->config->get('certificado') || !$this->config->get('clave')) {
+			$json['error'] = $this->language->get('error_facturae_certificate');
+		} else {
+			$json['success'] = true;
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
 	public function facturae() {
+		$this->load->language('sale/invoice');
+
+		if (!$this->config->get('config_vat_id')) {
+			$this->response->setOutput($this->language->get('error_facturae_vat_id'));
+			return;
+		}
+
+		if (!$this->config->get('certificado') || !$this->config->get('clave')) {
+			$this->response->setOutput($this->language->get('error_facturae_certificate'));
+			return;
+		}
+
 		$this->load->model('sale/invoice');
 
 		$invoice_id = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
@@ -1870,10 +1899,10 @@ class ControllerSaleInvoice extends Controller {
 		$seller_country = $this->model_localisation_country->getCountry($this->config->get('config_country_id'));
 		$seller_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
 
-		$seller_nif = $this->config->get('config_nif');
+		$seller_nif = $this->config->get('config_vat_id');
 
 		if (!$seller_nif) {
-			$seller_nif = $this->config->get('config_vat_id');
+			$seller_nif = $this->config->get('config_nif');
 		}
 
 		$seller = array(
