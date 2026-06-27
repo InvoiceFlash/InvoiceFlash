@@ -148,5 +148,57 @@ class ModelPurchaseSupplier extends Model {
 
 		return $query->rows;
 	}
+
+	public function getSupplierContacts($supplier_id) {
+		$query = $this->db->query("SELECT supplier_contacts_id, cname, date_added, ctelef1, cpuesto, cemail FROM " . DB_PREFIX . "supplier_contacts WHERE supplier_id = " . (int)$supplier_id);
+
+		return $query->rows;
+	}
+
+	public function getSupplierContactsTotal($supplier_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "supplier_contacts WHERE supplier_id = " . (int)$supplier_id);
+
+		return $query->row['total'];
+	}
+
+	public function getSupplierContact($supplier_contacts_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_contacts WHERE supplier_contacts_id = " . (int)$supplier_contacts_id);
+
+		return $query->row;
+	}
+
+	public function addSupplierContact($data, $supplier_id) {
+		$this->db->query("INSERT INTO " . DB_PREFIX . "supplier_contacts SET
+			supplier_id = " . (int)$supplier_id . ",
+			cname = '" . $this->db->escape($data['name']) . "',
+			cpuesto = '" . $this->db->escape($data['puesto']) . "',
+			cemail = '" . $this->db->escape($data['email']) . "',
+			ctelef1 = '" . $this->db->escape($data['telef1']) . "',
+			ctelef2 = '" . $this->db->escape($data['telef2']) . "',
+			mnotas = '" . $this->db->escape($data['notas']) . "',
+			nusualta = " . (int)$this->user->getID() . ",
+			caplalta = 'web',
+			tultmod = now(),
+			nusuultmod = " . (int)$this->user->getID() . ",
+			caplultmod = 'web',
+			date_added = now()");
+	}
+
+	public function editSupplierContact($data, $supplier_contacts_id) {
+		$this->db->query("UPDATE " . DB_PREFIX . "supplier_contacts SET
+			cname = '" . $this->db->escape($data['name']) . "',
+			cpuesto = '" . $this->db->escape($data['puesto']) . "',
+			cemail = '" . $this->db->escape($data['email']) . "',
+			ctelef1 = '" . $this->db->escape($data['telef1']) . "',
+			ctelef2 = '" . $this->db->escape($data['telef2']) . "',
+			mnotas = '" . $this->db->escape($data['notas']) . "',
+			tultmod = now(),
+			nusuultmod = " . (int)$this->user->getID() . ",
+			caplultmod = 'web' WHERE supplier_contacts_id = " . (int)$supplier_contacts_id);
+	}
+
+	public function deleteSupplierContact($supplier_contacts_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "supplier_contacts WHERE supplier_contacts_id = " . (int)$supplier_contacts_id);
+	}
 }
 ?>

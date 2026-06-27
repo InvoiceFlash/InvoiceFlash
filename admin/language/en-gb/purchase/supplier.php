@@ -18,6 +18,8 @@ $_['column_telephone']         = 'Telephone';
 $_['column_status']            = 'Status';
 $_['column_date_added']        = 'Date Added';
 $_['column_action']            = 'Action';
+$_['column_contact_name']      = 'Name';
+$_['column_contact_email']     = 'Email';
 
 // Entry
 $_['entry_firstname']          = 'First Name:';

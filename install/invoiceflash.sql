@@ -8376,6 +8376,27 @@ CREATE TABLE `if_supplier` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
+DROP TABLE IF EXISTS `if_supplier_contacts`;
+CREATE TABLE `if_supplier_contacts` (
+  `supplier_contacts_id` int(11) NOT NULL AUTO_INCREMENT,
+  `supplier_id` int(10) unsigned DEFAULT NULL,
+  `cname` varchar(50) DEFAULT NULL,
+  `cpuesto` varchar(50) DEFAULT NULL,
+  `cemail` varchar(50) DEFAULT NULL,
+  `ctelef1` varchar(14) DEFAULT NULL,
+  `ctelef2` varchar(14) DEFAULT NULL,
+  `mnotas` mediumtext,
+  `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `nusualta` int(5) DEFAULT NULL,
+  `caplalta` varchar(20) DEFAULT NULL,
+  `tultmod` datetime DEFAULT NULL,
+  `nusuultmod` int(5) DEFAULT NULL,
+  `caplultmod` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`supplier_contacts_id`),
+  KEY `cemail` (`cemail`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
 DROP TABLE IF EXISTS `if_purchase_order_status`;
 CREATE TABLE `if_purchase_order_status` (
   `purchase_order_status_id` int(11) NOT NULL AUTO_INCREMENT,
