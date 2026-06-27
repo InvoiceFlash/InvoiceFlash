@@ -47,21 +47,9 @@
 				</div>
 			</div>
 			<div class="form-group row">
-				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fax; ?></label>
-				<div class="col-sm-6">
-					<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
-				</div>
-			</div>
-			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_web; ?></label>
 				<div class="col-sm-6">
 					<input type="text" name="web" value="<?php echo $web; ?>" class="form-control">
-				</div>
-			</div>
-			<div class="form-group row">
-				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company_id; ?></label>
-				<div class="col-sm-6">
-					<input type="text" name="company_id" value="<?php echo $company_id; ?>" class="form-control">
 				</div>
 			</div>
 			<div class="form-group row">

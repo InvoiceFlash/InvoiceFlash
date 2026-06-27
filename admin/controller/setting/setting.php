@@ -104,6 +104,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_customer_group_display'] = $this->language->get('entry_customer_group_display');
 		$this->data['entry_customer_price'] = $this->language->get('entry_customer_price');
 		$this->data['entry_account'] = $this->language->get('entry_account');
+		$this->data['entry_quote_prefix'] = $this->language->get('entry_quote_prefix');
 		$this->data['entry_cart_weight'] = $this->language->get('entry_cart_weight');		
 		$this->data['entry_guest_checkout'] = $this->language->get('entry_guest_checkout');
 		$this->data['entry_checkout'] = $this->language->get('entry_checkout');		
@@ -634,7 +635,13 @@ class ControllerSettingSetting extends Controller {
 		if (isset($this->request->post['config_account_id'])) {
 			$this->data['config_account_id'] = $this->request->post['config_account_id'];
 		} else {
-			$this->data['config_account_id'] = $this->config->get('config_account_id');			
+			$this->data['config_account_id'] = $this->config->get('config_account_id');
+		}
+
+		if (isset($this->request->post['config_quote_prefix'])) {
+			$this->data['config_quote_prefix'] = $this->request->post['config_quote_prefix'];
+		} else {
+			$this->data['config_quote_prefix'] = $this->config->get('config_quote_prefix');
 		}
 
 		$this->load->model('catalog/information');

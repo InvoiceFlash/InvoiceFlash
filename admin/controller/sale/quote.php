@@ -1680,7 +1680,13 @@ class ControllerSaleQuote extends Controller {
 					$invoice_no = '';
 				}
 
-				$quote_no = 'QUO-' . date('Y', strtotime($quote_info['date_added'])) . '-' . sprintf('%03d', $quote_id);
+				$quote_prefix = $this->config->get('config_quote_prefix');
+
+				if (!$quote_prefix) {
+					$quote_prefix = 'QUO-' . date('Y', strtotime($quote_info['date_added']));
+				}
+
+				$quote_no = $quote_prefix . '-' . sprintf('%03d', $quote_id);
 
 
 				if ($quote_info['shipping_address_format']) {
