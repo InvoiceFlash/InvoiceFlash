@@ -399,6 +399,8 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 
+		$this->data['error_no_selection'] = $this->language->get('error_no_selection');
+
 		$this->data['token'] = $this->session->data['token'];
 		
 		if (isset($this->error['warning'])) {

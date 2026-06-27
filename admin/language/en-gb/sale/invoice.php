@@ -162,6 +162,7 @@ $_['error_subject']                           = 'Subject can not be empty!';
 $_['error_message']                           = 'Message can not be empty!';
 
 $_['error_paid_out']                          = 'One or more receipts of this invoice have already been paid, it is not possible to modify it.';
+$_['error_no_selection']                      = 'Selecciona al menos una factura.';
 
 $_['button_invoice'] 						  = 'Print Invoice';
 $_['button_delete']                           = 'Anular';

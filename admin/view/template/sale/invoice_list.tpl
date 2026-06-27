@@ -107,5 +107,11 @@ $(document).ready(function(){
         $('#formPrint>input[name="selected[]"]').remove();
     });
 });
+$('#btn-delete').on('click', function(e) {
+	if ($('input[name="selected[]"]:checked').length == 0) {
+		e.preventDefault();
+		alert('<?php echo $error_no_selection; ?>');
+	}
+});
 </script>
 <?php echo $footer; ?>
