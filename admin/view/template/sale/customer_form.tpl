@@ -1251,6 +1251,19 @@ $('#button-web').click(function(){
 });
 </script>
 <script>
+$('#nif').on('input', function() {
+	var start = this.selectionStart;
+	var oldVal = this.value;
+	var newVal = oldVal.toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+	if (newVal !== oldVal) {
+		var diff = oldVal.length - newVal.length;
+		this.value = newVal;
+		this.setSelectionRange(start - diff, start - diff);
+	}
+});
+</script>
+<script>
 function viewMessage(mail_id) {
 	$('#message').html($('#mail-'+mail_id).text());
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('MessagePopUp')).show();

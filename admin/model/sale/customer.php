@@ -22,8 +22,9 @@ class ModelSaleCustomer extends Model {
 		$customer_id = $this->db->getLastId();
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
+		$nif = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $data['nif']));
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', nusuultmod = '" . (int)$this->user->getID() . "'");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($nif) . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', nusuultmod = '" . (int)$this->user->getID() . "'");
 
 		if (isset($data['address'])) {
 
@@ -57,8 +58,9 @@ class ModelSaleCustomer extends Model {
 			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)$data['customer_group_id'] . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
+		$nif = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $data['nif']));
 
-		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', digital_invoice = '" . (int)$data['digital_invoice'] . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
+		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($nif) . "', digital_invoice = '" . (int)$data['digital_invoice'] . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
 
 		// if ($data['password']) {
 
