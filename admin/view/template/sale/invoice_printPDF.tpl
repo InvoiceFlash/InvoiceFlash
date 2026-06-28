@@ -45,22 +45,27 @@ th {
 	<?php if (!empty($header_html)) { ?>
 	<div class="invoice-custom-header"><?php echo $header_html; ?></div>
 	<?php } ?>
-	<table style="width:100%;">
+	<table style="width:100%; margin:0; border-collapse:collapse;">
 		<tr>
-			<td style="width:50%; vertical-align:top;">
-				<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" />
+			<td style="width:50%; vertical-align:top; padding:0;">
+				<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" style="max-height:20mm;" />
 			</td>
-			<td style="text-align:right; vertical-align:top;">
+			<td style="vertical-align:top; padding:0;">
 				<?php if ($invoices['qr_code_pdf']) { ?>
-				<div style="text-align:center;">
-					<div><b>QR tributario:</b></div>
-					<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" />
-					<?php if ($invoices['qr_verifiable']) { ?>
-					<div>VERI*FACTU</div>
-					<?php } ?>
-				</div>
+				<table style="width:100%; border-collapse:collapse; margin-top:-14mm;">
+					<tr>
+						<td style="width:68%;"></td>
+						<td style="width:32%; text-align:center; padding:0;">
+							<div><b>QR tributario:</b></div>
+							<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" />
+							<?php if ($invoices['qr_verifiable']) { ?>
+							<div>VERI*FACTU</div>
+							<?php } ?>
+						</td>
+					</tr>
+				</table>
 				<?php } ?>
-				<span class="title"><?php echo $text_invoice; ?></span>
+				<div style="text-align:right;"><span class="title"><?php echo $text_invoice; ?></span></div>
 			</td>
 		</tr>
 	</table>
