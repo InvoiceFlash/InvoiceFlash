@@ -57,10 +57,7 @@ th {
 						<td style="width:68%;"></td>
 						<td style="width:32%; text-align:center; padding:0;">
 							<div><b>QR tributario:</b></div>
-							<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" />
-							<?php if ($invoices['qr_verifiable']) { ?>
-							<div>VERI*FACTU</div>
-							<?php } ?>
+							<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><?php if ($invoices['qr_verifiable']) { ?><br>VERI*FACTU<?php } ?>
 						</td>
 					</tr>
 				</table>
