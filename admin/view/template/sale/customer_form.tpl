@@ -104,6 +104,12 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
+										<div class="col-sm-6">
+											<select name="zone_id" class="form-control"></select>
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
 										<div class="col-sm-6">
 											<select name="country_id" id="customer-country" class="form-control">
@@ -116,12 +122,6 @@
 												<?php } ?>
 												<?php } ?>
 											</select>
-										</div>
-									</div>
-									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
-										<div class="col-sm-6">
-											<select name="zone_id" class="form-control"></select>
 										</div>
 									</div>
 									<div class="form-group row">
