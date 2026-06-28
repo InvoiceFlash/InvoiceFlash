@@ -1760,6 +1760,7 @@ class ControllerSaleInvoice extends Controller {
 
 				//add - VeriFactu QR code (Real Decreto 1007/2023, arts. 20-21)
 				$qr_code = '';
+				$qr_code_pdf = '';
 				$qr_verifiable = defined('VERIFACTU_ONLINE_MODE') ? VERIFACTU_ONLINE_MODE : false;
 				$qr_numserie = $invoice_no ? $invoice_no : ($invoice_info['invoice_prefix'] . $invoice_id);
 
@@ -1777,6 +1778,10 @@ class ControllerSaleInvoice extends Controller {
 
 					if ($qr_png !== false) {
 						$qr_code = 'data:image/png;base64,' . base64_encode($qr_png);
+
+						// TCPDF's writeHTML() cannot render base64 data-uri images, so the PDF needs a real file
+						$qr_code_pdf = DIR_CACHE . 'qr_invoice_' . $invoice_id . '.png';
+						file_put_contents($qr_code_pdf, $qr_png);
 					}
 				}
 				//end add
@@ -1808,6 +1813,7 @@ class ControllerSaleInvoice extends Controller {
 					'total'              => $total_data,
 					'comment'            => nl2br($invoice_info['comment']),
 					'qr_code'            => $qr_code,
+					'qr_code_pdf'        => $qr_code_pdf,
 					'qr_verifiable'      => $qr_verifiable
 				);
 			}

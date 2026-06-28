@@ -14,12 +14,25 @@
 <body style="padding-top:0;">
 <div class="container">
 <?php foreach ($invoices as $invoices) { ?>
-	<div class="store_logo">
-		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoice['store_name']; ?>" />
-			<span class="title"><?php echo $text_invoice; ?></span>
-		</div>
-	</div>
+	<table style="width:100%;">
+		<tr>
+			<td style="width:50%; vertical-align:top;">
+				<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" />
+			</td>
+			<td style="text-align:right; vertical-align:top;">
+				<?php if ($invoices['qr_code']) { ?>
+				<div style="text-align:center;">
+					<div><b>QR tributario:</b></div>
+					<img src="<?php echo $invoices['qr_code']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" />
+					<?php if ($invoices['qr_verifiable']) { ?>
+					<div>VERI*FACTU</div>
+					<?php } ?>
+				</div>
+				<?php } ?>
+				<span class="title"><?php echo $text_invoice; ?></span>
+			</td>
+		</tr>
+	</table>
 	<table class="table table-bordered">
 		<tr>
 			<td width="50%"><?php echo $invoices['store_name']; ?><br>
@@ -31,15 +44,6 @@
 				<?php echo $invoices['store_email']; ?><br>
 				<?php echo $invoices['store_url']; ?></td>
 			<td>
-				<?php if ($invoices['qr_code']) { ?>
-				<div style="text-align:center; padding:3mm;">
-					<div><b>QR tributario:</b></div>
-					<img src="<?php echo $invoices['qr_code']; ?>" style="width:35mm; height:35mm;" alt="QR tributario" />
-					<?php if ($invoices['qr_verifiable']) { ?>
-					<div>VERI*FACTU</div>
-					<?php } ?>
-				</div>
-				<?php } ?>
 				<b><?php echo $text_date_added; ?></b> <?php echo $invoices['date_added']; ?><br>
 				<?php if ($invoices['invoice_no']) { ?>
 					<b><?php echo $text_invoice_no; ?></b> <?php echo $invoices['invoice_no']; ?><br>
