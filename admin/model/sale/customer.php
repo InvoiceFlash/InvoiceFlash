@@ -23,7 +23,7 @@ class ModelSaleCustomer extends Model {
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', cwww = '" . $this->db->escape($data['web']) . "', nusuultmod = '" . (int)$this->user->getID() . "'");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = " . (int)$customer_id . ", bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', nusuultmod = '" . (int)$this->user->getID() . "'");
 
 		if (isset($data['address'])) {
 
@@ -58,7 +58,7 @@ class ModelSaleCustomer extends Model {
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
 
-		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', digital_invoice = '" . (int)$data['digital_invoice'] . "', cwww = '" . $this->db->escape($data['web']) . "', nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
+		$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi =''" . $this->db->escape($data['efaccafi']) . ", efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($data['nif']) . "', digital_invoice = '" . (int)$data['digital_invoice'] . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
 
 		// if ($data['password']) {
 
@@ -124,7 +124,7 @@ class ModelSaleCustomer extends Model {
 
 	public function getCustomer($customer_id) {
 
-		$query = $this->db->query("SELECT c.company, c.email, ce.nif, c.telephone, ce.cwww, c.newsletter, c.customer_group_id, c.status, c.date_support, ce.bank_cc, ce.bic, ce.efaccafi, ce.efaccapa, ce.efaccare, ce.digital_invoice, c.date_added, c.date_modified, c.notes, c.address_id, c.store_id, u.username AS last_modified_by FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id LEFT JOIN " . DB_PREFIX . "user u ON u.user_id = ce.nusuultmod WHERE c.customer_id = '" . (int)$customer_id . "'");
+		$query = $this->db->query("SELECT c.company, c.email, ce.nif, c.telephone, ce.cwww, c.newsletter, c.customer_group_id, c.status, c.date_support, ce.bank_cc, ce.bic, ce.efaccafi, ce.efaccapa, ce.efaccare, ce.digital_invoice, ce.address, ce.city, ce.postcode, ce.country_id, ce.zone_id, c.date_added, c.date_modified, c.notes, c.address_id, c.store_id, u.username AS last_modified_by FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "fl_customers ce on ce.customer_id = c.customer_id LEFT JOIN " . DB_PREFIX . "user u ON u.user_id = ce.nusuultmod WHERE c.customer_id = '" . (int)$customer_id . "'");
 
 		return $query->row;
 

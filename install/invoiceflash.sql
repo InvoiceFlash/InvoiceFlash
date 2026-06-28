@@ -8109,6 +8109,11 @@ CREATE TABLE `if_fl_customers` (
   `crazonsoci` char(60) DEFAULT NULL,
   `digital_invoice` tinyint(1) DEFAULT 0,
   `nusuultmod` int(11) DEFAULT NULL,
+  `address` varchar(128) DEFAULT NULL,
+  `city` varchar(128) DEFAULT NULL,
+  `postcode` varchar(10) DEFAULT NULL,
+  `country_id` int(11) DEFAULT 0,
+  `zone_id` int(11) DEFAULT 0,
   PRIMARY KEY (`customer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

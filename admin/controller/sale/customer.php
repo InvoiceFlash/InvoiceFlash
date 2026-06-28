@@ -568,6 +568,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_company'] = $this->language->get('entry_company');
 		$this->data['entry_company_id'] = $this->language->get('entry_company_id');
 		$this->data['entry_tax_id'] = $this->language->get('entry_tax_id');
+		$this->data['entry_address'] = $this->language->get('entry_address');
 		$this->data['entry_address_1'] = $this->language->get('entry_address_1');
 		$this->data['entry_address_2'] = $this->language->get('entry_address_2');
 		$this->data['entry_city'] = $this->language->get('entry_city');
@@ -1227,7 +1228,35 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['nif'] = '';
 		}
-		
+
+		$fields = array('address', 'city', 'postcode');
+
+		foreach ($fields as $field) {
+			if (isset($this->request->post[$field])) {
+				$this->data[$field] = $this->request->post[$field];
+			} elseif (!empty($customer_info)) {
+				$this->data[$field] = $customer_info[$field];
+			} else {
+				$this->data[$field] = '';
+			}
+		}
+
+		if (isset($this->request->post['country_id'])) {
+			$this->data['country_id'] = $this->request->post['country_id'];
+		} elseif (!empty($customer_info)) {
+			$this->data['country_id'] = $customer_info['country_id'];
+		} else {
+			$this->data['country_id'] = 0;
+		}
+
+		if (isset($this->request->post['zone_id'])) {
+			$this->data['zone_id'] = $this->request->post['zone_id'];
+		} elseif (!empty($customer_info)) {
+			$this->data['zone_id'] = $customer_info['zone_id'];
+		} else {
+			$this->data['zone_id'] = 0;
+		}
+
 		$this->data['ips'] = array();
 
 		if (!empty($customer_info)) {

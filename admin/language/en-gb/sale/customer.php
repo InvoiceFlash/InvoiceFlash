@@ -103,6 +103,8 @@ $_['entry_company_id']      = 'Company ID:';
 
 $_['entry_tax_id']          = 'Tax ID:';
 
+$_['entry_address']         = 'Address:';
+
 $_['entry_address_1']       = 'Address 1:';
 
 $_['entry_address_2']       = 'Address 2:';

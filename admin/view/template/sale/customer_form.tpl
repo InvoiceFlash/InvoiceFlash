@@ -86,6 +86,45 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="address" value="<?php echo $address; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="city" value="<?php echo $city; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="postcode" value="<?php echo $postcode; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
+										<div class="col-sm-6">
+											<select name="country_id" id="customer-country" class="form-control">
+												<option value=""><?php echo $text_select; ?></option>
+												<?php foreach ($countries as $country) { ?>
+												<?php if ($country['country_id'] == $country_id) { ?>
+												<option value="<?php echo $country['country_id']; ?>" selected=""><?php echo $country['name']; ?></option>
+												<?php } else { ?>
+												<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+												<?php } ?>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
+										<div class="col-sm-6">
+											<select name="zone_id" class="form-control"></select>
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_newsletter; ?></label>
 										<div class="col-sm-6">
 											<select name="newsletter" class="form-control">
@@ -812,6 +851,42 @@ function country(a,b,c){
 
 $('select[name$="[country_id]"]').change();
 
+</script>
+<script>
+$('#customer-country').on('change', function() {
+	var $this = $(this);
+
+	$.ajax({
+		url: 'index.php?route=localisation/country/autocomplete&token=<?php echo $token; ?>&country_id=' + this.value,
+		dataType: 'json',
+		beforeSend: function() {
+			$this.after($('<i>', {class: 'fas fa-spinner'}));
+		},
+		complete: function() {
+			$('.fas.fa-spinner').remove();
+		},
+		success: function(json) {
+			var html = '<option value=""><?php echo $text_select; ?></option>';
+
+			if (typeof(json['zone']) != 'undefined' && json['zone'] != '') {
+				for (var i = 0; i < json['zone'].length; i++) {
+					html += '<option value="' + json['zone'][i]['zone_id'] + '"';
+
+					if (json['zone'][i]['zone_id'] == <?php echo (int)$zone_id; ?>) {
+						html += ' selected=""';
+					}
+
+					html += '>' + json['zone'][i]['name'] + '</option>';
+				}
+			} else {
+				html += '<option value="0"><?php echo $text_none; ?></option>';
+			}
+
+			$('select[name="zone_id"]').html(html);
+		}
+	});
+});
+$('#customer-country').change();
 </script>
 
 <script>
