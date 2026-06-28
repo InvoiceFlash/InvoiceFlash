@@ -1723,6 +1723,31 @@ class ControllerSaleInvoice extends Controller {
 
 				$payment_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
+				//add - fall back to the customer's general info (General tab) when the invoice has no billing address/tax-id of its own
+				$payment_tax_id = $invoice_info['payment_tax_id'];
+
+				if ((!$payment_address || !$payment_tax_id) && $invoice_info['customer_id']) {
+					$this->load->model('sale/customer');
+					$customer_general = $this->model_sale_customer->getCustomer($invoice_info['customer_id']);
+
+					if (!empty($customer_general)) {
+						if (!$payment_address && $customer_general['address']) {
+							$this->load->model('localisation/country');
+							$this->load->model('localisation/zone');
+
+							$customer_country_info = $this->model_localisation_country->getCountry($customer_general['country_id']);
+							$customer_zone_info = $this->model_localisation_zone->getZone($customer_general['zone_id']);
+
+							$payment_address = trim($customer_general['address']) . '<br />' . trim($customer_general['city'] . ' ' . $customer_general['postcode']) . '<br />' . trim(($customer_zone_info ? $customer_zone_info['name'] . ' ' : '') . ($customer_country_info ? $customer_country_info['name'] : ''));
+						}
+
+						if (!$payment_tax_id) {
+							$payment_tax_id = $customer_general['nif'];
+						}
+					}
+				}
+				//end add
+
 				$product_data = array();
 
 				$products = $this->model_sale_invoice->getInvoiceProducts($invoice_id);
@@ -1804,8 +1829,9 @@ class ControllerSaleInvoice extends Controller {
 					'telephone'          => $invoice_info['telephone'],
 					'shipping_address'   => $shipping_address,
 					'payment_address'    => $payment_address,
+					'payment_company'    => $invoice_info['payment_company'] ? $invoice_info['payment_company'] : $invoice_info['company'],
 					'payment_company_id' => $invoice_info['payment_company_id'],
-					'payment_tax_id'     => $invoice_info['payment_tax_id'],
+					'payment_tax_id'     => $payment_tax_id,
 					'payment_address'    => $payment_address,
 					'payment_method'     => $invoice_info['payment_method'],
 					'shipping_method'    => $invoice_info['shipping_method'],

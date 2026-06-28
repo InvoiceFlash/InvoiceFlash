@@ -31,7 +31,14 @@
 					</tr>
 				</table>
 				<?php } ?>
-				<div style="text-align:right;"><span class="title"><?php echo $text_invoice; ?></span></div>
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top; padding:0;">
+				<b>DATE:</b> <?php echo $invoices['date_added']; ?>
+			</td>
+			<td style="text-align:right; vertical-align:top; padding:0;">
+				<span class="title" style="font-size:22px;"><?php echo $text_invoice; ?></span> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?>
 			</td>
 		</tr>
 	</table>
@@ -44,13 +51,11 @@
 				<?php echo $text_fax; ?> <?php echo $invoices['store_fax']; ?><br>
 				<?php } ?>
 				<?php echo $invoices['store_email']; ?><br>
-				<?php echo $invoices['store_url']; ?></td>
+				<?php echo $text_tax_id; ?> <?php echo $invoices['store_nif']; ?></td>
 			<td>
-				<b><?php echo $text_date_added; ?></b> <?php echo $invoices['date_added']; ?><br>
 				<?php if ($invoices['invoice_no']) { ?>
 					<b><?php echo $text_invoice_no; ?></b> <?php echo $invoices['invoice_no']; ?><br>
 				<?php } ?>
-				<b><?php echo $text_invoice_id; ?></b> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?><br>
 				<b><?php echo $text_payment_method; ?></b> <?php echo $invoices['payment_method']; ?><br>
 				<?php if ($invoices['shipping_method']) { ?>
 				<b><?php echo $text_shipping_method; ?></b> <?php echo $invoices['shipping_method']; ?><br>
@@ -64,7 +69,8 @@
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $invoices['payment_address']; ?><br/>
+			<td><?php if ($invoices['payment_company']) { ?><strong><?php echo $invoices['payment_company']; ?></strong><br/><?php } ?>
+				<?php echo $invoices['payment_address']; ?><br/>
 				<?php echo $invoices['email']; ?><br/>
 				<?php echo $invoices['telephone']; ?>
 				<?php if ($invoices['payment_company_id']) { ?>
