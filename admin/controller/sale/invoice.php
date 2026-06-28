@@ -1753,7 +1753,29 @@ class ControllerSaleInvoice extends Controller {
 				}
 				
 				$total_data = $this->model_sale_invoice->getInvoiceTotals($invoice_id);
-				
+
+				//add - VeriFactu QR code (Real Decreto 1007/2023, arts. 20-21)
+				$qr_code = '';
+				$qr_verifiable = defined('VERIFACTU_ONLINE_MODE') ? VERIFACTU_ONLINE_MODE : false;
+
+				if ($store_nif && $invoice_no) {
+					require_once(DIR_SYSTEM . 'library/verifactu.php');
+					require_once(DIR_SYSTEM . 'external/tcpdf/tcpdf_barcodes_2d.php');
+
+					$verifactu = new Verifactu($store_nif, $invoice_info['store_name'], array());
+					$verifactu->setProduction(defined('VERIFACTU_PRODUCTION') ? VERIFACTU_PRODUCTION : false);
+
+					$qr_url = $verifactu->getQrUrl($store_nif, $invoice_no, $invoice_info['date_added'], number_format((float)$invoice_info['total'], 2, '.', ''), $qr_verifiable);
+
+					$qr_barcode = new TCPDF2DBarcode($qr_url, 'QRCODE,M');
+					$qr_png = $qr_barcode->getBarcodePngData(6, 6, array(0, 0, 0));
+
+					if ($qr_png !== false) {
+						$qr_code = 'data:image/png;base64,' . base64_encode($qr_png);
+					}
+				}
+				//end add
+
 				$this->data['invoices'][] = array(
 					'invoice_id'	         => $invoice_id,
 					'invoice_no'         => $invoice_no,
@@ -1779,7 +1801,9 @@ class ControllerSaleInvoice extends Controller {
 					'shipping_method'    => $invoice_info['shipping_method'],
 					'product'            => $product_data,
 					'total'              => $total_data,
-					'comment'            => nl2br($invoice_info['comment'])
+					'comment'            => nl2br($invoice_info['comment']),
+					'qr_code'            => $qr_code,
+					'qr_verifiable'      => $qr_verifiable
 				);
 			}
 		}

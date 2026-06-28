@@ -62,6 +62,15 @@ th {
 				<?php echo $invoices['store_email']; ?><br>
 				<?php echo $invoices['store_url']; ?></td>
 			<td>
+				<?php if ($invoices['qr_code']) { ?>
+				<div style="text-align:center; padding:3mm;">
+					<div><b>QR tributario:</b></div>
+					<img src="<?php echo $invoices['qr_code']; ?>" style="width:35mm; height:35mm;" alt="QR tributario" />
+					<?php if ($invoices['qr_verifiable']) { ?>
+					<div>VERI*FACTU</div>
+					<?php } ?>
+				</div>
+				<?php } ?>
 				<b><?php echo $text_date_added; ?></b> <?php echo $invoices['date_added']; ?><br>
 				<?php if ($invoices['invoice_no']) { ?>
 					<b><?php echo $text_invoice_no; ?></b> <?php echo $invoices['invoice_no']; ?><br>
