@@ -19,7 +19,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or
 ### 0.0.7 (master) 
 - Change price articles on invoice
 - API
-- 
+  
 ### 0.0.6
 - Resellers on web
 - cron support
