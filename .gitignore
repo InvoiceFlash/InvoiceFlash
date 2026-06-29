@@ -9,6 +9,7 @@ system/cache/index.htm
 InvoiceFlash0.rar
 InvoiceFlash1.rar
 system/cache/cache.*
+system/cache/qr_invoice_*.png
 vqmod/vqcache/
 vqmod/checked.cache
 vqmod/mods.cache

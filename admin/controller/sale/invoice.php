@@ -1732,13 +1732,13 @@ class ControllerSaleInvoice extends Controller {
 
 					if (!empty($customer_general)) {
 						if (!$payment_address && $customer_general['address']) {
-							$this->load->model('localisation/country');
-							$this->load->model('localisation/zone');
+							$customer_postcode = $customer_general['postcode'];
 
-							$customer_country_info = $this->model_localisation_country->getCountry($customer_general['country_id']);
-							$customer_zone_info = $this->model_localisation_zone->getZone($customer_general['zone_id']);
+							if (preg_match('/^(\d{2})(\d{3})$/', $customer_postcode, $postcode_match)) {
+								$customer_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+							}
 
-							$payment_address = trim($customer_general['address']) . '<br />' . trim($customer_general['city'] . ' ' . $customer_general['postcode']) . '<br />' . trim(($customer_zone_info ? $customer_zone_info['name'] . ' ' : '') . ($customer_country_info ? $customer_country_info['name'] : ''));
+							$payment_address = trim($customer_general['address']) . '<br />' . trim($customer_postcode . ' ' . $customer_general['city']);
 						}
 
 						if (!$payment_tax_id) {

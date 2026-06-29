@@ -48,7 +48,24 @@ th {
 	<table style="width:100%; margin:0; border-collapse:collapse;">
 		<tr>
 			<td style="width:50%; vertical-align:top; padding:0;">
-				<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" style="max-height:20mm;" />
+				<table style="width:100%; border-collapse:collapse;">
+					<tr>
+						<td style="width:26%; vertical-align:top; padding:0;">
+							<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" style="width:24mm;" />
+						</td>
+						<td style="width:21%; padding:0;"></td>
+						<td style="width:53%; vertical-align:top; padding:0;">
+							<strong style="font-size:15px;"><?php echo $invoices['store_name']; ?></strong><br>
+							<?php echo $invoices['store_address']; ?><br>
+							<?php echo $text_telephone; ?> <?php echo $invoices['store_telephone']; ?><br>
+							<?php if ($invoices['store_fax']) { ?>
+							<?php echo $text_fax; ?> <?php echo $invoices['store_fax']; ?><br>
+							<?php } ?>
+							<?php echo $invoices['store_email']; ?><br>
+							<?php echo $text_tax_id; ?> <?php echo $invoices['store_nif']; ?>
+						</td>
+					</tr>
+				</table>
 			</td>
 			<td style="vertical-align:top; padding:0;">
 				<?php if ($invoices['qr_code_pdf']) { ?>
@@ -72,48 +89,9 @@ th {
 				<span class="title" style="font-size:22px;"><?php echo $text_invoice; ?></span> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?>
 			</td>
 		</tr>
-	</table>
-	<table class="table table-bordered">
 		<tr>
-			<td width="50%"><strong><?php echo $invoices['store_name']; ?></strong><br>
-				<?php echo $invoices['store_address']; ?><br>
-				<?php echo $text_telephone; ?> <?php echo $invoices['store_telephone']; ?><br>
-				<?php if ($invoices['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $invoices['store_fax']; ?><br>
-				<?php } ?>
-				<?php echo $invoices['store_email']; ?><br>
-				<?php echo $text_tax_id; ?> <?php echo $invoices['store_nif']; ?></td>
-			<td>
-				<?php if ($invoices['invoice_no']) { ?>
-					<b><?php echo $text_invoice_no; ?></b> <?php echo $invoices['invoice_no']; ?><br>
-				<?php } ?>
-				<b><?php echo $text_payment_method; ?></b> <?php echo $invoices['payment_method']; ?><br>
-				<?php if ($invoices['shipping_method']) { ?>
-				<b><?php echo $text_shipping_method; ?></b> <?php echo $invoices['shipping_method']; ?><br>
-				<?php } ?>
-			</td>
-		</tr>
-	</table>
-	<table class="table table-bordered">
-		<tr>
-			<th width="50%"><?php echo $text_to; ?></th>
-			<th><?php echo $text_ship_to; ?></th>
-		</tr>
-		<tr>
-			<td><?php if ($invoices['payment_company']) { ?><strong><?php echo $invoices['payment_company']; ?></strong><br/><?php } ?>
-				<?php echo $invoices['payment_address']; ?><br/>
-				<?php echo $invoices['email']; ?><br/>
-				<?php echo $invoices['telephone']; ?>
-				<?php if ($invoices['payment_company_id']) { ?>
-				<br/>
-				<br/>
-				<?php echo $text_company_id; ?> <?php echo $invoices['payment_company_id']; ?>
-				<?php } ?>
-				<?php if ($invoices['payment_tax_id']) { ?>
-				<br/>
-				<?php echo $text_tax_id; ?> <?php echo $invoices['payment_tax_id']; ?>
-				<?php } ?></td>
-			<td><?php echo $invoices['shipping_address']; ?></td>
+			<td style="vertical-align:top; padding:0;"></td>
+			<td style="text-align:left; vertical-align:top; padding:0;"><?php if ($invoices['payment_company']) { ?><strong><?php echo $invoices['payment_company']; ?></strong><br/><?php } ?><?php echo $invoices['payment_address']; ?><br/><?php echo $invoices['email']; ?><?php if ($invoices['telephone']) { ?><br/><?php echo $invoices['telephone']; ?><?php } ?><?php if ($invoices['payment_company_id']) { ?><br/><br/><?php echo $text_company_id; ?> <?php echo $invoices['payment_company_id']; ?><?php } ?><?php if ($invoices['payment_tax_id']) { ?><br/><?php echo $text_tax_id; ?> <?php echo $invoices['payment_tax_id']; ?><?php } ?></td>
 		</tr>
 	</table>
 	<table class="table table-bordered">
@@ -144,6 +122,7 @@ th {
 		</tr>
 		<?php } ?>
 	</table>
+	<div style="text-align:left;"><b><?php echo $text_payment_method; ?></b> &nbsp; <?php echo $invoices['payment_method']; ?></div>
 	<?php if ($invoices['comment']) { ?>
 	<table class="table table-bordered">
 		<tr>
