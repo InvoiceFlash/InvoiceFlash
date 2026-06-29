@@ -1785,6 +1785,207 @@ $(function(){
 			}
 		});
 	});
+	/* draft_form.tpl */
+	var a=$('#draft-product'),mapped={};
+	a.typeahead({
+		source:function(q,process){
+			return $.getJSON('index.php?route=catalog/product/autocomplete&token='+token+'&filter_name='+encodeURIComponent(q),function(json){
+				var data=[];
+				$.each(json,function(i,item){
+					mapped[item.name]=item;
+					data.push(item.name);
+				});
+				process(data);
+			});
+		},
+		updater:function(item){
+			$('input[name="product_id"]').val(mapped[item].product_id);
+			if(mapped[item]['option']!=''){
+				var html='',s=$('#text_select').val();
+				for(i=0;i<mapped[item]['option'].length;i++){
+					var o=mapped[item]['option'][i];
+					html+='<div class="form-group" id="option-'+o['product_option_id']+'">';
+					html+='<label class="col-form-label col-sm-4">';
+					if(o['required']==1){
+						html+='<b class="required">*</b> ';
+					}
+					html+=o['name']+':</label>';
+					html+='<div class="control-field col-sm-8">';
+					if(o['type']=='select'){
+						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<option value="">'+s+'</option>';
+						for(j=0;j<o['option_value'].length;j++){
+							ov=o['option_value'][j];
+							html+='<option value="'+ov['product_option_value_id']+'">'+ov['name'];
+							if(ov['price']){
+								html+=' ('+ov['price_prefix']+ov['price']+')';
+							}
+							html+='</option>';
+						}
+						html+='</select>';
+					}else if(o['type']=='radio'){
+						for(j=0;j<o['option_value'].length;j++){
+							ov=o['option_value'][j];
+							html+='<div class="radio"><label for="option-value-'+ov['product_option_value_id']+'">';
+							html+='<input type="radio" name="option['+o['product_option_id']+'][]" value="'+ov['product_option_value_id']+'" id="option-value-'+ov['product_option_value_id']+'">';
+							html+=ov['name'];
+							if(ov['price']){
+								html+=' ('+ov['price_prefix']+ov['price']+')';
+							}
+							html+='</label></div>';
+						}
+					}else if(o['type']=='checkbox'){
+						for(j=0;j<o['option_value'].length;j++){
+							ov=o['option_value'][j];
+							html+='<div class="checkbox"><label for="option-value-'+ov['product_option_value_id']+'">';
+							html+='<input type="checkbox" name="option['+o['product_option_id']+'][]" value="'+ov['product_option_value_id']+'" id="option-value-'+ov['product_option_value_id']+'">';
+							html+=ov['name'];
+							if(ov['price']){
+								html+=' ('+ov['price_prefix']+ov['price']+')';
+							}
+							html+='</label></div>';
+						}
+					}else if(o['type']=='image'){
+						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<option value="">'+s+'</option>';
+						for(j=0;j<o['option_value'].length;j++){
+							ov=o['option_value'][j];
+							html+='<option value="'+ov['product_option_value_id']+'">'+ov['name'];
+							if(ov['price']){
+								html+=' ('+ov['price_prefix']+ov['price']+')';
+							}
+							html+='</option>';
+						}
+						html+='</select>';
+					}else if(o['type']=='text'){
+						html+='<input type="text" name="option['+o['product_option_id']+']" value="'+o['option_value']+'" class="form-control">';
+					}else if(o['type']=='textarea'){
+						html+='<textarea name="option['+o['product_option_id']+']" class="form-control" rows="4">'+o['option_value']+'</textarea>';
+					}else if(o['type']=='file'){
+						html+='<div class="input-group">';
+						html+='<input type="text" name="mask" id="input-file" class="form-control">';
+						html+='<input type="hidden" name="filename">';
+						html+='<span class="input-group-btn"><button type="button" id="button-upload" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button></span>';
+						html+='<input type="hidden" name="option['+o['product_option_id']+']" value="'+o['option_value']+'" id="input-option-'+o['product_option_id']+'"></div>';
+					}else if(o['type']=='date'){
+						html+='<div class="input-group">';
+						html+='<input type="text" name="option['+o['product_option_id']+']" value="'+o['option_value']+'" class="form-control date">';
+						html+='<div class="input-group-append"><span class="input-group-text">';
+						html+='<i class="fa fa-calendar"></i></span></div></div>';
+					}else if(o['type']=='datetime'){
+						html+='<div class="input-group">';
+						html+='<input type="text" name="option['+o['product_option_id']+']" value="'+o['option_value']+'" class="form-control date">';
+						html+='<div class="input-group-append"><span class="input-group-text">';
+						html+='<i class="fa fa-calendar"></i></span></div></div>';
+					}else if(o['type']=='time'){
+						html+='<div class="input-group">';
+						html+='<input type="text" name="option['+o['product_option_id']+']" value="'+o['option_value']+'" class="form-control time">';
+						html+='<div class="input-group-append"><span class="input-group-text">';
+						html+='<i class="fa fa-clock"></i></span></div></div>';
+					}
+					html+='</div>';
+					html+='</div>';
+				}
+				$('#option').html(html);
+			}else{
+				$('#option .form-group').remove();
+			}
+			return item;
+		}
+	}).click(function(){
+		this.select();
+		this.setSelectionRange(0,0);
+	});
+	$('#button-draft-product,#button-draft-update').on('click',function(){
+		var a=$(this);
+        data='#tab-customer input[type="text"],#tab-customer input[type="hidden"],#tab-customer input[type="radio"]:checked,#tab-customer input[type="checkbox"]:checked,#tab-customer select,#tab-customer textarea,';
+		data+='#tab-payment input[type="text"],#tab-payment input[type="hidden"],#tab-payment input[type="radio"]:checked,#tab-payment input[type="checkbox"]:checked,#tab-payment select,#tab-payment textarea,';
+        data+='#tab-shipping input[type="text"],#tab-shipping input[type="hidden"],#tab-shipping input[type="radio"]:checked,#tab-shipping input[type="checkbox"]:checked,#tab-shipping select,#tab-shipping textarea,';
+
+		// Datos del modal
+		data+='#ProductModal input[type="text"],#ProductModal input[type="hidden"],#ProductModal input[type="radio"]:checked,#ProductModal input[type="checkbox"]:checked,#ProductModal select,#ProductModal textarea,';
+		// datos de la tabla
+		data+='#product input[type="text"],#product input[type="hidden"],#product input[type="radio"]:checked,#product input[type="checkbox"]:checked,#product select,#product textarea,';
+
+		data+='#tab-total input[type="text"],#tab-total input[type="hidden"],#tab-total input[type="radio"]:checked,#tab-total input[type="checkbox"]:checked,#tab-total select,#tab-total textarea';
+		// Serialize the field values into a plain string RIGHT NOW: $(data) only
+		// wraps live DOM nodes, so passing it straight to $.ajax would still read
+		// .value lazily when jQuery builds the request - by which point hide()
+		// below has already reset product_id to 0 (the modal has no .fade class,
+		// so hide() runs its hidden.bs.modal handler synchronously, not after an
+		// animation). $.param() forces the read to happen now, before that.
+		var ajaxData = $.param($(data));
+		var $productModal = $('#ProductModal');
+		if ($productModal.length && $productModal.hasClass('show')) {
+			bootstrap.Modal.getInstance($productModal[0]).hide();
+		}
+		$.ajax({
+			url:'index.php?route=sale/draft/checkDraft&token='+token,
+			type:'post',
+			data:ajaxData,
+			dataType:'json',
+			beforeSend:function(){
+				$('.alert,.text-error').remove();
+				a.button('loading').append($('<i>',{class:'icon-loading'}));
+			},
+			success:function(json){
+				if(json['error']){if(json['error']['product']){
+					if(json['error']['product']['option']){
+						for(i in json['error']['product']['option']){
+							$('#option-'+i+' .controls').append('<div class="help-block text-danger">'+json['error']['product']['option'][i]+'</div>');
+						}
+					}
+				}}
+				if(json['draft_product']!=''){
+					var product_row=0;
+					var option_row=0;
+					html='';
+					for(i=0;i<json['draft_product'].length;i++){
+						product=json['draft_product'][i];
+						html+='<tr id="product-row'+product_row+'">';
+						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-draft-product\').click();"><i class="fa fa-trash"></i></a></td>';
+						html+='<td>'+product['name']+'<br><input type="hidden" name="draft_product['+product_row+'][draft_product_id]" value=""><input type="hidden" name="draft_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="draft_product['+product_row+'][name]" value="'+product['name']+'">';
+						if (product['option']){
+							for(j=0;j<product['option'].length;j++){
+								option = product['option'][j];
+
+								html+='<div class="help">'+option['name']+':'+option['value']+'</div>';
+								html+='<input type="hidden" name="draft_product['+product_row+'][draft_option]['+option_row+'][draft_option_id]" value="'+option['draft_option_id']+'">';
+								html+='<input type="hidden" name="draft_product['+product_row+'][draft_option]['+option_row+'][product_option_id]" value="'+option['product_option_id']+'">';
+								html+='<input type="hidden" name="draft_product['+product_row+'][draft_option]['+option_row+'][product_option_value_id]" value="'+option['product_option_value_id']+'">';
+								html+='<input type="hidden" name="draft_product['+product_row+'][draft_option]['+option_row+'][name]" value="'+option['name']+'">';
+								html+='<input type="hidden" name="draft_product['+product_row+'][draft_option]['+option_row+'][value]" value="'+option['value']+'">';
+								html+='<input type="hidden" name="draft_product['+product_row+'][draft_option]['+option_row+'][type]" value="'+option['type']+'">';
+
+								option_row++;
+							}
+						}
+						html+='</td>';
+						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="draft_product['+product_row+'][model]" value="'+product['model']+'"></td>';
+						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="draft_product['+product_row+'][price]" value="'+product['price']+'"></td>';
+						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="draft_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="draft_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='</tr>';
+						product_row++;
+					}
+					$('#product').html(html);
+				}
+				if(json['draft_total']!=''){
+					var total_row=0;
+					html='';
+					for(i in json['draft_total']){
+						total=json['draft_total'][i];
+						html+='<tr id="total-row'+total_row+'">';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="draft_total['+total_row+'][draft_total_id]" value=""><input type="hidden" name="draft_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="draft_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="draft_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="draft_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="draft_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='</tr>';
+						total_row++;
+					}
+					$('#total').html(html);
+				}
+			}
+		});
+	});
 	/* delivery_form.tpl */
 	var a=$('#delivery-product'),mapped={};
 	a.typeahead({
