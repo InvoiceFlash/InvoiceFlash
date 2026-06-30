@@ -18,7 +18,11 @@ class ModelSaleInvoice extends Model {
 		
 		$setting_info = $this->model_setting_setting->getSetting('setting', $data['store_id']);
 			
-		if (isset($setting_info['invoice_prefix'])) {
+		if (isset($setting_info['sales_invoice_prefix'])) {
+			$invoice_prefix = $setting_info['sales_invoice_prefix'];
+		} elseif ($this->config->get('config_sales_invoice_prefix')) {
+			$invoice_prefix = $this->config->get('config_sales_invoice_prefix');
+		} elseif (isset($setting_info['invoice_prefix'])) {
 			$invoice_prefix = $setting_info['invoice_prefix'];
 		} else {
 			$invoice_prefix = $this->config->get('config_invoice_prefix');
