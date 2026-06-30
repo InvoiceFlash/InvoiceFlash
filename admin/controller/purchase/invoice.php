@@ -371,7 +371,7 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->data['doc_exists'] = false;
 		$invoice_id_check = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
 		if ($invoice_id_check && !empty($invoice_info)) {
-			$doc_dir = dirname(DIR_APPLICATION) . 'docs/suppliers/' . date('Y') . '/';
+			$doc_dir = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/') . '/docs/suppliers/' . date('Y') . '/';
 			$sid  = (int)$invoice_info['supplier_id'];
 			$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
 			$matches = glob($doc_dir . $sid . '_' . $sino . '.*');
@@ -843,6 +843,8 @@ class ControllerPurchaseInvoice extends Controller {
 	}
 
 	public function uploadDoc() {
+		ob_start();
+
 		$this->load->language('purchase/invoice');
 
 		$json = array();
@@ -851,8 +853,10 @@ class ControllerPurchaseInvoice extends Controller {
 			$json['error'] = $this->language->get('error_permission');
 		} elseif (empty($this->request->get['invoice_id'])) {
 			$json['error'] = 'Missing invoice_id';
-		} elseif (empty($_FILES['doc']['tmp_name']) || !is_uploaded_file($_FILES['doc']['tmp_name'])) {
-			$json['error'] = 'No file uploaded';
+		} elseif (!isset($_FILES['doc']) || empty($_FILES['doc']['tmp_name'])) {
+			$json['error'] = 'No file received (check PHP upload_max_filesize / post_max_size)';
+		} elseif (!is_uploaded_file($_FILES['doc']['tmp_name'])) {
+			$json['error'] = 'Invalid upload';
 		} else {
 			$this->load->model('purchase/invoice');
 			$invoice_info = $this->model_purchase_invoice->getInvoice((int)$this->request->get['invoice_id']);
@@ -863,15 +867,16 @@ class ControllerPurchaseInvoice extends Controller {
 				$sid  = (int)$invoice_info['supplier_id'];
 				$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
 				$ext  = strtolower(pathinfo($_FILES['doc']['name'], PATHINFO_EXTENSION));
-				$dir  = str_replace('\\', '/', dirname(DIR_APPLICATION)) . '/docs/suppliers/' . date('Y') . '/';
+
+				$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
+				$dir  = $base . '/docs/suppliers/' . date('Y') . '/';
 
 				if (!is_dir($dir)) {
-					mkdir($dir, 0755, true);
+					mkdir($dir, 0777, true);
 				}
 
-				// Remove previous file for this invoice if exists
 				foreach ((array)glob($dir . $sid . '_' . $sino . '.*') as $old) {
-					unlink($old);
+					@unlink($old);
 				}
 
 				$filename = $sid . '_' . $sino . '.' . $ext;
@@ -880,10 +885,12 @@ class ControllerPurchaseInvoice extends Controller {
 					$json['success'] = true;
 					$json['filename'] = $filename;
 				} else {
-					$json['error'] = 'Error saving file';
+					$json['error'] = 'move_uploaded_file failed. Dir: ' . $dir . ' File: ' . $filename;
 				}
 			}
 		}
+
+		ob_end_clean();
 
 		$this->response->addheader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));

@@ -515,21 +515,22 @@ $('#input-doc').on('change', function() {
 	var formData = new FormData();
 	formData.append('doc', file);
 	$.ajax({
-		url: '<?php echo $upload_doc_url; ?>',
+		url: '<?php echo str_replace('&amp;', '&', $upload_doc_url); ?>',
 		type: 'POST',
 		data: formData,
 		processData: false,
 		contentType: false,
+		dataType: 'json',
 		success: function(json) {
-			if (json.success) {
+			if (json && json.success) {
 				$('#btn-upload-doc').removeClass('btn-default btn-danger').addClass('btn-success');
 			} else {
-				alert(json.error || 'Upload error');
+				alert(json && json.error ? json.error : 'Upload error');
 				$('#btn-upload-doc').removeClass('btn-default btn-success').addClass('btn-danger');
 			}
 		},
-		error: function() {
-			alert('Upload error');
+		error: function(xhr) {
+			alert('Upload error (' + xhr.status + '): ' + xhr.responseText.substring(0, 300));
 		}
 	});
 });
