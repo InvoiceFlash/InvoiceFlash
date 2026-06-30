@@ -42,6 +42,16 @@
 				</div>
 			</div>
 		</form>
+		<hr>
+		<div class="form-horizontal">
+			<div class="form-group row">
+				<label class="col-form-label col-sm-2"><?php echo $entry_backup_sources; ?></label>
+				<div class="col-sm-10">
+					<p class="form-control-plaintext text-muted">Compresses all application source files into a ZIP (excludes cache and logs).</p>
+					<a href="<?php echo $backup_sources; ?>" class="btn btn-warning mt-2"><i class="fa fa-file-archive"></i> <?php echo $button_backup_sources; ?></a>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <?php echo $footer; ?>

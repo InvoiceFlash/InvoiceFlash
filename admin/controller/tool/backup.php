@@ -35,8 +35,10 @@ class ControllerToolBackup extends Controller {
 		$this->data['entry_restore'] = $this->language->get('entry_restore');
 		$this->data['entry_backup'] = $this->language->get('entry_backup');
 
-		$this->data['button_backup'] = $this->language->get('button_backup');
-		$this->data['button_restore'] = $this->language->get('button_restore');
+		$this->data['button_backup']         = $this->language->get('button_backup');
+		$this->data['button_backup_sources'] = $this->language->get('button_backup_sources');
+		$this->data['button_restore']        = $this->language->get('button_restore');
+		$this->data['entry_backup_sources']  = $this->language->get('entry_backup_sources');
 
 		if (isset($this->session->data['error'])) {
 			$this->data['error_warning'] = $this->session->data['error'];
@@ -72,7 +74,8 @@ class ControllerToolBackup extends Controller {
 
 		$this->data['restore'] = $this->url->link('tool/backup', 'token=' . $this->session->data['token'], 'SSL');
 
-		$this->data['backup'] = $this->url->link('tool/backup/backup', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['backup']         = $this->url->link('tool/backup/backup', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['backup_sources'] = $this->url->link('tool/backup/sources', 'token=' . $this->session->data['token'], 'SSL');
 
 		$this->data['tables'] = $this->model_tool_backup->getTables();
 
@@ -83,6 +86,71 @@ class ControllerToolBackup extends Controller {
 		);
 
 		$this->response->setOutput($this->render());
+	}
+
+	public function sources() {
+		$this->language->load('tool/backup');
+
+		if (!$this->user->hasPermission('modify', 'tool/backup')) {
+			$this->session->data['error'] = $this->language->get('error_permission');
+			$this->redirect($this->url->link('tool/backup', 'token=' . $this->session->data['token'], 'SSL'));
+			return;
+		}
+
+		$root = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
+
+		$zipName = date('Y-m-d_H-i-s') . '_sources.zip';
+		$zipPath = str_replace('\\', '/', DIR_CACHE) . $zipName;
+
+		$skip = array(
+			str_replace('\\', '/', realpath(DIR_CACHE)),
+			str_replace('\\', '/', realpath(DIR_LOGS)),
+			$root . '/.git'
+		);
+
+		$zip = new ZipArchive();
+		if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+			$this->session->data['error'] = $this->language->get('error_sources');
+			$this->redirect($this->url->link('tool/backup', 'token=' . $this->session->data['token'], 'SSL'));
+			return;
+		}
+
+		$iterator = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS),
+			RecursiveIteratorIterator::SELF_FIRST
+		);
+
+		foreach ($iterator as $file) {
+			$filePath = str_replace('\\', '/', $file->getRealPath());
+
+			foreach ($skip as $s) {
+				if (strpos($filePath, $s) === 0) {
+					continue 2;
+				}
+			}
+
+			$relativePath = ltrim(substr($filePath, strlen($root)), '/');
+
+			if ($file->isDir()) {
+				$zip->addEmptyDir($relativePath);
+			} else {
+				$zip->addFile($filePath, $relativePath);
+			}
+		}
+
+		$zip->close();
+
+		$this->response->addheader('Pragma: public');
+		$this->response->addheader('Expires: 0');
+		$this->response->addheader('Content-Description: File Transfer');
+		$this->response->addheader('Content-Type: application/zip');
+		$this->response->addheader('Content-Disposition: attachment; filename=' . $zipName);
+		$this->response->addheader('Content-Transfer-Encoding: binary');
+		$this->response->addheader('Content-Length: ' . filesize($zipPath));
+
+		$this->response->setOutput(file_get_contents($zipPath));
+
+		unlink($zipPath);
 	}
 
 	public function backup() {
