@@ -25,25 +25,25 @@
 							<td class="col-sm-3"><?php echo $text_invoice_id; ?></td>
 							<td>#<?php echo $invoice_id; ?></td>
 						</tr>
+						<?php if ($supplier_invoice_no) { ?>
+						<tr>
+							<td><?php echo $text_supplier_invoice_no; ?></td>
+							<td><?php echo $supplier_invoice_no; ?></td>
+						</tr>
+						<?php } ?>
 						<tr>
 							<td><?php echo $text_store_name; ?></td>
 							<td><?php echo $store_name; ?></td>
 						</tr>
-						<?php if ($customer) { ?>
+						<?php if ($supplier) { ?>
 						<tr>
-							<td><?php echo $text_customer; ?></td>
-							<td><a href="<?php echo $customer; ?>"><?php echo $company; ?></a></td>
+							<td><?php echo $text_supplier; ?></td>
+							<td><a href="<?php echo $supplier; ?>"><?php echo $company; ?></a></td>
 						</tr>
 						<?php } else { ?>
 						<tr>
-							<td><?php echo $text_customer; ?></td>
+							<td><?php echo $text_supplier; ?></td>
 							<td><?php echo $company; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($customer_group) { ?>
-						<tr>
-							<td><?php echo $text_customer_group; ?></td>
-							<td><?php echo $customer_group; ?></td>
 						</tr>
 						<?php } ?>
 						<tr>

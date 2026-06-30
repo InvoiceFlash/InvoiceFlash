@@ -9,8 +9,7 @@ $_['text_invoice_no']              = 'Invoice No.:';
 $_['text_invoice_date']            = 'Invoice Date:';
 $_['text_store_name']              = 'Store Name:';
 $_['text_store_url']               = 'Store Url:';
-$_['text_customer']                = 'Customer:';
-$_['text_customer_group']          = 'Customer Group:';
+$_['text_supplier']                = 'Supplier:';
 $_['text_email']                   = 'E-Mail:';
 $_['text_telephone']               = 'Telephone:';
 $_['text_fax']                     = 'Fax:';
@@ -52,7 +51,7 @@ $_['date_format_short']            = 'd/m/Y';
 
 // Columns
 $_['column_invoice_id']            = 'Invoice ID';
-$_['column_customer']              = 'Customer';
+$_['column_supplier']              = 'Supplier';
 $_['column_status']                = 'Status';
 $_['column_date_added']            = 'Date Added';
 $_['column_date_modified']         = 'Date Modified';
@@ -71,8 +70,9 @@ $_['column_remaining']             = 'Remaining';
 
 // Entry
 $_['entry_store']                  = 'Store:';
-$_['entry_customer']               = 'Customer:';
-$_['entry_customer_group']         = 'Group:';
+$_['entry_supplier']               = 'Supplier:';
+$_['entry_supplier_invoice_no']    = 'Supplier Invoice No:';
+$_['text_supplier_invoice_no']     = 'Supplier Invoice No:';
 $_['entry_email']                  = 'E-Mail:';
 $_['entry_telephone']              = 'Telephone:';
 $_['entry_fax']                    = 'Fax:';
@@ -110,7 +110,7 @@ $_['entry_invoice_id']             = 'Invoice ID:';
 
 // Tabs
 $_['tab_invoice']                  = 'Invoice';
-$_['tab_customer']                 = 'Customer';
+$_['tab_supplier']                 = 'Supplier';
 $_['tab_payment']                  = 'Payment';
 $_['tab_shipping']                 = 'Shipping';
 $_['tab_product']                  = 'Products';

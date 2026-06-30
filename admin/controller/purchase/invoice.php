@@ -165,7 +165,7 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->data['text_missing']     = $this->language->get('text_missing');
 
 		$this->data['column_invoice_id']    = $this->language->get('column_invoice_id');
-		$this->data['column_customer']      = $this->language->get('column_customer');
+		$this->data['column_supplier']      = $this->language->get('column_supplier');
 		$this->data['column_status']        = $this->language->get('column_status');
 		$this->data['column_total']         = $this->language->get('column_total');
 		$this->data['column_date_added']    = $this->language->get('column_date_added');
@@ -236,7 +236,7 @@ class ControllerPurchaseInvoice extends Controller {
 	}
 
 	public function getForm() {
-		$this->load->model('sale/customer');
+		$this->load->model('purchase/supplier');
 
 		$this->data['heading_title']         = $this->language->get('heading_title');
 		$this->data['text_no_results']       = $this->language->get('text_no_results');
@@ -250,8 +250,8 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->data['text_invoice_details']  = $this->language->get('text_invoice_details');
 
 		$this->data['entry_store']           = $this->language->get('entry_store');
-		$this->data['entry_customer']        = $this->language->get('entry_customer');
-		$this->data['entry_customer_group']  = $this->language->get('entry_customer_group');
+		$this->data['entry_supplier']            = $this->language->get('entry_supplier');
+		$this->data['entry_supplier_invoice_no'] = $this->language->get('entry_supplier_invoice_no');
 		$this->data['entry_vat']             = $this->language->get('entry_vat');
 		$this->data['entry_email']           = $this->language->get('entry_email');
 		$this->data['entry_telephone']       = $this->language->get('entry_telephone');
@@ -299,7 +299,7 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->data['button_upload']         = $this->language->get('button_upload');
 
 		$this->data['tab_invoice']           = $this->language->get('tab_invoice');
-		$this->data['tab_customer']          = $this->language->get('tab_customer');
+		$this->data['tab_supplier']          = $this->language->get('tab_supplier');
 		$this->data['tab_payment']           = $this->language->get('tab_payment');
 		$this->data['tab_shipping']          = $this->language->get('tab_shipping');
 		$this->data['tab_product']           = $this->language->get('tab_product');
@@ -347,8 +347,8 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->data['stores'] = $this->model_setting_store->getStores();
 		$this->data['store_url'] = (isset($this->request->server['HTTPS']) && in_array($this->request->server['HTTPS'], array('on', '1'))) ? HTTPS_CATALOG : HTTP_CATALOG;
 
-		// Customer fields
-		$customer_fields = array('company', 'customer_id', 'customer_group_id', 'email', 'telephone', 'fax',
+		// Supplier + address fields
+		$fields = array('company', 'supplier_id', 'supplier_invoice_no', 'email', 'telephone', 'fax',
 			'invoice_status_id', 'comment',
 			'payment_company', 'payment_company_id', 'payment_address_1', 'payment_address_2',
 			'payment_city', 'payment_postcode', 'payment_country_id', 'payment_zone_id',
@@ -357,7 +357,7 @@ class ControllerPurchaseInvoice extends Controller {
 			'shipping_city', 'shipping_postcode', 'shipping_country_id', 'shipping_zone_id',
 			'shipping_method', 'shipping_code');
 
-		foreach ($customer_fields as $field) {
+		foreach ($fields as $field) {
 			if (isset($this->request->post[$field])) {
 				$this->data[$field] = $this->request->post[$field];
 			} elseif (!empty($invoice_info)) {
@@ -367,22 +367,23 @@ class ControllerPurchaseInvoice extends Controller {
 			}
 		}
 
-		$this->load->model('sale/customer_group');
-		$this->data['customer_groups'] = $this->model_sale_customer_group->getCustomerGroups();
+		// Check if supplier doc already uploaded
+		$this->data['doc_exists'] = false;
+		$invoice_id_check = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
+		if ($invoice_id_check && !empty($invoice_info)) {
+			$doc_dir = dirname(DIR_APPLICATION) . 'docs/suppliers/' . date('Y') . '/';
+			$sid  = (int)$invoice_info['supplier_id'];
+			$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
+			$matches = glob($doc_dir . $sid . '_' . $sino . '.*');
+			$this->data['doc_exists'] = !empty($matches);
+		}
+		$this->data['upload_doc_url'] = $this->url->link('purchase/invoice/uploadDoc', 'token=' . $this->session->data['token'] . '&invoice_id=' . $invoice_id_check, 'SSL');
 
 		$this->load->model('localisation/invoice_status');
 		$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
 
 		$this->load->model('setting/extension');
 		$this->data['shipping_option_codes'] = $this->model_purchase_invoice->getInvoiceShippingCodes();
-
-		if (isset($this->request->post['customer_id'])) {
-			$this->data['addresses'] = $this->model_sale_customer->getAddresses($this->request->post['customer_id']);
-		} elseif (!empty($invoice_info) && $invoice_info['customer_id']) {
-			$this->data['addresses'] = $this->model_sale_customer->getAddresses($invoice_info['customer_id']);
-		} else {
-			$this->data['addresses'] = array();
-		}
 
 		// Products
 		if (isset($this->request->post['invoice_product'])) {
@@ -465,7 +466,7 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->document->setTitle($this->language->get('heading_title'));
 
 			// Texts
-			foreach (array('heading_title','text_invoice_id','text_invoice_no','text_invoice_date','text_store_name','text_store_url','text_customer','text_customer_group','text_email','text_telephone','text_fax','text_total','text_invoice_status','text_comment','text_date_added','text_date_modified','text_company','text_company_id','text_tax_id','text_address_1','text_address_2','text_city','text_postcode','text_zone','text_zone_code','text_country','text_shipping_method','text_payment_method','text_download','text_wait','text_generate') as $key) {
+			foreach (array('heading_title','text_invoice_id','text_invoice_no','text_invoice_date','text_store_name','text_store_url','text_supplier','text_supplier_invoice_no','text_email','text_telephone','text_fax','text_total','text_invoice_status','text_comment','text_date_added','text_date_modified','text_company','text_company_id','text_tax_id','text_address_1','text_address_2','text_city','text_postcode','text_zone','text_zone_code','text_country','text_shipping_method','text_payment_method','text_download','text_wait','text_generate') as $key) {
 				$this->data[$key] = $this->language->get($key);
 			}
 
@@ -519,18 +520,15 @@ class ControllerPurchaseInvoice extends Controller {
 				$this->data['invoice_no'] = '';
 			}
 
-			$this->data['store_name']   = $invoice_info['store_name'];
-			$this->data['store_url']    = $invoice_info['store_url'];
+			$this->data['store_name']         = $invoice_info['store_name'];
+			$this->data['store_url']          = $invoice_info['store_url'];
+			$this->data['supplier_invoice_no'] = $invoice_info['supplier_invoice_no'];
 
-			if ($invoice_info['customer_id']) {
-				$this->data['customer'] = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $invoice_info['customer_id'], 'SSL');
+			if ($invoice_info['supplier_id']) {
+				$this->data['supplier'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $invoice_info['supplier_id'], 'SSL');
 			} else {
-				$this->data['customer'] = '';
+				$this->data['supplier'] = '';
 			}
-
-			$this->load->model('sale/customer_group');
-			$customer_group_info = $this->model_sale_customer_group->getCustomerGroup($invoice_info['customer_group_id']);
-			$this->data['customer_group'] = $customer_group_info ? $customer_group_info['name'] : '';
 
 			$this->data['email']           = $invoice_info['email'];
 			$this->data['telephone']       = $invoice_info['telephone'];
@@ -842,5 +840,52 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->template = 'purchase/purchase_invoice_printPDF.tpl';
 			$this->response->setOutput($this->render());
 		}
+	}
+
+	public function uploadDoc() {
+		$this->load->language('purchase/invoice');
+
+		$json = array();
+
+		if (!$this->user->hasPermission('modify', 'purchase/invoice')) {
+			$json['error'] = $this->language->get('error_permission');
+		} elseif (empty($this->request->get['invoice_id'])) {
+			$json['error'] = 'Missing invoice_id';
+		} elseif (empty($_FILES['doc']['tmp_name']) || !is_uploaded_file($_FILES['doc']['tmp_name'])) {
+			$json['error'] = 'No file uploaded';
+		} else {
+			$this->load->model('purchase/invoice');
+			$invoice_info = $this->model_purchase_invoice->getInvoice((int)$this->request->get['invoice_id']);
+
+			if (!$invoice_info) {
+				$json['error'] = 'Invoice not found';
+			} else {
+				$sid  = (int)$invoice_info['supplier_id'];
+				$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
+				$ext  = strtolower(pathinfo($_FILES['doc']['name'], PATHINFO_EXTENSION));
+				$dir  = str_replace('\\', '/', dirname(DIR_APPLICATION)) . '/docs/suppliers/' . date('Y') . '/';
+
+				if (!is_dir($dir)) {
+					mkdir($dir, 0755, true);
+				}
+
+				// Remove previous file for this invoice if exists
+				foreach ((array)glob($dir . $sid . '_' . $sino . '.*') as $old) {
+					unlink($old);
+				}
+
+				$filename = $sid . '_' . $sino . '.' . $ext;
+
+				if (move_uploaded_file($_FILES['doc']['tmp_name'], $dir . $filename)) {
+					$json['success'] = true;
+					$json['filename'] = $filename;
+				} else {
+					$json['error'] = 'Error saving file';
+				}
+			}
+		}
+
+		$this->response->addheader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 	}
 }

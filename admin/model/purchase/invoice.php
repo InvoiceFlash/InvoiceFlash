@@ -69,11 +69,11 @@ class ModelPurchaseInvoice extends Model {
 
 		$this->db->query("INSERT INTO `" . DB_PREFIX . "purchase_invoice` SET
 			`invoice_prefix` = '" . $this->db->escape($invoice_prefix) . "',
+			`supplier_invoice_no` = '" . $this->db->escape(isset($data['supplier_invoice_no']) ? $data['supplier_invoice_no'] : '') . "',
 			`store_id` = '" . (int)$data['store_id'] . "',
 			`store_name` = '" . $this->db->escape($store_name) . "',
 			`store_url` = '" . $this->db->escape($store_url) . "',
-			`customer_id` = '" . (int)$data['customer_id'] . "',
-			`customer_group_id` = '" . (int)$data['customer_group_id'] . "',
+			`supplier_id` = '" . (int)$data['supplier_id'] . "',
 			`email` = '" . $this->db->escape($data['email']) . "',
 			`telephone` = '" . $this->db->escape($data['telephone']) . "',
 			`fax` = '" . $this->db->escape($data['fax']) . "',
@@ -197,8 +197,8 @@ class ModelPurchaseInvoice extends Model {
 
 		$this->db->query("UPDATE `" . DB_PREFIX . "purchase_invoice` SET
 			`store_id` = '" . (int)$data['store_id'] . "',
-			`customer_id` = '" . (int)$data['customer_id'] . "',
-			`customer_group_id` = '" . (int)$data['customer_group_id'] . "',
+			`supplier_id` = '" . (int)$data['supplier_id'] . "',
+			`supplier_invoice_no` = '" . $this->db->escape(isset($data['supplier_invoice_no']) ? $data['supplier_invoice_no'] : '') . "',
 			`email` = '" . $this->db->escape($data['email']) . "',
 			`telephone` = '" . $this->db->escape($data['telephone']) . "',
 			`fax` = '" . $this->db->escape($data['fax']) . "',
@@ -304,8 +304,7 @@ class ModelPurchaseInvoice extends Model {
 			store_id = '" . (int)$invoice['store_id'] . "',
 			store_name = '" . $this->db->escape($invoice['store_name']) . "',
 			store_url = '" . $this->db->escape($invoice['store_url']) . "',
-			customer_id = '" . (int)$invoice['customer_id'] . "',
-			customer_group_id = '" . (int)$invoice['customer_group_id'] . "',
+			supplier_id = '" . (int)$invoice['supplier_id'] . "',
 			email = '" . $this->db->escape($invoice['email']) . "',
 			telephone = '" . $this->db->escape($invoice['telephone']) . "',
 			fax = '" . $this->db->escape($invoice['fax']) . "',
@@ -400,9 +399,9 @@ class ModelPurchaseInvoice extends Model {
 	}
 
 	public function getInvoice($invoice_id) {
-		$invoice_query = $this->db->query("SELECT o.*, c.company AS company
+		$invoice_query = $this->db->query("SELECT o.*, s.company AS company
 			FROM `" . DB_PREFIX . "purchase_invoice` o
-			LEFT JOIN " . DB_PREFIX . "customer c ON o.customer_id = c.customer_id
+			LEFT JOIN " . DB_PREFIX . "supplier s ON o.supplier_id = s.supplier_id
 			WHERE o.invoice_id = '" . (int)$invoice_id . "'");
 
 		if ($invoice_query->num_rows) {
@@ -427,12 +426,12 @@ class ModelPurchaseInvoice extends Model {
 				'invoice_id'              => $invoice_query->row['invoice_id'],
 				'invoice_no'              => $invoice_query->row['invoice_no'],
 				'invoice_prefix'          => $invoice_query->row['invoice_prefix'],
+				'supplier_invoice_no'     => $invoice_query->row['supplier_invoice_no'],
 				'store_id'                => $invoice_query->row['store_id'],
 				'store_name'              => $invoice_query->row['store_name'],
 				'store_url'               => $invoice_query->row['store_url'],
-				'customer_id'             => $invoice_query->row['customer_id'],
+				'supplier_id'             => $invoice_query->row['supplier_id'],
 				'company'                 => $invoice_query->row['company'],
-				'customer_group_id'       => $invoice_query->row['customer_group_id'],
 				'telephone'               => $invoice_query->row['telephone'],
 				'fax'                     => $invoice_query->row['fax'],
 				'email'                   => $invoice_query->row['email'],
@@ -487,10 +486,10 @@ class ModelPurchaseInvoice extends Model {
 	}
 
 	public function getInvoices($data = array()) {
-		$sql = "SELECT o.invoice_id, o.shipping_company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, c.company AS company
+		$sql = "SELECT o.invoice_id, o.shipping_company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, s.company AS company
 			FROM `" . DB_PREFIX . "purchase_invoice` o
 			LEFT JOIN `" . DB_PREFIX . "invoice_status` os ON o.invoice_status_id = os.invoice_status_id
-			LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id
+			LEFT JOIN `" . DB_PREFIX . "supplier` s ON o.supplier_id = s.supplier_id
 			WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {

@@ -12,7 +12,7 @@
 		<form action="<?php echo $action; ?>" method="post" onsubmit="return validateForm();" class="form-inline" enctype="multipart/form-data" id="form">
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
-					<?php echo $tab_customer; ?>
+					<?php echo $tab_supplier; ?>
 					<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal"><i class="fas fa-comment"></i><span></span></button>
 					<!-- Modal -->
 					<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModalLabel" aria-hidden="true">
@@ -37,9 +37,9 @@
 				</div>
 				<div class="card-body">
 					<div class="row">
-						<div class="form-group col-sm-4">
-							<label class="control-label col-sm-4"><?php echo $entry_store; ?></label>
-							<div class="control-field col-sm-8">
+						<div class="form-group col-sm-3">
+							<label class="control-label col-sm-5"><?php echo $entry_store; ?></label>
+							<div class="control-field col-sm-7">
 								<select name="store_id" class="form-control">
 									<option value="0"><?php echo $text_default; ?></option>
 									<?php foreach ($stores as $store) { ?>
@@ -52,13 +52,26 @@
 								</select>
 							</div>
 						</div>
-						<div class="form-group col-sm-8">
-							<label class="control-label col-sm-2"><?php echo $entry_customer; ?></label>
-							<div class="control-field input-group col-sm-10">
-								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
-								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
-								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
+						<div class="form-group col-sm-6">
+							<label class="control-label col-sm-3"><?php echo $entry_supplier; ?></label>
+							<div class="control-field input-group col-sm-9">
+								<input type="text" name="company" value="<?php echo $company; ?>" id="purchase-supplier" autocomplete="off" class="form-control">
+								<input type="hidden" id="supplier_id" name="supplier_id" value="<?php echo $supplier_id; ?>">
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
+							</div>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="control-label col-sm-6"><?php echo $entry_supplier_invoice_no; ?></label>
+							<div class="control-field input-group col-sm-6">
+								<input type="text" name="supplier_invoice_no" value="<?php echo $supplier_invoice_no; ?>" class="form-control">
+								<?php if ($invoice_id) { ?>
+								<div class="input-group-append">
+									<label id="btn-upload-doc" class="btn btn-<?php echo $doc_exists ? 'success' : 'default'; ?> mb-0" title="Subir factura del proveedor" style="cursor:pointer;">
+										<i class="fa fa-paperclip"></i>
+										<input type="file" id="input-doc" style="display:none">
+									</label>
+								</div>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
@@ -234,50 +247,30 @@
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title"><?php echo $tab_customer; ?></h5>
+							<h5 class="modal-title"><?php echo $tab_supplier; ?></h5>
 							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
 						<div class="modal-body">
 							<ul class="nav nav-tabs">
-								<li class="nav-item"><a href="#modal-tab-customer" class="nav-link" data-bs-toggle="tab">Customer</a></li>
+								<li class="nav-item"><a href="#modal-tab-supplier" class="nav-link active" data-bs-toggle="tab">Supplier</a></li>
 								<li class="nav-item"><a href="#tab-payment" class="nav-link" data-bs-toggle="tab">Payment</a></li>
 								<li class="nav-item"><a href="#tab-shipping" class="nav-link" data-bs-toggle="tab">Shipping</a></li>
 							</ul>
 							<div class="tab-content mt-2">
-								<div class="tab-pane" id="modal-tab-customer">
+								<div class="tab-pane active" id="modal-tab-supplier">
 									<div class="form-horizontal">
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_customer_group; ?></label>
-											<div class="control-field col-sm-8">
-												<select id="customer_group_id" class="form-control"<?php echo $customer_id ? ' disabled=""' :''; ?>>
-													<?php foreach ($customer_groups as $customer_group) { ?>
-														<?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
-														<option value="<?php echo $customer_group['customer_group_id']; ?>" selected=""><?php echo $customer_group['name']; ?></option>
-														<?php } else { ?>
-														<option value="<?php echo $customer_group['customer_group_id']; ?>"><?php echo $customer_group['name']; ?></option>
-														<?php } ?>
-													<?php } ?>
-												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_email; ?></label>
+											<label class="control-label col-3"><?php echo $entry_email; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
-												<?php if ($error_email) { ?>
-													<div class="help-block error"><?php echo $error_email; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_telephone; ?></label>
+											<label class="control-label col-3"><?php echo $entry_telephone; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
-												<?php if ($error_telephone) { ?>
-													<div class="help-block error"><?php echo $error_telephone; ?></div>
-												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
@@ -290,17 +283,6 @@
 								</div>
 								<div class="tab-pane" id="tab-payment">
 									<div class="form-horizontal">
-										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_address; ?></label>
-											<div class="control-field col-sm-8">
-												<select name="payment_address" class="form-control">
-													<option value="0" selected=""><?php echo $text_none; ?></option>
-													<?php foreach ($addresses as $address) { ?>
-														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
-													<?php } ?>
-												</select>
-											</div>
-										</div>
 										<div class="form-group">
 											<label class="control-label col-3"><?php echo $entry_company; ?></label>
 											<div class="control-field col-sm-8">
@@ -371,17 +353,6 @@
 								</div>
 								<div class="tab-pane" id="tab-shipping">
 									<div class="form-horizontal">
-										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_address; ?></label>
-											<div class="control-field col-sm-8">
-												<select name="shipping_address" class="form-control">
-													<option value="0" selected=""><?php echo $text_none; ?></option>
-													<?php foreach ($addresses as $address) { ?>
-														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
-													<?php } ?>
-												</select>
-											</div>
-										</div>
 										<div class="form-group">
 											<label class="control-label col-3"><?php echo $entry_company; ?></label>
 											<div class="control-field col-sm-8">
@@ -468,10 +439,9 @@
 <script>
 function validateForm(){
 
-	// Customer
-	var customer = $('#customer_id');
-	if (customer.val() == 0) {
-		alert("Customer must be filled out");
+	// Supplier
+	if ($('#supplier_id').val() == 0) {
+		alert("Supplier must be filled out");
 		return false;
 	}
 
@@ -504,12 +474,65 @@ $('#ProductModal').on('hidden.bs.modal', function () {
 	$(this).find("#option").html('');
 });
 $('#addProduct').click(function(e){
-	if($('#customer_id').val()==0){
-		alert('Please, select a customer first');
-		$('#order-customer').focus();
+	if($('#supplier_id').val()==0){
+		alert('Please, select a supplier first');
+		$('#purchase-supplier').focus();
 	} else {
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
 	}
 });
 </script>
+<script>
+$(function(){
+	var supplierMapped = {};
+	$('#purchase-supplier').typeahead({
+		source: function(q, process) {
+			return $.getJSON('index.php?route=purchase/supplier/autocomplete&token=<?php echo $token; ?>&filter_name=' + encodeURIComponent(q), function(json) {
+				var data = [];
+				$.each(json, function(i, item) {
+					supplierMapped[item.name] = item;
+					data.push(item.name);
+				});
+				process(data);
+			});
+		},
+		updater: function(item) {
+			var s = supplierMapped[item];
+			$('#supplier_id').val(s.supplier_id);
+			$('input[name="email"]').val(s.email);
+			$('input[name="telephone"]').val(s.telephone);
+			$('input[name="fax"]').val(s.fax);
+			return item;
+		}
+	});
+});
+</script>
+<?php if ($invoice_id) { ?>
+<script>
+$('#input-doc').on('change', function() {
+	var file = this.files[0];
+	if (!file) return;
+	var formData = new FormData();
+	formData.append('doc', file);
+	$.ajax({
+		url: '<?php echo $upload_doc_url; ?>',
+		type: 'POST',
+		data: formData,
+		processData: false,
+		contentType: false,
+		success: function(json) {
+			if (json.success) {
+				$('#btn-upload-doc').removeClass('btn-default btn-danger').addClass('btn-success');
+			} else {
+				alert(json.error || 'Upload error');
+				$('#btn-upload-doc').removeClass('btn-default btn-success').addClass('btn-danger');
+			}
+		},
+		error: function() {
+			alert('Upload error');
+		}
+	});
+});
+</script>
+<?php } ?>
 <?php echo $footer; ?>
