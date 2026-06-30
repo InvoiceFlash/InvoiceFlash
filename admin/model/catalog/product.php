@@ -353,6 +353,10 @@ class ModelCatalogProduct extends Model {
 			$sql .= " AND p.model LIKE '" . $this->db->escape($data['filter_model']) . "%'";
 		}
 
+		if (!empty($data['filter_sku'])) {
+			$sql .= " AND p.sku LIKE '%" . $this->db->escape($data['filter_sku']) . "%'";
+		}
+
 		if (!empty($data['filter_price'])) {
 			$sql .= " AND p.price LIKE '" . $this->db->escape($data['filter_price']) . "%'";
 		}

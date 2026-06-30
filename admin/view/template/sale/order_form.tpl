@@ -193,43 +193,94 @@
 					</table>
 				</div>
 			</div>
-			<!-- Modal Product -->
-			<div class="modal" tab-index="-1" role="dialog" id="ProductModal">
+			<!-- Modal búsqueda de artículos -->
+			<div class="modal fade" tabindex="-1" role="dialog" id="ProductSearchModal">
+				<div class="modal-dialog modal-lg" style="max-width:72%;" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title"><i class="fa fa-search"></i> Búsqueda de artículos</h5>
+							<button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="form-inline mb-3" style="gap:8px;flex-wrap:nowrap;align-items:flex-end;">
+								<div style="flex:0 0 140px;">
+									<label class="d-block mb-1">Código / SKU</label>
+									<input type="text" id="ps-sku" class="form-control" placeholder="Código..." style="width:100%;">
+								</div>
+								<div style="flex:1 1 auto;">
+									<label class="d-block mb-1">Descripción</label>
+									<input type="text" id="ps-name" class="form-control w-100" placeholder="Descripción...">
+								</div>
+								<div style="flex:0 0 160px;">
+									<label class="d-block mb-1">Modelo</label>
+									<input type="text" id="ps-model" class="form-control" placeholder="Modelo..." style="width:100%;">
+								</div>
+								<div style="flex:0 0 auto;">
+									<label class="d-block mb-1">&nbsp;</label>
+									<button class="btn btn-primary" id="ps-search" type="button">
+										<i class="fa fa-search"></i> Actualizar
+									</button>
+								</div>
+							</div>
+							<div class="table-responsive" style="max-height:420px;overflow-y:auto;">
+								<table class="table table-bordered table-hover table-sm" id="ps-table">
+									<thead class="thead-light">
+										<tr>
+											<th>Código</th>
+											<th>Descripción</th>
+											<th>Modelo</th>
+											<th class="text-right">Precio</th>
+											<th class="text-right">Stock</th>
+										</tr>
+									</thead>
+									<tbody id="ps-tbody">
+										<tr><td colspan="5" class="text-center text-muted py-3">Introduzca criterios y pulse <strong>Actualizar</strong></td></tr>
+									</tbody>
+								</table>
+							</div>
+							<small class="text-muted"><i class="fa fa-hand-o-up"></i> Doble clic en una fila para seleccionar el artículo</small>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-bs-dismiss="modal">Cerrar</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Modal cantidad y precio -->
+			<div class="modal" tabindex="-1" role="dialog" id="ProductModal">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title"><?php echo $text_product; ?></h5>
-							<button class="close" data-bs-dismiss="modal" arial-label="Close"><span aria-hidden="true">&times;</span></button>
+							<h5 class="modal-title" id="pm-product-name">Artículo</h5>
+							<button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
 						</div>
 						<div class="modal-body">
 							<div class="form-horizontal">
-								<div class="form-group">
-									<label class="control-label col-sm-4"><?php echo $entry_product; ?></label>
-									<div class="control-field col-sm-8">
-										<input type="text" name="product" value="" id="order-product" class="form-control" autocomplete="off">
-										<input type="hidden" name="product_id" id="product_id" value="" class="form-control">
-									</div>
-								</div>
+								<input type="hidden" name="product_id" id="product_id" value="">
+								<input type="hidden" name="product" id="order-product" value="">
 								<div id="option"></div>
 								<div class="form-group">
 									<label class="control-label col-sm-4"><?php echo $entry_quantity; ?></label>
 									<div class="control-field col-sm-8">
-										<input type="text" name="quantity" value="1" class="form-control">
+										<input type="text" name="quantity" id="pm-quantity" value="1" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4">Precio:</label>
+									<div class="control-field col-sm-8">
+										<input type="text" name="price_override" id="price_override" value="" class="form-control">
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="modal-footer">
-							<div class="control-field col-sm-4 col-sm-offset-2">
-								<button type="button" id="button-order-product" class="btn btn-info pull-right">
-									<i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span>
-								</button>
-							</div>
+							<button type="button" id="button-order-product" class="btn btn-info">
+								<i class="fa fa-plus-circle"></i> Añadir
+							</button>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- Fin Modal Product -->
 			<!-- Modal Customer -->
 			<div class="modal" tabindex="-1" role="dialog" id="CustomerModal">
 				<div class="modal-dialog" role="document">
@@ -499,18 +550,153 @@ function validateForm(){
 }
 </script>
 <script>
+// Reset modal de cantidad/precio al cerrar
 $('#ProductModal').on('hidden.bs.modal', function () {
-    $(this).find("#order-product").val('').end();
-    $(this).find("#product_id").val(0);
-	$(this).find("#option").html('');
+    $(this).find('#order-product').val('');
+    $(this).find('#product_id').val(0);
+    $(this).find('#pm-quantity').val(1);
+    $(this).find('#price_override').val('');
+    $(this).find('#pm-product-name').text('Artículo');
+    $(this).find('#option').html('');
 });
-$('#addProduct').click(function(e){
-	if($('#customer_id').val()==0){
-		alert('Please, select a customer first');
-		$('#order-customer').focus();
-	} else {
-		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
-	}
+
+// Abrir modal de búsqueda al pulsar "Add Product"
+$('#addProduct').on('click', function(e) {
+    if ($('#customer_id').val() == 0) {
+        alert('Por favor, seleccione un cliente primero');
+        $('#order-customer').focus();
+    } else {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductSearchModal')).show();
+    }
+});
+
+// Array de productos del último resultado de búsqueda
+var psProducts = [];
+
+function psEsc(s) {
+    return $('<span>').text(s).html();
+}
+
+// Botón Actualizar
+$('#ps-search').on('click', function() {
+    var sku   = $.trim($('#ps-sku').val());
+    var name  = $.trim($('#ps-name').val());
+    var model = $.trim($('#ps-model').val());
+
+    var btn = $(this);
+    btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+
+    $.ajax({
+        url: 'index.php?route=catalog/product/searchProducts&token=' + token +
+             '&filter_sku='   + encodeURIComponent(sku) +
+             '&filter_name='  + encodeURIComponent(name) +
+             '&filter_model=' + encodeURIComponent(model),
+        dataType: 'json',
+        success: function(json) {
+            btn.prop('disabled', false).html('<i class="fa fa-search"></i> Actualizar');
+            if (json && json.warning) {
+                psProducts = [];
+                $('#ps-tbody').html('<tr><td colspan="5" class="text-center text-warning py-3"><i class="fa fa-exclamation-triangle"></i> ' + json.warning + '</td></tr>');
+                return;
+            }
+            psProducts = json || [];
+            var html = '';
+            if (psProducts.length === 0) {
+                html = '<tr><td colspan="5" class="text-center text-muted py-3">No se encontraron artículos</td></tr>';
+            } else {
+                $.each(psProducts, function(i, p) {
+                    html += '<tr style="cursor:pointer" data-idx="' + i + '">';
+                    html += '<td>' + psEsc(p.sku)  + '</td>';
+                    html += '<td>' + psEsc(p.name) + '</td>';
+                    html += '<td>' + psEsc(p.model)+ '</td>';
+                    html += '<td class="text-right">' + psEsc(p.price_formatted) + '</td>';
+                    html += '<td class="text-right">' + p.quantity + '</td>';
+                    html += '</tr>';
+                });
+            }
+            $('#ps-tbody').html(html);
+        },
+        error: function() {
+            btn.prop('disabled', false).html('<i class="fa fa-search"></i> Actualizar');
+            alert('Error al buscar artículos');
+        }
+    });
+});
+
+// Enter en los campos de filtro lanza la búsqueda
+$('#ps-sku,#ps-name,#ps-model').on('keypress', function(e) {
+    if (e.which === 13) { $('#ps-search').trigger('click'); }
+});
+
+// Doble clic en fila de resultado
+$('#ps-tbody').on('dblclick', 'tr[data-idx]', function() {
+    var p = psProducts[parseInt($(this).attr('data-idx'), 10)];
+    if (!p) return;
+
+    bootstrap.Modal.getInstance(document.getElementById('ProductSearchModal')).hide();
+
+    $('#product_id').val(p.product_id);
+    $('#order-product').val(p.name);
+    $('#pm-product-name').text(p.name);
+    $('#pm-quantity').val(1);
+    $('#price_override').val(p.price);
+
+    // Fecha de hoy en formato DD-MM-YYYY (el que usa el datetimepicker del sistema)
+    var psToday = (function() {
+        var d = new Date();
+        return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
+    })();
+
+    // Construir HTML de opciones
+    var optHtml = '';
+    if (p.option && p.option.length > 0) {
+        $.each(p.option, function(i, o) {
+            optHtml += '<div class="form-group" id="option-' + o.product_option_id + '">';
+            optHtml += '<label class="control-label col-sm-4">';
+            if (o.required == 1) optHtml += '<b class="required">* </b>';
+            optHtml += psEsc(o.name) + ':</label>';
+            optHtml += '<div class="control-field col-sm-8">';
+            if (o.type === 'select') {
+                optHtml += '<select name="option[' + o.product_option_id + ']" class="form-control"><option value="">--- Seleccionar ---</option>';
+                $.each(o.option_value, function(j, ov) {
+                    optHtml += '<option value="' + ov.product_option_value_id + '">' + psEsc(ov.name);
+                    if (ov.price) optHtml += ' (' + ov.price_prefix + ov.price + ')';
+                    optHtml += '</option>';
+                });
+                optHtml += '</select>';
+            } else if (o.type === 'radio' || o.type === 'image') {
+                $.each(o.option_value, function(j, ov) {
+                    optHtml += '<div class="radio"><label><input type="radio" name="option[' + o.product_option_id + ']" value="' + ov.product_option_value_id + '"> ' + psEsc(ov.name);
+                    if (ov.price) optHtml += ' (' + ov.price_prefix + ov.price + ')';
+                    optHtml += '</label></div>';
+                });
+            } else if (o.type === 'checkbox') {
+                $.each(o.option_value, function(j, ov) {
+                    optHtml += '<div class="checkbox"><label><input type="checkbox" name="option[' + o.product_option_id + '][]" value="' + ov.product_option_value_id + '"> ' + psEsc(ov.name);
+                    if (ov.price) optHtml += ' (' + ov.price_prefix + ov.price + ')';
+                    optHtml += '</label></div>';
+                });
+            } else if (o.type === 'date' || o.type === 'datetime') {
+                optHtml += '<div class="input-group">';
+                optHtml += '<input type="text" name="option[' + o.product_option_id + ']" value="' + psToday + '" class="form-control date">';
+                optHtml += '<div class="input-group-append"><span class="input-group-text" style="cursor:pointer" onclick="$(this).closest(\'.input-group\').find(\'.date\').focus();">';
+                optHtml += '<i class="fa fa-calendar"></i></span></div></div>';
+            } else if (o.type === 'time') {
+                optHtml += '<div class="input-group">';
+                optHtml += '<input type="text" name="option[' + o.product_option_id + ']" class="form-control time">';
+                optHtml += '<div class="input-group-append"><span class="input-group-text" style="cursor:pointer" onclick="$(this).closest(\'.input-group\').find(\'.time\').focus();">';
+                optHtml += '<i class="fa fa-clock-o"></i></span></div></div>';
+            } else if (o.type === 'textarea') {
+                optHtml += '<textarea name="option[' + o.product_option_id + ']" class="form-control"></textarea>';
+            } else {
+                optHtml += '<input type="text" name="option[' + o.product_option_id + ']" class="form-control">';
+            }
+            optHtml += '</div></div>';
+        });
+    }
+    $('#option').html(optHtml);
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
 });
 </script>
 <?php echo $footer; ?>

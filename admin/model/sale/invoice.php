@@ -173,6 +173,8 @@ class ModelSaleInvoice extends Model {
 	
 		// Receipt
 		$this->createReceipt($invoice_id, $total);
+
+		return $invoice_id;
 	}
 
 	public function getInvoiceTotals($invoice_id) {

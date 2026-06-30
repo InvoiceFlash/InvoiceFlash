@@ -15,7 +15,17 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->load->model('purchase/invoice');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_purchase_invoice->addInvoice($this->request->post);
+			$new_invoice_id = $this->model_purchase_invoice->addInvoice($this->request->post);
+			$this->load->model('tool/user_logs');
+			$inv = $this->model_purchase_invoice->getInvoice((int)$new_invoice_id);
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'create',
+				'document_type' => 'purchase_invoice',
+				'document_id'   => (int)$new_invoice_id,
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
 			$this->session->data['success'] = $this->language->get('text_success');
 			$url = $this->buildFilterUrl();
 			$this->redirect($this->url->link('purchase/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL'));
@@ -36,6 +46,16 @@ class ControllerPurchaseInvoice extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_purchase_invoice->editInvoice($this->request->get['invoice_id'], $this->request->post);
+			$this->load->model('tool/user_logs');
+			$inv = $this->model_purchase_invoice->getInvoice((int)$this->request->get['invoice_id']);
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'edit',
+				'document_type' => 'purchase_invoice',
+				'document_id'   => (int)$this->request->get['invoice_id'],
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
 			$this->session->data['success'] = $this->language->get('text_success');
 			$url = $this->buildFilterUrl();
 			$this->redirect($this->url->link('purchase/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL'));

@@ -20,9 +20,21 @@ class ControllerSaleInvoice extends Controller {
 		$this->load->model('sale/invoice');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-		
-			$this->model_sale_invoice->addInvoice($this->request->post);
-			
+
+			$new_invoice_id = $this->model_sale_invoice->addInvoice($this->request->post);
+
+			$this->load->model('tool/user_logs');
+			$inv = $this->model_sale_invoice->getInvoice($new_invoice_id);
+			$doc_ref = $inv ? ($inv['invoice_prefix'] . str_pad($inv['invoice_no'], 5, '0', STR_PAD_LEFT)) : '';
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'create',
+				'document_type' => 'sale_invoice',
+				'document_id'   => (int)$new_invoice_id,
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
+
 			$this->session->data['success'] = $this->language->get('text_success');
 		  
 			$url = '';
@@ -85,8 +97,20 @@ class ControllerSaleInvoice extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 
 			$this->model_sale_invoice->editInvoice($this->request->get['invoice_id'], $this->request->post);
-	  		
-			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->load->model('tool/user_logs');
+			$inv = $this->model_sale_invoice->getInvoice((int)$this->request->get['invoice_id']);
+			$doc_ref = $inv ? ($inv['invoice_prefix'] . str_pad($inv['invoice_no'], 5, '0', STR_PAD_LEFT)) : '';
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'edit',
+				'document_type' => 'sale_invoice',
+				'document_id'   => (int)$this->request->get['invoice_id'],
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
+
+	  		$this->session->data['success'] = $this->language->get('text_success');
 	  
 			$url = '';
 

@@ -1591,5 +1591,95 @@ class ControllerCatalogProduct extends Controller {
 
 		$this->response->setOutput(json_encode($json));
 	}
+
+	public function searchProducts() {
+		ob_start();
+		$json = array();
+
+		$this->load->model('catalog/product');
+		$this->load->model('catalog/option');
+
+		$filter_name  = isset($this->request->get['filter_name'])  ? html_entity_decode($this->request->get['filter_name'],  ENT_QUOTES, 'UTF-8') : '';
+		$filter_sku   = isset($this->request->get['filter_sku'])   ? html_entity_decode($this->request->get['filter_sku'],   ENT_QUOTES, 'UTF-8') : '';
+		$filter_model = isset($this->request->get['filter_model']) ? html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8') : '';
+
+		$data = array(
+			'filter_name'   => $filter_name ? '%' . $filter_name : '',
+			'filter_model'  => $filter_model,
+			'filter_sku'    => $filter_sku,
+			'filter_status' => 1,
+			'start'         => 0,
+			'limit'         => 101,
+		);
+
+		$results = $this->model_catalog_product->getProducts($data);
+
+		if (count($results) > 100) {
+			ob_end_clean();
+			$this->response->addheader('Content-Type: application/json');
+			$this->response->setOutput(json_encode(array('warning' => 'Hay más de 100 artículos que cumplen la condición. Añada más filtros para acotar la búsqueda.')));
+			return;
+		}
+
+		foreach ($results as $result) {
+			$option_data = array();
+				$product_options = $this->model_catalog_product->getProductOptions($result['product_id']);
+
+				foreach ($product_options as $product_option) {
+					$option_info = $this->model_catalog_option->getOption($product_option['option_id']);
+
+					if ($option_info) {
+						if (in_array($option_info['type'], array('select', 'radio', 'checkbox', 'image'))) {
+							$option_value_data = array();
+							foreach ($product_option['product_option_value'] as $product_option_value) {
+								$option_value_info = $this->model_catalog_option->getOptionValue($product_option_value['option_value_id']);
+								if ($option_value_info) {
+									$option_value_data[] = array(
+										'product_option_value_id' => $product_option_value['product_option_value_id'],
+										'option_value_id'         => $product_option_value['option_value_id'],
+										'name'                    => $option_value_info['name'],
+										'price'                   => (float)$product_option_value['price'] ? $this->currency->format($product_option_value['price'], $this->config->get('config_currency')) : false,
+										'price_prefix'            => $product_option_value['price_prefix']
+									);
+								}
+							}
+							$option_data[] = array(
+								'product_option_id' => $product_option['product_option_id'],
+								'option_id'         => $product_option['option_id'],
+								'name'              => $option_info['name'],
+								'type'              => $option_info['type'],
+								'option_value'      => $option_value_data,
+								'required'          => $product_option['required']
+							);
+						} else {
+							$option_data[] = array(
+								'product_option_id' => $product_option['product_option_id'],
+								'option_id'         => $product_option['option_id'],
+								'name'              => $option_info['name'],
+								'type'              => $option_info['type'],
+								'option_value'      => $product_option['option_value'],
+								'required'          => $product_option['required']
+							);
+						}
+					}
+				}
+
+				$json[] = array(
+					'product_id'      => $result['product_id'],
+					'sku'             => $result['sku'],
+					'name'            => strip_tags(html_entity_decode($result['name'], ENT_QUOTES, 'UTF-8')),
+					'model'           => $result['model'],
+					'price'           => (float)$result['price'],
+					'price_formatted' => $this->currency->format($result['price'], $this->config->get('config_currency')),
+					'quantity'        => (int)$result['quantity'],
+					'tax_class_id'    => $result['tax_class_id'],
+					'option'          => $option_data,
+				);
+		}
+
+		ob_end_clean();
+		$this->response->addheader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
 }
 ?>

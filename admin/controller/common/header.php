@@ -668,6 +668,13 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
+
+			// User Logs
+			$tools[] = array(
+				'name'     => $this->language->get('text_user_logs'),
+				'href'     => $this->url->link('tool/user_logs', 'token=' . $this->session->data['token'], 'SSL'),
+				'children' => array()
+			);
 			
 			// Design
 			$design = array();

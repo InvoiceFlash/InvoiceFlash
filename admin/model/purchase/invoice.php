@@ -165,6 +165,8 @@ class ModelPurchaseInvoice extends Model {
 		}
 
 		$this->db->query("UPDATE `" . DB_PREFIX . "purchase_invoice` SET total = '" . (float)$total . "' WHERE invoice_id = '" . (int)$invoice_id . "'");
+
+		return $invoice_id;
 	}
 
 	public function editInvoice($invoice_id, $data) {

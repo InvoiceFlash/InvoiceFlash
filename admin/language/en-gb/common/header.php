@@ -107,6 +107,7 @@ $_['text_cron']						   = 'Scheduled tasks';
 $_['text_draft']                       = 'Drafts';
 $_['text_invoice']                     = 'Invoices';
 $_['text_invoice_design']              = 'Invoice Design';
+$_['text_user_logs']                   = 'User Logs';
 $_['text_quote']                       = 'Quotes';
 $_['text_delivery']                    = 'Delivery notes';
 $_['text_receipt']                     = 'Receipts';
