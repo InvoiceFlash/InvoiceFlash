@@ -61,6 +61,7 @@ $_['entry_account']                = '<a data-toggle="tooltip" title="Forces peo
 $_['entry_quote_prefix']           = '<a data-toggle="tooltip" title="Header used to build the Quote ID (e.g. QUO-2026). The sequential number is appended automatically."><i class="fas fa-question-circle"></i></a> Quote ID Prefix:';
 $_['entry_purchase_invoice_prefix'] = '<a data-toggle="tooltip" title="Prefijo para las facturas de compra (p.ej. FRA-2026-00)."><i class="fas fa-question-circle"></i></a> Purchase Invoice Prefix:';
 $_['entry_sales_invoice_prefix']    = '<a data-toggle="tooltip" title="Prefijo para las facturas de venta (p.ej. INV-2026-00)."><i class="fas fa-question-circle"></i></a> Sales Invoice Prefix:';
+$_['entry_sales_order_prefix']      = '<a data-toggle="tooltip" title="Prefijo para los pedidos de venta (p.ej. ORD-2026-00)."><i class="fas fa-question-circle"></i></a> Sales Order Prefix:';
 $_['entry_cart_weight']            = '<a data-toggle="tooltip" title="Show the cart weight on the cart page"><i class="fas fa-question-circle"></i></a> Display Weight on Cart Page:';
 $_['entry_guest_checkout']         = '<a data-toggle="tooltip" title="Allow customers to checkout without creating an account. This will not be available when a downloadable product is in the shopping cart."><i class="fas fa-question-circle"></i></a> Guest Checkout:';
 $_['entry_checkout']               = '<a data-toggle="tooltip" title="Forces people to agree to terms before an a customer can checkout."><i class="fas fa-question-circle"></i></a> Checkout Terms:';

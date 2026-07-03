@@ -2185,7 +2185,123 @@ class ControllerSaledelivery extends Controller {
 			$this->db->query("UPDATE " . DB_PREFIX . "delivery SET invoice_no = " . (int)$invoice_no . " WHERE delivery_id = " . (int)$delivery_id);
 
 			$this->redirect($this->url->link('sale/delivery/info', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$delivery_id, 'SSL'));
-		} 
+		}
+	}
+
+	public function searchOrders() {
+		ob_start();
+		$json = array();
+
+		if ($this->user->hasPermission('access', 'sale/delivery')) {
+			$this->load->model('sale/order');
+			$this->load->language('sale/delivery');
+
+			$data = array(
+				'filter_order_status_id' => null,
+				'sort'  => 'o.order_id',
+				'order' => 'DESC',
+				'start' => 0,
+				'limit' => 200,
+			);
+
+			if (!empty($this->request->post['filter_order_id'])) {
+				$data['filter_order_id'] = (int)$this->request->post['filter_order_id'];
+			}
+
+			if (!empty($this->request->post['filter_company'])) {
+				$data['filter_company'] = $this->request->post['filter_company'];
+			}
+
+			$results = $this->model_sale_order->getOrders($data);
+
+			foreach ($results as $result) {
+				$json[] = array(
+					'order_id'   => $result['order_id'],
+					'company'    => $result['company'],
+					'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+					'status'     => $result['status'],
+				);
+			}
+		}
+
+		ob_end_clean();
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getOrderData() {
+		ob_start();
+		$json = array();
+
+		if ($this->user->hasPermission('access', 'sale/delivery')) {
+			$this->load->model('sale/order');
+
+			$order_id = isset($this->request->post['order_id']) ? (int)$this->request->post['order_id'] : 0;
+
+			if ($order_id) {
+				$order_info = $this->model_sale_order->getOrder($order_id);
+
+				if ($order_info) {
+					$json['customer_id']       = $order_info['customer_id'];
+					$json['customer_group_id'] = $order_info['customer_group_id'];
+					$json['company']           = $order_info['company'] ? $order_info['company'] : $order_info['payment_company'];
+					$json['shipping_code']     = $order_info['shipping_code'];
+					$json['payment_code']      = $order_info['payment_code'];
+
+					$order_products = $this->model_sale_order->getOrderProducts($order_id);
+					$json['delivery_product'] = array();
+
+					foreach ($order_products as $product) {
+						$options     = $this->model_sale_order->getOrderOptions($order_id, $product['order_product_id']);
+						$option_data = array();
+
+						foreach ($options as $opt) {
+							$option_data[] = array(
+								'delivery_option_id'      => 0,
+								'product_option_id'       => $opt['product_option_id'],
+								'product_option_value_id' => $opt['product_option_value_id'],
+								'name'                    => $opt['name'],
+								'value'                   => $opt['value'],
+								'type'                    => $opt['type'],
+							);
+						}
+
+						$json['delivery_product'][] = array(
+							'product_id' => $product['product_id'],
+							'name'       => $product['name'],
+							'model'      => $product['model'],
+							'quantity'   => $product['quantity'],
+							'price'      => $this->currency->format($product['price']),
+							'total'      => $this->currency->format($product['total']),
+							'tax'        => isset($product['tax']) ? $product['tax'] : 0,
+							'option'     => $option_data,
+						);
+					}
+
+					$order_totals = $this->model_sale_order->getOrderTotals($order_id);
+					$json['delivery_total'] = array();
+
+					foreach ($order_totals as $total) {
+						$json['delivery_total'][] = array(
+							'code'       => $total['code'],
+							'title'      => $total['title'],
+							'text'       => $total['text'],
+							'value'      => $total['value'],
+							'sort_order' => $total['sort_order'],
+						);
+					}
+				} else {
+					$json['error'] = 'Pedido no encontrado';
+				}
+			} else {
+				$json['error'] = 'Sin order_id';
+			}
+		}
+
+		ob_end_clean();
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 	}
 }
 ?>

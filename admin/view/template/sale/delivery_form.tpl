@@ -7,7 +7,8 @@
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
-					<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal"><i class="fas fa-comment"></i><span></span></button>
+					<button class="btn btn-warning pull-right" type="button" style="margin-right:4px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs">Pedidos</span></button>
+				<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal" style="margin-right:4px;"><i class="fas fa-comment"></i><span></span></button>
 					<!-- Modal -->
 					<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModalLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
@@ -186,6 +187,50 @@
 					</table>
 				</div>
 			</div>
+			<!-- Modal Pedidos Pendientes -->
+			<div class="modal" tabindex="-1" role="dialog" id="OrderSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Pedidos pendientes</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm-3">
+									<label class="control-label">Nº Pedido</label>
+									<input type="text" id="os-order-id" class="form-control" placeholder="Nº pedido">
+								</div>
+								<div class="col-12 col-sm">
+									<label class="control-label">Cliente</label>
+									<input type="text" id="os-company" class="form-control" placeholder="Empresa">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="os-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="os-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>Nº</th>
+											<th>Cliente</th>
+											<th>Fecha</th>
+											<th class="text-right">Total</th>
+											<th>Estado</th>
+										</tr>
+									</thead>
+									<tbody id="os-results">
+										<tr><td colspan="5" class="text-center">Use los filtros para buscar pedidos</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Pedidos Pendientes -->
 			<!-- Modal Product -->
 			<div class="modal" tab-index="-1" role="dialog" id="ProductModal">
 				<div class="modal-dialog" role="document">
@@ -543,6 +588,134 @@ $('#addProduct').click(function(e){
 	} else {
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
 	}
+});
+</script>
+<script>
+function osDoSearch() {
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/delivery/searchOrders', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_order_id: $('#os-order-id').val(), filter_company: $('#os-company').val() },
+		dataType: 'json',
+		success: function(json) {
+			$('#os-warning').hide();
+			if (!json || !json.length) {
+				$('#os-results').html('<tr><td colspan="5" class="text-center">No se encontraron pedidos</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-order-id="' + json[i].order_id + '" style="cursor:pointer;">';
+				html += '<td>' + json[i].order_id + '</td>';
+				html += '<td>' + json[i].company + '</td>';
+				html += '<td>' + json[i].date_added + '</td>';
+				html += '<td class="text-right">' + json[i].total + '</td>';
+				html += '<td>' + (json[i].status || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#os-results').html(html);
+		}
+	});
+}
+
+$('#os-search').click(osDoSearch);
+
+$('#os-order-id, #os-company').on('keypress', function(e) {
+	if (e.which == 13) osDoSearch();
+});
+
+$(document).on('dblclick', '#os-results tr[data-order-id]', function() {
+	var orderId = $(this).data('order-id');
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/delivery/getOrderData', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { order_id: orderId },
+		dataType: 'json',
+		success: function(json) {
+			if (json.error) {
+				alert(json.error);
+				return;
+			}
+
+			// Cliente
+			$('#customer_id').val(json.customer_id);
+			$('input[name="customer_group_id"]').val(json.customer_group_id);
+			$('#order-customer').val(json.company);
+
+			// Envío y pago (dispara los handlers de common.js)
+			$('#shipping').val(json.shipping_code).trigger('change');
+			$('#payment').val(json.payment_code).trigger('change');
+
+			// Productos
+			var button_remove = $('#button_remove').val();
+			var product_row = 0;
+			var html = '';
+			if (json.delivery_product && json.delivery_product.length) {
+				for (var i = 0; i < json.delivery_product.length; i++) {
+					var p = json.delivery_product[i];
+					var option_row = 0;
+					html += '<tr id="product-row' + product_row + '">';
+					html += '<td class="text-center"><a class="label label-danger" title="' + button_remove + '" onclick="$(\'#product-row' + product_row + '\').remove();$(\'#button-delivery-product\').click();"><i class="fa fa-trash"></i></a></td>';
+					html += '<td>' + p.name + '<br>';
+					html += '<input type="hidden" name="delivery_product[' + product_row + '][delivery_product_id]" value="">';
+					html += '<input type="hidden" name="delivery_product[' + product_row + '][product_id]" value="' + p.product_id + '">';
+					html += '<input type="hidden" name="delivery_product[' + product_row + '][name]" value="' + p.name + '">';
+					if (p.option && p.option.length) {
+						for (var j = 0; j < p.option.length; j++) {
+							var opt = p.option[j];
+							html += '<div class="help">' + opt.name + ': ' + opt.value + '</div>';
+							html += '<input type="hidden" name="delivery_product[' + product_row + '][delivery_option][' + option_row + '][delivery_option_id]" value="' + opt.delivery_option_id + '">';
+							html += '<input type="hidden" name="delivery_product[' + product_row + '][delivery_option][' + option_row + '][product_option_id]" value="' + opt.product_option_id + '">';
+							html += '<input type="hidden" name="delivery_product[' + product_row + '][delivery_option][' + option_row + '][product_option_value_id]" value="' + opt.product_option_value_id + '">';
+							html += '<input type="hidden" name="delivery_product[' + product_row + '][delivery_option][' + option_row + '][name]" value="' + opt.name + '">';
+							html += '<input type="hidden" name="delivery_product[' + product_row + '][delivery_option][' + option_row + '][value]" value="' + opt.value + '">';
+							html += '<input type="hidden" name="delivery_product[' + product_row + '][delivery_option][' + option_row + '][type]" value="' + opt.type + '">';
+							option_row++;
+						}
+					}
+					html += '</td>';
+					html += '<td class="d-none d-sm-table-cell">' + p.model + '<input type="hidden" name="delivery_product[' + product_row + '][model]" value="' + p.model + '"></td>';
+					html += '<td class="text-right">' + p.quantity + '<input type="hidden" name="delivery_product[' + product_row + '][quantity]" value="' + p.quantity + '"></td>';
+					html += '<td class="text-right">' + p.price + '<input type="hidden" name="delivery_product[' + product_row + '][price]" value="' + p.price + '"></td>';
+					html += '<td class="text-right">' + p.total + '<input type="hidden" name="delivery_product[' + product_row + '][total]" value="' + p.total + '"><input type="hidden" name="delivery_product[' + product_row + '][tax]" value="' + p.tax + '"></td>';
+					html += '</tr>';
+					product_row++;
+				}
+			}
+			$('#product').html(html);
+
+			// Totales
+			var total_row = 0;
+			var thtml = '';
+			if (json.delivery_total && json.delivery_total.length) {
+				for (var i = 0; i < json.delivery_total.length; i++) {
+					var t = json.delivery_total[i];
+					thtml += '<tr id="total-row' + total_row + '">';
+					thtml += '<td class="d-none d-sm-table-cell"></td>';
+					thtml += '<td class="text-right" colspan="4">';
+					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][delivery_total_id]" value="">';
+					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][code]" value="' + t.code + '">';
+					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][title]" value="' + t.title + '">';
+					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][text]" value="' + t.text + '">';
+					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][value]" value="' + t.value + '">';
+					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][sort_order]" value="' + t.sort_order + '">';
+					thtml += t.title + ':</td>';
+					thtml += '<td class="text-right">' + t.text + '</td>';
+					thtml += '</tr>';
+					total_row++;
+				}
+			}
+			$('#total').html(thtml);
+
+			bootstrap.Modal.getInstance(document.getElementById('OrderSearchModal')).hide();
+		}
+	});
+});
+
+$('#OrderSearchModal').on('hidden.bs.modal', function() {
+	$('#os-order-id, #os-company').val('');
+	$('#os-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar pedidos</td></tr>');
+	$('#os-warning').hide();
 });
 </script>
 <?php echo $footer; ?>

@@ -109,6 +109,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_quote_prefix']           = $this->language->get('entry_quote_prefix');
 		$this->data['entry_purchase_invoice_prefix'] = $this->language->get('entry_purchase_invoice_prefix');
 		$this->data['entry_sales_invoice_prefix']    = $this->language->get('entry_sales_invoice_prefix');
+		$this->data['entry_sales_order_prefix']      = $this->language->get('entry_sales_order_prefix');
 		$this->data['entry_cart_weight'] = $this->language->get('entry_cart_weight');		
 		$this->data['entry_guest_checkout'] = $this->language->get('entry_guest_checkout');
 		$this->data['entry_checkout'] = $this->language->get('entry_checkout');		
@@ -664,6 +665,14 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_sales_invoice_prefix'] = $this->config->get('config_sales_invoice_prefix');
 		} else {
 			$this->data['config_sales_invoice_prefix'] = $this->config->get('config_invoice_prefix') ? $this->config->get('config_invoice_prefix') : 'INV-' . date('Y') . '-00';
+		}
+
+		if (isset($this->request->post['config_sales_order_prefix'])) {
+			$this->data['config_sales_order_prefix'] = $this->request->post['config_sales_order_prefix'];
+		} elseif ($this->config->get('config_sales_order_prefix')) {
+			$this->data['config_sales_order_prefix'] = $this->config->get('config_sales_order_prefix');
+		} else {
+			$this->data['config_sales_order_prefix'] = 'ORD-' . date('Y') . '-00';
 		}
 
 		$this->load->model('catalog/information');
