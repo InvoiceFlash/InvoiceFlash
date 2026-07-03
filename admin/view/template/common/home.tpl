@@ -26,26 +26,32 @@
 		<div class="panel panel-default" id="search">
 			<div class="panel-heading clearfix"><h5><i class="fa fa-search"></i> <?php echo $text_search; ?></h5></div>
 			<div class="panel-body">
-			<div class="row">
-				<div class="input-group col-sm-4">
-					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_customer; ?></span></span>
-					<input type="text" id="search-customer" class="form-control">
-					<div class="input-group-append">
-						<button class="btn btn-info" id="button-search-customer"><?php echo $button_search; ?></button>
+			<div class="row g-2">
+				<div class="col-12 col-sm-4">
+					<div class="input-group">
+						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_customer; ?></span></span>
+						<input type="text" id="search-customer" class="form-control">
+						<div class="input-group-append">
+							<button class="btn btn-info" id="button-search-customer"><?php echo $button_search; ?></button>
+						</div>
 					</div>
 				</div>
-				<div class="input-group col-sm-4">
-					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_supplier; ?></span></span>
-					<input type="text" id="search-supplier" class="form-control">
-					<div class="input-group-append">
-						<button class="btn btn-info" id="button-search-supplier"><?php echo $button_search; ?></button>
+				<div class="col-12 col-sm-4">
+					<div class="input-group">
+						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_supplier; ?></span></span>
+						<input type="text" id="search-supplier" class="form-control">
+						<div class="input-group-append">
+							<button class="btn btn-info" id="button-search-supplier"><?php echo $button_search; ?></button>
+						</div>
 					</div>
 				</div>
-				<div class="input-group col-sm-4">
-					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_product; ?></span></span>
-					<input type="text" id="search-product" class="form-control">
-					<div class="input-group-append">
-						<button class="btn btn-info" id="button-search-product"><?php echo $button_search; ?></button>
+				<div class="col-12 col-sm-4">
+					<div class="input-group">
+						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_product; ?></span></span>
+						<input type="text" id="search-product" class="form-control">
+						<div class="input-group-append">
+							<button class="btn btn-info" id="button-search-product"><?php echo $button_search; ?></button>
+						</div>
 					</div>
 				</div>
 			</div>

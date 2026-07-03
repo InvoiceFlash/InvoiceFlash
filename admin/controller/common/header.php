@@ -480,65 +480,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			// Reports - Customers
-			$r_customers = array();
-
-			if ($this->user->hasPermission('access', 'report/customer_online')) {
-				$r_customers[] = array(
-					'name' => $this->language->get('text_report_customer_online'),
-					'href' => $this->url->link('report/customer_online'),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'report/customer_referer')) {
-				$r_customers[] = array(
-					'name' => $this->language->get('text_report_customer_referer'),
-					'href' => $this->url->link('report/customer_referer'),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'report/customer_order')) {
-				$r_customers[] = array(
-					'name' => $this->language->get('text_report_customer_order'),
-					'href' => $this->url->link('report/customer_order'),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'report/customer_reward')) {
-				$r_customers[] = array(
-					'name' => $this->language->get('text_report_customer_reward'),
-					'href' => $this->url->link('report/customer_reward'),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'report/customer_credit')) {
-				$r_customers[] = array(
-					'name' => $this->language->get('text_report_customer_credit'),
-					'href' => $this->url->link('report/customer_credit'),
-					'children' => array()
-				);
-			}
-
-			if ($this->user->hasPermission('access', 'report/customer_support')) {
-				$r_customers[] = array(
-					'name' => $this->language->get('text_report_customer_support'),
-					'href' => $this->url->link('report/customer_support', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
-			if ($r_customers) {
-				$reports[] = array(
-					'name' => $this->language->get('text_customer'),
-					'href' => '',
-					'children' => $r_customers
-				);
-			}
-			
 			// Reports - Affiliates
 			$r_affiliates = array();
 
@@ -590,7 +531,7 @@ class ControllerCommonHeader extends Controller {
 
 			if ($r_suppliers) {
 				$reports[] = array(
-					'name' => $this->language->get('text_supplier'),
+					'name' => $this->language->get('text_purchases'),
 					'href' => '',
 					'children' => $r_suppliers
 				);
