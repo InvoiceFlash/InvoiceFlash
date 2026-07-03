@@ -21,13 +21,13 @@
 <noscript>
     <div class="alert alert-danger"><?php echo $error_javascript; ?></div>
 </noscript>
-<div class="row">
+<div class="row mb-3">
 	<div class="col-sm-12">
 		<div class="panel panel-default" id="search">
 			<div class="panel-heading clearfix"><h5><i class="fa fa-search"></i> <?php echo $text_search; ?></h5></div>
 			<div class="panel-body">
-			<div class="row g-2">
-				<div class="col-12 col-sm-4">
+			<div class="d-flex flex-column flex-sm-row gap-2">
+				<div class="flex-fill">
 					<div class="input-group">
 						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_customer; ?></span></span>
 						<input type="text" id="search-customer" class="form-control">
@@ -36,7 +36,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-12 col-sm-4">
+				<div class="flex-fill">
 					<div class="input-group">
 						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_supplier; ?></span></span>
 						<input type="text" id="search-supplier" class="form-control">
@@ -45,7 +45,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-12 col-sm-4">
+				<div class="flex-fill">
 					<div class="input-group">
 						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_product; ?></span></span>
 						<input type="text" id="search-product" class="form-control">
@@ -60,7 +60,7 @@
 	</div>
 </div>
 <?php if ($view['quick_action']) { ?>
-<div class="row">
+<div class="row mb-3">
 <div class="col-sm-12">
 <div class="panel panel-default" id="actions">
 	<div class="panel-heading clearfix"><h5><?php echo $text_actions; ?></h5></div>

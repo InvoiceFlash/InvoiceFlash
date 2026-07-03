@@ -9173,7 +9173,9 @@ a.btn.btn-danger {
   content: " "; }
 
 #search {
-  max-height: 9rem; }
+  max-height: none; }
+  #search .panel-body {
+    min-height: 0; }
   #search .input-group-text {
     background-color: transparent;
     border-right-width: 0; }

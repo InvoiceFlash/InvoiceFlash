@@ -33,10 +33,10 @@
 <div class="container-fluid">
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
 		<div class="navbar-header">
-			<a class="navbar-brand app-title" href="<?php echo $home; ?>">Invoice Flash</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
+			<a class="navbar-brand app-title" href="<?php echo $home; ?>">Invoice Flash</a>
 		</div>
 		<div class="collapse navbar-collapse" id="menu">
 			<div class="navbar-nav mr-auto mt-2 mt-lg-0">
