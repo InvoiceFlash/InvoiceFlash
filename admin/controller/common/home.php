@@ -243,25 +243,13 @@ class ControllerCommonHome extends Controller {
 		}
 
 		// Overview & Statistics
-		if ($this->user->hasPermission('access', 'sale/customer') && $this->user->hasPermission('access', 'sale/invoice')) {
-			$this->data['view']['over'] = true;
-		} else {
-			$this->data['view']['over'] = false;
-		}
-		
+		$this->data['view']['over'] = $this->user->hasPermission('access', 'common/home_statistics');
+
 		// Latest Quotes
-		if ($this->user->hasPermission('access', 'sale/quote')) {
-			$this->data['view']['last_quotes'] = true;
-		} else {
-			$this->data['view']['last_quotes'] = false;
-		}
+		$this->data['view']['last_quotes'] = $this->user->hasPermission('access', 'common/home_latest_quotes');
 
 		// Latest Invoices
-		if ($this->user->hasPermission('access', 'sale/invoice')) {
-			$this->data['view']['last_invoice'] = true;
-		} else {
-			$this->data['view']['last_invoice'] = false;
-		}
+		$this->data['view']['last_invoice'] = $this->user->hasPermission('access', 'common/home_latest_invoices');
 
 		$this->template = 'common/home.tpl';
 		$this->children = array(

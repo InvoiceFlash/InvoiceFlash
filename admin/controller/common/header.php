@@ -577,6 +577,25 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Reports - Suppliers
+			$r_suppliers = array();
+
+			if ($this->user->hasPermission('access', 'report/purchase_invoice')) {
+				$r_suppliers[] = array(
+					'name' => $this->language->get('text_purchase_invoice'),
+					'href' => $this->url->link('report/purchase_invoice', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($r_suppliers) {
+				$reports[] = array(
+					'name' => $this->language->get('text_supplier'),
+					'href' => '',
+					'children' => $r_suppliers
+				);
+			}
+
 			if ($reports) {
 				$this->data['menus'][] = array(
 					'id' => 'reports',

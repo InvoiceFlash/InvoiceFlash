@@ -359,6 +359,11 @@ class ControllerUserUserPermission extends Controller {
 			}
 		}
 
+		// Widget permisos del dashboard (no tienen fichero PHP propio)
+		$this->data['permissions'][] = 'common/home_statistics';
+		$this->data['permissions'][] = 'common/home_latest_quotes';
+		$this->data['permissions'][] = 'common/home_latest_invoices';
+
 		if (isset($this->request->post['permission']['access'])) {
 			$this->data['access'] = $this->request->post['permission']['access'];
 		} elseif (isset($user_group_info['permission']['access'])) {

@@ -24,7 +24,8 @@
 					<div class="panel panel-default panel-scrollable">
 						<div class="list-group list-group-hover">
 						<?php foreach ($permissions as $permission) { ?>
-							<label class="list-group-item">
+							<?php $is_dashboard = (strpos($permission, 'common/home_') === 0); ?>
+							<label class="list-group-item<?php echo $is_dashboard ? ' list-group-item-warning' : ''; ?>">
 								<?php if (in_array($permission, $access)) { ?>
 								<input type="checkbox" name="permission[access][]" value="<?php echo $permission; ?>" checked=""><?php echo $permission; ?>
 								<?php } else { ?>
@@ -47,7 +48,8 @@
 					<div class="panel panel-default panel-scrollable">
 						<div class="list-group list-group-hover">
 							<?php foreach ($permissions as $permission) { ?>
-							<label class="list-group-item">
+							<?php $is_dashboard = (strpos($permission, 'common/home_') === 0); ?>
+							<label class="list-group-item<?php echo $is_dashboard ? ' list-group-item-warning' : ''; ?>">
 								<?php if (in_array($permission, $modify)) { ?>
 								<input type="checkbox" name="permission[modify][]" value="<?php echo $permission; ?>" checked=""><?php echo $permission; ?>
 								<?php } else { ?>
