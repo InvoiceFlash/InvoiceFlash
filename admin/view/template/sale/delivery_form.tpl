@@ -7,7 +7,7 @@
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
-					<button class="btn btn-warning pull-right" type="button" style="margin-right:4px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs">Pedidos</span></button>
+					<button class="btn btn-warning pull-right" type="button" title="Pedidos Pendientes de procesar" style="margin-right:4px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs">Pedidos Pendientes</span></button>
 				<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal" style="margin-right:4px;"><i class="fas fa-comment"></i><span></span></button>
 					<!-- Modal -->
 					<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModalLabel" aria-hidden="true">
@@ -216,7 +216,7 @@
 										<tr>
 											<th>Nº</th>
 											<th>Cliente</th>
-											<th>Fecha</th>
+											<th>Fecha Pedido</th>
 											<th class="text-right">Total</th>
 											<th>Estado</th>
 										</tr>
