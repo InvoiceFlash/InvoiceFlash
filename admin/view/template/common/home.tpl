@@ -27,14 +27,21 @@
 			<div class="panel-heading clearfix"><h5><i class="fa fa-search"></i> <?php echo $text_search; ?></h5></div>
 			<div class="panel-body">
 			<div class="row">
-				<div class="input-group col-sm-6">
+				<div class="input-group col-sm-4">
 					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_customer; ?></span></span>
 					<input type="text" id="search-customer" class="form-control">
 					<div class="input-group-append">
 						<button class="btn btn-info" id="button-search-customer"><?php echo $button_search; ?></button>
 					</div>
 				</div>
-				<div class="input-group col-sm-6">
+				<div class="input-group col-sm-4">
+					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_supplier; ?></span></span>
+					<input type="text" id="search-supplier" class="form-control">
+					<div class="input-group-append">
+						<button class="btn btn-info" id="button-search-supplier"><?php echo $button_search; ?></button>
+					</div>
+				</div>
+				<div class="input-group col-sm-4">
 					<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_product; ?></span></span>
 					<input type="text" id="search-product" class="form-control">
 					<div class="input-group-append">
@@ -267,9 +274,13 @@ $("#button-search-customer").click(function() {
 	$(location)	.attr('href', url);
 });
 
-$('#button-search-product').click(function(){
-	var url = "index.php?route=catalog/product&token="+token+"&filter_name="+$('#search-product').val(); 
+$('#button-search-supplier').click(function(){
+	var url = 'index.php?route=purchase/supplier&token='+token+'&filter_company='+$('#search-supplier').val();
+	$(location).attr('href', url);
+});
 
+$('#button-search-product').click(function(){
+	var url = "index.php?route=catalog/product&token="+token+"&filter_name="+$('#search-product').val();
 	$(location).attr('href', url);
 });
 </script>

@@ -106,7 +106,7 @@ class ControllerExtensionModule extends Controller {
 				continue;
 			}
 
-			$active = (substr($basename, -8) !== '.disabled');
+			$active = (substr($basename, -9) !== '.disabled');
 
 			$xml = @simplexml_load_file($vqmod_file);
 			if (!$xml) continue;
@@ -126,7 +126,7 @@ class ControllerExtensionModule extends Controller {
 					'href' => str_replace('&amp;', '&', $this->url->link('extension/module/disableVqmod', 'token=' . $this->session->data['token'] . '&file=' . urlencode($basename), 'SSL'))
 				));
 			} else {
-				$label .= ' <span class="badge" style="background:#6c757d;color:#fff;padding:3px 7px;">VQMod inactivo</span>';
+				$label .= ' <span class="badge" style="background:#dc3545;color:#fff;padding:3px 7px;">VQMod inactivo</span>';
 				$action = array(array(
 					'text' => 'Activar',
 					'href' => str_replace('&amp;', '&', $this->url->link('extension/module/enableVqmod', 'token=' . $this->session->data['token'] . '&file=' . urlencode($basename), 'SSL'))
@@ -236,7 +236,7 @@ class ControllerExtensionModule extends Controller {
 		$file = basename(rawurldecode($this->request->get['file']));
 
 		// Solo ficheros .xml.disabled, sin path traversal
-		if (substr($file, -12) === '.xml.disabled' && strpos($file, '/') === false && strpos($file, '\\') === false) {
+		if (substr($file, -13) === '.xml.disabled' && strpos($file, '/') === false && strpos($file, '\\') === false) {
 			$vqmod_dir = dirname(DIR_APPLICATION) . '/vqmod/xml/';
 			$src = $vqmod_dir . $file;
 			$dst = $vqmod_dir . substr($file, 0, -9); // quita .disabled
