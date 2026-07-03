@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+    <id>home_search_buttons_green</id>
+    <version>1.0.0</version>
+    <vqmver required="true">2.6.0</vqmver>
+    <author>InvoiceFlash</author>
+
+    <file name="admin/view/template/common/home.tpl">
+        <operation error="skip" info="Botón búsqueda cliente: azul → verde">
+            <search position="replace"><![CDATA[<button class="btn btn-info" id="button-search-customer">]]></search>
+            <add><![CDATA[<button class="btn btn-success" id="button-search-customer">]]></add>
+        </operation>
+        <operation error="skip" info="Botón búsqueda producto: azul → verde">
+            <search position="replace"><![CDATA[<button class="btn btn-info" id="button-search-product">]]></search>
+            <add><![CDATA[<button class="btn btn-success" id="button-search-product">]]></add>
+        </operation>
+    </file>
+
+</modification>

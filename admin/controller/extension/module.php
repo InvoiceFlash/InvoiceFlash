@@ -91,6 +91,40 @@ class ControllerExtensionModule extends Controller {
 			}
 		}
 
+		// VQMod XML modules
+		$vqmod_ignore = array('vqmod_invoiceflash.xml');
+		$vqmod_files  = glob(dirname(DIR_APPLICATION) . '/vqmod/xml/*.xml');
+
+		if ($vqmod_files) {
+			foreach ($vqmod_files as $vqmod_file) {
+				if (in_array(basename($vqmod_file), $vqmod_ignore)) {
+					continue;
+				}
+
+				$xml = @simplexml_load_file($vqmod_file);
+
+				if (!$xml) {
+					continue;
+				}
+
+				$id      = isset($xml->id)      ? (string)$xml->id      : basename($vqmod_file, '.xml');
+				$version = isset($xml->version)  ? (string)$xml->version : '';
+				$author  = isset($xml->author)   ? (string)$xml->author  : '';
+
+				$label  = htmlspecialchars($id);
+				if ($version) $label .= ' <small class="text-muted">v' . htmlspecialchars($version) . '</small>';
+				if ($author)  $label .= ' <small class="text-muted">— ' . htmlspecialchars($author) . '</small>';
+				$label .= ' <span class="badge badge-success" style="background:#28a745;color:#fff;">VQMod</span>';
+
+				$this->data['extensions'][] = array(
+					'name'   => $label,
+					'action' => array(
+						array('text' => '&#10003; Activo', 'href' => '#')
+					)
+				);
+			}
+		}
+
 		$this->template = 'extension/module.tpl';
 		$this->children = array(
 			'common/header',
