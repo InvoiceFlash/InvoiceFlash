@@ -96,15 +96,16 @@ class ControllerReportSaleInvoice extends Controller {
 				'href' 				=> $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL'),
 				'icon'				=> '<i class="far fa-eye"></i>'
 			);
-			
+
 			$this->data['invoices'][] = array(
-				'invoice_id'          => $result['invoice_id'],		
+				'invoice_id'          => $result['invoice_id'],
 				'customer'          => $result['customer'],
 				'city'              => $result['city'],
 				'postcode'          => $result['postcode'],
 				'date_added'        => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'email'             => $result['email'],
 				'telephone'         => $result['telephone'],
+				'total'             => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
 				'status'            => $result['status'],
 				'action'			=> $action
 			);
@@ -139,6 +140,7 @@ class ControllerReportSaleInvoice extends Controller {
 		$this->data['entry_group'] = $this->language->get('entry_group');	
 
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['button_export'] = $this->language->get('button_export');
 		
 		$this->data['token'] = $this->session->data['token'];
 		
@@ -208,6 +210,53 @@ class ControllerReportSaleInvoice extends Controller {
 		);
 				
 		$this->response->setOutput($this->render());
+	}
+
+	public function export() {
+		$this->load->language('report/sale_invoice');
+
+		if (!$this->user->hasPermission('access', 'report/sale_invoice')) {
+			die('Permission denied');
+		}
+
+		$filter_date_start        = isset($this->request->get['filter_date_start'])        ? $this->request->get['filter_date_start']               : '';
+		$filter_date_end          = isset($this->request->get['filter_date_end'])          ? $this->request->get['filter_date_end']                 : '';
+		$filter_invoice_status_id = isset($this->request->get['filter_invoice_status_id']) ? (int)$this->request->get['filter_invoice_status_id']   : 0;
+
+		$this->load->model('report/saleslist');
+
+		$data = array(
+			'filter_date_start'        => $filter_date_start,
+			'filter_date_end'          => $filter_date_end,
+			'filter_invoice_status_id' => $filter_invoice_status_id,
+		);
+
+		$results = $this->model_report_saleslist->getInvoices($data);
+
+		$date_format = $this->language->get('date_format_short');
+
+		$csv  = "\xEF\xBB\xBF"; // UTF-8 BOM para Excel
+		$csv .= '"Nº Factura";"Cliente";"Ciudad";"Email";"Teléfono";"Fecha";"Total";"Estado"' . "\n";
+
+		foreach ($results as $result) {
+			$csv .= '"' . (int)$result['invoice_id'] . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['customer'])   . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['city'])       . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['email'])      . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['telephone'])  . '";';
+			$csv .= '"' . date($date_format, strtotime($result['date_added']))   . '";';
+			$csv .= '"' . number_format((float)$result['total'], 2, ',', '.')   . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['status'])     . '"' . "\n";
+		}
+
+		ob_start();
+		ob_end_clean();
+		header('Content-Type: text/csv; charset=UTF-8');
+		header('Content-Disposition: attachment; filename="facturas_' . date('Y-m-d') . '.csv"');
+		header('Pragma: no-cache');
+		header('Expires: 0');
+		echo $csv;
+		exit;
 	}
 }
 ?>

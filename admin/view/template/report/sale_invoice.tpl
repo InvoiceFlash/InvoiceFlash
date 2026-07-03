@@ -49,6 +49,7 @@
 				</div>
 				<div class="col-sm-2 text-right">
 					<button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i> <?php echo $button_filter; ?></button>
+					<button type="button" onclick="exportExcel();" class="btn btn-success ms-1"><i class="fa fa-file-excel"></i> <?php echo $button_export; ?></button>
 				</div>
 			</div>
 		</div>
