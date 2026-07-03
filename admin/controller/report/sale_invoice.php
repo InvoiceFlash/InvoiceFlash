@@ -98,16 +98,17 @@ class ControllerReportSaleInvoice extends Controller {
 			);
 
 			$this->data['invoices'][] = array(
-				'invoice_id'          => $result['invoice_id'],
-				'customer'          => $result['customer'],
-				'city'              => $result['city'],
-				'postcode'          => $result['postcode'],
-				'date_added'        => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'email'             => $result['email'],
-				'telephone'         => $result['telephone'],
-				'total'             => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
-				'status'            => $result['status'],
-				'action'			=> $action
+				'invoice_id'  => $result['invoice_id'],
+				'customer'    => $result['customer'],
+				'tax_id'      => $result['tax_id'],
+				'postcode'    => $result['postcode'],
+				'date_added'  => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+				'email'       => $result['email'],
+				'telephone'   => $result['telephone'],
+				'tax'         => $this->currency->format($result['tax'], $result['currency_code'], $result['currency_value']),
+				'total'       => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+				'status'      => $result['status'],
+				'action'      => $action
 			);
 		}
 		
@@ -125,6 +126,8 @@ class ControllerReportSaleInvoice extends Controller {
 		$this->data['column_email'] = $this->language->get('column_email');
 		$this->data['column_phone'] = $this->language->get('column_phone');
 		$this->data['column_customer_group'] = $this->language->get('column_customer_group');
+		$this->data['column_tax_id'] = $this->language->get('column_tax_id');
+		$this->data['column_tax']    = $this->language->get('column_tax');
 		$this->data['column_status'] = $this->language->get('column_status');
 		$this->data['column_invoices'] = $this->language->get('column_invoices');
 		$this->data['column_products'] = $this->language->get('column_products');
@@ -236,17 +239,18 @@ class ControllerReportSaleInvoice extends Controller {
 		$date_format = $this->language->get('date_format_short');
 
 		$csv  = "\xEF\xBB\xBF"; // UTF-8 BOM para Excel
-		$csv .= '"Nº Factura";"Cliente";"Ciudad";"Email";"Teléfono";"Fecha";"Total";"Estado"' . "\n";
+		$csv .= '"Nº Factura";"Cliente";"NIF/CIF";"Email";"Teléfono";"Fecha";"IVA";"Total";"Estado"' . "\n";
 
 		foreach ($results as $result) {
 			$csv .= '"' . (int)$result['invoice_id'] . '";';
-			$csv .= '"' . str_replace('"', '""', (string)$result['customer'])   . '";';
-			$csv .= '"' . str_replace('"', '""', (string)$result['city'])       . '";';
-			$csv .= '"' . str_replace('"', '""', (string)$result['email'])      . '";';
-			$csv .= '"' . str_replace('"', '""', (string)$result['telephone'])  . '";';
-			$csv .= '"' . date($date_format, strtotime($result['date_added']))   . '";';
-			$csv .= '"' . number_format((float)$result['total'], 2, ',', '.')   . '";';
-			$csv .= '"' . str_replace('"', '""', (string)$result['status'])     . '"' . "\n";
+			$csv .= '"' . str_replace('"', '""', (string)$result['customer'])        . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['tax_id'])          . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['email'])           . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['telephone'])       . '";';
+			$csv .= '"' . date($date_format, strtotime($result['date_added']))        . '";';
+			$csv .= '"' . number_format((float)$result['tax'], 2, ',', '.')          . '";';
+			$csv .= '"' . number_format((float)$result['total'], 2, ',', '.')        . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['status'])          . '"' . "\n";
 		}
 
 		ob_start();

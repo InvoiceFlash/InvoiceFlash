@@ -58,12 +58,13 @@
         <thead>
           <tr>
             <td class="left"><?php echo $column_invoiceid; ?></td>
-			<td class="left"><?php echo $column_date_added; ?></td>
+            <td class="left"><?php echo $column_date_added; ?></td>
             <td class="left"><?php echo $column_customer; ?></td>
-            <td class="left"><?php echo $column_city; ?></td>
+            <td class="left"><?php echo $column_tax_id; ?></td>
             <td class="left"><?php echo $column_email; ?></td>
             <td class="left"><?php echo $column_phone; ?></td>
             <td class="left"><?php echo $column_status; ?></td>
+            <td class="right"><?php echo $column_tax; ?></td>
             <td class="right"><?php echo $column_total; ?></td>
             <td class="right"><?php echo $column_action; ?></td>
           </tr>
@@ -75,10 +76,11 @@
             <td class="text-left"><?php echo $invoice['invoice_id']; ?></td>
 						<td class="text-left"><?php echo $invoice['date_added']; ?></td>
             <td class="text-left"><?php echo $invoice['customer']; ?></td>
-            <td class="text-left"><?php echo $invoice['city']; ?></td>
+            <td class="text-left"><?php echo $invoice['tax_id']; ?></td>
             <td class="text-left"><?php echo $invoice['email']; ?></td>
             <td class="text-left"><?php echo $invoice['telephone']; ?></td>
             <td class="text-left"><?php echo $invoice['status']; ?></td>
+            <td class="text-right"><?php echo $invoice['tax']; ?></td>
             <td class="text-right"><?php echo $invoice['total']; ?></td>
             <td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
 							<a href="<?php echo $action['href']; ?>" class="btn btn-info"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
@@ -87,7 +89,7 @@
           <?php } ?>
           <?php } else { ?>
           <tr>
-            <td class="text-center" colspan="9"><?php echo $text_no_results; ?></td>
+            <td class="text-center" colspan="10"><?php echo $text_no_results; ?></td>
           </tr>
           <?php } ?>
         </tbody>

@@ -125,11 +125,13 @@ class ModelReportSaleslist extends Model {
 	
 	public function getInvoices($data = array()) {
 
-		$sql = "SELECT o.invoice_id, o.email, o.telephone, o.payment_city AS city,
+		$sql = "SELECT o.invoice_id, o.email, o.telephone,
+		o.payment_tax_id AS tax_id,
 		COALESCE(NULLIF(c.company,''), NULLIF(o.payment_company,''), o.shipping_company) AS customer,
 		o.date_added AS date_added, o.shipping_postcode AS postcode,
 		o.total, o.currency_code, o.currency_value,
-		(SELECT os.name FROM " . DB_PREFIX . "invoice_status os WHERE os.invoice_status_id = o.invoice_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS status
+		(SELECT SUM(it.value) FROM `" . DB_PREFIX . "invoice_total` it WHERE it.invoice_id = o.invoice_id AND it.code = 'tax') AS tax,
+		(SELECT os.name FROM `" . DB_PREFIX . "invoice_status` os WHERE os.invoice_status_id = o.invoice_status_id AND os.language_id = '" . (int)$this->config->get('config_language_id') . "') AS status
 		FROM `" . DB_PREFIX . "invoice` o
 		LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id
 		";
