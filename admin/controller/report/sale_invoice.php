@@ -207,6 +207,7 @@ class ControllerReportSaleInvoice extends Controller {
 
 		$filter_date_start        = isset($this->request->get['filter_date_start'])        ? $this->request->get['filter_date_start']               : '';
 		$filter_date_end          = isset($this->request->get['filter_date_end'])          ? $this->request->get['filter_date_end']                 : '';
+		$filter_customer_id       = isset($this->request->get['filter_customer_id'])       ? $this->request->get['filter_customer_id']              : '';
 		$filter_invoice_status_id = isset($this->request->get['filter_invoice_status_id']) ? (int)$this->request->get['filter_invoice_status_id']   : 0;
 
 		$this->load->model('report/saleslist');
@@ -214,6 +215,7 @@ class ControllerReportSaleInvoice extends Controller {
 		$data = array(
 			'filter_date_start'        => $filter_date_start,
 			'filter_date_end'          => $filter_date_end,
+			'filter_customer_id'       => $filter_customer_id,
 			'filter_invoice_status_id' => $filter_invoice_status_id,
 		);
 
