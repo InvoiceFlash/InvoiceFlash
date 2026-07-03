@@ -61,10 +61,6 @@ class ControllerStep2 extends Controller {
 			$this->error['warning'] = 'Warning: CURL extension needs to be loaded for invoiceflash to work!';
 		}
 
-		if (!function_exists('mcrypt_encrypt')) {
-			$this->error['warning'] = 'Warning: mCrypt extension needs to be loaded for invoiceflash to work!';
-		}
-		
 		if (!function_exists('openssl_encrypt')) {
 			$this->error['warning'] = 'Warning: openssl extension needs to be loaded for invoiceflash to work!';
 		}
