@@ -3,11 +3,8 @@
 $_['heading_title']         = 'Listado de Facturas de Proveedores';
 
 // Text
-$_['text_year']             = 'Años';
-$_['text_month']            = 'Meses';
-$_['text_week']             = 'Semanas';
-$_['text_day']              = 'Días';
 $_['text_all_status']       = 'Todos los Estados';
+$_['text_all_suppliers']    = 'Todos los Proveedores';
 
 // Column
 $_['column_invoiceid']      = 'Nº Factura';
@@ -25,7 +22,7 @@ $_['column_action']         = 'Acción';
 $_['entry_date_start']      = 'Fecha Inicio:';
 $_['entry_date_end']        = 'Fecha Fin:';
 $_['entry_status']          = 'Estado Factura:';
-$_['entry_group']           = 'Agrupar:';
+$_['entry_supplier']        = 'Proveedor:';
 
 // Button
 $_['button_export']         = 'Exportar Excel';

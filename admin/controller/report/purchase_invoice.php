@@ -17,12 +17,11 @@ class ControllerReportPurchaseInvoice extends Controller {
 			$filter_date_end = '';
 		}
 
-		if (isset($this->request->get['filter_group'])) {
-			$filter_group = $this->request->get['filter_group'];
+		if (isset($this->request->get['filter_supplier_id'])) {
+			$filter_supplier_id = (int)$this->request->get['filter_supplier_id'];
 		} else {
-			$filter_group = '';
+			$filter_supplier_id = 0;
 		}
-
 
 		if (isset($this->request->get['filter_invoice_status_id'])) {
 			$filter_invoice_status_id = $this->request->get['filter_invoice_status_id'];
@@ -46,8 +45,8 @@ class ControllerReportPurchaseInvoice extends Controller {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
 
-		if (isset($this->request->get['filter_group'])) {
-			$url .= '&filter_group=' . $this->request->get['filter_group'];
+		if (isset($this->request->get['filter_supplier_id'])) {
+			$url .= '&filter_supplier_id=' . (int)$this->request->get['filter_supplier_id'];
 		}
 
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -77,12 +76,12 @@ class ControllerReportPurchaseInvoice extends Controller {
 		$this->data['invoices'] = array();
 
 		$data = array(
-			'filter_date_start'	     => $filter_date_start,
-			'filter_date_end'	     => $filter_date_end,
-			'filter_group'	     	 => $filter_group,
+			'filter_date_start'        => $filter_date_start,
+			'filter_date_end'          => $filter_date_end,
+			'filter_supplier_id'       => $filter_supplier_id,
 			'filter_invoice_status_id' => $filter_invoice_status_id,
-			'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
-			'limit'                  => $this->config->get('config_admin_limit')
+			'start'                    => ($page - 1) * $this->config->get('config_admin_limit'),
+			'limit'                    => $this->config->get('config_admin_limit')
 		);
 
 		$invoice_total = $this->model_report_purchaselist->getTotalInvoices($data);
@@ -127,10 +126,11 @@ class ControllerReportPurchaseInvoice extends Controller {
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_action'] = $this->language->get('column_action');
 
-		$this->data['entry_date_start'] = $this->language->get('entry_date_start');
-		$this->data['entry_date_end'] = $this->language->get('entry_date_end');
-		$this->data['entry_status'] = $this->language->get('entry_status');
-		$this->data['entry_group'] = $this->language->get('entry_group');
+		$this->data['entry_date_start']  = $this->language->get('entry_date_start');
+		$this->data['entry_date_end']    = $this->language->get('entry_date_end');
+		$this->data['entry_status']      = $this->language->get('entry_status');
+		$this->data['entry_supplier']    = $this->language->get('entry_supplier');
+		$this->data['text_all_suppliers'] = $this->language->get('text_all_suppliers');
 
 		$this->data['button_filter'] = $this->language->get('button_filter');
 		$this->data['button_export'] = $this->language->get('button_export');
@@ -141,27 +141,8 @@ class ControllerReportPurchaseInvoice extends Controller {
 
 		$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
 
-		$this->data['groups'] = array();
-
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_year'),
-			'value' => 'year',
-		);
-
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_month'),
-			'value' => 'month',
-		);
-
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_week'),
-			'value' => 'week',
-		);
-
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_day'),
-			'value' => 'day',
-		);
+		$this->load->model('purchase/supplier');
+		$this->data['suppliers'] = $this->model_purchase_supplier->getSuppliers(array());
 
 		$url = '';
 
@@ -173,8 +154,8 @@ class ControllerReportPurchaseInvoice extends Controller {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
 
-		if (isset($this->request->get['filter_group'])) {
-			$url .= '&filter_group=' . $this->request->get['filter_group'];
+		if (isset($this->request->get['filter_supplier_id'])) {
+			$url .= '&filter_supplier_id=' . (int)$this->request->get['filter_supplier_id'];
 		}
 
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -190,9 +171,9 @@ class ControllerReportPurchaseInvoice extends Controller {
 
 		$this->data['pagination'] = $pagination->render();
 
-		$this->data['filter_date_start'] = $filter_date_start;
-		$this->data['filter_date_end'] = $filter_date_end;
-		$this->data['filter_group'] = $filter_group;
+		$this->data['filter_date_start']        = $filter_date_start;
+		$this->data['filter_date_end']          = $filter_date_end;
+		$this->data['filter_supplier_id']       = $filter_supplier_id;
 		$this->data['filter_invoice_status_id'] = $filter_invoice_status_id;
 
 		$this->template = 'report/purchase_invoice.tpl';
@@ -212,15 +193,17 @@ class ControllerReportPurchaseInvoice extends Controller {
 			die('Permission denied');
 		}
 
-		$filter_date_start        = isset($this->request->get['filter_date_start'])        ? $this->request->get['filter_date_start']               : '';
-		$filter_date_end          = isset($this->request->get['filter_date_end'])          ? $this->request->get['filter_date_end']                 : '';
-		$filter_invoice_status_id = isset($this->request->get['filter_invoice_status_id']) ? (int)$this->request->get['filter_invoice_status_id']   : 0;
+		$filter_date_start        = isset($this->request->get['filter_date_start'])        ? $this->request->get['filter_date_start']             : '';
+		$filter_date_end          = isset($this->request->get['filter_date_end'])          ? $this->request->get['filter_date_end']               : '';
+		$filter_supplier_id       = isset($this->request->get['filter_supplier_id'])       ? (int)$this->request->get['filter_supplier_id']       : 0;
+		$filter_invoice_status_id = isset($this->request->get['filter_invoice_status_id']) ? (int)$this->request->get['filter_invoice_status_id'] : 0;
 
 		$this->load->model('report/purchaselist');
 
 		$data = array(
 			'filter_date_start'        => $filter_date_start,
 			'filter_date_end'          => $filter_date_end,
+			'filter_supplier_id'       => $filter_supplier_id,
 			'filter_invoice_status_id' => $filter_invoice_status_id,
 		);
 

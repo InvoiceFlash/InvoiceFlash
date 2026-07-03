@@ -145,6 +145,9 @@ class ModelReportSaleslist extends Model {
 		} else {
 			$sql .= " where o.invoice_status_id > '0'";
 		}
+		if (!empty($data['filter_customer_id'])) {
+			$sql .= " AND o.customer_id = '" . (int)$data['filter_customer_id'] . "'";
+		}
 		if (!empty($data['filter_date_start'])) {
 			$sql .= " AND DATE(o.date_added) >= '" . $this->db->escape($data['filter_date_start']) . "'";
 		}
@@ -152,7 +155,7 @@ class ModelReportSaleslist extends Model {
 		if (!empty($data['filter_date_end'])) {
 			$sql .= " AND DATE(o.date_added) <= '" . $this->db->escape($data['filter_date_end']) . "'";
 		}
-						
+
 		$sql .= " ORDER BY o.invoice_id DESC";
 		
 		if (isset($data['start']) || isset($data['limit'])) {
@@ -181,6 +184,9 @@ class ModelReportSaleslist extends Model {
 		} else {
 			$sql .= " where o.invoice_status_id > '0'";
 		}
+		if (!empty($data['filter_customer_id'])) {
+			$sql .= " AND o.customer_id = '" . (int)$data['filter_customer_id'] . "'";
+		}
 		if (!empty($data['filter_date_start'])) {
 			$sql .= " AND DATE(o.date_added) >= '" . $this->db->escape($data['filter_date_start']) . "'";
 		}
@@ -188,10 +194,10 @@ class ModelReportSaleslist extends Model {
 		if (!empty($data['filter_date_end'])) {
 			$sql .= " AND DATE(o.date_added) <= '" . $this->db->escape($data['filter_date_end']) . "'";
 		}
-						
-		
+
+
 		$query = $this->db->query($sql);
-	
+
 		return $query->row['total'];
 	}
 }

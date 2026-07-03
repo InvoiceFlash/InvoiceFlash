@@ -25,12 +25,13 @@
 					</div>
 				</div>
 				<div class="col-sm-2">
-					<select name="filter_group" title="<?php echo $entry_group; ?>" class="form-control">
-						<?php foreach ($groups as $groups) { ?>
-						<?php if ($groups['value'] == $filter_group) { ?>
-						<option value="<?php echo $groups['value']; ?>" selected=""><?php echo $groups['text']; ?></option>
+					<select name="filter_supplier_id" title="<?php echo $entry_supplier; ?>" class="form-control">
+						<option value="0"><?php echo $text_all_suppliers; ?></option>
+						<?php foreach ($suppliers as $supplier) { ?>
+						<?php if ($supplier['supplier_id'] == $filter_supplier_id) { ?>
+						<option value="<?php echo $supplier['supplier_id']; ?>" selected=""><?php echo $supplier['company']; ?></option>
 						<?php } else { ?>
-						<option value="<?php echo $groups['value']; ?>"><?php echo $groups['text']; ?></option>
+						<option value="<?php echo $supplier['supplier_id']; ?>"><?php echo $supplier['company']; ?></option>
 						<?php } ?>
 						<?php } ?>
 					</select>
@@ -105,6 +106,8 @@ function buildFilterParams() {
 	if (filter_date_start) params += '&filter_date_start=' + encodeURIComponent(filter_date_start);
 	var filter_date_end = $('input[name="filter_date_end"]').val();
 	if (filter_date_end) params += '&filter_date_end=' + encodeURIComponent(filter_date_end);
+	var filter_supplier_id = $('select[name="filter_supplier_id"]').val();
+	if (filter_supplier_id && filter_supplier_id != '0') params += '&filter_supplier_id=' + encodeURIComponent(filter_supplier_id);
 	var filter_invoice_status_id = $('select[name="filter_invoice_status_id"]').val();
 	if (filter_invoice_status_id) params += '&filter_invoice_status_id=' + encodeURIComponent(filter_invoice_status_id);
 	return params;

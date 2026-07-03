@@ -17,13 +17,13 @@ class ControllerReportSaleInvoice extends Controller {
 			$filter_date_end = '';
 		}
 
-		if (isset($this->request->get['filter_group'])) {
-			$filter_group = $this->request->get['filter_group'];
+		if (isset($this->request->get['filter_customer_id'])) {
+			$filter_customer_id = $this->request->get['filter_customer_id'];
 		} else {
-			$filter_group = '';
+			$filter_customer_id = '';
 		}
-		
-		
+
+
 		if (isset($this->request->get['filter_invoice_status_id'])) {
 			$filter_invoice_status_id = $this->request->get['filter_invoice_status_id'];
 		} else {
@@ -46,8 +46,8 @@ class ControllerReportSaleInvoice extends Controller {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
 		
-		if (isset($this->request->get['filter_group'])) {
-			$url .= '&filter_group=' . $this->request->get['filter_group'];
+		if (isset($this->request->get['filter_customer_id'])) {
+			$url .= '&filter_customer_id=' . $this->request->get['filter_customer_id'];
 		}
 
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -77,9 +77,9 @@ class ControllerReportSaleInvoice extends Controller {
 		$this->data['invoices'] = array();
 		
 		$data = array(
-			'filter_date_start'	     => $filter_date_start, 
-			'filter_date_end'	     => $filter_date_end, 
-			'filter_group'	     	 => $filter_group, 
+			'filter_date_start'	     => $filter_date_start,
+			'filter_date_end'	     => $filter_date_end,
+			'filter_customer_id'	 => $filter_customer_id,
 			'filter_invoice_status_id' => $filter_invoice_status_id,
 			'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
 			'limit'                  => $this->config->get('config_admin_limit')
@@ -183,8 +183,8 @@ class ControllerReportSaleInvoice extends Controller {
 			$url .= '&filter_date_end=' . $this->request->get['filter_date_end'];
 		}
 		
-		if (isset($this->request->get['filter_group'])) {
-			$url .= '&filter_group=' . $this->request->get['filter_group'];
+		if (isset($this->request->get['filter_customer_id'])) {
+			$url .= '&filter_customer_id=' . $this->request->get['filter_customer_id'];
 		}
 
 		if (isset($this->request->get['filter_invoice_status_id'])) {

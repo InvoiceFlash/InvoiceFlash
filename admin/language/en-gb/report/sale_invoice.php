@@ -3,11 +3,8 @@
 $_['heading_title']         = 'Invoice List';
 
 // Text
-$_['text_year']             = 'Years';
-$_['text_month']            = 'Months';
-$_['text_week']             = 'Weeks';
-$_['text_day']              = 'Days';
 $_['text_all_status']       = 'All Statuses';
+$_['text_all_customers']    = 'All Customers';
 
 // Column
 $_['column_invoiceid']      = 'Invoice ID';
@@ -35,7 +32,7 @@ $_['column_action']         = 'Action';
 $_['entry_date_start']      = 'Date Start:';
 $_['entry_date_end']        = 'Date End:';
 $_['entry_status']          = 'Invoice Status:';
-$_['entry_group']           = 'Group:';
+$_['entry_customer']        = 'Customer:';
 
 // Button
 $_['button_export']         = 'Exportar Excel';

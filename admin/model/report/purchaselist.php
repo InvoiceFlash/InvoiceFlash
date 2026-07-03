@@ -14,14 +14,16 @@ class ModelReportPurchaselist extends Model {
 		";
 
 		if (!is_null($data['filter_invoice_status_id']) && $data['filter_invoice_status_id'] <> 0) {
-			$sql .= " where o.invoice_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
+			$sql .= " WHERE o.invoice_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
 		} else {
-			$sql .= " where o.invoice_status_id > '0'";
+			$sql .= " WHERE o.invoice_status_id > '0'";
+		}
+		if (!empty($data['filter_supplier_id'])) {
+			$sql .= " AND o.supplier_id = '" . (int)$data['filter_supplier_id'] . "'";
 		}
 		if (!empty($data['filter_date_start'])) {
 			$sql .= " AND DATE(o.date_added) >= '" . $this->db->escape($data['filter_date_start']) . "'";
 		}
-
 		if (!empty($data['filter_date_end'])) {
 			$sql .= " AND DATE(o.date_added) <= '" . $this->db->escape($data['filter_date_end']) . "'";
 		}
@@ -47,17 +49,19 @@ class ModelReportPurchaselist extends Model {
 
 	public function getTotalInvoices($data = array()) {
 
-		$sql = "select count(invoice_id) as total from `" . DB_PREFIX . "purchase_invoice` o  ";
+		$sql = "SELECT COUNT(o.invoice_id) AS total FROM `" . DB_PREFIX . "purchase_invoice` o";
 
 		if (!is_null($data['filter_invoice_status_id']) && $data['filter_invoice_status_id'] <> 0) {
-			$sql .= " where o.invoice_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
+			$sql .= " WHERE o.invoice_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
 		} else {
-			$sql .= " where o.invoice_status_id > '0'";
+			$sql .= " WHERE o.invoice_status_id > '0'";
+		}
+		if (!empty($data['filter_supplier_id'])) {
+			$sql .= " AND o.supplier_id = '" . (int)$data['filter_supplier_id'] . "'";
 		}
 		if (!empty($data['filter_date_start'])) {
 			$sql .= " AND DATE(o.date_added) >= '" . $this->db->escape($data['filter_date_start']) . "'";
 		}
-
 		if (!empty($data['filter_date_end'])) {
 			$sql .= " AND DATE(o.date_added) <= '" . $this->db->escape($data['filter_date_end']) . "'";
 		}
