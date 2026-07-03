@@ -71,6 +71,14 @@
 										<input type="file" id="input-doc" style="display:none">
 									</label>
 								</div>
+								<div class="input-group-append" style="margin-left:4px;">
+									<a id="btn-view-doc" href="<?php echo str_replace('&amp;', '&', $view_doc_url); ?>" target="_blank"
+									   class="btn btn-<?php echo $doc_exists ? 'info' : 'default'; ?> mb-0"
+									   title="Ver factura del proveedor"
+									   <?php if (!$doc_exists) { ?>style="pointer-events:none;opacity:.5;"<?php } ?>>
+										<i class="fa fa-eye"></i>
+									</a>
+								</div>
 								<?php } ?>
 							</div>
 						</div>
@@ -524,6 +532,7 @@ $('#input-doc').on('change', function() {
 		success: function(json) {
 			if (json && json.success) {
 				$('#btn-upload-doc').removeClass('btn-default btn-danger').addClass('btn-success');
+				$('#btn-view-doc').removeClass('btn-default').addClass('btn-info').css({pointerEvents: '', opacity: ''});
 			} else {
 				alert(json && json.error ? json.error : 'Upload error');
 				$('#btn-upload-doc').removeClass('btn-default btn-success').addClass('btn-danger');

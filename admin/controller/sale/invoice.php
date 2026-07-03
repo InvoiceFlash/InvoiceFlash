@@ -2412,15 +2412,18 @@ class ControllerSaleInvoice extends Controller {
 					}
 
 					if (!isset($json['error']['product']['option'])) {
+						$use_price = (isset($this->request->post['price_override']) && $this->request->post['price_override'] !== '')
+							? (float)$this->request->post['price_override']
+							: (float)$product_info['price'];
 						$this->session->data['cart'][] = array(
 							'product_id' 	=> $this->request->post['product_id'],
 							'name'		 	=> $product_info['name'],
 							'model'		 	=> $product_info['model'],
 							'quantity' 	 	=> $quantity,
 							'option' 	 	=> $option,
-							'price'		 	=> $product_info['price'],
+							'price'		 	=> $use_price,
 							'tax_class_id'	=> $product_info['tax_class_id'],
-							'total'		 	=> ($product_info['price']*$quantity),
+							'total'		 	=> ($use_price * $quantity),
 							'shipping'	 	=> $product_info['shipping']
 						);
 

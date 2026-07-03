@@ -195,29 +195,28 @@
 			</div>
 			<!-- Modal búsqueda de artículos -->
 			<div class="modal fade" tabindex="-1" role="dialog" id="ProductSearchModal">
-				<div class="modal-dialog modal-lg" style="max-width:72%;" role="document">
+				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><i class="fa fa-search"></i> Búsqueda de artículos</h5>
 							<button type="button" class="close" data-bs-dismiss="modal"><span>&times;</span></button>
 						</div>
 						<div class="modal-body">
-							<div class="form-inline mb-3" style="gap:8px;flex-wrap:nowrap;align-items:flex-end;">
-								<div style="flex:0 0 140px;">
+							<div class="row mb-3">
+								<div class="col-12 col-sm-3 mb-2">
 									<label class="d-block mb-1">Código / SKU</label>
-									<input type="text" id="ps-sku" class="form-control" placeholder="Código..." style="width:100%;">
+									<input type="text" id="ps-sku" class="form-control" placeholder="Código...">
 								</div>
-								<div style="flex:1 1 auto;">
+								<div class="col-12 col-sm mb-2">
 									<label class="d-block mb-1">Descripción</label>
-									<input type="text" id="ps-name" class="form-control w-100" placeholder="Descripción...">
+									<input type="text" id="ps-name" class="form-control" placeholder="Descripción...">
 								</div>
-								<div style="flex:0 0 160px;">
+								<div class="col-12 col-sm-3 mb-2">
 									<label class="d-block mb-1">Modelo</label>
-									<input type="text" id="ps-model" class="form-control" placeholder="Modelo..." style="width:100%;">
+									<input type="text" id="ps-model" class="form-control" placeholder="Modelo...">
 								</div>
-								<div style="flex:0 0 auto;">
-									<label class="d-block mb-1">&nbsp;</label>
-									<button class="btn btn-primary" id="ps-search" type="button">
+								<div class="col-12 col-sm-auto mb-2 d-flex align-items-end">
+									<button class="btn btn-primary w-100" id="ps-search" type="button">
 										<i class="fa fa-search"></i> Actualizar
 									</button>
 								</div>

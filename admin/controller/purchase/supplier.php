@@ -309,6 +309,13 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['tab_notes'] = $this->language->get('tab_notes');
 		$this->data['tab_contacts'] = $this->language->get('tab_contacts');
 		$this->data['tab_contracts'] = $this->language->get('tab_contracts');
+		$this->data['tab_products'] = $this->language->get('tab_products');
+
+		$this->data['column_product_id'] = $this->language->get('column_product_id');
+		$this->data['column_product_name'] = $this->language->get('column_product_name');
+		$this->data['column_invoice'] = $this->language->get('column_invoice');
+		$this->data['column_invoice_date'] = $this->language->get('column_invoice_date');
+		$this->data['column_total'] = $this->language->get('column_total');
 
 		$this->data['column_contact_name'] = $this->language->get('column_contact_name');
 		$this->data['column_contact_email'] = $this->language->get('column_contact_email');
@@ -472,6 +479,24 @@ class ControllerPurchaseSupplier extends Controller {
 		}
 
 		$this->data['add_contract'] = $this->url->link('purchase/supplier/insertContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
+
+		$this->data['products'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getProductsSupplier($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$this->data['products'][] = array(
+					'product_id' => $result['product_id'],
+					'name'       => $result['name'],
+					'invoice_id' => $result['invoice_id'],
+					'date'       => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'quantity'   => $result['quantity'],
+					'total'      => $this->currency->format($result['total'], $this->config->get('config_currency')),
+					'href'       => str_replace('&amp;', '&', $this->url->link('purchase/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL')),
+				);
+			}
+		}
 
 		$this->template = 'purchase/supplier_form.tpl';
 

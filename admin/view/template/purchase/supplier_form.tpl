@@ -14,6 +14,7 @@
 			<?php if ($supplier_id) { ?>
 			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
 			<?php } ?>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" id="form">
@@ -241,6 +242,36 @@
 								<td class="text-right" colspan="4"><a href="<?php echo $add_contract; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contract; ?></a></td>
 							</tr>
 						</tfoot>
+					</table>
+				</div>
+				<div class="tab-pane" id="tab-products">
+					<table class="table table-bordered table-striped table-hover">
+						<thead>
+							<tr>
+								<th><?php echo $column_product_id; ?></th>
+								<th><?php echo $column_product_name; ?></th>
+								<th class="text-left"><?php echo $column_invoice; ?></th>
+								<th class="text-left"><?php echo $column_invoice_date; ?></th>
+								<th class="text-left"><?php echo $column_quantity; ?></th>
+								<th class="text-right"><?php echo $column_total; ?></th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php if ($products) { ?>
+							<?php foreach ($products as $product) { ?>
+							<tr>
+								<td><?php echo $product['product_id']; ?></td>
+								<td><?php echo $product['name']; ?></td>
+								<td class="text-left"><a href="<?php echo $product['href']; ?>"><?php echo $product['invoice_id']; ?></a></td>
+								<td class="text-left"><?php echo $product['date']; ?></td>
+								<td class="text-left"><?php echo $product['quantity']; ?></td>
+								<td class="text-right"><?php echo $product['total']; ?></td>
+							</tr>
+							<?php } ?>
+						<?php } else { ?>
+							<tr><td colspan="6" class="text-center"><?php echo $text_no_results; ?></td></tr>
+						<?php } ?>
+						</tbody>
 					</table>
 				</div>
 				<?php } ?>

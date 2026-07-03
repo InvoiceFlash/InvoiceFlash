@@ -292,6 +292,18 @@ class ModelPurchaseSupplier extends Model {
 		return $query->row;
 	}
 
+	public function getProductsSupplier($supplier_id) {
+		$query = $this->db->query("
+			SELECT pip.product_id, pip.name, pip.quantity, pip.total,
+			       pi.invoice_id, pi.date_added
+			FROM `" . DB_PREFIX . "purchase_invoice_product` pip
+			JOIN `" . DB_PREFIX . "purchase_invoice` pi ON pip.invoice_id = pi.invoice_id
+			WHERE pi.supplier_id = '" . (int)$supplier_id . "'
+			ORDER BY pi.date_added DESC
+		");
+		return $query->rows;
+	}
+
 	private function installNotes() {
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "supplier_history` (
 			`supplier_history_id` int(11) NOT NULL AUTO_INCREMENT,

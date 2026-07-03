@@ -56,6 +56,14 @@ $_['tab_general']              = 'General';
 $_['tab_notes']                 = 'Notes';
 $_['tab_contacts']              = 'Contacts';
 $_['tab_contracts']             = 'Contracts';
+$_['tab_products']             = 'Productos';
+
+// Products tab
+$_['column_product_id']        = 'ID';
+$_['column_product_name']      = 'Producto';
+$_['column_invoice']           = 'Factura';
+$_['column_invoice_date']      = 'Fecha';
+$_['column_total']             = 'Total';
 
 // Notes
 $_['heading_title_note']       = 'Note';

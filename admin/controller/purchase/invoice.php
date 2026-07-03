@@ -398,6 +398,7 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->data['doc_exists'] = !empty($matches);
 		}
 		$this->data['upload_doc_url'] = $this->url->link('purchase/invoice/uploadDoc', 'token=' . $this->session->data['token'] . '&invoice_id=' . $invoice_id_check, 'SSL');
+		$this->data['view_doc_url']   = $this->url->link('purchase/invoice/viewDoc',   'token=' . $this->session->data['token'] . '&invoice_id=' . $invoice_id_check, 'SSL');
 
 		$this->load->model('localisation/invoice_status');
 		$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
@@ -914,5 +915,62 @@ class ControllerPurchaseInvoice extends Controller {
 
 		$this->response->addheader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	public function viewDoc() {
+		if (!$this->user->hasPermission('access', 'purchase/invoice')) {
+			http_response_code(403);
+			exit('Permission denied');
+		}
+
+		if (empty($this->request->get['invoice_id'])) {
+			http_response_code(400);
+			exit('Missing invoice_id');
+		}
+
+		$this->load->model('purchase/invoice');
+		$invoice_info = $this->model_purchase_invoice->getInvoice((int)$this->request->get['invoice_id']);
+
+		if (!$invoice_info) {
+			http_response_code(404);
+			exit('Invoice not found');
+		}
+
+		$sid  = (int)$invoice_info['supplier_id'];
+		$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
+		$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
+		$dir  = $base . '/docs/suppliers/' . date('Y') . '/';
+
+		$matches = glob($dir . $sid . '_' . $sino . '.*');
+
+		if (empty($matches)) {
+			http_response_code(404);
+			exit('Document not found');
+		}
+
+		$file = $matches[0];
+		$ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+		$mime_types = array(
+			'pdf'  => 'application/pdf',
+			'jpg'  => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'png'  => 'image/png',
+			'gif'  => 'image/gif',
+			'doc'  => 'application/msword',
+			'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'xls'  => 'application/vnd.ms-excel',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		);
+
+		$content_type = isset($mime_types[$ext]) ? $mime_types[$ext] : 'application/octet-stream';
+
+		header('Content-Type: ' . $content_type);
+		header('Content-Disposition: inline; filename="' . basename($file) . '"');
+		header('Content-Length: ' . filesize($file));
+		header('Cache-Control: private');
+		ob_end_clean();
+		readfile($file);
+		exit;
 	}
 }
