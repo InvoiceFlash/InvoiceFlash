@@ -36,7 +36,7 @@
 				<div class="form-group">
 					<div class="input-icon">
 						<i class="fa fa-unlock-alt"></i>
-						<input type="password" name="password" placeholder="Password" value="<?php echo $password; ?>" class="form-control" autofocus="">
+						<input type="password" name="password" placeholder="Password" value="<?php echo $password; ?>" class="form-control">
 					</div>
 				</div>
 				
