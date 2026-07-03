@@ -140,7 +140,8 @@ class ControllerReportSaleInvoice extends Controller {
 		$this->data['entry_date_start'] = $this->language->get('entry_date_start');
 		$this->data['entry_date_end'] = $this->language->get('entry_date_end');
 		$this->data['entry_status'] = $this->language->get('entry_status');
-		$this->data['entry_group'] = $this->language->get('entry_group');	
+		$this->data['entry_customer'] = $this->language->get('entry_customer');
+		$this->data['text_all_customers'] = $this->language->get('text_all_customers');
 
 		$this->data['button_filter'] = $this->language->get('button_filter');
 		$this->data['button_export'] = $this->language->get('button_export');
@@ -150,29 +151,11 @@ class ControllerReportSaleInvoice extends Controller {
 		$this->load->model('localisation/invoice_status');
 		
 		$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
-		
-		$this->data['groups'] = array();
 
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_year'),
-			'value' => 'year',
-		);
+		$this->load->model('sale/customer');
 
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_month'),
-			'value' => 'month',
-		);
+		$this->data['customers'] = $this->model_sale_customer->getCustomers();
 
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_week'),
-			'value' => 'week',
-		);
-
-		$this->data['groups'][] = array(
-			'text'  => $this->language->get('text_day'),
-			'value' => 'day',
-		);
-			
 		$url = '';
 						
 		if (isset($this->request->get['filter_date_start'])) {
@@ -201,8 +184,8 @@ class ControllerReportSaleInvoice extends Controller {
 		$this->data['pagination'] = $pagination->render();
 		
 		$this->data['filter_date_start'] = $filter_date_start;
-		$this->data['filter_date_end'] = $filter_date_end;		
-		$this->data['filter_group'] = $filter_group;		
+		$this->data['filter_date_end'] = $filter_date_end;
+		$this->data['filter_customer_id'] = $filter_customer_id;
 		$this->data['filter_invoice_status_id'] = $filter_invoice_status_id;
 				 
 		$this->template = 'report/sale_invoice.tpl';
