@@ -12,7 +12,6 @@
 	<div class="card-body">
         <ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
-			<?php if ($customer_id) { ?>
 			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-email" data-bs-toggle="tab"><?php echo $tab_email; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
@@ -23,7 +22,6 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-transaction" data-bs-toggle="tab"><?php echo $tab_transaction; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-bs-toggle="tab"><?php echo $tab_reward; ?></a></li>
-			<?php } ?>
 			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-bs-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
@@ -372,8 +370,7 @@
 						</div>
 					</div>
 				</div>
-				<?php if ($customer_id) { ?>
-					<div class="tab-pane" id="tab-contacts">
+				<div class="tab-pane" id="tab-contacts">
 		            <table class="table table-bordered table-striped table-hover">
 		              <thead>
 		                <tr>
@@ -667,7 +664,6 @@
 							</div>
 						</div>
 					</div>
-				<?php } ?>
 				<div class="tab-pane" id="tab-ip">
 					<table class="table table-bordered table-striped table-hover">
 						<thead>

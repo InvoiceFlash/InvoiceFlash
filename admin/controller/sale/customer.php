@@ -20,7 +20,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->load->model('sale/customer');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_sale_customer->addCustomer($this->request->post);
+			$customer_id = $this->model_sale_customer->addCustomer($this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -58,12 +58,7 @@ class ControllerSaleCustomer extends Controller {
 				$url .= '&page=' . $this->request->get['page'];
 			}
 
-			if (!isset($this->request->get['continue'])) {
-				$this->redirect($this->url->link('sale/customer', 'token=' . $this->session->data['token'] . $url, 'SSL'));
-			}else{
-				$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . $url . '&product_id=' . $product_id  . '&continue=true', 'SSL'));
-			}
-
+			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $customer_id . $url, 'SSL'));
 		}
 
 		$this->getForm();
@@ -807,8 +802,19 @@ class ControllerSaleCustomer extends Controller {
 			$customer_info = $this->model_sale_customer->getCustomer($this->request->get['customer_id']);
 		}
 
+		$this->data['emails'] = array();
+		$this->data['products'] = array();
+		$this->data['quotes'] = array();
+		$this->data['orders'] = array();
+		$this->data['deliveries'] = array();
+		$this->data['invoices'] = array();
+		$this->data['contacts'] = array();
+		$this->data['contracts'] = array();
+		$this->data['add_contact'] = '';
+		$this->data['add_contract'] = '';
+
 		if (isset($this->request->get['customer_id'])){
-		
+
 			// Emails
 			$this->data['emails'] = array();
 			if (isset($customer_info)) {

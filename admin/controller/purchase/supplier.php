@@ -21,11 +21,11 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->load->model('purchase/supplier');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-			$this->model_purchase_supplier->addSupplier($this->request->post);
+			$supplier_id = $this->model_purchase_supplier->addSupplier($this->request->post);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
-			$this->redirect($this->url->link('purchase/supplier', 'token=' . $this->session->data['token'], 'SSL'));
+			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $supplier_id, 'SSL'));
 		}
 
 		if (!$this->user->hasPermission('modify', 'purchase/supplier')) {

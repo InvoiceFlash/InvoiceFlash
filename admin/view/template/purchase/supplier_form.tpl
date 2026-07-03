@@ -11,11 +11,9 @@
 	<div class="card-body">
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
-			<?php if ($supplier_id) { ?>
 			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
-			<?php } ?>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" id="form">
 			<div class="tab-content">
@@ -177,7 +175,6 @@
 						</div>
 					</div>
 				</div>
-				<?php if ($supplier_id) { ?>
 				<div class="tab-pane" id="tab-contacts">
 					<table class="table table-bordered table-striped table-hover">
 						<thead>
@@ -274,7 +271,6 @@
 						</tbody>
 					</table>
 				</div>
-				<?php } ?>
 			</div>
 		</form>
 	</div>
