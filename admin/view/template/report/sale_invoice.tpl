@@ -64,6 +64,7 @@
             <td class="left"><?php echo $column_email; ?></td>
             <td class="left"><?php echo $column_phone; ?></td>
             <td class="left"><?php echo $column_status; ?></td>
+            <td class="right"><?php echo $column_total; ?></td>
             <td class="right"><?php echo $column_action; ?></td>
           </tr>
         </thead>
@@ -78,6 +79,7 @@
             <td class="text-left"><?php echo $invoice['email']; ?></td>
             <td class="text-left"><?php echo $invoice['telephone']; ?></td>
             <td class="text-left"><?php echo $invoice['status']; ?></td>
+            <td class="text-right"><?php echo $invoice['total']; ?></td>
             <td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
 							<a href="<?php echo $action['href']; ?>" class="btn btn-info"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 						<?php } ?></td>
@@ -85,7 +87,7 @@
           <?php } ?>
           <?php } else { ?>
           <tr>
-            <td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
+            <td class="text-center" colspan="9"><?php echo $text_no_results; ?></td>
           </tr>
           <?php } ?>
         </tbody>
@@ -95,28 +97,21 @@
   </div>
 </div>
 <script type="text/javascript"><!--
+function buildFilterParams() {
+	var params = '';
+	var filter_date_start = $('input[name="filter_date_start"]').val();
+	if (filter_date_start) params += '&filter_date_start=' + encodeURIComponent(filter_date_start);
+	var filter_date_end = $('input[name="filter_date_end"]').val();
+	if (filter_date_end) params += '&filter_date_end=' + encodeURIComponent(filter_date_end);
+	var filter_invoice_status_id = $('select[name="filter_invoice_status_id"]').val();
+	if (filter_invoice_status_id) params += '&filter_invoice_status_id=' + encodeURIComponent(filter_invoice_status_id);
+	return params;
+}
 function filter() {
-	url = 'index.php?route=report/sale_invoice&token=<?php echo $token; ?>';
-	
-	var filter_date_start = $('input[name=\'filter_date_start\']').attr('value');
-	
-	if (filter_date_start) {
-		url += '&filter_date_start=' + encodeURIComponent(filter_date_start);
-	}
-
-	var filter_date_end = $('input[name=\'filter_date_end\']').attr('value');
-	
-	if (filter_date_end) {
-		url += '&filter_date_end=' + encodeURIComponent(filter_date_end);
-	}
-	
-	var filter_invoice_status_id = $('select[name=\'filter_invoice_status_id\']').attr('value');
-	
-	if (filter_invoice_status_id) {
-		url += '&filter_invoice_status_id=' + encodeURIComponent(filter_invoice_status_id);
-	}	
-
-	location = url;
+	location = 'index.php?route=report/sale_invoice&token=<?php echo $token; ?>' + buildFilterParams();
+}
+function exportExcel() {
+	location = 'index.php?route=report/sale_invoice/export&token=<?php echo $token; ?>' + buildFilterParams();
 }
 //--></script> 
 
