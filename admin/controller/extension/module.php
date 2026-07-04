@@ -139,6 +139,9 @@ class ControllerExtensionModule extends Controller {
 			);
 		}
 
+		$this->data['button_ia'] = $this->language->get('button_ia');
+		$this->data['ia_url']    = str_replace('&amp;', '&', $this->url->link('extension/module/ia', 'token=' . $this->session->data['token'], 'SSL'));
+
 		$this->template = 'extension/module.tpl';
 		$this->children = array(
 			'common/header',
@@ -146,6 +149,255 @@ class ControllerExtensionModule extends Controller {
 		);
 
 		$this->response->setOutput($this->render());
+	}
+
+	public function ia() {
+		$this->language->load('extension/module');
+
+		$this->document->setTitle($this->language->get('text_ia'));
+
+		$this->data['breadcrumbs'] = array();
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
+		);
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_title'),
+			'href'      => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => ' :: '
+		);
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_ia'),
+			'href'      => $this->url->link('extension/module/ia', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => ' :: '
+		);
+
+		$this->data['heading_title'] = $this->language->get('text_ia');
+		$this->data['chat_url']      = str_replace('&amp;', '&', $this->url->link('extension/module/iaChat', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['cancel']        = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
+
+		$this->template = 'extension/module_ia.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer'
+		);
+
+		$this->response->setOutput($this->render());
+	}
+
+	public function iaChat() {
+		$this->response->addHeader('Content-Type: application/json');
+
+		if ($this->request->server['REQUEST_METHOD'] !== 'POST') {
+			$this->response->setOutput(json_encode(array('error' => 'Method not allowed')));
+			return;
+		}
+
+		$input   = json_decode(file_get_contents('php://input'), true);
+		$api_key = isset($input['api_key'])  ? trim($input['api_key'])  : '';
+		$messages = isset($input['messages']) ? $input['messages']       : array();
+		$message  = isset($input['message'])  ? trim($input['message'])  : '';
+
+		if (!$api_key || !$message) {
+			$this->response->setOutput(json_encode(array('error' => 'Faltan campos requeridos')));
+			return;
+		}
+
+		$messages[] = array('role' => 'user', 'content' => $message);
+
+		$vqmod_dir = dirname(DIR_APPLICATION) . '/vqmod/xml/';
+
+		$tools = array(
+			array(
+				'name'         => 'list_vqmod_files',
+				'description'  => 'Lista todos los archivos XML VQMod en el directorio vqmod/xml/',
+				'input_schema' => array('type' => 'object', 'properties' => new stdClass(), 'required' => array())
+			),
+			array(
+				'name'         => 'read_vqmod_file',
+				'description'  => 'Lee el contenido de un archivo XML VQMod existente',
+				'input_schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'filename' => array('type' => 'string', 'description' => 'Nombre del archivo (solo el nombre, sin ruta)')
+					),
+					'required'   => array('filename')
+				)
+			),
+			array(
+				'name'         => 'write_vqmod_file',
+				'description'  => 'Escribe o crea un archivo XML VQMod. Solo archivos .xml en vqmod/xml/',
+				'input_schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'filename' => array('type' => 'string', 'description' => 'Nombre del archivo (solo el nombre, sin ruta, debe terminar en .xml)'),
+						'content'  => array('type' => 'string', 'description' => 'Contenido XML completo del archivo')
+					),
+					'required'   => array('filename', 'content')
+				)
+			)
+		);
+
+		$system = 'Eres un asistente especializado en crear y modificar módulos VQMod para InvoiceFlash.
+
+PUEDES hacer todo lo siguiente mediante archivos VQMod XML:
+- Crear nuevos módulos con funcionalidad nueva
+- Modificar la interfaz de usuario: ocultar o mostrar elementos del menú, botones, columnas, etc.
+- Cambiar estilos, colores o apariencia de cualquier parte del sistema
+- Añadir, modificar o reorganizar secciones de las plantillas
+
+NO ESTÁS AUTORIZADO PARA:
+- Borrar tablas o registros de la base de datos
+- Ejecutar sentencias SQL de tipo DELETE, DROP o TRUNCATE
+- Acceder o modificar ficheros fuera de la carpeta vqmod/xml/
+
+Ante cualquier solicitud de borrar datos o registros, responde únicamente:
+"No estoy autorizado para borrar datos. Solo puedo crear o modificar módulos VQMod."
+
+Cuando sí crees un módulo, usa este formato XML estándar:
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+  <id>nombre-modulo</id>
+  <version>1.0.0</version>
+  <author>InvoiceFlash IA</author>
+  <file path="ruta/relativa/al/fichero.php">
+    <operation>
+      <search><![CDATA[código PHP a buscar]]></search>
+      <add position="before|after|replace"><![CDATA[código PHP a añadir]]></add>
+    </operation>
+  </file>
+</modification>
+
+Responde siempre en español.';
+
+		$content    = array();
+		$stop_reason = '';
+		$max_iterations = 10;
+
+		for ($i = 0; $i < $max_iterations; $i++) {
+			$payload = array(
+				'model'      => 'claude-opus-4-8',
+				'max_tokens' => 4096,
+				'system'     => $system,
+				'tools'      => $tools,
+				'messages'   => $messages
+			);
+
+			$ch = curl_init('https://api.anthropic.com/v1/messages');
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'Content-Type: application/json',
+				'x-api-key: ' . $api_key,
+				'anthropic-version: 2023-06-01'
+			));
+			curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+			$raw        = curl_exec($ch);
+			$http_code  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$curl_error = curl_error($ch);
+			curl_close($ch);
+
+			if ($raw === false) {
+				$this->response->setOutput(json_encode(array('error' => 'cURL error: ' . $curl_error)));
+				return;
+			}
+			if ($http_code !== 200) {
+				$err = json_decode($raw, true);
+				$msg = (isset($err['error']['message'])) ? $err['error']['message'] : 'HTTP ' . $http_code . ': ' . substr($raw, 0, 200);
+				$this->response->setOutput(json_encode(array('error' => $msg)));
+				return;
+			}
+
+			$resp        = json_decode($raw, true);
+			$stop_reason = $resp['stop_reason'];
+			$content     = $resp['content'];
+
+			// json_decode(..., true) turns {} into [] — the API requires tool input to be an object, not an array
+			foreach ($content as &$block) {
+				if (isset($block['type']) && $block['type'] === 'tool_use' && empty($block['input'])) {
+					$block['input'] = new stdClass();
+				}
+			}
+			unset($block);
+
+			$messages[] = array('role' => 'assistant', 'content' => $content);
+
+			if ($stop_reason !== 'tool_use') break;
+
+			$tool_results = array();
+			foreach ($content as $block) {
+				if ($block['type'] === 'tool_use') {
+					$result         = $this->executeVqmodTool($block['name'], $block['input'], $vqmod_dir);
+					$tool_results[] = array(
+						'type'        => 'tool_result',
+						'tool_use_id' => $block['id'],
+						'content'     => $result
+					);
+				}
+			}
+			$messages[] = array('role' => 'user', 'content' => $tool_results);
+		}
+
+		$final_text = '';
+		foreach ($content as $block) {
+			if ($block['type'] === 'text') {
+				$final_text .= $block['text'];
+			}
+		}
+
+		$this->response->setOutput(json_encode(array(
+			'reply'    => $final_text,
+			'messages' => $messages
+		)));
+	}
+
+	private function executeVqmodTool($tool_name, $tool_input, $vqmod_dir) {
+		$real_dir = realpath($vqmod_dir);
+
+		switch ($tool_name) {
+			case 'list_vqmod_files':
+				$files  = array_merge(
+					(array)glob($vqmod_dir . '*.xml'),
+					(array)glob($vqmod_dir . '*.xml.disabled')
+				);
+				return json_encode(array_map('basename', $files));
+
+			case 'read_vqmod_file':
+				$filename = basename(isset($tool_input['filename']) ? $tool_input['filename'] : '');
+				if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.(xml|xml\.disabled)$/', $filename)) {
+					return 'Error: Nombre de archivo no válido.';
+				}
+				$path = $vqmod_dir . $filename;
+				$real = realpath($path);
+				if (!$real || strpos($real, $real_dir) !== 0) {
+					return 'Error: Acceso denegado.';
+				}
+				if (!file_exists($path)) {
+					return 'Error: Archivo no encontrado.';
+				}
+				return file_get_contents($path);
+
+			case 'write_vqmod_file':
+				$filename     = basename(isset($tool_input['filename']) ? $tool_input['filename'] : '');
+				$file_content = isset($tool_input['content']) ? $tool_input['content'] : '';
+				if (!preg_match('/^[a-zA-Z0-9_\-\.]+\.xml$/', $filename)) {
+					return 'Error: Nombre inválido. Solo se permiten archivos .xml sin subdirectorios.';
+				}
+				$path = $vqmod_dir . $filename;
+				if (file_put_contents($path, $file_content) === false) {
+					return 'Error: No se pudo escribir el archivo.';
+				}
+				$this->clearVqmodCache();
+				return 'Archivo escrito correctamente: ' . $filename;
+
+			default:
+				return 'Error: Herramienta desconocida.';
+		}
 	}
 
 	public function install() {

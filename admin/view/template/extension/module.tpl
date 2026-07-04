@@ -3,6 +3,9 @@
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
 		<div class="h2"><i class="fa fa-puzzle-piece"></i><?php echo $heading_title; ?></div>
+		<div style="float:right;margin-top:-4px;">
+			<a href="<?php echo $ia_url; ?>" class="btn btn-info btn-sm"><i class="fa fa-robot"></i> <?php echo $button_ia; ?></a>
+		</div>
 	</div>
 	<div class="panel-body">
 		<table class="table table-bordered table-striped table-hover">
