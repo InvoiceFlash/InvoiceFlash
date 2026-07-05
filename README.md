@@ -8,18 +8,24 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ---
-### 0.0.8 (bootstrap5-migration)
-- [x] Upgraded to Boostrap 5.x
-- [x] Copatible php 5 y php 8.3
-- [ ] API
+### 0.0.9 
 - [ ] Edit language
-- [ ] addons manager
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-- [ ] Mod Facturae
+- [ ] Export SAGE/ContaSol
 - [ ] Mod PEPPOL support
-- [ ] Events
 - [ ] Multi Store
-### 0.0.7 (master) (In development.. Expected date: 10.30.19)
+- [ ] MCP Server
+
+### 0.0.8 
+- [x] Upgraded to Boostrap 5.x
+- [x] Compatible php 5 y php 8.3
+- [x] API
+- [x] Modules
+- [x] Facturae
+- [x] VeriFactu
+- [x] IA
+
+### 0.0.7 
 - [x] Change price articles on invoice
 
 ### 0.0.6
