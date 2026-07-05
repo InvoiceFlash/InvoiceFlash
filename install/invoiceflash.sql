@@ -3324,6 +3324,22 @@ INSERT INTO `if_url_alias` (`url_alias_id`, `query`, `keyword`) VALUES
 -- Table structure for table `if_user`
 --
 
+DROP TABLE IF EXISTS `if_user_activity_log`;
+CREATE TABLE `if_user_activity_log` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `username` varchar(96) NOT NULL DEFAULT '',
+  `action` varchar(32) NOT NULL DEFAULT '',
+  `document_type` varchar(32) NOT NULL DEFAULT '',
+  `document_id` int(11) NOT NULL DEFAULT '0',
+  `ip` varchar(40) NOT NULL DEFAULT '',
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`log_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_date_added` (`date_added`),
+  KEY `idx_action` (`action`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `if_user`;
 CREATE TABLE `if_user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
