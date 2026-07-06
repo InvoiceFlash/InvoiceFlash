@@ -1265,5 +1265,9 @@ function viewMessage(mail_id) {
 $(document).ready(function() {
 	$('#input-company').trigger('focus');
 });
+
+document.getElementById('EmailModal').addEventListener('shown.bs.modal', function () {
+	$('#subject').trigger('focus');
+});
 </script>
 <?php echo $footer; ?>
