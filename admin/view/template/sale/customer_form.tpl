@@ -48,7 +48,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_company; ?></label>
 										<div class="col-sm-6">
-											<input type="text" name="company" value="<?php echo $company; ?>" class="form-control">
+											<input type="text" name="company" id="input-company" value="<?php echo $company; ?>" class="form-control">
 										</div>
 									</div>
 									<div class="form-group row">
@@ -1264,5 +1264,10 @@ function viewMessage(mail_id) {
 	$('#message').html($('#mail-'+mail_id).text());
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('MessagePopUp')).show();
 }
+</script>
+<script>
+$(document).ready(function() {
+	$('#input-company').trigger('focus');
+});
 </script>
 <?php echo $footer; ?>

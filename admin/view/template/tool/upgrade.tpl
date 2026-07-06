@@ -33,17 +33,15 @@
 
         <div class="form-group row">
             <div class="col-sm-10">
-                <button type="button" id="check" class="btn btn-default"><?php echo $button_check; ?></button>
                 <a href="<?php echo $compare_url; ?>" target="_blank" class="btn btn-link"><?php echo $text_view_changes; ?></a>
-                <?php if ($can_upgrade) { ?>
+                <?php if ($can_upgrade && $has_update) { ?>
                 <button type="button" id="upgrade" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#UpgradeConfirmModal"><?php echo $button_upgrade; ?></button>
                 <?php } ?>
             </div>
         </div>
-        <div id="response"></div>
     </div>
 </div>
-<?php if ($can_upgrade) { ?>
+<?php if ($can_upgrade && $has_update) { ?>
 <div id="UpgradeConfirmModal" class="modal fade" role="dialog" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -70,33 +68,4 @@
     </div>
 </div>
 <?php } ?>
-<script>
-$('#check').on('click', function () {
-    $('#response').html('<p><?php echo $text_loading; ?></p>');
-
-    $.ajax({
-        url: '<?php echo $check_url; ?>',
-        type: 'post',
-        dataType: 'json',
-        success: function (json) {
-            if (json['error']) {
-                $('#response').html('<div class="alert alert-danger">' + json['error'] + '</div>');
-            } else {
-                $('#response').html('');
-            }
-
-            $('#current-commit').text(json['current_commit']);
-            $('#latest-commit').text(json['latest_commit']);
-            $('#modal-current-commit').text(json['current_commit']);
-            $('#modal-latest-commit').text(json['latest_commit']);
-
-            if (json['has_update']) {
-                $('#status-text').attr('class', 'text-warning').text('<?php echo $text_update_available; ?>');
-            } else {
-                $('#status-text').attr('class', 'text-success').text('<?php echo $text_up_to_date; ?>');
-            }
-        }
-    });
-});
-</script>
 <?php echo $footer; ?>
