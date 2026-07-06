@@ -44,7 +44,6 @@ $_['error_javascript'] 				= 'Warning: Javascript is disabled in your borwser. P
 // Search
 $_['text_search']                   = 'Quick Search';
 $_['text_search_customer']          = 'Search Customer';
-$_['text_search_supplier']          = 'Search Supplier';
 $_['text_search_product']           = 'Search Product';
 $_['button_search']                 = 'Search Now';
 

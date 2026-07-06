@@ -79,7 +79,11 @@ $('#check').on('click', function () {
         type: 'post',
         dataType: 'json',
         success: function (json) {
-            $('#response').html('');
+            if (json['error']) {
+                $('#response').html('<div class="alert alert-danger">' + json['error'] + '</div>');
+            } else {
+                $('#response').html('');
+            }
 
             $('#current-commit').text(json['current_commit']);
             $('#latest-commit').text(json['latest_commit']);

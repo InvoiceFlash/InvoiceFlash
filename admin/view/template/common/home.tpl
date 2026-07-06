@@ -36,16 +36,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="flex-fill">
-					<div class="input-group">
-						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_supplier; ?></span></span>
-						<input type="text" id="search-supplier" class="form-control">
-						<div class="input-group-append">
-							<button class="btn btn-info" id="button-search-supplier"><?php echo $button_search; ?></button>
-						</div>
-					</div>
-				</div>
-				<div class="flex-fill">
+				<div class="flex-fill" style="margin-left: 5cm;">
 					<div class="input-group">
 						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_product; ?></span></span>
 						<input type="text" id="search-product" class="form-control">
@@ -278,11 +269,6 @@ $("#button-search-customer").click(function() {
 	var url = 'index.php?route=sale/customer&token='+token+'&filter_company='+$('#search-customer').val();
 
 	$(location)	.attr('href', url);
-});
-
-$('#button-search-supplier').click(function(){
-	var url = 'index.php?route=purchase/supplier&token='+token+'&filter_company='+$('#search-supplier').val();
-	$(location).attr('href', url);
 });
 
 $('#button-search-product').click(function(){

@@ -54,6 +54,10 @@ class ControllerToolUpgrade extends Controller {
 
 		$status = $this->model_tool_upgrade->getStatus();
 
+		if (!$this->data['error'] && !empty($status['error'])) {
+			$this->data['error'] = $status['error'];
+		}
+
 		$this->data['current_commit'] = $status['current_commit'] ? substr($status['current_commit'], 0, 7) : '-';
 		$this->data['latest_commit'] = $status['latest_commit'] ? $status['branch'] . ' (' . substr($status['latest_commit'], 0, 7) . ')' : '-';
 		$this->data['has_update'] = ($status['latest_commit'] && $status['current_commit'] && ($status['latest_commit'] != $status['current_commit']));
@@ -83,7 +87,8 @@ class ControllerToolUpgrade extends Controller {
 		$this->response->setOutput(json_encode(array(
 			'current_commit' => $status['current_commit'] ? substr($status['current_commit'], 0, 7) : '-',
 			'latest_commit'  => $status['latest_commit'] ? $status['branch'] . ' (' . substr($status['latest_commit'], 0, 7) . ')' : '-',
-			'has_update'     => ($status['latest_commit'] && $status['current_commit'] && ($status['latest_commit'] != $status['current_commit']))
+			'has_update'     => ($status['latest_commit'] && $status['current_commit'] && ($status['latest_commit'] != $status['current_commit'])),
+			'error'          => $status['error']
 		)));
 	}
 

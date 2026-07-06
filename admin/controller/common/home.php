@@ -36,7 +36,6 @@ class ControllerCommonHome extends Controller {
 		// Search
 		$this->data['text_search'] = $this->language->get('text_search');
 		$this->data['text_search_customer'] = $this->language->get('text_search_customer');
-		$this->data['text_search_supplier'] = $this->language->get('text_search_supplier');
 		$this->data['text_search_product']  = $this->language->get('text_search_product');
 
 		$this->data['button_search'] = $this->language->get('button_search');

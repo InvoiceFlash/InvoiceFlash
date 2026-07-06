@@ -3,10 +3,19 @@ class ModelToolUpgrade extends Model {
 	const REPO = 'InvoiceFlash/InvoiceFlash';
 	const CHECK_INTERVAL = 86400;
 
+	private $error = '';
+	private $httpError = '';
+	private $branchCache = null;
+
 	public function getStatus() {
 		$last_check = (int)$this->config->get('config_update_last_check');
+		$latest_commit = $this->config->get('config_update_latest_commit');
 
-		if (!$last_check || (time() - $last_check) > self::CHECK_INTERVAL) {
+		// Retry regardless of CHECK_INTERVAL whenever we still don't have a
+		// result: otherwise a single failed check (no network, GitHub
+		// unreachable, branch just renamed) gets cached as "no data" for a
+		// full day even after whatever caused it is fixed.
+		if (!$last_check || !$latest_commit || ((time() - $last_check) > self::CHECK_INTERVAL)) {
 			$this->check();
 		}
 
@@ -16,7 +25,8 @@ class ModelToolUpgrade extends Model {
 			'latest_message' => $this->config->get('config_update_latest_message'),
 			'latest_date'    => $this->config->get('config_update_latest_date'),
 			'last_check'     => $this->config->get('config_update_last_check'),
-			'branch'         => $this->getBranch()
+			'branch'         => $this->getBranch(),
+			'error'          => $this->error
 		);
 	}
 
@@ -26,6 +36,10 @@ class ModelToolUpgrade extends Model {
 		$values = array('config_update_last_check' => time());
 
 		if (!$branch) {
+			if (!$this->error) {
+				$this->error = 'No se ha podido determinar la rama por defecto del repositorio en GitHub.' . ($this->httpError ? ' (' . $this->httpError . ')' : '');
+			}
+
 			$this->save($values);
 
 			return $values;
@@ -46,6 +60,8 @@ class ModelToolUpgrade extends Model {
 			if (!$this->config->get('config_update_current_commit')) {
 				$values['config_update_current_commit'] = $data['sha'];
 			}
+		} elseif (!$this->error) {
+			$this->error = 'No se ha podido consultar el ultimo commit de "' . $branch . '" en GitHub.' . ($this->httpError ? ' (' . $this->httpError . ')' : '');
 		}
 
 		$this->save($values);
@@ -66,11 +82,18 @@ class ModelToolUpgrade extends Model {
 	// rather than hardcoded, or checks silently stop working after
 	// each rename.
 	private function getBranch() {
+		// Memoized per request: getStatus() and check() both resolve the
+		// branch, and on a network failure that would otherwise mean the
+		// same timed-out request firing 2-3 times per page load/click.
+		if ($this->branchCache !== null) {
+			return $this->branchCache;
+		}
+
 		$branch = $this->config->get('config_update_branch');
 		$fetched_at = (int)$this->config->get('config_update_branch_time');
 
 		if ($branch && $fetched_at && ((time() - $fetched_at) < self::CHECK_INTERVAL)) {
-			return $branch;
+			return $this->branchCache = $branch;
 		}
 
 		$data = $this->apiRequest('https://api.github.com/repos/' . self::REPO);
@@ -81,10 +104,10 @@ class ModelToolUpgrade extends Model {
 				'config_update_branch_time' => time()
 			));
 
-			return $data['default_branch'];
+			return $this->branchCache = $data['default_branch'];
 		}
 
-		return $branch;
+		return $this->branchCache = $branch;
 	}
 
 	// Downloads the repository's default branch as a zip, overlays it on
@@ -245,6 +268,17 @@ class ModelToolUpgrade extends Model {
 		return is_array($data) ? $data : false;
 	}
 
+	// Some PHP installs (stock Windows XAMPP among others) ship without a
+	// working CA bundle, so cURL's SSL verification fails with "unable to
+	// get local issuer certificate" even though the connection itself is
+	// fine. Point cURL at our own bundled copy instead of disabling
+	// verification.
+	private function caBundle() {
+		$path = DIR_SYSTEM . 'cacert.pem';
+
+		return is_file($path) ? $path : null;
+	}
+
 	private function download($url, $destination) {
 		$fp = fopen($destination, 'w');
 
@@ -261,6 +295,12 @@ class ModelToolUpgrade extends Model {
 		curl_setopt($ch, CURLOPT_USERAGENT, 'InvoiceFlash-Update');
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+
+		$ca_bundle = $this->caBundle();
+
+		if ($ca_bundle) {
+			curl_setopt($ch, CURLOPT_CAINFO, $ca_bundle);
+		}
 
 		curl_exec($ch);
 
@@ -283,6 +323,8 @@ class ModelToolUpgrade extends Model {
 
 	private function httpRequest($url, $headers = array()) {
 		if (!function_exists('curl_init')) {
+			$this->httpError = 'La extension cURL de PHP no esta habilitada en este servidor.';
+
 			return false;
 		}
 
@@ -295,12 +337,27 @@ class ModelToolUpgrade extends Model {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
 
+		$ca_bundle = $this->caBundle();
+
+		if ($ca_bundle) {
+			curl_setopt($ch, CURLOPT_CAINFO, $ca_bundle);
+		}
+
 		if ($headers) {
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		}
 
 		$response = curl_exec($ch);
-		$failed = curl_errno($ch) || !$response;
+		$errno = curl_errno($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+		if ($errno) {
+			$this->httpError = 'cURL error ' . $errno . ': ' . curl_error($ch);
+		} elseif (!$response) {
+			$this->httpError = 'El servidor de GitHub no devolvio ninguna respuesta (HTTP ' . $http_code . ').';
+		}
+
+		$failed = $errno || !$response;
 
 		curl_close($ch);
 
