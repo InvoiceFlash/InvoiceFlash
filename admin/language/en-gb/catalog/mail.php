@@ -4,7 +4,6 @@ $_['heading_title'] 		= 'Mails';
 //Tabs
 $_['tab_inbox'] 			= 'Inbox';
 $_['tab_outbox'] 			= 'Outbox';
-$_['tab_mail'] 				= 'Mail';
 
 //Columns
 $_['column_from'] 			= 'Company';
@@ -36,6 +35,7 @@ $_['button_reset'] 			= 'Download';
 $_['button_cancel'] 		= 'Cancel';
 $_['button_close'] 			= 'Close';
 $_['button_send'] 			= 'Send';
+$_['button_new_email'] 	= 'New Email';
 
 // Errors
 $_['error_config']          = 'Your Mail server is not configurated.';

@@ -11,8 +11,7 @@ class ControllerCatalogMail extends Controller {
 		
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
-		$this->data['tab_inbox'] = $this->language->get('tab_inbox');
-		$this->data['tab_mail'] = $this->language->get('tab_mail');
+		$this->data['tab_inbox'] = $this->language->get('tab_inbox') . '(' . $this->config->get('config_smtp_username') . ')';
 		$this->data['tab_out'] = $this->language->get('tab_outbox');
 		$this->data['tab_options'] = $this->language->get('tab_options');
 
@@ -47,6 +46,7 @@ class ControllerCatalogMail extends Controller {
 		$this->data['button_reset'] = $this->language->get('button_reset');
 		$this->data['button_test']  = $this->language->get('button_test');
 		$this->data['button_send'] = $this->language->get('button_send');
+		$this->data['button_new_email'] = $this->language->get('button_new_email');
 		$this->data['button_delete']  = $this->language->get('button_delete');
 		$this->data['button_cancel']  = $this->language->get('button_cancel');
 		$this->data['button_upload']  = $this->language->get('button_upload');
@@ -93,6 +93,13 @@ class ControllerCatalogMail extends Controller {
 		} else {
 			$filter_company = '';
 		}
+
+		if (isset($this->request->get['filter_email'])) {
+			$filter_email = $this->request->get['filter_email'];
+			$url .= '&filter_email=' . $filter_email;
+		} else {
+			$filter_email = '';
+		}
 		
 		$this->data['breadcrumbs'] = array();
 
@@ -125,6 +132,7 @@ class ControllerCatalogMail extends Controller {
 
 		$data = array(
 			'filter_company' => $filter_company,
+			'filter_email'   => $filter_email,
 			'start' => ($page_in - 1) * $this->config->get('config_admin_limit'),
 			'limit' => $this->config->get('config_admin_limit')
 		);
@@ -216,6 +224,7 @@ class ControllerCatalogMail extends Controller {
 		$this->data['pag_mail_out'] = $pag_mail_out->render();
 
 		$this->data['filter_company'] = $filter_company;
+		$this->data['filter_email'] = $filter_email;
 		
 		$this->template = 'catalog/mail_list.tpl';		
 		

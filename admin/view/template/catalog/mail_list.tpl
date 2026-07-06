@@ -7,6 +7,7 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-envelope"> <?php echo $heading_title ?></i></div>
 		<div class="pull-right">
+			<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#NewEmailModal"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
 			<a href="<?php echo $getmail ?>" class="btn btn-primary"><i class="fa fa-sync-alt"></i><span class="hidden-xs"> <?php echo $button_reset ?></span></a>
 			<button type="submit" class="btn btn-danger" formaction="<?php echo $delete ?>" id="btn-delete" form="form"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 			<a href="<?php echo $cancel ?>" class="btn btn-warning"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel ?></span></a>
@@ -16,7 +17,6 @@
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-inbox" class="nav-link"><?php echo $tab_inbox; ?></a></li>
 			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-out" class="nav-link"><?php echo $tab_out; ?></a></li>
-			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-mail" class="nav-link"><?php echo $tab_mail; ?></a></li>
 		</ul>
 		<form method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content mt-3">
@@ -39,7 +39,7 @@
 							<tr id="filter" class="info">
 								<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=catalog/mail&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
 								<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" data-target="company" data-url="sale/customer" class="form-control"></td>
-								<td class="d-none d-md-table-cell"></td>
+								<td class="d-none d-md-table-cell"><input type="text" name="filter_email" value="<?php echo $filter_email; ?>" class="form-control"></td>
 								<td class="d-none d-sm-table-cell"></td>
 								<td class="d-none d-md-table-cell"></td>
 								<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
@@ -103,43 +103,56 @@
 					</table>
 					<div class="pagination"><?php echo str_replace('....','',$pag_mail_out); ?></div>
 				</div>
-				<div class="tab-pane" id="tab-mail">
-					<div class="form-horizontal" id="form-email">
-						<div class="form-group row">
-							<label for="email" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_to; ?></label>
-							<div class="input-group col-sm-6">
-								<input type="text" name="email" id="email" class="form-control">
-								<div class="input-group-append">
-									<button type="button" class="btn btn-primary" id="btn-send"><?php echo $button_send; ?></button>
-								</div>
-							</div>
+			</div>
+		</form>
+	</div>
+</div>
+
+<!-- Modal -->
+<div id="NewEmailModal" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title"><?php echo $button_new_email; ?></h4>
+				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+				<div class="form-horizontal" id="form-email">
+					<div class="form-group row">
+						<label for="email" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_to; ?></label>
+						<div class="col-sm-10">
+							<input type="text" name="email" id="email" class="form-control">
 						</div>
-						<div class="form-group row">
-							<label for="subject" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_subject; ?></label>
-							<div class="col-sm-6">
-								<input type="text" name="subject" id="subject" class="form-control">
-							</div>
+					</div>
+					<div class="form-group row">
+						<label for="subject" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_subject; ?></label>
+						<div class="col-sm-10">
+							<input type="text" name="subject" id="subject" class="form-control">
 						</div>
-						<div class="form-group row">
-							<label for="message" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_message; ?></label>
-							<div class="col-sm-6">
-								<textarea name="message" id="message" cols="30" rows="10" class="form-control ckeditor"></textarea>
-							</div>
+					</div>
+					<div class="form-group row">
+						<label for="message" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_message; ?></label>
+						<div class="col-sm-10">
+							<textarea name="message" id="message" cols="30" rows="10" class="form-control"></textarea>
 						</div>
-						<div class="form-group row">
-							<label for="file" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_file; ?></label>
-							<div class="input-group col-sm-6">
-								<input type="text" name="mask" id="input-file" class="form-control">
-								<input type="hidden" name="filename">
-								<span class="input-group-btn">
-									<button type="button" id="button-upload" class="btn btn-primary"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
-								</span>
-							</div>
+					</div>
+					<div class="form-group row">
+						<label for="file" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_file; ?></label>
+						<div class="input-group col-sm-10">
+							<input type="text" name="mask" id="input-file" class="form-control">
+							<input type="hidden" name="filename">
+							<span class="input-group-btn">
+								<button type="button" id="button-upload" class="btn btn-primary"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
+							</span>
 						</div>
 					</div>
 				</div>
 			</div>
-		</form>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="btn-send"><?php echo $button_send; ?></button>
+				<button type="button" class="btn btn-default" data-bs-dismiss="modal"><?php echo $button_cancel; ?></button>
+			</div>
+		</div>
 	</div>
 </div>
 <script>
@@ -171,6 +184,11 @@ $('#btn-send').on('click',function(e){
 			}
 			if(json['success']){
 				alertMessage('success',json['success']);
+
+				var modalInstance = bootstrap.Modal.getInstance(document.getElementById('NewEmailModal'));
+				if (modalInstance) {
+					modalInstance.hide();
+				}
 
 				$('#email').val('');
 				$('#subject').val('');
@@ -204,13 +222,22 @@ $('#btn-send').on('click',function(e){
 });
 </script>
 <script>
-CKEDITOR.replace('message', {
-	filebrowserBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
-	filebrowserImageBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
-	filebrowserFlashBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
-	filebrowserUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
-	filebrowserImageUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
-	filebrowserFlashUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>'
+document.getElementById('NewEmailModal').addEventListener('shown.bs.modal', function () {
+	if (CKEDITOR.instances.message) {
+		CKEDITOR.instances.message.focus();
+		return;
+	}
+
+	CKEDITOR.replace('message', {
+		filebrowserBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserImageBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserFlashBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserImageUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserFlashUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>'
+	}).on('instanceReady', function () {
+		this.focus();
+	});
 });
 </script>
 <?php echo $footer ?>

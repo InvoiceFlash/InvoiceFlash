@@ -44,6 +44,10 @@ class ModelCatalogMail extends Model {
 			$sql .= " AND c.company = '" . $this->db->escape($data['filter_company'])  . "'";
 		}
 
+		if (!empty($data['filter_email'])) {
+			$sql .= " AND mails.client LIKE '%" . $this->db->escape($data['filter_email']) . "%'";
+		}
+
 		$sql .= " ORDER BY mails.date_added DESC";
 		
 		if (isset($data['start']) || isset($data['limit'])) {
