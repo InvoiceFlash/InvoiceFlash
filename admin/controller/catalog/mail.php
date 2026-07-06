@@ -339,9 +339,23 @@ class ControllerCatalogMail extends Controller {
 			} else {
 				$this->load->model('catalog/mail');
 
-				$this->model_catalog_mail->addMailSended($data);
+				$mail_id = $this->model_catalog_mail->addMailSended($data);
 
 				$json['success'] = $this->language->get('text_success_email');
+
+				$json['outbox'] = array(
+					'mail_id'    => $mail_id,
+					'company'    => !empty($customer) ? $customer['company'] : $data['to'],
+					'subject'    => $data['subject'],
+					'date_added' => date($this->language->get('datetime_format')),
+					// url->link() HTML-escapes '&' to '&amp;' for embedding in an
+					// href="" attribute. This URL instead goes out as a raw JSON
+					// string that JS assigns straight to .attr('href', ...), so
+					// the escaping must be undone or the browser requests
+					// "...&amp;token=..." as a literal (wrong) parameter name.
+					'href'       => html_entity_decode($this->url->link('catalog/mail/mail_form', 'token=' . $this->session->data['token'] . '&mail_id=' . $mail_id, 'SSL'), ENT_QUOTES),
+					'text_view'  => $this->language->get('text_view')
+				);
 			}
 		}
 			
@@ -363,6 +377,8 @@ class ControllerCatalogMail extends Controller {
 		$this->data['button_reply'] = $this->language->get('button_reply');
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
+
+		$this->data['token'] = $this->session->data['token'];
 		
 		$url = '';
 

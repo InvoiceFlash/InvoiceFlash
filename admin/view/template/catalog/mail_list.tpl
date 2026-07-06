@@ -79,7 +79,7 @@
 								<th><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
-						<tbody data-link="row" class="rowlink">
+						<tbody data-link="row" class="rowlink" id="tbody-out">
 							<?php if ($mails_outs) { ?>
 								<?php foreach ($mails_outs as $mails_out) { ?>
 									<tr>
@@ -95,7 +95,7 @@
 									</tr>
 								<?php } ?>
 							<?php } else { ?>
-								<tr>
+								<tr id="out-no-results">
 								<td colspan="6" class="text-center"><?php echo $text_no_results; ?></td>
 								</tr>
 							<?php } ?>
@@ -171,6 +171,33 @@ $('#btn-send').on('click',function(e){
 			}
 			if(json['success']){
 				alertMessage('success',json['success']);
+
+				$('#email').val('');
+				$('#subject').val('');
+				editor.setData('');
+				$('#input-file').val('');
+				$('input[name="filename"]').val('');
+
+				var out = json['outbox'];
+
+				if (out) {
+					$('#out-no-results').remove();
+
+					var row = $('<tr>');
+					row.append($('<td class="rowlink-skip text-center">').append($('<input type="checkbox" name="sel_mail_out[]">').val(out.mail_id)));
+					row.append($('<td>').text(out.company));
+					row.append($('<td class="d-none d-sm-table-cell">').text(out.subject));
+					row.append($('<td class="d-none d-md-table-cell">').text(out.date_added));
+
+					var action = $('<td class="text-right">');
+					var link = $('<a class="btn btn-info">').attr('href', out.href);
+					link.append($('<i class="fas fa-eye">'));
+					link.append($('<span class="d-none d-md-inline">').text(' ' + out.text_view));
+					action.append(link);
+					row.append(action);
+
+					$('#tbody-out').prepend(row);
+				}
 			}
 		}
 	});

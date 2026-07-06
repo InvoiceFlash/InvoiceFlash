@@ -256,6 +256,8 @@ class ModelCatalogMail extends Model {
 		}
 		
 		$this->db->query($sql);
+
+		return $this->db->getLastId();
 	}
 
 }

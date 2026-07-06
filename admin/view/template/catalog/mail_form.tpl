@@ -25,8 +25,8 @@
 			</div>
 			<div class="form-group row">
 				<label class="col-sm-3 col-form-label"><?php echo $entry_message; ?></label>
-				<div class="col-sm-6">
-					<p><?php echo $message; ?></p>
+				<div class="col-sm-9">
+					<textarea id="original-message"><?php echo $message; ?></textarea>
 				</div>
 			</div>
 		</div>
@@ -53,7 +53,7 @@
 					</div>
 					<div class="form-group">
 						<label for="message" class="control-label col-2">Message:</label>
-						<div class="col-sm-10"><textarea name="message" id="message" cols="30" rows="10" class="from-control ckeditor"><?php echo $message; ?></textarea></div>
+						<div class="col-sm-10"><textarea name="message" id="message" cols="30" rows="10" class="form-control"><?php echo $message; ?></textarea></div>
 					</div>
          </form>
       </div>
@@ -63,4 +63,29 @@
     </div>
   </div>
 </div>
+<script>
+CKEDITOR.replace('original-message', {
+	readOnly: true,
+	removePlugins: 'toolbar,elementspath',
+	resize_enabled: false
+});
+
+document.getElementById('EmailModal').addEventListener('shown.bs.modal', function () {
+	if (CKEDITOR.instances.message) {
+		CKEDITOR.instances.message.focus();
+		return;
+	}
+
+	CKEDITOR.replace('message', {
+		filebrowserBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserImageBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserFlashBrowseUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserImageUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>',
+		filebrowserFlashUploadUrl: 'index.php?route=common/filemanager&token=<?php echo $token; ?>'
+	}).on('instanceReady', function () {
+		this.focus();
+	});
+});
+</script>
 <?php echo $footer; ?>
