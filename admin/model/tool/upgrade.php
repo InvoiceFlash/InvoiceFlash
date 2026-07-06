@@ -1,7 +1,6 @@
 <?php
 class ModelToolUpgrade extends Model {
 	const REPO = 'InvoiceFlash/InvoiceFlash';
-	const BRANCH = 'master';
 	const CHECK_INTERVAL = 86400;
 
 	public function getStatus() {
@@ -16,14 +15,23 @@ class ModelToolUpgrade extends Model {
 			'latest_commit'  => $this->config->get('config_update_latest_commit'),
 			'latest_message' => $this->config->get('config_update_latest_message'),
 			'latest_date'    => $this->config->get('config_update_latest_date'),
-			'last_check'     => $this->config->get('config_update_last_check')
+			'last_check'     => $this->config->get('config_update_last_check'),
+			'branch'         => $this->getBranch()
 		);
 	}
 
 	public function check() {
-		$data = $this->apiRequest('https://api.github.com/repos/' . self::REPO . '/commits/' . self::BRANCH);
+		$branch = $this->getBranch();
 
 		$values = array('config_update_last_check' => time());
+
+		if (!$branch) {
+			$this->save($values);
+
+			return $values;
+		}
+
+		$data = $this->apiRequest('https://api.github.com/repos/' . self::REPO . '/commits/' . $branch);
 
 		if ($data && !empty($data['sha'])) {
 			$values['config_update_latest_commit'] = $data['sha'];
@@ -32,8 +40,9 @@ class ModelToolUpgrade extends Model {
 
 			// First check ever: there is no way to know which commit the
 			// files on this server actually correspond to, so the commit we
-			// just saw becomes the baseline. Only commits pushed to master
-			// after this point will be reported as an available update.
+			// just saw becomes the baseline. Only commits pushed to the
+			// default branch after this point will be reported as an
+			// available update.
 			if (!$this->config->get('config_update_current_commit')) {
 				$values['config_update_current_commit'] = $data['sha'];
 			}
@@ -49,12 +58,38 @@ class ModelToolUpgrade extends Model {
 			return 'https://github.com/' . self::REPO . '/compare/' . $status['current_commit'] . '...' . $status['latest_commit'];
 		}
 
-		return 'https://github.com/' . self::REPO . '/commits/' . self::BRANCH;
+		return 'https://github.com/' . self::REPO . '/commits/' . ($status['branch'] ? $status['branch'] : 'HEAD');
 	}
 
-	// Downloads the master branch as a zip, overlays it on top of the
-	// current installation (skipping install/ and php.ini) and keeps a
-	// zip backup of every file it replaces under system/backup/.
+	// The default branch gets renamed with every release (e.g.
+	// InvoiceFlash-0.0.7), so it must be resolved from the GitHub API
+	// rather than hardcoded, or checks silently stop working after
+	// each rename.
+	private function getBranch() {
+		$branch = $this->config->get('config_update_branch');
+		$fetched_at = (int)$this->config->get('config_update_branch_time');
+
+		if ($branch && $fetched_at && ((time() - $fetched_at) < self::CHECK_INTERVAL)) {
+			return $branch;
+		}
+
+		$data = $this->apiRequest('https://api.github.com/repos/' . self::REPO);
+
+		if ($data && !empty($data['default_branch'])) {
+			$this->save(array(
+				'config_update_branch'      => $data['default_branch'],
+				'config_update_branch_time' => time()
+			));
+
+			return $data['default_branch'];
+		}
+
+		return $branch;
+	}
+
+	// Downloads the repository's default branch as a zip, overlays it on
+	// top of the current installation (skipping install/ and php.ini) and
+	// keeps a zip backup of every file it replaces under system/backup/.
 	// config.php is never touched: it is excluded from the repository
 	// itself, so it is never present in the downloaded zip.
 	public function upgrade() {
@@ -68,6 +103,10 @@ class ModelToolUpgrade extends Model {
 
 		$status = $this->getStatus();
 
+		if (!$status['branch']) {
+			return array('success' => false, 'error' => 'No se ha podido determinar la rama por defecto del repositorio.');
+		}
+
 		if (!$status['latest_commit']) {
 			return array('success' => false, 'error' => 'No se ha podido comprobar la ultima version disponible.');
 		}
@@ -79,7 +118,7 @@ class ModelToolUpgrade extends Model {
 		$tmp_zip = DIR_CACHE . 'update_' . uniqid() . '.zip';
 		$tmp_dir = DIR_CACHE . 'update_' . uniqid() . '/';
 
-		if (!$this->download('https://github.com/' . self::REPO . '/archive/refs/heads/' . self::BRANCH . '.zip', $tmp_zip)) {
+		if (!$this->download('https://github.com/' . self::REPO . '/archive/refs/heads/' . $status['branch'] . '.zip', $tmp_zip)) {
 			return array('success' => false, 'error' => 'No se ha podido descargar la actualizacion desde GitHub.');
 		}
 

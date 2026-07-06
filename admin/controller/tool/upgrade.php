@@ -25,12 +25,15 @@ class ControllerToolUpgrade extends Controller {
 
 		$this->data['button_check'] = $this->language->get('button_check');
 		$this->data['button_upgrade'] = $this->language->get('button_upgrade');
+		$this->data['button_confirm'] = $this->language->get('button_confirm');
+		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['text_current_commit'] = $this->language->get('text_current_commit');
 		$this->data['text_latest_commit'] = $this->language->get('text_latest_commit');
 		$this->data['text_up_to_date'] = $this->language->get('text_up_to_date');
 		$this->data['text_update_available'] = $this->language->get('text_update_available');
 		$this->data['text_view_changes'] = $this->language->get('text_view_changes');
 		$this->data['text_loading'] = $this->language->get('text_loading');
+		$this->data['text_modal_title'] = $this->language->get('text_modal_title');
 		$this->data['text_confirm'] = $this->language->get('text_confirm_upgrade');
 
 		if (isset($this->session->data['success'])) {
@@ -52,7 +55,7 @@ class ControllerToolUpgrade extends Controller {
 		$status = $this->model_tool_upgrade->getStatus();
 
 		$this->data['current_commit'] = $status['current_commit'] ? substr($status['current_commit'], 0, 7) : '-';
-		$this->data['latest_commit'] = $status['latest_commit'] ? substr($status['latest_commit'], 0, 7) : '-';
+		$this->data['latest_commit'] = $status['latest_commit'] ? $status['branch'] . ' (' . substr($status['latest_commit'], 0, 7) . ')' : '-';
 		$this->data['has_update'] = ($status['latest_commit'] && $status['current_commit'] && ($status['latest_commit'] != $status['current_commit']));
 		$this->data['compare_url'] = $this->model_tool_upgrade->getCompareUrl($status);
 		$this->data['check_url'] = $this->url->link('tool/upgrade/check', 'token=' . $this->session->data['token'], 'SSL');
@@ -79,7 +82,7 @@ class ControllerToolUpgrade extends Controller {
 
 		$this->response->setOutput(json_encode(array(
 			'current_commit' => $status['current_commit'] ? substr($status['current_commit'], 0, 7) : '-',
-			'latest_commit'  => $status['latest_commit'] ? substr($status['latest_commit'], 0, 7) : '-',
+			'latest_commit'  => $status['latest_commit'] ? $status['branch'] . ' (' . substr($status['latest_commit'], 0, 7) . ')' : '-',
 			'has_update'     => ($status['latest_commit'] && $status['current_commit'] && ($status['latest_commit'] != $status['current_commit']))
 		)));
 	}

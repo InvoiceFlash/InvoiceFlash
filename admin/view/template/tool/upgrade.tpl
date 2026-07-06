@@ -36,13 +36,40 @@
                 <button type="button" id="check" class="btn btn-default"><?php echo $button_check; ?></button>
                 <a href="<?php echo $compare_url; ?>" target="_blank" class="btn btn-link"><?php echo $text_view_changes; ?></a>
                 <?php if ($can_upgrade) { ?>
-                <a href="<?php echo $upgrade_url; ?>" id="upgrade" class="btn btn-primary"><?php echo $button_upgrade; ?></a>
+                <button type="button" id="upgrade" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#UpgradeConfirmModal"><?php echo $button_upgrade; ?></button>
                 <?php } ?>
             </div>
         </div>
         <div id="response"></div>
     </div>
 </div>
+<?php if ($can_upgrade) { ?>
+<div id="UpgradeConfirmModal" class="modal fade" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><?php echo $text_modal_title; ?></h4>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-5"><?php echo $text_current_commit; ?></label>
+                    <div class="col-sm-6"><code id="modal-current-commit"><?php echo $current_commit; ?></code></div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-form-label col-sm-5"><?php echo $text_latest_commit; ?></label>
+                    <div class="col-sm-6"><code id="modal-latest-commit"><?php echo $latest_commit; ?></code></div>
+                </div>
+                <p><?php echo $text_confirm; ?></p>
+            </div>
+            <div class="modal-footer">
+                <a href="<?php echo $upgrade_url; ?>" class="btn btn-primary"><?php echo $button_confirm; ?></a>
+                <button type="button" class="btn btn-default" data-bs-dismiss="modal"><?php echo $button_cancel; ?></button>
+            </div>
+        </div>
+    </div>
+</div>
+<?php } ?>
 <script>
 $('#check').on('click', function () {
     $('#response').html('<p><?php echo $text_loading; ?></p>');
@@ -56,6 +83,8 @@ $('#check').on('click', function () {
 
             $('#current-commit').text(json['current_commit']);
             $('#latest-commit').text(json['latest_commit']);
+            $('#modal-current-commit').text(json['current_commit']);
+            $('#modal-latest-commit').text(json['latest_commit']);
 
             if (json['has_update']) {
                 $('#status-text').attr('class', 'text-warning').text('<?php echo $text_update_available; ?>');
@@ -64,12 +93,6 @@ $('#check').on('click', function () {
             }
         }
     });
-});
-
-$('#upgrade').on('click', function (e) {
-    if (!confirm('<?php echo $text_confirm; ?>')) {
-        e.preventDefault();
-    }
 });
 </script>
 <?php echo $footer; ?>
