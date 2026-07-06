@@ -58,15 +58,13 @@ class ControllerCatalogMail extends Controller {
 			$this->data['error_warning'] = '';
 		}
 		
-		if (!extension_loaded('imap')) {
-			$this->data['error_warning'] = $this->language->get('text_alert_imap');
-		}
-
 		if (empty($this->config->get('config_smtp_host')) || empty($this->config->get('config_smtp_username')) || empty($this->config->get('config_smtp_password'))){
 			$this->data['error_config'] = $this->language->get('error_config') ;
 		} else {
 			$this->data['error_config'] = '';
 		}
+
+		$this->data['error_imap'] = !extension_loaded('imap') ? $this->language->get('text_alert_imap') : '';
 		
 		if (isset($this->session->data['success'])) {
 			$this->data['success'] = $this->session->data['success'];
@@ -261,14 +259,9 @@ class ControllerCatalogMail extends Controller {
 
 		$this->load->model('catalog/mail');
 		
-		if (!extension_loaded('imap')) {
-			echo 'Imap library is not installed.';
-		}else{
-			if ($this->config->get('config_smtp_host')== null || $this->config->get('config_smtp_username')== null || $this->config->get('config_smtp_password')== null){
-				echo 'Imap library is not configurated.';
-			}else{
-				
-				require_once(DIR_SYSTEM . 'vendor/imap/ImapConnect.php'); 
+		if (extension_loaded('imap')) {
+			if ($this->config->get('config_smtp_host')!= null && $this->config->get('config_smtp_username')!= null && $this->config->get('config_smtp_password')!= null){
+				require_once(DIR_SYSTEM . 'vendor/imap/ImapConnect.php');
 				require_once(DIR_SYSTEM . 'vendor/imap/ImapClient.php'); 
 				require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessage.php');
 				require_once(DIR_SYSTEM . 'vendor/imap/TypeAttachments.php');
@@ -339,13 +332,17 @@ class ControllerCatalogMail extends Controller {
 				}
 			}
 			
-			$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
-			
-			$this->load->model('catalog/mail');
-			
-			$this->model_catalog_mail->addMailSended($data);
-			
-			$json['success'] = $this->language->get('text_success_email');
+			$mail_error = $this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+
+			if ($mail_error) {
+				$json['error']['message'] = $mail_error;
+			} else {
+				$this->load->model('catalog/mail');
+
+				$this->model_catalog_mail->addMailSended($data);
+
+				$json['success'] = $this->language->get('text_success_email');
+			}
 		}
 			
 		

@@ -42,10 +42,6 @@
         <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-	    <?php
-		if (!extension_loaded('imap')) {?>
-			<center><span class="label label-danger">Imap library is not installed!!</span></center>
-		<?php }		?>
         <form action="<?php echo $reply; ?>" class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
 					<div class="form-group">
 						<label for="to" class="control-label col-2">To:</label>

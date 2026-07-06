@@ -852,8 +852,13 @@ class ControllerPurchaseInvoice extends Controller {
 				$data['subject'] = $this->request->post['subject'];
 				$data['text']    = $this->request->post['message'];
 				$data['file']    = DIR_DOWNLOAD . 'purchase_invoice_' . $invoice_id . '.pdf';
-				$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
-				$json['success'] = $this->language->get('text_success_email');
+				$mail_error = $this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+
+				if ($mail_error) {
+					$json['error']['message'] = $mail_error;
+				} else {
+					$json['success'] = $this->language->get('text_success_email');
+				}
 			}
 
 			$this->response->setOutput(json_encode($json));

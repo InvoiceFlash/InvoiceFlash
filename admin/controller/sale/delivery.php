@@ -1847,14 +1847,18 @@ class ControllerSaledelivery extends Controller {
 				$data['code'] = md5($this->request->post['message']);
 				
 				$data['file'] = DIR_DOWNLOAD . 'delivery_' . $delivery_id . '.pdf';
-				
-				$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
-				
-				$this->load->model('catalog/mail');
-				
-				$this->model_catalog_mail->addMailSended($data);
-				
-				$json['success'] = $this->language->get('text_success_email');
+
+				$mail_error = $this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+
+				if ($mail_error) {
+					$json['error']['message'] = $mail_error;
+				} else {
+					$this->load->model('catalog/mail');
+
+					$this->model_catalog_mail->addMailSended($data);
+
+					$json['success'] = $this->language->get('text_success_email');
+				}
 			}
 
 			$this->response->setOutput(json_encode($json));

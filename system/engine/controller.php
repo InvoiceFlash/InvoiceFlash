@@ -134,29 +134,43 @@ abstract class Controller {
 		}
 	}
 	
+	// Returns null on success or the error message on failure. Mail::send()
+	// throws on SMTP/sendmail failure (bad credentials, unreachable host,
+	// etc.) - left uncaught, that became an uncaught fatal error, which
+	// callers invoke over AJAX with dataType 'json', so the PHP error page
+	// broke JSON.parse on the client instead of surfacing a real message.
 	protected function sendnewmail($to,$subject,$text,$lcFile) {
 		$mail = new Mail();
-		
+
         $mail->protocol = $this->config->get('config_mail_protocol');
         $mail->parameter = $this->config->get('config_mail_parameter');
         $mail->hostname = $this->config->get('config_smtp_host');
         $mail->username = $this->config->get('config_smtp_username');
         $mail->password = $this->config->get('config_smtp_password');
         $mail->port = $this->config->get('config_smtp_port');
-        $mail->timeout = $this->config->get('config_smtp_timeout');			
+        $mail->timeout = $this->config->get('config_smtp_timeout');
         $mail->setTo($to);
         $mail->setFrom($this->config->get('config_email'));
         $mail->setSender($this->config->get('config_title'));
         $mail->setSubject($subject);
- 
+
 		$mail->setHTML(html_entity_decode($text, ENT_QUOTES, 'UTF-8'));
-		
+
         if(file_exists($lcFile)){
 			$mail->addAttachment($lcFile);
 		}
 
 		$log=new Log('mail.log'); $log->write($mail);
-        $mail->send();
+
+		try {
+			$mail->send();
+		} catch (Exception $e) {
+			$log->write($e->getMessage());
+
+			return $e->getMessage();
+		}
+
+		return null;
     }
 	//end
 }

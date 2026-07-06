@@ -21,6 +21,9 @@
 		<form method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content mt-3">
 				<div class="tab-pane" id="tab-inbox">
+					<?php if ($error_imap) { ?>
+					<div class="alert alert-warning"><?php echo $error_imap; ?></div>
+					<?php } ?>
 					<table class="table table-bordered table-striped table-hover">
 						<thead>
 							<tr>

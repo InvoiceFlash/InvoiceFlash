@@ -61,7 +61,7 @@
 				<a href="<?php echo $add_customer; ?>"><h5 class="buton"><i class="fas fa-user"></i> <span class="hidden-xs"><?php echo $text_add_customer; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<a href="<?php echo $new_quote; ?>"><h5 class="buton"><i class="fas fa-edit"></i> <span class="hidden-xs"><?php echo $text_new_quote; ?></span></h5></a>
+				<a href="<?php echo $view_inbox; ?>"><h5 class="buton"><i class="fas fa-inbox"></i> <span class="hidden-xs"><?php echo $text_view_inbox; ?></span></h5></a>
 			</div>
 			<div class="card">
 				<a href="<?php echo $new_invoice; ?>"><h5 class="buton"><i class="far fa-file-alt"></i> <span class="hidden-xs"><?php echo $text_new_invoice; ?></span></h5></a>

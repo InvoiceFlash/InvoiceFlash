@@ -650,7 +650,6 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['text_to'] = $this->language->get('text_to');
 		$this->data['text_subject'] = $this->language->get('text_subject');
 		$this->data['text_message'] = $this->language->get('text_message');
-		$this->data['text_alert_imap'] = $this->language->get('text_alert_imap');
 
 		$this->data['button_new_email'] = $this->language->get('button_new_email');
 		$this->data['button_send'] = $this->language->get('button_send');
@@ -2221,13 +2220,17 @@ class ControllerSaleCustomer extends Controller {
 					}
 				}
 				
-				$this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
-				
-				$this->load->model('catalog/mail');
-				
-				$this->model_catalog_mail->addMailSended($data);
-				
-				$json['success'] = $this->language->get('text_success_email');
+				$mail_error = $this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+
+				if ($mail_error) {
+					$json['error']['message'] = $mail_error;
+				} else {
+					$this->load->model('catalog/mail');
+
+					$this->model_catalog_mail->addMailSended($data);
+
+					$json['success'] = $this->language->get('text_success_email');
+				}
 			}
 		} else {
 			$json['error']['permission'] = $this->language->get('error_permission_email');

@@ -50,7 +50,7 @@ $_['button_search']                 = 'Search Now';
 // Actions
 $_['text_actions']                  = 'Quick Actions';
 $_['text_add_customer']             = 'Add Customer';
-$_['text_new_quote']                = 'Create Quote';
+$_['text_view_inbox']                = 'View Inbox';
 $_['text_new_invoice']              = 'Create Invoice';
 $_['text_add_product']              = 'Add Product';
 ?>

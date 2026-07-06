@@ -714,17 +714,13 @@
 </div>
 <!-- Modal -->
 <div id="EmailModal" class="modal fade" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body">
-      <?php
-    if (!extension_loaded('imap')) {?>
-      <center><span class = "label label-danger"><?php echo $text_alert_imap ?></span>
-    <?php } ?>
 	<?php if (isset($error_server)) { ?>
 		<center><span class="label label-danger"><?php echo $error_server; ?></span>
 	<?php } ?>
