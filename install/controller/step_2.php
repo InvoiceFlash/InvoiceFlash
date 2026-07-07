@@ -73,6 +73,10 @@ class ControllerStep2 extends Controller {
 			$this->error['warning'] = 'Warning: ZIP extension needs to be loaded for invoiceflash to work!';
 		}
 
+		if (!extension_loaded('libxml')) {
+			$this->error['warning'] = 'Warning: LIBXML extension needs to be loaded for invoiceflash to work!';
+		}
+
 		if (!function_exists('iconv')) {
 			// iconv or mbstrings are used in the utf8 helper. Only 1 is needed but suggested to enable mbstring if iconv is not set
 			if (!extension_loaded('mbstring')) {

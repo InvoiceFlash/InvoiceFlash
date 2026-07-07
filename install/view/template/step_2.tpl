@@ -99,6 +99,12 @@
           <td>On</td>
           <td align="center"><?php echo extension_loaded('zIP') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
         </tr>
+        <tr>
+          <td>LIBXML:</td>
+          <td><?php echo extension_loaded('libxml') ? 'On' : 'Off'; ?></td>
+          <td>On</td>
+          <td align="center"><?php echo extension_loaded('libxml') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
+        </tr>
         <?php if (!function_exists('iconv')) { ?>
         <tr>
           <td>mbstring:</td>
