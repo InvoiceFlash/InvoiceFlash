@@ -1976,6 +1976,12 @@ class ControllerSaleInvoice extends Controller {
 		$products = $this->model_sale_invoice->getInvoiceProducts($invoice_id);
 		$totals = $this->model_sale_invoice->getInvoiceTotals($invoice_id);
 
+		// The invoice itself has no due date column: due dates live on its
+		// receipts (one per payment installment). Use the latest one as the
+		// invoice's overall payment due date.
+		$receipt_query = $this->db->query("SELECT MAX(date_due) AS date_due FROM `" . DB_PREFIX . "receipt` WHERE invoice_id = " . (int)$invoice_id);
+		$invoice_info['date_due'] = $receipt_query->row['date_due'] ? $receipt_query->row['date_due'] : '';
+
 		// Seller (issuer) party, taken from the store settings.
 		$seller_address = (string)$this->config->get('config_address');
 		$seller_postcode = '';
