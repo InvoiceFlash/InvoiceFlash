@@ -196,6 +196,100 @@ class ControllerSaleDraft extends Controller {
     	$this->getList();
   	}
 
+  	public function convert() {
+		$this->load->language('sale/draft');
+
+		$this->load->model('sale/draft');
+		$this->load->model('sale/invoice');
+		$this->load->model('tool/user_logs');
+
+    	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			foreach ($this->request->post['selected'] as $draft_id) {
+				$draft_info = $this->model_sale_draft->getDraft($draft_id);
+
+				if ($draft_info) {
+					$data = $draft_info;
+					$data['invoice_status_id'] = 1;
+
+					$data['invoice_product'] = array();
+
+					foreach ($this->model_sale_draft->getDraftProducts($draft_id) as $draft_product) {
+						$data['invoice_product'][] = array(
+							'invoice_product_id' => 0,
+							'product_id'         => $draft_product['product_id'],
+							'name'                => $draft_product['name'],
+							'model'               => $draft_product['model'],
+							'quantity'            => $draft_product['quantity'],
+							'price'               => $draft_product['price'],
+							'total'               => $draft_product['total'],
+							'tax'                 => $draft_product['tax'],
+							'invoice_option'      => $this->model_sale_draft->getDraftOptions($draft_id, $draft_product['draft_product_id'])
+						);
+					}
+
+					$data['invoice_total'] = $this->model_sale_draft->getDraftTotals($draft_id);
+
+					$new_invoice_id = $this->model_sale_invoice->addInvoice($data);
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'sale_invoice',
+						'document_id'   => (int)$new_invoice_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+
+					$this->model_sale_draft->deleteDraft($draft_id);
+				}
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success_convert');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_draft_id'])) {
+				$url .= '&filter_draft_id=' . $this->request->get['filter_draft_id'];
+			}
+
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_draft_status_id'])) {
+				$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
+			}
+
+			if (isset($this->request->get['filter_total'])) {
+				$url .= '&filter_total=' . $this->request->get['filter_total'];
+			}
+
+			if (isset($this->request->get['filter_date_added'])) {
+				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			}
+
+			if (isset($this->request->get['filter_date_modified'])) {
+				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->redirect($this->url->link('sale/draft', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+    	}
+
+    	$this->getList();
+  	}
+
   	private function getList() {
   		if (!extension_loaded('openssl')) {
 			$this->data['error_warning'] = 'OpenSSL library is not installed. You cannot sign drafts.';
@@ -315,6 +409,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['print'] = $this->url->link('sale/draft/draft', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['insert'] = $this->url->link('sale/draft/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('sale/draft/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['convert'] = $this->url->link('sale/draft/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		// add print selection
 		$reports = array_slice(scandir(DIR_TEMPLATE . 'sale/reports'), 2);
@@ -395,6 +490,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['button_draft'] = $this->language->get('button_draft');
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
+		$this->data['button_convert'] = $this->language->get('button_convert');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 
 		$this->data['token'] = $this->session->data['token'];
@@ -1076,16 +1172,20 @@ class ControllerSaleDraft extends Controller {
 				$draft_option = array();
 			}
 											
+			$product_info = $this->model_catalog_product->getProduct($draft_product['product_id']);
+
 			$this->data['draft_products'][] = array(
-				'draft_product_id' => $draft_product['draft_product_id'],
-				'product_id'       => $draft_product['product_id'],
-				'name'             => $draft_product['name'],
-				'model'            => $draft_product['model'],
-				'option'           => $draft_option,
-				'quantity'         => $draft_product['quantity'],
-				'price'			   => $this->currency->format($draft_product['price'], $draft_info['currency_code'], $draft_info['currency_value']),
-				'total'            => $this->currency->format($draft_product['total'], $draft_info['currency_code'], $draft_info['currency_value']),
-				'tax'              => $draft_product['tax']
+				'draft_product_id'  => $draft_product['draft_product_id'],
+				'product_id'        => $draft_product['product_id'],
+				'name'              => $draft_product['name'],
+				'model'             => $draft_product['model'],
+				'option'            => $draft_option,
+				'quantity'          => $draft_product['quantity'],
+				'price'			    => $this->currency->format($draft_product['price'], $draft_info['currency_code'], $draft_info['currency_value']),
+				'price_raw'         => number_format((float)$draft_product['price'], 2, '.', ''),
+				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$draft_product['price'], 2, '.', ''),
+				'total'             => $this->currency->format($draft_product['total'], $draft_info['currency_code'], $draft_info['currency_value']),
+				'tax'               => $draft_product['tax']
 			);
 		}
 		
@@ -1903,16 +2003,21 @@ class ControllerSaleDraft extends Controller {
 						}
 					}
 
-					if ($product_info) {	
+					if ($product_info) {
+						$use_price = (isset($draft_product['price']) && $draft_product['price'] !== '')
+							? (float)preg_replace('/[^-0-9\.]/', '', $draft_product['price'])
+							: (float)$product_info['price'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'], 
-							'model'		 => $product_info['model'], 
-							'quantity' 	 => $draft_product['quantity'], 
+							'name'		 => $product_info['name'],
+							'model'		 => $product_info['model'],
+							'quantity' 	 => $draft_product['quantity'],
 							'option'	 => $option_data,
-							'price'		 => $product_info['price'], 
+							'price'		 => $use_price,
+							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($product_info['price']*$draft_product['quantity']),
+							'total'		 => ($use_price*$draft_product['quantity']),
 							'shipping'	 => $product_info['shipping']
 						);
 					}
@@ -1955,6 +2060,7 @@ class ControllerSaleDraft extends Controller {
 							'quantity' 	 	=> $quantity,
 							'option' 	 	=> $option,
 							'price'		 	=> $use_price,
+							'catalog_price' => $product_info['price'],
 							'tax_class_id'	=> $product_info['tax_class_id'],
 							'total'		 	=> ($use_price * $quantity),
 							'shipping'	 	=> $product_info['shipping']
@@ -1994,14 +2100,16 @@ class ControllerSaleDraft extends Controller {
 				}
 				
 				$json['draft_product'][] = array(
-					'product_id' 	=> $product['product_id'],
-					'name'       	=> $product['name'],
-					'model'      	=> $product['model'], 
-					'quantity'   	=> $product['quantity'],
-					'option'   		=> $option,
-					'price'      	=> $this->currency->format($product['price']),	
-					'tax_class_id'	=> $product['tax_class_id'], 
-					'total'      	=> $this->currency->format($product['total'])
+					'product_id' 	    => $product['product_id'],
+					'name'       	    => $product['name'],
+					'model'      	    => $product['model'],
+					'quantity'   	    => $product['quantity'],
+					'option'   		    => $option,
+					'price'      	    => $this->currency->format($product['price']),
+					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
+					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
+					'tax_class_id'	    => $product['tax_class_id'],
+					'total'      	    => $this->currency->format($product['total'])
 				);
 			}
 

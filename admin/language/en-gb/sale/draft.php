@@ -4,6 +4,7 @@ $_['heading_title']                           = 'Drafts';
 
 // Text
 $_['text_success']                            = 'Success: You have modified drafts!';
+$_['text_success_convert']                    = 'Success: The selected drafts have been converted to invoices!';
 $_['text_draft_id']                         = 'Draft ID:';
 $_['text_draft_no']                         = 'Draft No.:';
 $_['text_draft_date']                       = 'Draft Date:';

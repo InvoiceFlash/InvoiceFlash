@@ -153,10 +153,8 @@
 								</td>
 								<td class="d-none d-sm-table-cell"><?php echo $draft_product['model']; ?>
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][model]" value="<?php echo $draft_product['model']; ?>"></td>
-								<td class="text-right"><?php echo $draft_product['quantity']; ?>
-									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $draft_product['quantity']; ?>"></td>
-								<td class="text-right"><?php echo $draft_product['price']; ?>
-									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][price]" value="<?php echo $draft_product['price']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $draft_product['quantity']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="<?php echo $draft_product['catalog_price_raw']; ?>" name="draft_product[<?php echo $product_row; ?>][price]" value="<?php echo $draft_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $draft_product['total']; ?>
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][total]" value="<?php echo $draft_product['total']; ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][tax]" value="<?php echo $draft_product['tax']; ?>"></td>
@@ -665,5 +663,34 @@ $('#ProductSearchModal').on('hidden.bs.modal', function() {
 	$('#ps-warning').hide();
 	psProducts = [];
 });
+
+function draftMarkPriceChanged(input) {
+	var $input = $(input);
+	var current = parseFloat($input.val().replace(',', '.')) || 0;
+	var original = parseFloat($input.data('catalog-price')) || 0;
+
+	$input.toggleClass('draft-price-changed', current.toFixed(2) !== original.toFixed(2));
+}
+
+$(document).on('input', '.draft-price', function() {
+	draftMarkPriceChanged(this);
+});
+
+$(document).on('change', '.draft-qty, .draft-price', function() {
+	draftMarkPriceChanged(this);
+	$('#button-draft-product').click();
+});
+
+$('.draft-price').each(function() {
+	draftMarkPriceChanged(this);
+});
 </script>
+<style>
+.draft-price-changed {
+	color: #b30000;
+	font-weight: bold;
+	border-color: #b30000;
+	background-color: #fdf0f0;
+}
+</style>
 <?php echo $footer; ?>

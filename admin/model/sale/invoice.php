@@ -418,8 +418,6 @@ class ModelSaleInvoice extends Model {
 
 		$total_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "invoice_total WHERE invoice_id = '" . (int)$invoice_id . "' ORDER BY sort_order");
 
-		$total = 0;
-
 		foreach ($total_query->rows as $invoice_total) {
 			$value = -$invoice_total['value'];
 
@@ -430,9 +428,13 @@ class ModelSaleInvoice extends Model {
 				text = '" . $this->db->escape($this->currency->format($value, $invoice['currency_code'], $invoice['currency_value'])) . "',
 				`value` = '" . (float)$value . "',
 				sort_order = '" . (int)$invoice_total['sort_order'] . "'");
-
-			$total += $value;
 		}
+
+		// The invoice_total rows include a "Total" line whose value already equals the
+		// sum of the preceding lines (Sub-Total, Tax, Shipping...), so summing every row
+		// would double-count it. The original invoice's total column is already correct,
+		// so the negative copy's total is simply its negation.
+		$total = -$invoice['total'];
 
 		$this->db->query("UPDATE " . DB_PREFIX . "invoice SET total = '" . (float)$total . "' WHERE invoice_id = '" . (int)$negative_invoice_id . "'");
 

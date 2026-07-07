@@ -1962,13 +1962,18 @@ $(function(){
 						}
 						html+='</td>';
 						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="draft_product['+product_row+'][model]" value="'+product['model']+'"></td>';
-						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="draft_product['+product_row+'][price]" value="'+product['price']+'"></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="'+product['catalog_price_raw']+'" name="draft_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="draft_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="draft_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
 					}
 					$('#product').html(html);
+					if (typeof draftMarkPriceChanged === 'function') {
+						$('#product .draft-price').each(function() {
+							draftMarkPriceChanged(this);
+						});
+					}
 				}
 				if(json['draft_total']!=''){
 					var total_row=0;
@@ -1983,6 +1988,9 @@ $(function(){
 					}
 					$('#total').html(html);
 				}
+			},
+			complete:function(){
+				a.button('reset');
 			}
 		});
 	});
