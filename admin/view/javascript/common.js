@@ -853,6 +853,7 @@ $(function(){
 		updater:function(item){
 			$('input[name="customer"]').val(mapped[item].company);
 			$('input[name="company"]').val(mapped[item].company);
+			$('input[name="payment_company"]').val(mapped[item].company);
 			$('input[name="customer_id"]').val(mapped[item].customer_id);
 			$('input[name="firstname"]').val(mapped[item].firstname);
 			$('input[name="lastname"]').val(mapped[item].lastname);
@@ -986,7 +987,9 @@ $(function(){
 			dataType:'json',
 			success:function(json){
 				if(json!=''){
-					$('input[name="payment_company"]').val(json['company']);
+					if(json['company']){
+						$('input[name="payment_company"]').val(json['company']);
+					}
 					$('input[name="payment_company_id"]').val(json['company_id']);
 					$('input[name="payment_tax_id"]').val(json['tax_id']);
 					$('input[name="payment_address_1"]').val(json['address_1']);

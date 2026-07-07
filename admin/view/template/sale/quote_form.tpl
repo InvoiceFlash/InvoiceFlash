@@ -257,6 +257,12 @@
 											</div>
 										</div>
 										<div class="form-group">
+											<label class="control-label col-3"><?php echo $entry_customer; ?></label>
+											<div class="control-field col-sm-8">
+												<input type="text" name="payment_company" value="<?php echo $payment_company !== '' ? $payment_company : $company; ?>" class="form-control">
+											</div>
+										</div>
+										<div class="form-group">
 											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_email; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
@@ -274,12 +280,7 @@
 												<?php } ?>
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_fax; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
-											</div>
-										</div>
+										<input type="hidden" name="fax" value="<?php echo $fax; ?>">
 									</div>
 								</div>
 								<div class="tab-pane" id="tab-payment">
@@ -293,12 +294,6 @@
 														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
 													<?php } ?>
 												</select>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_company; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="payment_company" value="<?php echo $payment_company; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group">
@@ -542,6 +537,13 @@ $('#addProduct').click(function(e){
 		$('#order-customer').focus();
 	} else {
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
+	}
+});
+$('#CustomerModal').on('show.bs.modal', function(e){
+	if ($('#customer_id').val() == 0) {
+		e.preventDefault();
+		alert('Please, select a customer first');
+		$('#order-customer').focus();
 	}
 });
 </script>
