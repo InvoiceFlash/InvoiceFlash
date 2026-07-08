@@ -1939,7 +1939,37 @@ class ControllerSaleInvoice extends Controller {
 		} elseif (!$this->config->get('certificado') || !$this->config->get('clave')) {
 			$json['error'] = $this->language->get('error_facturae_certificate');
 		} else {
-			$json['success'] = true;
+			require_once(DIR_SYSTEM . 'library/facturae_signer.php');
+
+			try {
+				$signer = new FacturaeSigner();
+				$signer->testCertificate(DIR_DOWNLOAD . $this->config->get('certificado'), $this->config->get('clave'));
+			} catch (FacturaeSignerException $e) {
+				$json['error'] = $this->language->get('error_facturae_sign') . ' ' . $e->getMessage();
+			}
+
+			if (empty($json['error'])) {
+				$this->load->model('sale/invoice');
+				$this->load->model('localisation/country');
+				$this->load->model('localisation/zone');
+
+				$invoice_id = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
+				$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
+
+				if ($invoice_info) {
+					list($seller, $buyer) = $this->getFacturaeParties($invoice_info);
+
+					$error = $this->getFacturaePartiesError($seller, $buyer);
+
+					if ($error) {
+						$json['error'] = $error;
+					}
+				}
+			}
+
+			if (empty($json['error'])) {
+				$json['success'] = true;
+			}
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -1982,50 +2012,15 @@ class ControllerSaleInvoice extends Controller {
 		$receipt_query = $this->db->query("SELECT MAX(date_due) AS date_due FROM `" . DB_PREFIX . "receipt` WHERE invoice_id = " . (int)$invoice_id);
 		$invoice_info['date_due'] = $receipt_query->row['date_due'] ? $receipt_query->row['date_due'] : '';
 
-		// Seller (issuer) party, taken from the store settings.
-		$seller_address = (string)$this->config->get('config_address');
-		$seller_postcode = '';
-		$seller_town = '';
+		list($seller, $buyer) = $this->getFacturaeParties($invoice_info);
 
-		if (preg_match('/(\d{5})\s*[\,\-]?\s*(.*)$/m', $seller_address, $matches)) {
-			$seller_postcode = $matches[1];
-			$seller_town = trim($matches[2]);
-			$seller_address = trim(str_replace($matches[0], '', $seller_address));
+		// Fail early with a clear message rather than generating an invalid Facturae file.
+		$error = $this->getFacturaePartiesError($seller, $buyer);
+
+		if ($error) {
+			$this->response->setOutput($error);
+			return;
 		}
-
-		$seller_country = $this->model_localisation_country->getCountry($this->config->get('config_country_id'));
-		$seller_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
-
-		$seller_nif = $this->config->get('config_vat_id');
-
-		if (!$seller_nif) {
-			$seller_nif = $this->config->get('config_nif');
-		}
-
-		$seller = array(
-			'name'     => $this->config->get('config_name'),
-			'nif'      => preg_replace('/[^A-Za-z0-9]/', '', (string)$seller_nif),
-			'address'  => $seller_address,
-			'postcode' => $seller_postcode,
-			'town'     => $seller_town,
-			'province' => $seller_zone ? $seller_zone['name'] : '',
-			'country'  => $seller_country && $seller_country['iso_code_3'] ? $seller_country['iso_code_3'] : 'ESP'
-		);
-
-		// Buyer party, taken from the billing details stored on the invoice.
-		$buyer_name = $invoice_info['payment_company'] ? $invoice_info['payment_company'] : $invoice_info['company'];
-		$buyer_nif = $invoice_info['payment_tax_id'] ? $invoice_info['payment_tax_id'] : $invoice_info['payment_company_id'];
-
-		$buyer = array(
-			'name'        => $buyer_name,
-			'nif'         => preg_replace('/[^A-Za-z0-9]/', '', (string)$buyer_nif),
-			'address'     => trim($invoice_info['payment_address_1'] . ' ' . $invoice_info['payment_address_2']),
-			'postcode'    => $invoice_info['payment_postcode'],
-			'town'        => $invoice_info['payment_city'],
-			'province'    => $invoice_info['payment_zone'],
-			'country'     => $invoice_info['payment_iso_code_3'] ? $invoice_info['payment_iso_code_3'] : 'ESP',
-			'person_type' => $buyer_name ? 'J' : 'F'
-		);
 
 		// Tax breakdown: the taxable base is derived from the tax amount and
 		// rate so it stays correct even when an invoice mixes several VAT rates.
@@ -2104,6 +2099,16 @@ class ControllerSaleInvoice extends Controller {
 			'tax_total'      => $tax_total,
 			'total'          => (float)$invoice_info['total']
 		));
+
+		require_once(DIR_SYSTEM . 'library/facturae_signer.php');
+
+		try {
+			$signer = new FacturaeSigner();
+			$xml = $signer->sign($xml, DIR_DOWNLOAD . $this->config->get('certificado'), $this->config->get('clave'));
+		} catch (FacturaeSignerException $e) {
+			$this->response->setOutput($this->language->get('error_facturae_sign') . ' ' . $e->getMessage());
+			return;
+		}
 
 		$this->response->addHeader('Content-Type: application/xml; charset=UTF-8');
 		$this->response->addHeader('Content-Disposition: attachment; filename="facturae_' . $invoice_info['invoice_prefix'] . $invoice_no . '.xml"');
@@ -2286,6 +2291,23 @@ class ControllerSaleInvoice extends Controller {
 
 		$partyEl->appendChild($doc->createElement('PartyIdentification'));
 
+		// Public-sector buyers (town councils, etc.) are addressed through their DIR3
+		// accounting/managing/processing unit codes, kept on the customer's fiscal record.
+		if ($tagName == 'BuyerParty' && !empty($party['dir3'])) {
+			$administrativeCentres = $doc->createElement('AdministrativeCentres');
+			$partyEl->appendChild($administrativeCentres);
+
+			foreach ($party['dir3'] as $centre) {
+				$administrativeCentre = $doc->createElement('AdministrativeCentre');
+				$administrativeCentres->appendChild($administrativeCentre);
+				$administrativeCentre->appendChild($doc->createElement('CentreCode', $centre['code']));
+				$administrativeCentre->appendChild($doc->createElement('RoleTypeCode', $centre['role']));
+				$administrativeCentre->appendChild($doc->createElement('Name'));
+				$this->appendFacturaeAddress($doc, $administrativeCentre, $party, $isSpain);
+				$administrativeCentre->appendChild($doc->createElement('LogicalOperationalPoint'));
+			}
+		}
+
 		$legalEntity = $doc->createElement($personType == 'F' ? 'Individual' : 'LegalEntity');
 		$partyEl->appendChild($legalEntity);
 
@@ -2297,15 +2319,150 @@ class ControllerSaleInvoice extends Controller {
 			$legalEntity->appendChild($doc->createElement('CorporateName', $party['name']));
 		}
 
-		$addressEl = $doc->createElement($isSpain ? 'AddressInSpain' : 'OverseasAddress');
-		$legalEntity->appendChild($addressEl);
-		$addressEl->appendChild($doc->createElement('Address', $party['address']));
-		$addressEl->appendChild($doc->createElement('PostCode', $party['postcode']));
-		$addressEl->appendChild($doc->createElement('Town', $party['town']));
-		$addressEl->appendChild($doc->createElement('Province', $party['province']));
-		$addressEl->appendChild($doc->createElement('CountryCode', $party['country']));
+		$this->appendFacturaeAddress($doc, $legalEntity, $party, $isSpain);
 
 		return $partyEl;
+	}
+
+	protected function appendFacturaeAddress($doc, $parent, $party, $isSpain) {
+		$addressEl = $doc->createElement($isSpain ? 'AddressInSpain' : 'OverseasAddress');
+		$parent->appendChild($addressEl);
+		$addressEl->appendChild($doc->createElement('Address', $party['address']));
+
+		if ($isSpain) {
+			$addressEl->appendChild($doc->createElement('PostCode', $party['postcode']));
+			$addressEl->appendChild($doc->createElement('Town', $party['town']));
+		} else {
+			// OverseasAddressType has no separate PostCode/Town, only a combined PostCodeAndTown.
+			$addressEl->appendChild($doc->createElement('PostCodeAndTown', trim($party['postcode'] . ' ' . $party['town'])));
+		}
+
+		$addressEl->appendChild($doc->createElement('Province', $party['province']));
+		$addressEl->appendChild($doc->createElement('CountryCode', $party['country']));
+	}
+
+	protected function getFacturaeParties($invoice_info) {
+		// Seller (issuer) party, taken from the store settings.
+		$seller_address = (string)$this->config->get('config_address');
+		$seller_postcode = '';
+		$seller_town = '';
+
+		if (preg_match('/(\d{5})\s*[\,\-]?\s*(.*)$/m', $seller_address, $matches)) {
+			$seller_postcode = $matches[1];
+			$seller_town = trim($matches[2]);
+			$seller_address = trim(str_replace($matches[0], '', $seller_address));
+		}
+
+		$seller_country = $this->model_localisation_country->getCountry($this->config->get('config_country_id'));
+		$seller_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+
+		$seller_nif = $this->config->get('config_vat_id');
+
+		if (!$seller_nif) {
+			$seller_nif = $this->config->get('config_nif');
+		}
+
+		$seller = array(
+			'name'     => $this->config->get('config_name'),
+			'nif'      => preg_replace('/[^A-Za-z0-9]/', '', (string)$seller_nif),
+			'address'  => $seller_address,
+			'postcode' => $seller_postcode,
+			'town'     => $seller_town,
+			'province' => $seller_zone ? $seller_zone['name'] : '',
+			'country'  => $seller_country && $seller_country['iso_code_3'] ? $seller_country['iso_code_3'] : 'ESP'
+		);
+
+		// Buyer party, taken from the billing details stored on the invoice, falling
+		// back to the customer's fiscal record (ficha del cliente) when the invoice's
+		// own billing snapshot is missing the NIF and/or postcode.
+		$buyer_name = $invoice_info['payment_company'] ? $invoice_info['payment_company'] : $invoice_info['company'];
+		$buyer_nif = $invoice_info['payment_tax_id'] ? $invoice_info['payment_tax_id'] : $invoice_info['payment_company_id'];
+		$buyer_address = trim($invoice_info['payment_address_1'] . ' ' . $invoice_info['payment_address_2']);
+		$buyer_postcode = $invoice_info['payment_postcode'];
+		$buyer_town = $invoice_info['payment_city'];
+		$buyer_province = $invoice_info['payment_zone'];
+		$buyer_country = $invoice_info['payment_iso_code_3'] ? $invoice_info['payment_iso_code_3'] : 'ESP';
+
+		$this->load->model('sale/customer');
+
+		$customer_info = $invoice_info['customer_id'] ? $this->model_sale_customer->getCustomer($invoice_info['customer_id']) : false;
+
+		if ($customer_info) {
+			if (!$buyer_nif && $customer_info['nif']) {
+				$buyer_nif = $customer_info['nif'];
+			}
+
+			if (!$buyer_postcode && $customer_info['postcode']) {
+				$buyer_postcode = $customer_info['postcode'];
+				$buyer_town = $customer_info['city'];
+
+				if ($customer_info['address']) {
+					$buyer_address = $customer_info['address'];
+				}
+
+				if ($customer_info['country_id']) {
+					$customer_country = $this->model_localisation_country->getCountry($customer_info['country_id']);
+					$buyer_country = $customer_country && $customer_country['iso_code_3'] ? $customer_country['iso_code_3'] : $buyer_country;
+				}
+
+				if ($customer_info['zone_id']) {
+					$customer_zone = $this->model_localisation_zone->getZone($customer_info['zone_id']);
+					$buyer_province = $customer_zone ? $customer_zone['name'] : $buyer_province;
+				}
+			}
+		}
+
+		// DIR3 codes (Oficina Contable / Órgano Gestor / Unidad Tramitadora), kept on the
+		// customer's fiscal record, are required as AdministrativeCentres for public-sector buyers.
+		$buyer_dir3 = array();
+
+		if ($customer_info) {
+			if (!empty($customer_info['efaccafi'])) {
+				$buyer_dir3[] = array('code' => $customer_info['efaccafi'], 'role' => '01');
+			}
+
+			if (!empty($customer_info['efaccare'])) {
+				$buyer_dir3[] = array('code' => $customer_info['efaccare'], 'role' => '02');
+			}
+
+			if (!empty($customer_info['efaccapa'])) {
+				$buyer_dir3[] = array('code' => $customer_info['efaccapa'], 'role' => '03');
+			}
+		}
+
+		$buyer = array(
+			'name'        => $buyer_name,
+			'nif'         => preg_replace('/[^A-Za-z0-9]/', '', (string)$buyer_nif),
+			'address'     => $buyer_address,
+			'postcode'    => $buyer_postcode,
+			'town'        => $buyer_town,
+			'province'    => $buyer_province,
+			'dir3'        => $buyer_dir3,
+			'country'     => $buyer_country,
+			'person_type' => $buyer_name ? 'J' : 'F'
+		);
+
+		return array($seller, $buyer);
+	}
+
+	protected function getFacturaePartiesError($seller, $buyer) {
+		if (strlen($seller['nif']) < 3) {
+			return $this->language->get('error_facturae_vat_id');
+		}
+
+		if ($seller['country'] == 'ESP' && !preg_match('/^\d{5}$/', $seller['postcode'])) {
+			return $this->language->get('error_facturae_seller_postcode');
+		}
+
+		if (strlen($buyer['nif']) < 3) {
+			return $this->language->get('error_facturae_buyer_vat_id');
+		}
+
+		if ($buyer['country'] == 'ESP' && !preg_match('/^\d{5}$/', $buyer['postcode'])) {
+			return $this->language->get('error_facturae_buyer_postcode');
+		}
+
+		return '';
 	}
 
 	protected function facturaeAmount($value) {

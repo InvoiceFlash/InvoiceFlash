@@ -298,7 +298,7 @@ $('#button-facturae').on('click',function(e){
 	var url = $(this).data('href');
 
 	$.ajax({
-		url:'index.php?route=sale/invoice/checkFacturae&token=<?php echo $token; ?>',
+		url:'index.php?route=sale/invoice/checkFacturae&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>',
 		type:'get',
 		dataType:'json',
 		success:function(json){
