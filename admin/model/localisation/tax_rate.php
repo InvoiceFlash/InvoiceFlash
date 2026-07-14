@@ -1,7 +1,28 @@
-<?php 
+<?php
 class ModelLocalisationTaxRate extends Model {
+	private static $accountColumnChecked = false;
+
+	// Self-healing schema check: this codebase has no migration runner, so the
+	// 'account' column (accounting code used by the ContaPlus exporter) is added
+	// on first use instead of requiring a manual ALTER TABLE on existing installs.
+	private function ensureAccountColumn() {
+		if (self::$accountColumnChecked) {
+			return;
+		}
+
+		self::$accountColumnChecked = true;
+
+		$query = $this->db->query("SHOW COLUMNS FROM " . DB_PREFIX . "tax_rate LIKE 'account'");
+
+		if (!$query->num_rows) {
+			$this->db->query("ALTER TABLE " . DB_PREFIX . "tax_rate ADD COLUMN account VARCHAR(20) NULL AFTER rate");
+		}
+	}
+
 	public function addTaxRate($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "tax_rate SET name = '" . $this->db->escape($data['name']) . "', rate = '" . (float)$data['rate'] . "', `type` = '" . $this->db->escape($data['type']) . "', geo_zone_id = '" . (int)$data['geo_zone_id'] . "', date_added = NOW(), date_modified = NOW()");
+		$this->ensureAccountColumn();
+
+		$this->db->query("INSERT INTO " . DB_PREFIX . "tax_rate SET name = '" . $this->db->escape($data['name']) . "', rate = '" . (float)$data['rate'] . "', account = '" . $this->db->escape(isset($data['account']) ? $data['account'] : '') . "', `type` = '" . $this->db->escape($data['type']) . "', geo_zone_id = '" . (int)$data['geo_zone_id'] . "', date_added = NOW(), date_modified = NOW()");
 
 		$tax_rate_id = $this->db->getLastId();
 
@@ -13,7 +34,9 @@ class ModelLocalisationTaxRate extends Model {
 	}
 
 	public function editTaxRate($tax_rate_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "tax_rate SET name = '" . $this->db->escape($data['name']) . "', rate = '" . (float)$data['rate'] . "', `type` = '" . $this->db->escape($data['type']) . "', geo_zone_id = '" . (int)$data['geo_zone_id'] . "', date_modified = NOW() WHERE tax_rate_id = '" . (int)$tax_rate_id . "'");
+		$this->ensureAccountColumn();
+
+		$this->db->query("UPDATE " . DB_PREFIX . "tax_rate SET name = '" . $this->db->escape($data['name']) . "', rate = '" . (float)$data['rate'] . "', account = '" . $this->db->escape(isset($data['account']) ? $data['account'] : '') . "', `type` = '" . $this->db->escape($data['type']) . "', geo_zone_id = '" . (int)$data['geo_zone_id'] . "', date_modified = NOW() WHERE tax_rate_id = '" . (int)$tax_rate_id . "'");
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "tax_rate_to_customer_group WHERE tax_rate_id = '" . (int)$tax_rate_id . "'");
 
@@ -21,7 +44,7 @@ class ModelLocalisationTaxRate extends Model {
 			foreach ($data['tax_rate_customer_group'] as $customer_group_id) {
 				$this->db->query("INSERT INTO " . DB_PREFIX . "tax_rate_to_customer_group SET tax_rate_id = '" . (int)$tax_rate_id . "', customer_group_id = '" . (int)$customer_group_id . "'");
 			}
-		}		
+		}
 	}
 
 	public function deleteTaxRate($tax_rate_id) {
@@ -30,13 +53,17 @@ class ModelLocalisationTaxRate extends Model {
 	}
 
 	public function getTaxRate($tax_rate_id) {
-		$query = $this->db->query("SELECT tr.tax_rate_id, tr.name AS name, tr.rate, tr.type, tr.geo_zone_id, gz.name AS geo_zone, tr.date_added, tr.date_modified FROM " . DB_PREFIX . "tax_rate tr LEFT JOIN " . DB_PREFIX . "geo_zone gz ON (tr.geo_zone_id = gz.geo_zone_id) WHERE tr.tax_rate_id = '" . (int)$tax_rate_id . "'");
+		$this->ensureAccountColumn();
+
+		$query = $this->db->query("SELECT tr.tax_rate_id, tr.name AS name, tr.rate, tr.account, tr.type, tr.geo_zone_id, gz.name AS geo_zone, tr.date_added, tr.date_modified FROM " . DB_PREFIX . "tax_rate tr LEFT JOIN " . DB_PREFIX . "geo_zone gz ON (tr.geo_zone_id = gz.geo_zone_id) WHERE tr.tax_rate_id = '" . (int)$tax_rate_id . "'");
 
 		return $query->row;
 	}
 
 	public function getTaxRates($data = array()) {
-		$sql = "SELECT tr.tax_rate_id, tr.name AS name, tr.rate, tr.type, gz.name AS geo_zone, tr.date_added, tr.date_modified FROM " . DB_PREFIX . "tax_rate tr LEFT JOIN " . DB_PREFIX . "geo_zone gz ON (tr.geo_zone_id = gz.geo_zone_id)";
+		$this->ensureAccountColumn();
+
+		$sql = "SELECT tr.tax_rate_id, tr.name AS name, tr.rate, tr.account, tr.type, gz.name AS geo_zone, tr.date_added, tr.date_modified FROM " . DB_PREFIX . "tax_rate tr LEFT JOIN " . DB_PREFIX . "geo_zone gz ON (tr.geo_zone_id = gz.geo_zone_id)";
 
 		$sort_data = array(
 			'tr.name',

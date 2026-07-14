@@ -34,8 +34,11 @@
 						<div class="form-group col-sm-8">
 							<label class="control-label col-sm-2"><b class="required">*</b> <?php echo $entry_supplier; ?></label>
 							<div class="control-field col-sm-10">
-								<input type="text" name="supplier" value="<?php echo $supplier; ?>" id="purchase-order-supplier" autocomplete="off" class="form-control">
-								<input type="hidden" id="purchase_order_supplier_id" name="supplier_id" value="<?php echo $supplier_id; ?>">
+								<div class="input-group">
+									<input type="text" name="supplier" value="<?php echo $supplier; ?>" id="purchase-order-supplier" autocomplete="off" class="form-control">
+									<input type="hidden" id="purchase_order_supplier_id" name="supplier_id" value="<?php echo $supplier_id; ?>">
+									<div class="input-group-append"><button class="btn btn-default" type="button" id="searchSupplier" title="Buscar Proveedor"><i class="fa fa-search"></i></button></div>
+								</div>
 								<?php if ($error_supplier) { ?>
 									<div class="help-block text-danger"><?php echo $error_supplier; ?></div>
 								<?php } ?>
@@ -155,6 +158,44 @@
 					</table>
 				</div>
 			</div>
+			<!-- Modal Buscar Proveedor -->
+			<div class="modal" tabindex="-1" role="dialog" id="SupplierSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Buscar Proveedor</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm">
+									<label class="control-label">Empresa / Nombre</label>
+									<input type="text" id="ss-company" class="form-control" placeholder="Empresa / Nombre">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="ss-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="ss-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>Empresa</th>
+											<th>Email</th>
+											<th>Teléfono</th>
+										</tr>
+									</thead>
+									<tbody id="ss-results">
+										<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los proveedores</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Buscar Proveedor -->
 			<!-- Modal Product -->
 			<div class="modal" tab-index="-1" role="dialog" id="PurchaseOrderProductModal">
 				<div class="modal-dialog" role="document">
@@ -212,6 +253,68 @@ function validatePurchaseOrderForm(){
 		return false;
 	}
 }
+
+var ssSuppliers = [];
+
+$('#searchSupplier').click(function(e) {
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('SupplierSearchModal')).show();
+});
+
+function ssDoSearch() {
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('purchase/supplier/searchSuppliers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_company: $('#ss-company').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#ss-warning').text(json.warning).show();
+				$('#ss-results').html('<tr><td colspan="3" class="text-center">' + json.warning + '</td></tr>');
+				ssSuppliers = [];
+				return;
+			}
+			$('#ss-warning').hide();
+			ssSuppliers = json;
+			if (!json.length) {
+				$('#ss-results').html('<tr><td colspan="3" class="text-center">No se encontraron proveedores</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].company || '') + '</td>';
+				html += '<td>' + (json[i].email || '') + '</td>';
+				html += '<td>' + (json[i].telephone || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#ss-results').html(html);
+		}
+	});
+}
+
+$('#ss-search').click(ssDoSearch);
+
+$('#ss-company').on('keypress', function(e) {
+	if (e.which == 13) ssDoSearch();
+});
+
+$(document).on('dblclick', '#ss-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var s = ssSuppliers[idx];
+
+	$('#purchase-order-supplier').val(s.company);
+	$('#purchase_order_supplier_id').val(s.supplier_id);
+
+	bootstrap.Modal.getInstance(document.getElementById('SupplierSearchModal')).hide();
+});
+
+$('#SupplierSearchModal').on('hidden.bs.modal', function() {
+	$('#ss-company').val('');
+	$('#ss-results').html('<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los proveedores</td></tr>');
+	$('#ss-warning').hide();
+	ssSuppliers = [];
+});
+
 $('#PurchaseOrderProductModal').on('hidden.bs.modal', function () {
 	$(this).find('#purchase-order-product').val('').end();
 	$(this).find('#purchase_order_product_id').val(0);

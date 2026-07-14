@@ -59,6 +59,7 @@
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
+								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="Buscar Cliente"><i class="fa fa-search"></i></button></div>
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
 							</div>
 						</div>
@@ -193,6 +194,45 @@
 					</table>
 				</div>
 			</div>
+			<!-- Modal Buscar Cliente -->
+			<div class="modal" tabindex="-1" role="dialog" id="CustomerSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Buscar Cliente</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm">
+									<label class="control-label">Empresa / Nombre</label>
+									<input type="text" id="cs-company" class="form-control" placeholder="Empresa / Nombre">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="cs-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="cs-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>Empresa</th>
+											<th>Grupo</th>
+											<th>Email</th>
+											<th>Teléfono</th>
+										</tr>
+									</thead>
+									<tbody id="cs-results">
+										<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Buscar Cliente -->
 			<!-- Modal búsqueda de artículos -->
 			<div class="modal fade" tabindex="-1" role="dialog" id="ProductSearchModal">
 				<div class="modal-dialog modal-lg" role="document">
@@ -567,6 +607,81 @@ $('#addProduct').on('click', function(e) {
     } else {
         bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductSearchModal')).show();
     }
+});
+
+var csCustomers = [];
+
+$('#searchCustomer').click(function(e) {
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('CustomerSearchModal')).show();
+});
+
+function csDoSearch() {
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_company: $('#cs-company').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#cs-warning').text(json.warning).show();
+				$('#cs-results').html('<tr><td colspan="4" class="text-center">' + json.warning + '</td></tr>');
+				csCustomers = [];
+				return;
+			}
+			$('#cs-warning').hide();
+			csCustomers = json;
+			if (!json.length) {
+				$('#cs-results').html('<tr><td colspan="4" class="text-center">No se encontraron clientes</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].company || '') + '</td>';
+				html += '<td>' + (json[i].customer_group || '') + '</td>';
+				html += '<td>' + (json[i].email || '') + '</td>';
+				html += '<td>' + (json[i].telephone || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#cs-results').html(html);
+		}
+	});
+}
+
+$('#cs-search').click(csDoSearch);
+
+$('#cs-company').on('keypress', function(e) {
+	if (e.which == 13) csDoSearch();
+});
+
+$(document).on('dblclick', '#cs-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var c = csCustomers[idx];
+
+	$('input[name="company"]').val(c.company);
+	$('#customer_id').val(c.customer_id);
+	$('input[name="customer_group_id"]').val(c.customer_group_id);
+	$('select#customer_group_id').val(c.customer_group_id).change();
+	$('input[name="email"]').val(c.email);
+	$('input[name="telephone"]').val(c.telephone);
+
+	var html = '<option value="0">&mdash;</option>';
+	for (var i in c.address) {
+		html += '<option value="' + c.address[i].address_id + '">' + c.address[i].firstname + ' ' + c.address[i].lastname + ',' + c.address[i].address_1 + ',' + c.address[i].city + ',' + c.address[i].country + '</option>';
+	}
+	$('select[name="shipping_address"]').html(html);
+	$('select[name="payment_address"]').html(html);
+	$('select[name="shipping_address"] option:nth-child(2)').attr('selected', true).change();
+	$('select[name="payment_address"] option:nth-child(2)').attr('selected', true).change();
+
+	bootstrap.Modal.getInstance(document.getElementById('CustomerSearchModal')).hide();
+});
+
+$('#CustomerSearchModal').on('hidden.bs.modal', function() {
+	$('#cs-company').val('');
+	$('#cs-results').html('<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
+	$('#cs-warning').hide();
+	csCustomers = [];
 });
 
 // Array de productos del último resultado de búsqueda

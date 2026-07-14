@@ -370,6 +370,14 @@ class ControllerLocalisationTaxRate extends Controller {
 			$this->data['type'] = '';
 		}
 
+		if (isset($this->request->post['account'])) {
+			$this->data['account'] = $this->request->post['account'];
+		} elseif (!empty($tax_rate_info)) {
+			$this->data['account'] = $tax_rate_info['account'];
+		} else {
+			$this->data['account'] = '';
+		}
+
 		if (isset($this->request->post['tax_rate_customer_group'])) {
 			$this->data['tax_rate_customer_group'] = $this->request->post['tax_rate_customer_group'];
 		} elseif (isset($this->request->get['tax_rate_id'])) {

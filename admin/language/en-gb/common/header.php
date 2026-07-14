@@ -101,6 +101,7 @@ $_['text_paypal_manage']               = 'PayPal';
 $_['text_paypal_search']               = 'Search';
 $_['text_recurring_profile']           = 'Recurring Profiles';
 $_['text_upgrade']           		   = 'Upgrade';
+$_['text_export']                     = 'Exportador';
 
 //add
 $_['text_cron']						   = 'Scheduled tasks';

@@ -121,6 +121,7 @@ $_['entry_amount']          = 'Amount:';
 $_['entry_points']          = '<a data-toggle="tooltip" title="Use minus to remove points"><i class="fas fa-question-circle"></i></a> Points:';
 $_['entry_nif']             = 'VAT-ID:';
 $_['entry_digital_invoice'] = 'Accept Digital Invoice:';
+$_['entry_contable_account'] = 'Cuenta Contable:';
 $_['entry_web']            = 'Web:';
 $_['button_web']            = 'Go to web';
 $_['error_web']            = 'Error: Enter a valid url!';

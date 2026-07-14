@@ -240,6 +240,12 @@
 											<input type="text" name="efaccapa" value="<?php echo $efaccapa ?>" class="form-control">
 										</div>
 									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_contable_account; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="contable_account" value="<?php echo $contable_account; ?>" class="form-control" placeholder="430000000">
+										</div>
+									</div>
 									 <div class="form-group row">
 										<label for="digital_invoice" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_digital_invoice; ?></label>
 										<div class="toggle-flip">

@@ -1940,6 +1940,102 @@ class ControllerSaleDraft extends Controller {
 	}
 
 
+	public function searchOrders() {
+		ob_start();
+		$json = array();
+
+		if ($this->user->hasPermission('access', 'sale/draft')) {
+			$this->load->model('sale/order');
+			$this->load->language('sale/draft');
+
+			$data = array(
+				'filter_order_status_id' => null,
+				'sort'  => 'o.order_id',
+				'order' => 'DESC',
+				'start' => 0,
+				'limit' => 200,
+			);
+
+			if (!empty($this->request->post['filter_order_id'])) {
+				$data['filter_order_id'] = (int)$this->request->post['filter_order_id'];
+			}
+
+			if (!empty($this->request->post['filter_company'])) {
+				$data['filter_company'] = $this->request->post['filter_company'];
+			}
+
+			$results = $this->model_sale_order->getOrders($data);
+
+			foreach ($results as $result) {
+				$json[] = array(
+					'order_id'   => $result['order_id'],
+					'company'    => $result['company'],
+					'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+					'status'     => $result['status'],
+				);
+			}
+		}
+
+		ob_end_clean();
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getOrderData() {
+		ob_start();
+		$json = array();
+
+		if ($this->user->hasPermission('access', 'sale/draft')) {
+			$this->load->model('sale/order');
+
+			$order_id = isset($this->request->post['order_id']) ? (int)$this->request->post['order_id'] : 0;
+
+			if ($order_id) {
+				$order_info = $this->model_sale_order->getOrder($order_id);
+
+				if ($order_info) {
+					$json['customer_id']       = $order_info['customer_id'];
+					$json['customer_group_id'] = $order_info['customer_group_id'];
+					$json['company']           = $order_info['company'] ? $order_info['company'] : $order_info['payment_company'];
+					$json['shipping_code']     = $order_info['shipping_code'];
+					$json['payment_code']      = $order_info['payment_code'];
+
+					$order_products = $this->model_sale_order->getOrderProducts($order_id);
+					$json['products'] = array();
+
+					foreach ($order_products as $product) {
+						$options     = $this->model_sale_order->getOrderOptions($order_id, $product['order_product_id']);
+						$option_data = array();
+
+						foreach ($options as $opt) {
+							$option_data[] = array(
+								'product_option_id'       => $opt['product_option_id'],
+								'product_option_value_id' => $opt['product_option_value_id'],
+								'type'                    => $opt['type'],
+							);
+						}
+
+						$json['products'][] = array(
+							'product_id' => $product['product_id'],
+							'quantity'   => $product['quantity'],
+							'price'      => $product['price'],
+							'option'     => $option_data,
+						);
+					}
+				} else {
+					$json['error'] = 'Pedido no encontrado';
+				}
+			} else {
+				$json['error'] = 'Sin order_id';
+			}
+		}
+
+		ob_end_clean();
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
 	public function checkDraft() {
 		$this->load->language('sale/draft');
 

@@ -53,6 +53,7 @@
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
+								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="Buscar Cliente"><i class="fa fa-search"></i></button></div>
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
 							</div>
 						</div>
@@ -231,6 +232,54 @@
 				</div>
 			</div>
 			<!-- Fin Modal Pedidos Pendientes -->
+			<!-- Modal Buscar Producto -->
+			<div class="modal" tabindex="-1" role="dialog" id="ProductSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Buscar Producto</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm-3">
+									<label class="control-label">Código / SKU</label>
+									<input type="text" id="ps-sku" class="form-control" placeholder="SKU">
+								</div>
+								<div class="col-12 col-sm">
+									<label class="control-label">Descripción</label>
+									<input type="text" id="ps-name" class="form-control" placeholder="Descripción">
+								</div>
+								<div class="col-12 col-sm-3">
+									<label class="control-label">Modelo</label>
+									<input type="text" id="ps-model" class="form-control" placeholder="Modelo">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="ps-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="ps-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>SKU</th>
+											<th>Descripción</th>
+											<th>Modelo</th>
+											<th class="text-right">Precio</th>
+											<th class="text-right">Stock</th>
+										</tr>
+									</thead>
+									<tbody id="ps-results">
+										<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Buscar Producto -->
 			<!-- Modal Product -->
 			<div class="modal" tab-index="-1" role="dialog" id="ProductModal">
 				<div class="modal-dialog" role="document">
@@ -252,7 +301,7 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4"><?php echo $entry_quantity; ?></label>
 									<div class="control-field col-sm-8">
-										<input type="text" name="quantity" value="1" class="form-control">
+										<input type="text" name="quantity" id="pm-quantity" value="1" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -268,6 +317,45 @@
 				</div>
 			</div>
 			<!-- Fin Modal Product -->
+			<!-- Modal Buscar Cliente -->
+			<div class="modal" tabindex="-1" role="dialog" id="CustomerSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Buscar Cliente</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm">
+									<label class="control-label">Empresa / Nombre</label>
+									<input type="text" id="cs-company" class="form-control" placeholder="Empresa / Nombre">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="cs-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="cs-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>Empresa</th>
+											<th>Grupo</th>
+											<th>Email</th>
+											<th>Teléfono</th>
+										</tr>
+									</thead>
+									<tbody id="cs-results">
+										<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Buscar Cliente -->
 			<!-- Modal Customer -->
 			<div class="modal" tabindex="-1" role="dialog" id="CustomerModal">
 				<div class="modal-dialog" role="document">
@@ -576,6 +664,81 @@ $('#customer_group_id').change(function(){
 }).change();
 </script>
 <script>
+var csCustomers = [];
+
+$('#searchCustomer').click(function(e) {
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('CustomerSearchModal')).show();
+});
+
+function csDoSearch() {
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_company: $('#cs-company').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#cs-warning').text(json.warning).show();
+				$('#cs-results').html('<tr><td colspan="4" class="text-center">' + json.warning + '</td></tr>');
+				csCustomers = [];
+				return;
+			}
+			$('#cs-warning').hide();
+			csCustomers = json;
+			if (!json.length) {
+				$('#cs-results').html('<tr><td colspan="4" class="text-center">No se encontraron clientes</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].company || '') + '</td>';
+				html += '<td>' + (json[i].customer_group || '') + '</td>';
+				html += '<td>' + (json[i].email || '') + '</td>';
+				html += '<td>' + (json[i].telephone || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#cs-results').html(html);
+		}
+	});
+}
+
+$('#cs-search').click(csDoSearch);
+
+$('#cs-company').on('keypress', function(e) {
+	if (e.which == 13) csDoSearch();
+});
+
+$(document).on('dblclick', '#cs-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var c = csCustomers[idx];
+
+	$('input[name="company"]').val(c.company);
+	$('#customer_id').val(c.customer_id);
+	$('input[name="customer_group_id"]').val(c.customer_group_id);
+	$('select#customer_group_id').val(c.customer_group_id).change();
+	$('input[name="email"]').val(c.email);
+	$('input[name="telephone"]').val(c.telephone);
+
+	var html = '<option value="0">&mdash;</option>';
+	for (var i in c.address) {
+		html += '<option value="' + c.address[i].address_id + '">' + c.address[i].firstname + ' ' + c.address[i].lastname + ',' + c.address[i].address_1 + ',' + c.address[i].city + ',' + c.address[i].country + '</option>';
+	}
+	$('select[name="shipping_address"]').html(html);
+	$('select[name="payment_address"]').html(html);
+	$('select[name="shipping_address"] option:nth-child(2)').attr('selected', true).change();
+	$('select[name="payment_address"] option:nth-child(2)').attr('selected', true).change();
+
+	bootstrap.Modal.getInstance(document.getElementById('CustomerSearchModal')).hide();
+});
+
+$('#CustomerSearchModal').on('hidden.bs.modal', function() {
+	$('#cs-company').val('');
+	$('#cs-results').html('<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
+	$('#cs-warning').hide();
+	csCustomers = [];
+});
+
 $('#ProductModal').on('hidden.bs.modal', function () {
     $(this).find("#delivery-product").val('').end();
     $(this).find("#product_id").val('');
@@ -586,8 +749,108 @@ $('#addProduct').click(function(e){
 		alert('Please, select a customer first');
 		$('#order-customer').focus();
 	} else {
-		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductSearchModal')).show();
 	}
+});
+
+var dpProducts = [];
+var dpToday = (function() {
+	var d = new Date();
+	return ('0' + d.getDate()).slice(-2) + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + d.getFullYear();
+})();
+
+function dpDoSearch() {
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val(), filter_model: $('#ps-model').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#ps-warning').text(json.warning).show();
+				$('#ps-results').html('<tr><td colspan="5" class="text-center">' + json.warning + '</td></tr>');
+				dpProducts = [];
+				return;
+			}
+			$('#ps-warning').hide();
+			dpProducts = json;
+			if (!json.length) {
+				$('#ps-results').html('<tr><td colspan="5" class="text-center">No se encontraron productos</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].sku || '') + '</td>';
+				html += '<td>' + json[i].name + '</td>';
+				html += '<td>' + (json[i].model || '') + '</td>';
+				html += '<td class="text-right">' + json[i].price_formatted + '</td>';
+				html += '<td class="text-right">' + json[i].quantity + '</td>';
+				html += '</tr>';
+			}
+			$('#ps-results').html(html);
+		}
+	});
+}
+
+$('#ps-search').click(dpDoSearch);
+
+$('#ps-sku, #ps-name, #ps-model').on('keypress', function(e) {
+	if (e.which == 13) dpDoSearch();
+});
+
+$(document).on('dblclick', '#ps-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var p = dpProducts[idx];
+	$('#product_id').val(p.product_id);
+	$('#delivery-product').val(p.name);
+	$('#pm-quantity').val(1);
+
+	var html = '', s = $('#text_select').val();
+	if (p.option && p.option.length) {
+		for (var i = 0; i < p.option.length; i++) {
+			var o = p.option[i];
+			html += '<div class="form-group" id="option-' + o.product_option_id + '">';
+			html += '<label class="col-form-label col-sm-4">';
+			if (o.required == 1) html += '<b class="required">* </b>';
+			html += o.name + ':</label><div class="control-field col-sm-8">';
+			if (o.type == 'select') {
+				html += '<select name="option[' + o.product_option_id + ']" class="form-control"><option value="">' + s + '</option>';
+				for (var j = 0; j < o.option_value.length; j++) {
+					html += '<option value="' + o.option_value[j].product_option_value_id + '">' + o.option_value[j].name + '</option>';
+				}
+				html += '</select>';
+			} else if (o.type == 'radio' || o.type == 'image') {
+				for (var j = 0; j < o.option_value.length; j++) {
+					html += '<div class="radio"><label><input type="radio" name="option[' + o.product_option_id + ']" value="' + o.option_value[j].product_option_value_id + '"> ' + o.option_value[j].name + '</label></div>';
+				}
+			} else if (o.type == 'checkbox') {
+				for (var j = 0; j < o.option_value.length; j++) {
+					html += '<div class="checkbox"><label><input type="checkbox" name="option[' + o.product_option_id + '][]" value="' + o.option_value[j].product_option_value_id + '"> ' + o.option_value[j].name + '</label></div>';
+				}
+			} else if (o.type == 'date' || o.type == 'datetime') {
+				html += '<div class="input-group"><input type="text" name="option[' + o.product_option_id + ']" value="' + dpToday + '" class="form-control date" placeholder="DD-MM-YYYY"><div class="input-group-append"><button class="btn btn-default" type="button" onclick="$(this).closest(\'.input-group\').find(\'.date\').focus();"><i class="fa fa-calendar"></i></button></div></div>';
+			} else if (o.type == 'time') {
+				html += '<input type="text" name="option[' + o.product_option_id + ']" value="" class="form-control">';
+			} else if (o.type == 'textarea') {
+				html += '<textarea name="option[' + o.product_option_id + ']" class="form-control"></textarea>';
+			} else {
+				html += '<input type="text" name="option[' + o.product_option_id + ']" value="" class="form-control">';
+			}
+			html += '</div></div>';
+		}
+	}
+	$('#option').html(html);
+
+	bootstrap.Modal.getInstance(document.getElementById('ProductSearchModal')).hide();
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
+});
+
+$('#ProductSearchModal').on('hidden.bs.modal', function() {
+	$('#ps-sku, #ps-name, #ps-model').val('');
+	$('#ps-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>');
+	$('#ps-warning').hide();
+	dpProducts = [];
 });
 </script>
 <script>

@@ -13,6 +13,7 @@
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
+					<button class="btn btn-warning pull-right" type="button" title="Albaranes Pendientes de facturar" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs">Albaranes Pendientes</span></button>
 					<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal"><i class="fas fa-comment"></i><span></span></button>
 					<!-- Modal -->
 					<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModalLabel" aria-hidden="true">
@@ -58,6 +59,7 @@
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
+								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="Buscar Cliente"><i class="fa fa-search"></i></button></div>
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
 							</div>
 						</div>
@@ -190,6 +192,89 @@
 					</table>
 				</div>
 			</div>
+			<!-- Modal Albaranes Pendientes -->
+			<div class="modal" tabindex="-1" role="dialog" id="OrderSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Albaranes pendientes</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm-3">
+									<label class="control-label">Nº Albarán</label>
+									<input type="text" id="os-order-id" class="form-control" placeholder="Nº albarán">
+								</div>
+								<div class="col-12 col-sm">
+									<label class="control-label">Cliente</label>
+									<input type="text" id="os-company" class="form-control" placeholder="Empresa">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="os-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="os-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>Nº</th>
+											<th>Cliente</th>
+											<th>Fecha Albarán</th>
+											<th class="text-right">Total</th>
+											<th>Estado</th>
+										</tr>
+									</thead>
+									<tbody id="os-results">
+										<tr><td colspan="5" class="text-center">Use los filtros para buscar albaranes</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Albaranes Pendientes -->
+			<!-- Modal Buscar Cliente -->
+			<div class="modal" tabindex="-1" role="dialog" id="CustomerSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Buscar Cliente</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm">
+									<label class="control-label">Empresa / Nombre</label>
+									<input type="text" id="cs-company" class="form-control" placeholder="Empresa / Nombre">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="cs-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="cs-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>Empresa</th>
+											<th>Grupo</th>
+											<th>Email</th>
+											<th>Teléfono</th>
+										</tr>
+									</thead>
+									<tbody id="cs-results">
+										<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Buscar Cliente -->
 			<!-- Modal Buscar Producto -->
 			<div class="modal" tabindex="-1" role="dialog" id="ProductSearchModal">
 				<div class="modal-dialog modal-lg" role="document">
@@ -325,12 +410,6 @@
 												<?php if ($error_telephone) { ?>
 													<div class="help-block error"><?php echo $error_telephone; ?></div>
 												<?php } ?>
-											</div>
-										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_fax; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
 											</div>
 										</div>
 									</div>
@@ -551,6 +630,175 @@ $('#ProductModal').on('hidden.bs.modal', function () {
 	$(this).find('#price_override').val('');
 	$(this).find('#pm-quantity').val(1);
 	$(this).find('#option').html('');
+});
+
+var csCustomers = [];
+
+$('#searchCustomer').click(function(e) {
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('CustomerSearchModal')).show();
+});
+
+function csDoSearch() {
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_company: $('#cs-company').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#cs-warning').text(json.warning).show();
+				$('#cs-results').html('<tr><td colspan="4" class="text-center">' + json.warning + '</td></tr>');
+				csCustomers = [];
+				return;
+			}
+			$('#cs-warning').hide();
+			csCustomers = json;
+			if (!json.length) {
+				$('#cs-results').html('<tr><td colspan="4" class="text-center">No se encontraron clientes</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].company || '') + '</td>';
+				html += '<td>' + (json[i].customer_group || '') + '</td>';
+				html += '<td>' + (json[i].email || '') + '</td>';
+				html += '<td>' + (json[i].telephone || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#cs-results').html(html);
+		}
+	});
+}
+
+$('#cs-search').click(csDoSearch);
+
+$('#cs-company').on('keypress', function(e) {
+	if (e.which == 13) csDoSearch();
+});
+
+$(document).on('dblclick', '#cs-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var c = csCustomers[idx];
+
+	$('input[name="company"]').val(c.company);
+	$('#customer_id').val(c.customer_id);
+	$('input[name="customer_group_id"]').val(c.customer_group_id);
+	$('select#customer_group_id').val(c.customer_group_id).change();
+	$('input[name="email"]').val(c.email);
+	$('input[name="telephone"]').val(c.telephone);
+
+	var html = '<option value="0">&mdash;</option>';
+	for (var i in c.address) {
+		html += '<option value="' + c.address[i].address_id + '">' + c.address[i].firstname + ' ' + c.address[i].lastname + ',' + c.address[i].address_1 + ',' + c.address[i].city + ',' + c.address[i].country + '</option>';
+	}
+	$('select[name="shipping_address"]').html(html);
+	$('select[name="payment_address"]').html(html);
+	$('select[name="shipping_address"] option:nth-child(2)').attr('selected', true).change();
+	$('select[name="payment_address"] option:nth-child(2)').attr('selected', true).change();
+
+	bootstrap.Modal.getInstance(document.getElementById('CustomerSearchModal')).hide();
+});
+
+$('#CustomerSearchModal').on('hidden.bs.modal', function() {
+	$('#cs-company').val('');
+	$('#cs-results').html('<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
+	$('#cs-warning').hide();
+	csCustomers = [];
+});
+
+function osDoSearch() {
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/draft/searchOrders', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_order_id: $('#os-order-id').val(), filter_company: $('#os-company').val() },
+		dataType: 'json',
+		success: function(json) {
+			$('#os-warning').hide();
+			if (!json || !json.length) {
+				$('#os-results').html('<tr><td colspan="5" class="text-center">No se encontraron pedidos</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-order-id="' + json[i].order_id + '" style="cursor:pointer;">';
+				html += '<td>' + json[i].order_id + '</td>';
+				html += '<td>' + json[i].company + '</td>';
+				html += '<td>' + json[i].date_added + '</td>';
+				html += '<td class="text-right">' + json[i].total + '</td>';
+				html += '<td>' + (json[i].status || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#os-results').html(html);
+		}
+	});
+}
+
+$('#os-search').click(osDoSearch);
+
+$('#os-order-id, #os-company').on('keypress', function(e) {
+	if (e.which == 13) osDoSearch();
+});
+
+$(document).on('dblclick', '#os-results tr[data-order-id]', function() {
+	var orderId = $(this).data('order-id');
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/draft/getOrderData', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { order_id: orderId },
+		dataType: 'json',
+		success: function(json) {
+			if (json.error) {
+				alert(json.error);
+				return;
+			}
+
+			// Cliente
+			$('#customer_id').val(json.customer_id);
+			$('input[name="customer_group_id"]').val(json.customer_group_id);
+			$('#order-customer').val(json.company);
+
+			// Envío y pago (dispara los handlers de common.js)
+			$('#shipping').val(json.shipping_code).trigger('change');
+			$('#payment').val(json.payment_code).trigger('change');
+
+			// Productos: se insertan como filas provisionales y se recalculan
+			// precios/impuestos/totales a través del flujo existente de checkDraft.
+			var html = '';
+			if (json.products && json.products.length) {
+				for (var i = 0; i < json.products.length; i++) {
+					var p = json.products[i];
+					html += '<tr id="product-row' + i + '">';
+					html += '<input type="hidden" name="draft_product[' + i + '][draft_product_id]" value="">';
+					html += '<input type="hidden" name="draft_product[' + i + '][product_id]" value="' + p.product_id + '">';
+					html += '<input type="hidden" name="draft_product[' + i + '][quantity]" value="' + p.quantity + '">';
+					html += '<input type="hidden" name="draft_product[' + i + '][price]" value="' + p.price + '">';
+					if (p.option && p.option.length) {
+						for (var j = 0; j < p.option.length; j++) {
+							var opt = p.option[j];
+							html += '<input type="hidden" name="draft_product[' + i + '][draft_option][' + j + '][draft_option_id]" value="">';
+							html += '<input type="hidden" name="draft_product[' + i + '][draft_option][' + j + '][product_option_id]" value="' + opt.product_option_id + '">';
+							html += '<input type="hidden" name="draft_product[' + i + '][draft_option][' + j + '][product_option_value_id]" value="' + opt.product_option_value_id + '">';
+							html += '<input type="hidden" name="draft_product[' + i + '][draft_option][' + j + '][type]" value="' + opt.type + '">';
+						}
+					}
+					html += '</tr>';
+				}
+			}
+			$('#product').html(html);
+			$('#product_id').val(0);
+
+			bootstrap.Modal.getInstance(document.getElementById('OrderSearchModal')).hide();
+
+			$('#button-draft-product').click();
+		}
+	});
+});
+
+$('#OrderSearchModal').on('hidden.bs.modal', function() {
+	$('#os-order-id, #os-company').val('');
+	$('#os-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar albaranes</td></tr>');
+	$('#os-warning').hide();
 });
 
 var psProducts = [];

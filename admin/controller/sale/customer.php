@@ -1166,6 +1166,14 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['efaccapa'] = '';
 		}
 
+		if (isset($this->request->post['contable_account'])) {
+			$this->data['contable_account'] = $this->request->post['contable_account'];
+		} elseif (!empty($customer_info)) {
+			$this->data['contable_account'] = $customer_info['contable_account'];
+		} else {
+			$this->data['contable_account'] = '';
+		}
+
 		if (isset($this->request->post['digital_invoice'])) {
 			$this->data['digital_invoice'] = $this->request->post['digital_invoice'];
 		} elseif (!empty($customer_info)) {
@@ -1707,10 +1715,51 @@ class ControllerSaleCustomer extends Controller {
 		}
 		
 		array_multisort($sort_order, SORT_ASC, $json);
-		
+
 		$this->response->setOutput(json_encode($json));
-	}	
-	
+	}
+
+	public function searchCustomers() {
+		$this->load->model('sale/customer');
+
+		$filter_company = isset($this->request->post['filter_company']) ? html_entity_decode($this->request->post['filter_company'], ENT_QUOTES, 'UTF-8') : '';
+
+		$data = array(
+			'filter_company' => $filter_company,
+			'sort'           => 'company',
+			'order'          => 'ASC',
+			'start'          => 0,
+			'limit'          => 200
+		);
+
+		$total = $this->model_sale_customer->getTotalCustomers($data);
+
+		$this->response->addHeader('Content-Type: application/json');
+
+		if ($total > 200) {
+			$this->response->setOutput(json_encode(array('warning' => 'Hay más de 200 clientes. Añade un filtro por nombre/empresa para acotar la búsqueda.')));
+			return;
+		}
+
+		$results = $this->model_sale_customer->getCustomers($data);
+
+		$json = array();
+
+		foreach ($results as $result) {
+			$json[] = array(
+				'customer_id'       => $result['customer_id'],
+				'customer_group_id' => $result['customer_group_id'],
+				'company'           => strip_tags(html_entity_decode($result['company'], ENT_QUOTES, 'UTF-8')),
+				'customer_group'    => $result['customer_group'],
+				'email'             => $result['email'],
+				'telephone'         => $result['telephone'],
+				'address'           => $this->model_sale_customer->getAddresses($result['customer_id'])
+			);
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
 	public function address() {
 
 		$json = array();

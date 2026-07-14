@@ -427,6 +427,18 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_vat_id'] = $this->config->get('config_vat_id');
 		}
 
+		if (isset($this->request->post['config_conta_ventas_account'])) {
+			$this->data['config_conta_ventas_account'] = $this->request->post['config_conta_ventas_account'];
+		} else {
+			$this->data['config_conta_ventas_account'] = $this->config->get('config_conta_ventas_account');
+		}
+
+		if (isset($this->request->post['config_conta_cliente_account'])) {
+			$this->data['config_conta_cliente_account'] = $this->request->post['config_conta_cliente_account'];
+		} else {
+			$this->data['config_conta_cliente_account'] = $this->config->get('config_conta_cliente_account');
+		}
+
 		if (isset($this->request->post['config_geocode'])) {
 			$this->data['config_geocode'] = $this->request->post['config_geocode'];
 		} else {

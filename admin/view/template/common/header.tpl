@@ -21,6 +21,11 @@
 	<script type="text/javascript" src="view/javascript/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="view/javascript/common.js"></script>
 	<script type="text/javascript" src="view/javascript/ckeditor/ckeditor.js"></script>
+	<script>
+	if (window.CKEDITOR) {
+		CKEDITOR.config.versionCheck = false;
+	}
+	</script>
 	<script type="text/javascript" src="view/javascript/bootstrap-typeahead.js"></script>
 	<script type="text/javascript" src="view/javascript/datepicker/bootstrap-datetimepicker.min.js"></script>
 	<script>

@@ -145,6 +145,44 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+	public function searchSuppliers() {
+		$this->load->model('purchase/supplier');
+
+		$filter_company = isset($this->request->post['filter_company']) ? html_entity_decode($this->request->post['filter_company'], ENT_QUOTES, 'UTF-8') : '';
+
+		$data = array(
+			'filter_company' => $filter_company,
+			'sort'           => 'company',
+			'order'          => 'ASC',
+			'start'          => 0,
+			'limit'          => 200
+		);
+
+		$total = $this->model_purchase_supplier->getTotalSuppliers($data);
+
+		$this->response->addHeader('Content-Type: application/json');
+
+		if ($total > 200) {
+			$this->response->setOutput(json_encode(array('warning' => 'Hay más de 200 proveedores. Añade un filtro por nombre/empresa para acotar la búsqueda.')));
+			return;
+		}
+
+		$results = $this->model_purchase_supplier->getSuppliers($data);
+
+		$json = array();
+
+		foreach ($results as $result) {
+			$json[] = array(
+				'supplier_id' => $result['supplier_id'],
+				'company'     => strip_tags(html_entity_decode($result['company'], ENT_QUOTES, 'UTF-8')),
+				'email'       => $result['email'],
+				'telephone'   => $result['telephone']
+			);
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
 	protected function getList() {
 		$filter_company = isset($this->request->get['filter_company']) ? $this->request->get['filter_company'] : null;
 		$filter_email = isset($this->request->get['filter_email']) ? $this->request->get['filter_email'] : null;

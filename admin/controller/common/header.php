@@ -979,6 +979,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Exportador
+			if ($this->user->hasPermission('access', 'tool/export')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_export'),
+					'href' => $this->url->link('tool/export', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			// Upgrade
 			if ($this->user->hasPermission('access', 'tool/upgrade')) {
 				$tools[] = array(

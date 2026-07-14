@@ -40,6 +40,12 @@
 				</div>
 			</div>
 			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_account; ?></label>
+				<div class="col-sm-6">
+					<input type="text" name="account" value="<?php echo $account; ?>" class="form-control" placeholder="477000000">
+				</div>
+			</div>
+			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_group; ?></label>
 				<div class="col-sm-6">
 					<div class="panel panel-default panel-scrollable">

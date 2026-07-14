@@ -962,6 +962,14 @@
 						<div class="col-sm-6"><input type="text" name="creditor_id" value="<?php echo $creditor_id ?>" class="form-control"></div>
 					</div>
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
+						<div class="col-sm-6"><input type="text" name="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control" placeholder="700000000"></div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_cliente_account; ?></label>
+						<div class="col-sm-6"><input type="text" name="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control" placeholder="430000000"></div>
+					</div>
+					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_certificado ?></label>
 						<div class="col-sm-6">
 							<input type="file" name="certificado_file" class="form-control">

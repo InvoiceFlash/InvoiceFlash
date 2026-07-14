@@ -20,6 +20,7 @@ $_['column_action']        = 'Action';
 $_['entry_name']           = 'Tax Name:';
 $_['entry_rate']           = 'Tax Rate:';
 $_['entry_type']           = 'Type:';
+$_['entry_account']        = 'Cuenta contable (IVA repercutido):';
 $_['entry_customer_group'] = 'Customer Group:';
 $_['entry_geo_zone']       = 'Geo Zone:';
 
