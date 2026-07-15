@@ -164,14 +164,14 @@ $_['entry_accounting_period'] = 'Accounting Period:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
 $_['entry_creditor_id'] = 'Creditor Id:';
-$_['entry_conta_ventas_account'] = 'Cuenta contable de ventas:';
-$_['entry_conta_cliente_account'] = 'Cuenta contable de clientes (por defecto):';
-$_['entry_certificado'] = 'Certificado:';
-$_['entry_clave'] = 'Clave:';
-$_['entry_aeat_active'] = 'Envio facturas a la AEAT:';
-$_['entry_aeat_send'] = 'Modo de envio:';
-$_['text_aeat_test'] = 'Pruebas';
-$_['text_aeat_production'] = 'Produccion';
+$_['entry_conta_ventas_account'] = 'Sales accounting account:';
+$_['entry_conta_cliente_account'] = 'Customer accounting account (default):';
+$_['entry_certificado'] = 'Certificate:';
+$_['entry_clave'] = 'Password:';
+$_['entry_aeat_active'] = 'Send invoices to the AEAT:';
+$_['entry_aeat_send'] = 'Sending mode:';
+$_['text_aeat_test'] = 'Test';
+$_['text_aeat_production'] = 'Production';
 
 $_['text_success_mail'] = 'Test Mail sent. Check your inbox.';
 ?>
