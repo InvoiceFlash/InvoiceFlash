@@ -75,6 +75,8 @@ $_['text_history_add']           = 'A&ntilde;adir Historial';
 $_['text_account_custom_field']  = 'Campos Personalizados';
 $_['text_payment_custom_field']  = 'Campos Personalizados Pagos';
 $_['text_shipping_custom_field'] = 'Campos Personalizados Fields';
+$_['tab_product'] = 'Productos y Totales';
+$_['button_add_product'] = 'A&ntilde;adir Producto';
 
 // Column
 $_ ['column_order_id'] = 'Pedidos ID';

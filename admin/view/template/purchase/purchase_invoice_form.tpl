@@ -136,8 +136,8 @@
 			</div>
 			<div class="card" id="tab-product" style="width:100%;">
 				<div class="card-header">
-					Products and Totals
-					<button class="btn btn-info pull-right" type="button" id="addProduct"><i class="fa fa-plus-circle"></i> <span class="hidden-xs">Add Product</span></button>
+					<?php echo $tab_product; ?>
+					<button class="btn btn-info pull-right" type="button" id="addProduct"><i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span></button>
 				</div>
 				<div class="card-body">
 					<table class="table table-bordered table-striped table-hover">
@@ -488,27 +488,27 @@ function validateForm(){
 
 	// Supplier
 	if ($('#supplier_id').val() == 0) {
-		alert("Supplier must be filled out");
+		alert("Debe indicar un proveedor");
 		return false;
 	}
 
 	// Products
 	if (!$("#product-row0").length > 0) {
-		alert("Insert almost a Product");
+		alert("Inserte al menos un producto");
 		return false;
 	}
 
 	// Shipping
 	var ship = $('#shipping').val();
 	if (ship=="") {
-		alert("Select a Shpping Method");
+		alert("Seleccione un método de envío");
 		return false;
 	}
 
 	// Payment
 	var pay = $('#payment').val();
 	if (pay==""){
-		alert("Select a Payment Method");
+		alert("Seleccione una forma de pago");
 		return false;
 	}
 
@@ -522,7 +522,7 @@ $('#ProductModal').on('hidden.bs.modal', function () {
 });
 $('#addProduct').click(function(e){
 	if($('#supplier_id').val()==0){
-		alert('Please, select a supplier first');
+		alert('Por favor, seleccione un proveedor primero');
 		$('#purchase-supplier').focus();
 	} else {
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();

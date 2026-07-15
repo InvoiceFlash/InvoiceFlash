@@ -243,13 +243,13 @@
 function validatePurchaseOrderForm(){
 	var supplier = $('#purchase_order_supplier_id');
 	if (!supplier.val() || supplier.val() == '0') {
-		alert('Please select a supplier');
+		alert('Por favor, seleccione un proveedor');
 		$('#purchase-order-supplier').focus();
 		return false;
 	}
 
 	if (!$("#product-row0").length > 0) {
-		alert('Insert at least one Product');
+		alert('Inserte al menos un producto');
 		return false;
 	}
 }
