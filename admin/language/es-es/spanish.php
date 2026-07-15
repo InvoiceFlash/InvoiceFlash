@@ -30,6 +30,7 @@ $_['text_home'] = 'Principal';
 // Button
 $_['button_add'] = 'Agregar nuevo';
 $_['button_insert'] = 'Insertar';
+$_['text_edit'] = 'Editar';
 $_['button_delete'] = 'Eliminar';
 $_['button_save'] = 'Guardar';
 $_['button_cancel'] = 'Cancelar';
@@ -40,6 +41,7 @@ $_['button_close'] = 'Cerrar';
 $_['button_enable'] = 'Habilitar';
 $_['button_disable'] = 'Desactivar';
 $_['button_filter'] = 'Filtro';
+$_['button_export'] = 'Exportar a Excel';
 $_['button_send'] = 'Enviar';
 $_['button_edit'] = 'Editar';
 $_['button_copy'] = 'Copiar';
