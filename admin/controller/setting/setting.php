@@ -176,6 +176,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_iban'] = $this->language->get('entry_iban');
 		$this->data['entry_bic'] = $this->language->get('entry_bic');
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
+		$this->data['entry_conta_ventas_account'] = $this->language->get('entry_conta_ventas_account');
+		$this->data['entry_conta_cliente_account'] = $this->language->get('entry_conta_cliente_account');
 		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
 		$this->data['entry_aeat_active'] = $this->language->get('entry_aeat_active');

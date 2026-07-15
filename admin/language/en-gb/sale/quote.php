@@ -4,6 +4,7 @@ $_['heading_title']                           = 'Quotes';
 
 // Text
 $_['text_success']                            = 'Success: You have modified quotes!';
+$_['text_success_convert']                    = 'Success: The selected quotes have been converted to orders!';
 $_['text_quote_id']                           = 'Quote ID:';
 $_['text_invoice_no']                         = 'Order No.:';
 $_['text_invoice_date']                       = 'Date:';
@@ -156,6 +157,7 @@ $_['error_required']    = '%s required!';
 
 $_['button_quote'] 						  = 'Print Quote';
 $_['button_generate']                       = 'Generate Order';
+$_['button_convert_order']                  = 'Convert to Order';
 
 $_['text_success_email']                      = 'Success: The email has been sent without problems!';
 $_['error_to']                                = 'Error: E-mail to does no seem to be valid!';
