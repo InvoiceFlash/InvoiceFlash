@@ -1,0 +1,167 @@
+<?php
+// Heading
+$_['heading_title']                           = 'Borradores';
+
+// Text
+$_['text_success']                            = '&Eacute;xito: &iexcl;Ha modificado los borradores!';
+$_['text_success_convert']                    = '&Eacute;xito: &iexcl;Los borradores seleccionados se han convertido en facturas!';
+$_['text_draft_id']                         = 'ID de Borrador:';
+$_['text_draft_no']                         = 'N&ordm; de Borrador:';
+$_['text_draft_date']                       = 'Fecha de Borrador:';
+$_['text_store_name']                         = 'Nombre de la Tienda:';
+$_['text_store_url']                          = 'URL de la Tienda:';
+$_['text_customer']                           = 'Cliente:';
+$_['text_customer_group']                     = 'Grupo de Clientes:';
+$_['text_email']                              = 'E-Mail:';
+$_['text_telephone']                          = 'Tel&eacute;fono:';
+$_['text_fax']                                = 'Fax:';
+$_['text_shipping_method']                    = 'M&eacute;todo de Env&iacute;o:';
+$_['text_payment_method']                     = 'Forma de Pago:';
+$_['text_total']                              = 'Total:';
+$_['text_draft_status']                     = 'Estado del Borrador:';
+$_['text_comment']                            = 'Comentario:';
+$_['text_commission']                         = 'Comisi&oacute;n:';
+$_['text_date_added']                         = 'Fecha de Alta:';
+$_['text_date_modified']                      = 'Fecha de Modificaci&oacute;n:';
+$_['text_company']                            = 'Empresa:';
+$_['text_company_id']                         = 'ID de Empresa:';
+$_['text_tax_id']                             = 'CIF/NIF:';
+$_['text_address_1']                          = 'Direcci&oacute;n 1:';
+$_['text_address_2']                          = 'Direcci&oacute;n 2:';
+$_['text_postcode']                           = 'C&oacute;digo Postal:';
+$_['text_city']                               = 'Ciudad:';
+$_['text_zone']                               = 'Regi&oacute;n / Estado:';
+$_['text_zone_code']                          = 'Regi&oacute;n / C&oacute;digo del Estado:';
+$_['text_country']                            = 'Pa&iacute;s:';
+$_['text_draft']                            = 'Borrador';
+$_['text_to']                                 = 'Para';
+$_['text_ship_to']                            = 'Enviar a (si la direcci&oacute;n es diferente)';
+$_['text_missing']                            = 'Borradores Pendientes';
+$_['text_default']                            = 'Por Defecto';
+$_['text_wait']                               = '&iexcl;Espere Por Favor!';
+$_['text_product']                            = 'A&ntilde;adir Producto(s)';
+$_['text_voucher']                            = 'A&ntilde;adir Vale(s)';
+$_['text_draft_details']                    = 'Detalles del Borrador';
+$_['text_generate']                           = 'Generar';
+$_['text_commission_add']                     = 'A&ntilde;adir Comisi&oacute;n';
+$_['text_commission_added']                   = '&Eacute;xito: &iexcl;Comisi&oacute;n a&ntilde;adida!';
+$_['text_commission_remove']                  = 'Eliminar Comisi&oacute;n';
+$_['text_commission_removed']                 = '&Eacute;xito: &iexcl;Comisi&oacute;n eliminada!';
+$_['text_credit_add']                         = 'A&ntilde;adir Cr&eacute;dito';
+$_['text_credit_added']                       = '&Eacute;xito: &iexcl;Cr&eacute;dito de cuenta a&ntilde;adido!';
+$_['text_credit_remove']                      = 'Eliminar Cr&eacute;dito';
+$_['text_credit_removed']                     = '&Eacute;xito: &iexcl;Cr&eacute;dito de cuenta eliminado!';
+$_['text_upload']                             = '&iexcl;Su archivo se ha subido correctamente!';
+$_['text_free_mail']                          = 'Correo gratuito:<br /><span class="help">Indica si el e-mail procede de un proveedor de correo gratuito (correo gratuito = mayor riesgo).</span>';
+$_['text_carder_email']                       = 'Email de riesgo:<br /><span class="help">Indica si el e-mail est&aacute; en la base de datos de correos de alto riesgo.</span>';
+$_['text_high_risk_username']                 = 'Usuario de Alto Riesgo:<br /><span class="help">Indica si el usernameMD5 introducido est&aacute; en la base de datos de usuarios de alto riesgo. Solo se devuelve si usernameMD5 se incluye en los datos.</span>';
+$_['text_high_risk_password']                 = 'Contrase&ntilde;a de Alto Riesgo:<br /><span class="help">Indica si el passwordMD5 introducido est&aacute; en la base de datos de contrase&ntilde;as de alto riesgo. Solo se devuelve si passwordMD5 se incluye en los datos.</span>';
+$_['text_bin_match']                          = 'Coincidencia BIN:<br /><span class="help">Indica si el pa&iacute;s del banco emisor seg&uacute;n el n&uacute;mero BIN coincide con el pa&iacute;s de la direcci&oacute;n de facturaci&oacute;n.</span>';
+$_['text_bin_country']                        = 'Pa&iacute;s BIN:<br /><span class="help">C&oacute;digo de pa&iacute;s del banco que emiti&oacute; la tarjeta de cr&eacute;dito seg&uacute;n el n&uacute;mero BIN.</span>';
+$_['text_bin_name_match']                     = 'Coincidencia Nombre BIN:<br /><span class="help">Indica si el nombre del banco emisor coincide con el nombre BIN introducido. Un valor de S&iacute; indica que el titular est&aacute; en posesi&oacute;n de la tarjeta de cr&eacute;dito.</span>';
+$_['text_bin_name']                           = 'Nombre BIN:<br /><span class="help">Nombre del banco que emiti&oacute; la tarjeta de cr&eacute;dito seg&uacute;n el n&uacute;mero BIN. Disponible para aproximadamente el 96% de los n&uacute;meros BIN.</span>';
+$_['text_bin_phone_match']                    = 'Coincidencia Tel&eacute;fono BIN:<br /><span class="help">Indica si el tel&eacute;fono de atenci&oacute;n al cliente coincide con el Tel&eacute;fono BIN introducido. Un valor de S&iacute; indica que el titular est&aacute; en posesi&oacute;n de la tarjeta de cr&eacute;dito.</span>';
+$_['text_bin_phone']                          = 'Tel&eacute;fono BIN:<br /><span class="help">Tel&eacute;fono de atenci&oacute;n al cliente que figura al dorso de la tarjeta de cr&eacute;dito. Disponible para aproximadamente el 75% de los n&uacute;meros BIN. En algunos casos el tel&eacute;fono devuelto puede estar desactualizado.</span>';
+$_['text_customer_phone_in_billing_location'] = 'Tel&eacute;fono del Cliente en la Ubicaci&oacute;n de Facturaci&oacute;n:<br /><span class="help">Indica si el tel&eacute;fono del cliente pertenece al c&oacute;digo postal de facturaci&oacute;n. Un valor de S&iacute; indica que el tel&eacute;fono pertenece al titular. Un valor de No indica que el tel&eacute;fono puede estar en otra zona, o no figurar en nuestra base de datos. Se devuelve NotFound cuando el prefijo del tel&eacute;fono no se encuentra en absoluto en nuestra base de datos. Actualmente solo se admiten n&uacute;meros de tel&eacute;fono de EE.UU.</span>';
+$_['text_ship_forward']                       = 'Reenv&iacute;o de Env&iacute;o:<br /><span class="help">Indica si la direcci&oacute;n de env&iacute;o est&aacute; en la base de datos de puntos de reenv&iacute;o de correo conocidos.</span>';
+$_['text_city_postal_match']                  = 'Coincidencia Ciudad/C&oacute;digo Postal:<br /><span class="help">Indica si la ciudad y el estado de facturaci&oacute;n coinciden con el c&oacute;digo postal. Actualmente disponible solo para direcciones de EE.UU., devuelve una cadena vac&iacute;a fuera de EE.UU.</span>';
+$_['text_ship_city_postal_match']             = 'Coincidencia Ciudad/C&oacute;digo Postal de Env&iacute;o:<br /><span class="help">Indica si la ciudad y el estado de env&iacute;o coinciden con el c&oacute;digo postal. Actualmente disponible solo para direcciones de EE.UU., devuelve una cadena vac&iacute;a fuera de EE.UU.</span>';
+$_['text_score']                              = 'Puntuaci&oacute;n:<br /><span class="help">Puntuaci&oacute;n de fraude global bas&aacute;da en los resultados anteriores. Es la puntuaci&oacute;n de fraude original, y se basa en una f&oacute;rmula sencilla. Ha sido sustituida por la puntuaci&oacute;n de riesgo (ver abajo), pero se mantiene por compatibilidad.</span>';
+$_['text_explanation']                        = 'Explicaci&oacute;n:<br /><span class="help">Una breve explicaci&oacute;n de la puntuaci&oacute;n, detallando qu&eacute; factores contribuyeron a ella, seg&uacute;n nuestra f&oacute;rmula. Corresponde a la puntuaci&oacute;n (score), no a la puntuaci&oacute;n de riesgo (riskScore).</span>';
+$_['text_risk_score']                         = 'Puntuaci&oacute;n de Riesgo:<br /><span class="help">Nueva puntuaci&oacute;n de fraude que representa la probabilidad estimada de que el borrador sea fraudulento, bas&aacute;da en el an&aacute;lisis de transacciones minFraud anteriores. Requiere una actualizaci&oacute;n para clientes que se registraron antes de febrero de 2007.</span>';
+$_['text_queries_remaining']                  = 'Consultas Restantes:<br /><span class="help">N&uacute;mero de consultas restantes en su cuenta, puede usarse para avisarle cu&aacute;ndo necesita a&ntilde;adir m&aacute;s consultas a su cuenta.</span>';
+$_['text_maxmind_id']                         = 'ID Maxmind:<br /><span class="help">Identificador &uacute;nico, usado para referenciar transacciones al reportar actividad fraudulenta a MaxMind. Este reporte ayudar&aacute; a MaxMind a mejorar su servicio y permitir&aacute; personalizar la f&oacute;rmula de puntuaci&oacute;n de fraude seg&uacute;n su historial de contracargos.</span>';
+$_['text_error']                              = 'Error:<br /><span class="help">Devuelve una cadena de error con un mensaje de advertencia o el motivo por el que fall&oacute; la solicitud.</span>';
+$_['text_success_email']                      = '&Eacute;xito: &iexcl;El email se ha enviado sin problemas!';
+
+// Column
+$_['column_draft_id']                       = 'ID Borrador';
+$_['column_customer']                         = 'Cliente';
+$_['column_status']                           = 'Estado';
+$_['column_date_added']                       = 'Fecha de Alta';
+$_['column_date_modified']                    = 'Fecha de Modificaci&oacute;n';
+$_['column_total']                            = 'Total';
+$_['column_product']                          = 'Producto';
+$_['column_model']                            = 'Modelo';
+$_['column_quantity']                         = 'Cantidad';
+$_['column_price']                            = 'Precio Unitario';
+$_['column_filename']                         = 'Nombre de Archivo';
+$_['column_remaining']                        = 'Descargas Restantes';
+$_['column_comment']                          = 'Comentario';
+$_['column_notify']                           = 'Cliente Notificado';
+$_['column_action']                           = 'Acci&oacute;n';
+$_['entry_vat']                               = 'N&uacute;mero de IVA:';
+
+// Entry
+$_['entry_store']                             = 'Tienda:';
+$_['entry_customer']                          = 'Cliente:';
+$_['entry_customer_group']                    = 'Grupo:';
+$_['entry_email']                             = 'E-Mail:';
+$_['entry_telephone']                         = 'Tel&eacute;fono:';
+$_['entry_fax']                               = 'Fax:';
+$_['entry_address']                           = 'Elegir Direcci&oacute;n:';
+$_['entry_company']                           = 'Empresa:';
+$_['entry_company_id']                        = 'ID de Empresa:';
+$_['entry_tax_id']                            = 'CIF/NIF:';
+$_['entry_address_1']                         = 'Direcci&oacute;n 1:';
+$_['entry_address_2']                         = 'Direcci&oacute;n 2:';
+$_['entry_city']                              = 'Ciudad:';
+$_['entry_postcode']                          = 'C&oacute;digo Postal:';
+$_['entry_country']                           = 'Pa&iacute;s:';
+$_['entry_zone']                              = 'Regi&oacute;n / Estado:';
+$_['entry_zone_code']                         = 'Regi&oacute;n / C&oacute;digo del Estado:';
+$_['entry_product']                           = 'Elegir Producto:';
+$_['entry_option']                            = 'Elegir Opci&oacute;n(es):';
+$_['entry_quantity']                          = 'Cantidad:';
+$_['entry_to_name']                           = 'Nombre del Destinatario:';
+$_['entry_to_email']                          = 'Email del Destinatario:';
+$_['entry_from_name']                         = 'Nombre del Remitente:';
+$_['entry_from_email']                        = 'Email del Remitente:';
+$_['entry_theme']                             = 'Tema del Vale Regalo:';
+$_['entry_message']                           = 'Mensaje:';
+$_['entry_amount']                            = 'Importe:';
+$_['entry_draft_status']                      = 'Estado del Borrador:';
+$_['entry_notify']                            = 'Notificar al Cliente:';
+$_['entry_comment']                           = 'Comentario:';
+$_['entry_shipping']                          = 'M&eacute;todo de Env&iacute;o:';
+$_['entry_payment']                           = 'Forma de Pago:';
+$_['entry_coupon']                            = 'Cup&oacute;n:';
+$_['entry_voucher']                           = 'Vale:';
+$_['entry_name_ext']          				  = 'Descripci&oacute;n:';
+$_['entry_price']             				  = 'Nuevo Precio:';
+$_['error_required']    = '&iexcl;%s obligatorio!';
+
+//add
+$_['tab_draft']             				  = 'Borrador';
+
+// Error
+$_['error_warning']                           = 'Advertencia: &iexcl;Por favor, revise el formulario cuidadosamente en busca de errores!';
+$_['error_permission']                        = 'Advertencia: &iexcl;No tiene permiso para modificar borradores!';
+$_['error_email']                             = '&iexcl;La direcci&oacute;n de E-Mail no parece ser v&aacute;lida!';
+$_['error_telephone']                         = '&iexcl;El tel&eacute;fono debe tener entre 3 y 32 caracteres!';
+$_['error_password']                          = '&iexcl;La contrase&ntilde;a debe tener entre 3 y 20 caracteres!';
+$_['error_confirm']                           = '&iexcl;La contrase&ntilde;a y su confirmaci&oacute;n no coinciden!';
+$_['error_company_id']                        = '&iexcl;El ID de Empresa es obligatorio!';
+$_['error_tax_id']                            = '&iexcl;El CIF/NIF es obligatorio!';
+$_['error_vat']                               = '&iexcl;El n&uacute;mero de IVA no es v&aacute;lido!';
+$_['error_address_1']                         = '&iexcl;La Direcci&oacute;n 1 debe tener entre 3 y 128 caracteres!';
+$_['error_city']                              = '&iexcl;La ciudad debe tener entre 3 y 128 caracteres!';
+$_['error_postcode']                          = '&iexcl;El c&oacute;digo postal debe tener entre 2 y 10 caracteres para este pa&iacute;s!';
+$_['error_country']                           = '&iexcl;Por favor, seleccione un pa&iacute;s!';
+$_['error_zone']                              = '&iexcl;Por favor, seleccione una regi&oacute;n / estado!';
+$_['error_shipping']                          = 'Advertencia: &iexcl;M&eacute;todo de env&iacute;o obligatorio!';
+$_['error_payment']                           = 'Advertencia: &iexcl;Forma de pago obligatoria!';
+$_['error_upload']                            = '&iexcl;Debe subir un archivo!';
+$_['error_filename']                          = '&iexcl;El nombre de archivo debe tener entre 3 y 128 caracteres!';
+$_['error_filetype']                          = '&iexcl;Tipo de archivo no v&aacute;lido!';
+$_['error_action']                            = 'Advertencia: &iexcl;No se pudo completar esta acci&oacute;n!';
+
+$_['error_to']                                = '&iexcl;El email de destino no parece ser v&aacute;lido!';
+$_['error_subject']                           = '&iexcl;El asunto no puede estar vac&iacute;o!';
+$_['error_message']                           = '&iexcl;El mensaje no puede estar vac&iacute;o!';
+
+$_['error_paid_out']                          = 'Uno o m&aacute;s recibos de este borrador ya han sido cobrados, no es posible modificarlo.';
+
+$_['button_draft'] 						  = 'Imprimir Borrador';
+
+?>
