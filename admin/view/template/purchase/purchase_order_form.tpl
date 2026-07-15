@@ -261,6 +261,10 @@ $('#searchSupplier').click(function(e) {
 });
 
 function ssDoSearch() {
+	var btn = $('#ss-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#ss-results').html('<tr><td colspan="3" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('purchase/supplier/searchSuppliers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
@@ -288,6 +292,14 @@ function ssDoSearch() {
 				html += '</tr>';
 			}
 			$('#ss-results').html(html);
+		},
+		error: function() {
+			$('#ss-warning').text('Error al buscar proveedores').show();
+			$('#ss-results').html('<tr><td colspan="3" class="text-center">Error al buscar proveedores</td></tr>');
+			ssSuppliers = [];
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
 		}
 	});
 }

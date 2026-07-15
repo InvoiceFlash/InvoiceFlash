@@ -176,7 +176,8 @@ class ControllerPurchaseSupplier extends Controller {
 				'supplier_id' => $result['supplier_id'],
 				'company'     => strip_tags(html_entity_decode($result['company'], ENT_QUOTES, 'UTF-8')),
 				'email'       => $result['email'],
-				'telephone'   => $result['telephone']
+				'telephone'   => $result['telephone'],
+				'fax'         => $result['fax']
 			);
 		}
 

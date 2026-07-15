@@ -57,6 +57,7 @@
 							<div class="control-field input-group col-sm-9">
 								<input type="text" name="company" value="<?php echo $company; ?>" id="purchase-supplier" autocomplete="off" class="form-control">
 								<input type="hidden" id="supplier_id" name="supplier_id" value="<?php echo $supplier_id; ?>">
+								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchSupplier" title="Buscar Proveedor"><i class="fa fa-search"></i></button></div>
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
 							</div>
 						</div>
@@ -213,6 +214,44 @@
 					</table>
 				</div>
 			</div>
+			<!-- Modal Buscar Proveedor -->
+			<div class="modal" tabindex="-1" role="dialog" id="SupplierSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Buscar Proveedor</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm">
+									<label class="control-label">Empresa / Nombre</label>
+									<input type="text" id="ss-company" class="form-control" placeholder="Empresa / Nombre">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="ss-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="ss-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>Empresa</th>
+											<th>Email</th>
+											<th>Teléfono</th>
+										</tr>
+									</thead>
+									<tbody id="ss-results">
+										<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los proveedores</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Buscar Proveedor -->
 			<!-- Modal Product -->
 			<div class="modal" tab-index="-1" role="dialog" id="ProductModal">
 				<div class="modal-dialog" role="document">
@@ -513,6 +552,83 @@ $(function(){
 			return item;
 		}
 	});
+});
+</script>
+<script>
+var ssSuppliers = [];
+
+$('#searchSupplier').click(function(e) {
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('SupplierSearchModal')).show();
+});
+
+function ssDoSearch() {
+	var btn = $('#ss-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#ss-results').html('<tr><td colspan="3" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('purchase/supplier/searchSuppliers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_company: $('#ss-company').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#ss-warning').text(json.warning).show();
+				$('#ss-results').html('<tr><td colspan="3" class="text-center">' + json.warning + '</td></tr>');
+				ssSuppliers = [];
+				return;
+			}
+			$('#ss-warning').hide();
+			ssSuppliers = json;
+			if (!json.length) {
+				$('#ss-results').html('<tr><td colspan="3" class="text-center">No se encontraron proveedores</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].company || '') + '</td>';
+				html += '<td>' + (json[i].email || '') + '</td>';
+				html += '<td>' + (json[i].telephone || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#ss-results').html(html);
+		},
+		error: function() {
+			$('#ss-warning').text('Error al buscar proveedores').show();
+			$('#ss-results').html('<tr><td colspan="3" class="text-center">Error al buscar proveedores</td></tr>');
+			ssSuppliers = [];
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
+		}
+	});
+}
+
+$('#ss-search').click(ssDoSearch);
+
+$('#ss-company').on('keypress', function(e) {
+	if (e.which == 13) ssDoSearch();
+});
+
+$(document).on('dblclick', '#ss-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var s = ssSuppliers[idx];
+
+	$('#purchase-supplier').val(s.company);
+	$('#supplier_id').val(s.supplier_id);
+	$('input[name="email"]').val(s.email);
+	$('input[name="telephone"]').val(s.telephone);
+	$('input[name="fax"]').val(s.fax);
+
+	bootstrap.Modal.getInstance(document.getElementById('SupplierSearchModal')).hide();
+});
+
+$('#SupplierSearchModal').on('hidden.bs.modal', function() {
+	$('#ss-company').val('');
+	$('#ss-results').html('<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los proveedores</td></tr>');
+	$('#ss-warning').hide();
+	ssSuppliers = [];
 });
 </script>
 <?php if ($invoice_id) { ?>
