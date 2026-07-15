@@ -14,6 +14,7 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-bs-toggle="tab"><?php echo $tab_invoices; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" id="form">
 			<div class="tab-content">
@@ -37,18 +38,8 @@
 											<?php } ?>
 										</div>
 									</div>
-									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_firstname; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="firstname" value="<?php echo $firstname; ?>" class="form-control">
-										</div>
-									</div>
-									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_lastname; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="lastname" value="<?php echo $lastname; ?>" class="form-control">
-										</div>
-									</div>
+									<input type="hidden" name="firstname" value="<?php echo $firstname; ?>">
+									<input type="hidden" name="lastname" value="<?php echo $lastname; ?>">
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_email; ?></label>
 										<div class="col-sm-6">
@@ -59,6 +50,12 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="tax_id" value="<?php echo $tax_id; ?>" class="form-control">
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_telephone; ?></label>
 										<div class="col-sm-6">
 											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
@@ -66,14 +63,11 @@
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_web; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="web" value="<?php echo $web; ?>" class="form-control">
-										</div>
-									</div>
-									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="tax_id" value="<?php echo $tax_id; ?>" class="form-control">
+										<div class="col-sm-6 input-group">
+											<input type="text" name="web" value="<?php echo $web; ?>" id="web" class="form-control">
+											<div class="input-group-append">
+												<button type="button" id="button-web" class="btn btn-info" title="<?php echo $button_web?>"><i class="fas fa-globe"></i></button>
+											</div>
 										</div>
 									</div>
 									<div class="form-group row">
@@ -82,12 +76,7 @@
 											<input type="text" name="address_1" value="<?php echo $address_1; ?>" class="form-control">
 										</div>
 									</div>
-									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_2; ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="address_2" value="<?php echo $address_2; ?>" class="form-control">
-										</div>
-									</div>
+									<input type="hidden" name="address_2" value="<?php echo $address_2; ?>">
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>
 										<div class="col-sm-6">
@@ -271,6 +260,36 @@
 						</tbody>
 					</table>
 				</div>
+				<div class="tab-pane" id="tab-invoices">
+					<table class="table table-bordered table-striped table-hover">
+						<thead>
+							<tr>
+								<th><?php echo $column_invoice; ?></th>
+								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
+								<th class="text-right"><?php echo $column_total; ?></th>
+								<th class="text-right"><?php echo $column_action; ?></th>
+							</tr>
+						</thead>
+						<tbody>
+						<?php if ($invoices) { ?>
+						<?php foreach ($invoices as $invoice) { ?>
+							<tr>
+								<td class="left"><?php echo $invoice['invoice_id']; ?></td>
+								<td class="left"><?php echo $invoice['date']; ?></td>
+								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
+								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
+									  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+								<?php } ?></td>
+							</tr>
+							<?php } ?>
+						<?php } else { ?>
+							<tr>
+								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+							</tr>
+						<?php } ?>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</form>
 	</div>
@@ -316,5 +335,14 @@ $('#supplier-country').on('change', function() {
 	});
 });
 $('#supplier-country').change();
+</script>
+<script>
+$('#button-web').click(function(){
+	if ($('#web').val().length > 0) {
+		window.open('https:/'+$('#web').val(), '_blank');
+	} else {
+		alert('<?php echo $error_web; ?>');
+	}
+});
 </script>
 <?php echo $footer; ?>

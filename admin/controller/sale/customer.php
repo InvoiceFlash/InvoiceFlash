@@ -576,6 +576,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_amount'] = $this->language->get('entry_amount');
 		$this->data['entry_points'] = $this->language->get('entry_points');
 		$this->data['entry_nif'] = $this->language->get('entry_nif');
+		$this->data['entry_contable_account'] = $this->language->get('entry_contable_account');
 		$this->data['entry_digital_invoice'] = $this->language->get('entry_digital_invoice');
 		$this->data['entry_web'] = $this->language->get('entry_web');
 
@@ -1808,7 +1809,7 @@ class ControllerSaleCustomer extends Controller {
 
 	public function validateContactForm() {
 		$log = new Log('contact.log'); $log->write($this->request->post);
-		if (utf8_strlen($this->request->post['name']) < 3 || utf8_strlen($this->request->post['name'] > 50)) {
+		if (utf8_strlen($this->request->post['name']) < 3 || utf8_strlen($this->request->post['name']) > 50) {
 			$this->error['name'] = $this->language->get('text_error_contact_name');
 		}
 

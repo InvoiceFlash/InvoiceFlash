@@ -304,6 +304,18 @@ class ModelPurchaseSupplier extends Model {
 		return $query->rows;
 	}
 
+	public function getInvoicesSupplierTotal($supplier_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "purchase_invoice` WHERE supplier_id = '" . (int)$supplier_id . "'");
+
+		return $query->row['total'];
+	}
+
+	public function getInvoicesSupplier($supplier_id) {
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "purchase_invoice` WHERE supplier_id = '" . (int)$supplier_id . "' ORDER BY date_added DESC");
+
+		return $query->rows;
+	}
+
 	private function installNotes() {
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "supplier_history` (
 			`supplier_history_id` int(11) NOT NULL AUTO_INCREMENT,

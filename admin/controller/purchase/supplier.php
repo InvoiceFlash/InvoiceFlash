@@ -335,6 +335,8 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
 		$this->data['entry_fax'] = $this->language->get('entry_fax');
 		$this->data['entry_web'] = $this->language->get('entry_web');
+		$this->data['button_web'] = $this->language->get('button_web');
+		$this->data['error_web'] = $this->language->get('error_web');
 		$this->data['entry_address_1'] = $this->language->get('entry_address_1');
 		$this->data['entry_address_2'] = $this->language->get('entry_address_2');
 		$this->data['entry_city'] = $this->language->get('entry_city');
@@ -348,12 +350,15 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['tab_contacts'] = $this->language->get('tab_contacts');
 		$this->data['tab_contracts'] = $this->language->get('tab_contracts');
 		$this->data['tab_products'] = $this->language->get('tab_products');
+		$this->data['tab_invoices'] = $this->language->get('tab_invoices');
 
 		$this->data['column_product_id'] = $this->language->get('column_product_id');
 		$this->data['column_product_name'] = $this->language->get('column_product_name');
 		$this->data['column_invoice'] = $this->language->get('column_invoice');
 		$this->data['column_invoice_date'] = $this->language->get('column_invoice_date');
 		$this->data['column_total'] = $this->language->get('column_total');
+		$this->data['column_date_added'] = $this->language->get('column_date_added');
+		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['column_contact_name'] = $this->language->get('column_contact_name');
 		$this->data['column_contact_email'] = $this->language->get('column_contact_email');
@@ -532,6 +537,28 @@ class ControllerPurchaseSupplier extends Controller {
 					'quantity'   => $result['quantity'],
 					'total'      => $this->currency->format($result['total'], $this->config->get('config_currency')),
 					'href'       => str_replace('&amp;', '&', $this->url->link('purchase/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL')),
+				);
+			}
+		}
+
+		$this->data['invoices'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getInvoicesSupplier($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$action = array();
+
+				$action[] = array(
+					'text' => $this->language->get('text_edit'),
+					'href' => $this->url->link('purchase/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL')
+				);
+
+				$this->data['invoices'][] = array(
+					'invoice_id' => $result['invoice_id'],
+					'date'       => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'action'     => $action,
+					'total'      => $this->currency->format($result['total'], $this->config->get('config_currency'))
 				);
 			}
 		}

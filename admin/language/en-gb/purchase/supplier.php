@@ -34,7 +34,9 @@ $_['entry_email']              = 'E-Mail:';
 $_['entry_telephone']          = 'Telephone:';
 $_['entry_fax']                = 'Fax:';
 $_['entry_web']                = 'Web:';
-$_['entry_address_1']          = 'Address 1:';
+$_['button_web']               = 'Go to web';
+$_['error_web']                = 'Error: Enter a valid url!';
+$_['entry_address_1']          = 'Address:';
 $_['entry_address_2']          = 'Address 2:';
 $_['entry_city']               = 'City:';
 $_['entry_postcode']           = 'Postcode:';
@@ -57,6 +59,7 @@ $_['tab_notes']                 = 'Notes';
 $_['tab_contacts']              = 'Contacts';
 $_['tab_contracts']             = 'Contracts';
 $_['tab_products']             = 'Productos';
+$_['tab_invoices']             = 'Invoices';
 
 // Products tab
 $_['column_product_id']        = 'ID';
