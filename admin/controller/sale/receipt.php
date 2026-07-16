@@ -443,7 +443,7 @@ class ControllerSaleReceipt extends Controller {
 			// Comprobamos que ninguno haya sido generado anteriormente
 			foreach ($receipts as $receipt_id) {
 				if (!$this->model_sale_receipt->checknoremittance($receipt_id)) {
-					$mensaje = "Error: The receipt ID " . $receipt_id . " has already been generated.";
+					$mensaje = "Error: El recibo con ID " . $receipt_id . " ya ha sido generado.";
 					$continue = false;
 				} else {
 					$ammount += $this->model_sale_receipt->getReceiptAmmount($receipt_id);
@@ -462,7 +462,7 @@ class ControllerSaleReceipt extends Controller {
 			}
 
 		} else {
-			$mensaje = 'Error: Select at least one receipt';
+			$mensaje = 'Error: Seleccione al menos un recibo';
 		}
 
 		// Mostramos el error, en caso que lo haya

@@ -20,8 +20,8 @@
 				</tr>
 			</thead>
 			<tbody>
-				<?php if ($receipts): ?>
-					<?php foreach ($receipts as $receipt): ?>
+				<?php if ($remittances_lines): ?>
+					<?php foreach ($remittances_lines as $receipt): ?>
 						<tr>
 							<td class="text-right"><?php echo $receipt['receipt_id'] ?></td>
 							<td class="text-left"><?php echo $receipt['customer'] ?></td>

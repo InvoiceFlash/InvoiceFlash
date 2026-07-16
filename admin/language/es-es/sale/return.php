@@ -41,6 +41,7 @@ $_['entry_quantity'] = 'Cantidad';
 $_['entry_opened'] = 'Abierto';
 $_['entry_comment'] = 'Comentario';
 $_['entry_return_reason'] = 'Razones de Devoluciones';
+$_['entry_reason'] = 'Motivo de la Devoluci&oacute;n';
 $_['entry_return_action'] = 'Acci&oacute;n De Devoluci&oacute;n';
 $_['entry_return_status'] = 'Estado de Devoluciones';
 $_['entry_notify'] = 'Notificar al cliente';
