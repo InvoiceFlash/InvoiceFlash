@@ -15,7 +15,7 @@ $_ ['column_sort_order'] = 'Orden';
 $_ ['column_action'] = 'Acci&oacute;n';
 
 // Entry
-$_ ['entry-name'] = 'Nombre de categor&iacute;a';
+$_['entry_name'] = 'Nombre de la Categor&iacute;a:';
 $_ ['entry_description'] = 'Descripci&oacute;n';
 $_ ['entry_meta_title'] = 'Meta Tag Title';
 $_ ['entry_meta_keyword'] = 'Tag Meta Keywords';
@@ -33,9 +33,9 @@ $_ ['entry_layout'] ='Ignorar Layout';
 
 // Help
 $_ ['help_filter'] = '(Autocompletar)';
-$_ ['help_keyword'] = 'No utilice espacios, en vez reemplazar los espacios con - y asegúrese de que la palabra clave es único en el mundo.';
-$_ ['help_top'] = 'Mostrar en la barra de menú superior. S&oacute;lo funciona para las principales categor&iacute;as de los padres ';
-$_ ['help_column'] = 'Número de columnas que se utilizará para las 3 categor&iacute;as inferiores. S&oacute;lo funciona para las principales categor&iacute;as de los padres';
+$_ ['help_keyword'] = 'No utilice espacios, en vez reemplazar los espacios con - y asegï¿½rese de que la palabra clave es ï¿½nico en el mundo.';
+$_ ['help_top'] = 'Mostrar en la barra de menï¿½ superior. S&oacute;lo funciona para las principales categor&iacute;as de los padres ';
+$_ ['help_column'] = 'Nï¿½mero de columnas que se utilizarï¿½ para las 3 categor&iacute;as inferiores. S&oacute;lo funciona para las principales categor&iacute;as de los padres';
 
 //Error
 $_ ['error_warning'] = 'Advertencia: Por favor, consulte el formulario cuidadosamente de errores';

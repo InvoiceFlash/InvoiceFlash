@@ -10,6 +10,7 @@ $_['text_edit'] = 'Editar Devoluci&oacute;n del producto';
 $_['text_opened'] = 'Abierto';
 $_['text_unopened'] = 'Sin abrir';
 $_['text_order'] = 'Solicitar informaci&oacute;n';
+$_['text_order_info'] = 'Informaci&oacute;n del Pedido';
 $_['text_product'] = 'Informaci&oacute;n & amp del producto; Raz&oacute;n para devolver';
 $_['text_history'] = 'Agregar Historia Devoluci&oacute;n';
 

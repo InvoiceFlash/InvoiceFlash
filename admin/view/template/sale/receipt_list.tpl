@@ -4,7 +4,7 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-shopping-cart"></i> <?php echo $heading_title ?></div>
 		<div class="pull-right">
-			<button onclick="validateGenerate();" class="btn btn-success btn-spacer"><i class="fa fa-print"></i> <span class="d-none d-sm-inline-block"><?php echo $button_remittances ?></span></button>
+			<button onclick="validateGenerate();" class="btn btn-success btn-spacer"><i class="fas fa-money-check-alt"></i> <span class="d-none d-sm-inline-block"><?php echo $button_remittances ?></span></button>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -151,7 +151,7 @@ $('#form input').keydown(function(e) {
 <script type="text/javascript"><!--
 function validateGenerate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-			alert('Select at least one Receipt');
+			alert('Seleccione al menos un recibo');
 	} else {
 		$('#form').submit();
 	}

@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading-title'] = 'Descargas';
+$_['heading_title'] = 'Descargas';
 
 // Text
 $_['text_success'] = '&eacute;xito: Ha modificado descargas!';
@@ -15,7 +15,7 @@ $_['column_date_added'] = 'Fecha Alta';
 $_['column_action'] = 'Acci&oacute;n';
 
 // Entry
-$_['entry-name'] = 'Descargar Nombre';
+$_['entry_name'] = 'Nombre de la Descarga:';
 $_['entry_filename'] = 'Nombre del archivo';
 $_['entry_mask'] = 'M&acute;scara';
 

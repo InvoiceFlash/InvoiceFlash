@@ -676,6 +676,10 @@ $('#addProduct').click(function(e) {
 });
 
 function psDoSearch() {
+	var btn = $('#ps-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#ps-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
@@ -705,6 +709,14 @@ function psDoSearch() {
 				html += '</tr>';
 			}
 			$('#ps-results').html(html);
+		},
+		error: function() {
+			$('#ps-warning').text('Error al buscar productos').show();
+			$('#ps-results').html('<tr><td colspan="5" class="text-center">Error al buscar productos</td></tr>');
+			psProducts = [];
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
 		}
 	});
 }

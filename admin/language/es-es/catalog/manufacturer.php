@@ -17,7 +17,7 @@ $_['column_sort_order'] = 'Orden';
 $_['column_action'] = 'Acci&oacute;n';
 
 // Entry
-$_['entry-name'] = 'Fabricante';
+$_['entry_name'] = 'Nombre del Fabricante:';
 $_['entry_store'] = 'Tiendas';
 $_['entry_keyword'] = 'SEO palabra clave';
 $_['entry_image'] = 'Imagen';
