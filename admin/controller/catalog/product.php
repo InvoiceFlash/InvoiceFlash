@@ -1599,9 +1599,9 @@ class ControllerCatalogProduct extends Controller {
 		$this->load->model('catalog/product');
 		$this->load->model('catalog/option');
 
-		$filter_name  = isset($this->request->get['filter_name'])  ? html_entity_decode($this->request->get['filter_name'],  ENT_QUOTES, 'UTF-8') : '';
-		$filter_sku   = isset($this->request->get['filter_sku'])   ? html_entity_decode($this->request->get['filter_sku'],   ENT_QUOTES, 'UTF-8') : '';
-		$filter_model = isset($this->request->get['filter_model']) ? html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8') : '';
+		$filter_name  = isset($this->request->post['filter_name'])  ? html_entity_decode($this->request->post['filter_name'],  ENT_QUOTES, 'UTF-8') : '';
+		$filter_sku   = isset($this->request->post['filter_sku'])   ? html_entity_decode($this->request->post['filter_sku'],   ENT_QUOTES, 'UTF-8') : '';
+		$filter_model = isset($this->request->post['filter_model']) ? html_entity_decode($this->request->post['filter_model'], ENT_QUOTES, 'UTF-8') : '';
 
 		$data = array(
 			'filter_name'   => $filter_name ? '%' . $filter_name : '',

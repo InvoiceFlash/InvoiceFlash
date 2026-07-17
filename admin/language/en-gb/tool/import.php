@@ -31,6 +31,7 @@ $_['column_telephone']    = 'Telephone';
 $_['column_address']      = 'Address';
 $_['column_city']         = 'City';
 $_['column_postcode']     = 'Postcode';
+$_['column_country']      = 'Country';
 
 // Button
 $_['button_import']       = 'Import';

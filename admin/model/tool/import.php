@@ -92,6 +92,7 @@ class ModelToolImport extends Model {
 			$address_1 = isset($row[4]) ? trim($row[4]) : '';
 			$city = isset($row[5]) ? trim($row[5]) : '';
 			$postcode = isset($row[6]) ? trim($row[6]) : '';
+			$country_id = $this->resolveCountryId(isset($row[7]) ? trim($row[7]) : '');
 
 			if ($company === '' || $email === '') {
 				$errors[] = sprintf($this->language->get('error_row'), $row_number, $this->language->get('error_required_customer'));
@@ -108,9 +109,9 @@ class ModelToolImport extends Model {
 				$fl_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "fl_customers` WHERE customer_id = '" . (int)$customer_id . "'");
 
 				if ($fl_query->num_rows) {
-					$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "' WHERE customer_id = '" . (int)$customer_id . "'");
+					$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
 				} else {
-					$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '195', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '" . (int)$country_id . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
 				}
 
 				$updated++;
@@ -119,10 +120,10 @@ class ModelToolImport extends Model {
 
 				$customer_id = $this->db->getLastId();
 
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '195', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '" . (int)$country_id . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
 
 				if ($address_1 !== '' || $city !== '' || $postcode !== '') {
-					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '195'");
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
 
 					$address_id = $this->db->getLastId();
 
@@ -138,5 +139,21 @@ class ModelToolImport extends Model {
 			'updated'  => $updated,
 			'errors'   => $errors
 		);
+	}
+
+	private function resolveCountryId($country) {
+		$country = trim($country);
+
+		if ($country === '' || strcasecmp($country, 'España') == 0 || strcasecmp($country, 'Espana') == 0) {
+			return 195;
+		}
+
+		$query = $this->db->query("SELECT country_id FROM `" . DB_PREFIX . "country` WHERE LOWER(name) = LOWER('" . $this->db->escape($country) . "') OR iso_code_2 = '" . $this->db->escape(strtoupper($country)) . "' OR iso_code_3 = '" . $this->db->escape(strtoupper($country)) . "' LIMIT 1");
+
+		if ($query->num_rows) {
+			return (int)$query->row['country_id'];
+		}
+
+		return 195;
 	}
 }

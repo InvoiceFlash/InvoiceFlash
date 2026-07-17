@@ -16,7 +16,7 @@
 	</div>
 	<div class="panel-body">
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-import">
-			<div class="form-group row">
+			<div class="form-group row align-items-center">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_type; ?></label>
 				<div class="col-sm-10">
 					<select name="type" id="import-type" class="form-control">
@@ -26,11 +26,13 @@
 					</select>
 				</div>
 			</div>
-			<div class="form-group row">
+			<div class="form-group row align-items-center">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_file; ?></label>
-				<div class="custom-file col-sm-10">
-					<input type="file" class="custom-file-input from-control" name="file" accept=".xlsx">
-					<label class="custom-file-label">Browse....</label>
+				<div class="col-sm-10">
+					<div class="custom-file">
+						<input type="file" class="custom-file-input" name="file" accept=".xlsx">
+						<label class="custom-file-label">Browse....</label>
+					</div>
 				</div>
 			</div>
 			<div class="form-group row">
@@ -57,14 +59,14 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>REF-001</td>
+						<td>F001A</td>
 						<td>Descripción del producto de ejemplo</td>
 						<td>19.99</td>
 						<td>100</td>
 						<td>1</td>
 					</tr>
 					<tr>
-						<td>REF-002</td>
+						<td>F002XY</td>
 						<td>Otra descripción de ejemplo</td>
 						<td>9.50</td>
 						<td>25</td>
@@ -84,6 +86,7 @@
 						<td><?php echo $column_address; ?></td>
 						<td><?php echo $column_city; ?></td>
 						<td><?php echo $column_postcode; ?></td>
+						<td><?php echo $column_country; ?></td>
 					</tr>
 				</thead>
 				<tbody>
@@ -91,10 +94,11 @@
 						<td>Empresa de Ejemplo SL</td>
 						<td>B12345678</td>
 						<td>contacto@ejemplo.com</td>
-						<td>600000000</td>
+						<td>6754544321</td>
 						<td>Calle Mayor 1</td>
 						<td>Madrid</td>
 						<td>28001</td>
+						<td>España</td>
 					</tr>
 				</tbody>
 			</table>

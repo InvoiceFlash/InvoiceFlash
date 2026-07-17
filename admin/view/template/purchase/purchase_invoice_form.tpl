@@ -622,9 +622,10 @@ function psDoSearch() {
 			}
 			$('#ps-results').html(html);
 		},
-		error: function() {
-			$('#ps-warning').text('Error al buscar productos').show();
-			$('#ps-results').html('<tr><td colspan="5" class="text-center">Error al buscar productos</td></tr>');
+		error: function(jqXHR, textStatus) {
+			var msg = (textStatus === 'parsererror') ? 'Tu sesi&oacute;n ha caducado. Recarga la p&aacute;gina e inicia sesi&oacute;n de nuevo.' : 'Error al buscar productos';
+			$('#ps-warning').text(msg).show();
+			$('#ps-results').html('<tr><td colspan="5" class="text-center">' + msg + '</td></tr>');
 			psProducts = [];
 		},
 		complete: function() {

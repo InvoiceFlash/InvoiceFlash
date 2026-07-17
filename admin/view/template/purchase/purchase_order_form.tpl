@@ -196,6 +196,54 @@
 				</div>
 			</div>
 			<!-- Fin Modal Buscar Proveedor -->
+			<!-- Modal Buscar Producto -->
+			<div class="modal" tabindex="-1" role="dialog" id="ProductSearchModal">
+				<div class="modal-dialog modal-lg" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Buscar Producto</h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="row g-2 mb-3">
+								<div class="col-12 col-sm-3">
+									<label class="control-label">Código / SKU</label>
+									<input type="text" id="ps-sku" class="form-control" placeholder="SKU">
+								</div>
+								<div class="col-12 col-sm">
+									<label class="control-label">Descripción</label>
+									<input type="text" id="ps-name" class="form-control" placeholder="Descripción">
+								</div>
+								<div class="col-12 col-sm-3">
+									<label class="control-label">Modelo</label>
+									<input type="text" id="ps-model" class="form-control" placeholder="Modelo">
+								</div>
+								<div class="col-12 col-sm-auto d-flex align-items-end">
+									<button type="button" id="ps-search" class="btn btn-primary">Actualizar</button>
+								</div>
+							</div>
+							<div id="ps-warning" class="alert alert-warning" style="display:none;"></div>
+							<div style="overflow-x:auto;">
+								<table class="table table-bordered table-hover table-striped">
+									<thead>
+										<tr>
+											<th>SKU</th>
+											<th>Descripción</th>
+											<th>Modelo</th>
+											<th class="text-right">Precio</th>
+											<th class="text-right">Stock</th>
+										</tr>
+									</thead>
+									<tbody id="ps-results">
+										<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Buscar Producto -->
 			<!-- Modal Product -->
 			<div class="modal" tab-index="-1" role="dialog" id="PurchaseOrderProductModal">
 				<div class="modal-dialog" role="document">
@@ -332,7 +380,84 @@ $('#PurchaseOrderProductModal').on('hidden.bs.modal', function () {
 	$(this).find('#purchase_order_product_id').val(0);
 });
 $('#addPurchaseOrderProduct').click(function(e){
+	if($('#purchase_order_supplier_id').val()==0){
+		alert('Por favor, seleccione un proveedor primero');
+		$('#purchase-order-supplier').focus();
+	} else {
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductSearchModal')).show();
+	}
+});
+
+var psProducts = [];
+
+function psDoSearch() {
+	var btn = $('#ps-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#ps-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val(), filter_model: $('#ps-model').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#ps-warning').text(json.warning).show();
+				$('#ps-results').html('<tr><td colspan="5" class="text-center">' + json.warning + '</td></tr>');
+				psProducts = [];
+				return;
+			}
+			$('#ps-warning').hide();
+			psProducts = json;
+			if (!json.length) {
+				$('#ps-results').html('<tr><td colspan="5" class="text-center">No se encontraron productos</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].sku || '') + '</td>';
+				html += '<td>' + json[i].name + '</td>';
+				html += '<td>' + (json[i].model || '') + '</td>';
+				html += '<td class="text-right">' + json[i].price_formatted + '</td>';
+				html += '<td class="text-right">' + json[i].quantity + '</td>';
+				html += '</tr>';
+			}
+			$('#ps-results').html(html);
+		},
+		error: function(jqXHR, textStatus) {
+			var msg = (textStatus === 'parsererror') ? 'Tu sesi&oacute;n ha caducado. Recarga la p&aacute;gina e inicia sesi&oacute;n de nuevo.' : 'Error al buscar productos';
+			$('#ps-warning').text(msg).show();
+			$('#ps-results').html('<tr><td colspan="5" class="text-center">' + msg + '</td></tr>');
+			psProducts = [];
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
+		}
+	});
+}
+
+$('#ps-search').click(psDoSearch);
+
+$('#ps-sku, #ps-name, #ps-model').on('keypress', function(e) {
+	if (e.which == 13) { e.preventDefault(); psDoSearch(); }
+});
+
+$(document).on('dblclick', '#ps-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var p = psProducts[idx];
+	$('#purchase_order_product_id').val(p.product_id);
+	$('#purchase-order-product').val(p.name);
+
+	bootstrap.Modal.getInstance(document.getElementById('ProductSearchModal')).hide();
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('PurchaseOrderProductModal')).show();
+});
+
+$('#ProductSearchModal').on('hidden.bs.modal', function() {
+	$('#ps-sku, #ps-name, #ps-model').val('');
+	$('#ps-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>');
+	$('#ps-warning').hide();
+	psProducts = [];
 });
 </script>
 <?php echo $footer; ?>

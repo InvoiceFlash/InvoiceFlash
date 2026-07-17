@@ -48,14 +48,14 @@ class ControllerToolImport extends Controller {
 		$xlsx = new Xlsx();
 
 		if ($type == 'customer') {
-			$xlsx->setHeaders(array('Empresa', 'NIF/CIF', 'Email', 'Telefono', 'Direccion', 'Ciudad', 'Codigo Postal'));
-			$xlsx->addRow(array('Empresa de Ejemplo SL', 'B12345678', 'contacto@ejemplo.com', '600000000', 'Calle Mayor 1', 'Madrid', '28001'));
+			$xlsx->setHeaders(array('Empresa', 'NIF/CIF', 'Email', 'Telefono', 'Direccion', 'Ciudad', 'Codigo Postal', 'Pais'));
+			$xlsx->addRow(array('Empresa de Ejemplo SL', 'B12345678', 'contacto@ejemplo.com', '6754544321', 'Calle Mayor 1', 'Madrid', '28001', 'España'));
 
 			$content = $xlsx->build('Clientes');
 			$filename = 'plantilla_clientes.xlsx';
 		} else {
 			$xlsx->setHeaders(array('Codigo Articulo', 'Descripcion', 'Precio', 'Cantidad', 'Estado'));
-			$xlsx->addRow(array('REF-001', 'Descripcion del producto de ejemplo', '19.99', '100', '1'));
+			$xlsx->addRow(array('F001A', 'Descripcion del producto de ejemplo', '19.99', '100', '1'));
 
 			$content = $xlsx->build('Productos');
 			$filename = 'plantilla_productos.xlsx';
@@ -102,6 +102,7 @@ class ControllerToolImport extends Controller {
 		$this->data['column_address'] = $this->language->get('column_address');
 		$this->data['column_city'] = $this->language->get('column_city');
 		$this->data['column_postcode'] = $this->language->get('column_postcode');
+		$this->data['column_country'] = $this->language->get('column_country');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
