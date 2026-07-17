@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title'] = 'Exportador';
+$_['heading_title'] = 'Exportador Contabilidad';
 
 // Text
 $_['text_contaplus'] = 'Exportar facturas a ContaPlus 2014';

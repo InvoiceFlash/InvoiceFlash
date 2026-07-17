@@ -10,6 +10,7 @@ $_['text_list'] = 'Cargar lista';
 // Entrada
 $_['entry_restore'] = 'Restaurar copia de seguridad';
 $_['entry_backup'] = 'Copia de seguridad';
+$_['entry_backup_sources'] = 'Ficheros Fuente:';
 
 // Error
 $_['error_permission'] = 'Advertencia: Usted no tiene permiso para modificar las copias de seguridad!';

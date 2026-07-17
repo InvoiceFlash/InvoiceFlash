@@ -949,11 +949,11 @@
 				<div id="tab-payroll" class="tab-pane">
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_iban ?></label>
-						<div class="col-sm-6"><input type="text" name="iban" value="<?php echo $iban ?>" class="form-control"></div>
+						<div class="col-sm-6"><input type="text" name="iban" value="<?php echo $iban ?>" maxlength="34" class="form-control" style="width: 260px;"></div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_bic ?></label>
-						<div class="col-sm-6"><input type="text" name="bic" value="<?php echo $bic ?>" class="form-control"></div>
+						<div class="col-sm-6"><input type="text" name="bic" value="<?php echo $bic ?>" maxlength="11" class="form-control" style="width: 140px;"></div>
 					</div>
 				</div>
 				<div id="tab-accounting" class="tab-pane">
@@ -968,7 +968,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
 						<div class="col-sm-6">
-							<input type="text" name="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control" placeholder="700000000">
+							<input type="text" name="config_conta_ventas_account" id="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control conta-account" placeholder="700000000">
 							<?php if ($error_conta_ventas_account) { ?>
 								<div class="help-block text-danger"><?php echo $error_conta_ventas_account; ?></div>
 							<?php } ?>
@@ -977,7 +977,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_cliente_account; ?></label>
 						<div class="col-sm-6">
-							<input type="text" name="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control" placeholder="430000000">
+							<input type="text" name="config_conta_cliente_account" id="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control conta-account" placeholder="430000000">
 							<?php if ($error_conta_cliente_account) { ?>
 								<div class="help-block text-danger"><?php echo $error_conta_cliente_account; ?></div>
 							<?php } ?>
@@ -985,7 +985,7 @@
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_digits; ?></label>
-						<div class="col-sm-6"><input type="number" name="config_conta_digits" value="<?php echo $config_conta_digits; ?>" min="1" max="12" step="1" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,2)" class="form-control" style="width: 80px;"></div>
+						<div class="col-sm-6"><input type="number" name="config_conta_digits" id="config_conta_digits" value="<?php echo $config_conta_digits; ?>" min="1" max="12" step="1" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,2);contaAccountUpdateMaxLength();" class="form-control" style="width: 80px;"></div>
 					</div>
 				</div>
 				<div id="tab-hacienda" class="tab-pane">
@@ -1231,6 +1231,17 @@
 			$icon.attr('class', 'fa fa-eye');
 		}
 	});
+
+	function contaAccountUpdateMaxLength() {
+		var digits = parseInt($('#config_conta_digits').val(), 10) || 10;
+		$('.conta-account').attr('maxlength', digits);
+	}
+
+	$('.conta-account').on('input', function() {
+		this.value = this.value.replace(/[^0-9]/g, '');
+	});
+
+	contaAccountUpdateMaxLength();
 
 	function test() {
 		$('#mcResponse').html('<img src="view/image/ajax-loader.gif" width="25px" height="25px">');
