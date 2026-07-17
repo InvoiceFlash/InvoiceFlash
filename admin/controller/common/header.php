@@ -988,6 +988,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Importador
+			if ($this->user->hasPermission('access', 'tool/import')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_import'),
+					'href' => $this->url->link('tool/import', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			// Upgrade
 			if ($this->user->hasPermission('access', 'tool/upgrade')) {
 				$tools[] = array(

@@ -164,12 +164,14 @@ $_['tab_fraud']	 = 'Fraud';
 // Payroll
 $_['tab_payroll']	 = 'Bank';
 $_['tab_accounting']	 = 'Accounting';
+$_['tab_hacienda']	 = 'Tax Office';
 $_['entry_accounting_period'] = 'Accounting Period:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
 $_['entry_creditor_id'] = 'Creditor Id:';
 $_['entry_conta_ventas_account'] = 'Sales accounting account:';
 $_['entry_conta_cliente_account'] = 'Customer accounting account (default):';
+$_['entry_conta_digits'] = 'Accounting digits';
 $_['entry_certificado'] = 'Certificate:';
 $_['entry_clave'] = 'Password:';
 $_['entry_aeat_active'] = 'Send invoices to the AEAT:';

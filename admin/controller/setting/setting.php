@@ -178,6 +178,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
 		$this->data['entry_conta_ventas_account'] = $this->language->get('entry_conta_ventas_account');
 		$this->data['entry_conta_cliente_account'] = $this->language->get('entry_conta_cliente_account');
+		$this->data['entry_conta_digits'] = $this->language->get('entry_conta_digits');
 		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
 		$this->data['entry_aeat_active'] = $this->language->get('entry_aeat_active');
@@ -200,6 +201,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['tab_server'] = $this->language->get('tab_server');
 		$this->data['tab_payroll'] = $this->language->get('tab_payroll');
 		$this->data['tab_accounting'] = $this->language->get('tab_accounting');
+		$this->data['tab_hacienda'] = $this->language->get('tab_hacienda');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -440,6 +442,14 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_conta_cliente_account'] = $this->request->post['config_conta_cliente_account'];
 		} else {
 			$this->data['config_conta_cliente_account'] = $this->config->get('config_conta_cliente_account');
+		}
+
+		if (isset($this->request->post['config_conta_digits'])) {
+			$this->data['config_conta_digits'] = $this->request->post['config_conta_digits'];
+		} elseif ($this->config->get('config_conta_digits') !== null) {
+			$this->data['config_conta_digits'] = $this->config->get('config_conta_digits');
+		} else {
+			$this->data['config_conta_digits'] = 10;
 		}
 
 		if (isset($this->request->post['config_geocode'])) {

@@ -69,6 +69,7 @@ $_['text_shipping'] = 'Env&iacute;os';
 $_['text_backup'] = 'Copia de seguridad / Restaurar';
 $_['text_cron'] = 'Tareas Programadas';
 $_['text_export'] = 'Exportador';
+$_['text_import'] = 'Importador';
 $_['text_upgrade'] = 'Actualizar';
 $_['text_vqmod'] = 'Gestor de M&oacute;dulos';
 $_['text_error_log'] = 'Registro de Errores';

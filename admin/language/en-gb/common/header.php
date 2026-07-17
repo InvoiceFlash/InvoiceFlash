@@ -104,6 +104,7 @@ $_['text_recurring']                   = 'Recurring';
 $_['text_upgrade']           		   = 'Upgrade';
 $_['text_vqmod']                       = 'Add-on Manager';
 $_['text_export']                     = 'Exportador';
+$_['text_import']                     = 'Importador';
 
 //add
 $_['text_cron']						   = 'Scheduled tasks';

@@ -277,14 +277,16 @@ $_['tab_fraud'] = 'Fraude';
 // Payroll
 $_['tab_payroll'] = 'Banco';
 $_['tab_accounting'] = 'Contabilidad';
+$_['tab_hacienda'] = 'Hacienda';
 $_['entry_accounting_period'] = 'Periodo Contable:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
 $_['entry_creditor_id'] = 'ID de Acreedor:';
 $_['entry_conta_ventas_account'] = 'Cuenta contable de ventas:';
 $_['entry_conta_cliente_account'] = 'Cuenta contable de clientes (por defecto):';
+$_['entry_conta_digits'] = 'N&ordm; de d&iacute;gitos contabilidad';
 $_['entry_certificado'] = 'Certificado:';
-$_['entry_clave'] = 'Contrase&ntilde;a:';
+$_['entry_clave'] = 'Contrase&ntilde;a certificado:';
 $_['entry_aeat_active'] = 'Enviar facturas a la AEAT:';
 $_['entry_aeat_send'] = 'Modo de Env&iacute;o:';
 $_['text_aeat_test'] = 'Pruebas';

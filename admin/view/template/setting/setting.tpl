@@ -13,6 +13,7 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-mail" data-bs-toggle="tab"><?php echo $tab_mail; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-payroll" data-bs-toggle="tab"><?php echo $tab_payroll; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-accounting" data-bs-toggle="tab"><?php echo $tab_accounting; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-hacienda" data-bs-toggle="tab"><?php echo $tab_hacienda; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-bs-toggle="tab"><?php echo $tab_fraud; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li></ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
@@ -947,10 +948,6 @@
 				</div>
 				<div id="tab-payroll" class="tab-pane">
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period ?></label>
-						<div class="col-sm-6"><input type="text" name="accounting_period" value="<?php echo $accounting_period ?>" class="form-control"></div>
-					</div>
-					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_iban ?></label>
 						<div class="col-sm-6"><input type="text" name="iban" value="<?php echo $iban ?>" class="form-control"></div>
 					</div>
@@ -958,25 +955,47 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_bic ?></label>
 						<div class="col-sm-6"><input type="text" name="bic" value="<?php echo $bic ?>" class="form-control"></div>
 					</div>
+				</div>
+				<div id="tab-accounting" class="tab-pane">
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period ?></label>
+						<div class="col-sm-6"><input type="text" name="accounting_period" value="<?php echo $accounting_period ?>" class="form-control"></div>
+					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?></label>
 						<div class="col-sm-6"><input type="text" name="creditor_id" value="<?php echo $creditor_id ?>" class="form-control"></div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_certificado ?></label>
-						<div class="col-sm-6">
-							<input type="file" name="certificado_file" class="form-control">
-							<?php if ($certificado) { ?>
-								<div class="form-text"><?php echo basename($certificado); ?></div>
-							<?php } ?>
-						</div>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
+						<div class="col-sm-6"><input type="text" name="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control" placeholder="700000000"></div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_clave ?></label>
-						<div class="col-sm-6 input-group">
-							<input type="password" name="clave" value="<?php echo $clave ?>" id="input-clave" class="form-control">
-							<div class="input-group-append">
-								<button type="button" id="button-clave" class="btn btn-light border"><i class="fa fa-eye"></i></button>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_cliente_account; ?></label>
+						<div class="col-sm-6"><input type="text" name="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control" placeholder="430000000"></div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_digits; ?></label>
+						<div class="col-sm-6"><input type="number" name="config_conta_digits" value="<?php echo $config_conta_digits; ?>" min="1" max="12" step="1" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'').slice(0,2)" class="form-control" style="width: 80px;"></div>
+					</div>
+				</div>
+				<div id="tab-hacienda" class="tab-pane">
+					<div class="border rounded p-3 mb-3" style="background-color: #d6eff7; border-color: #c5e9f3 !important;">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_certificado ?></label>
+							<div class="col-sm-6">
+								<input type="file" name="certificado_file" class="form-control">
+								<?php if ($certificado) { ?>
+									<div class="form-text"><?php echo basename($certificado); ?></div>
+								<?php } ?>
+							</div>
+						</div>
+						<div class="form-group row mb-0">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_clave ?></label>
+							<div class="col-sm-6 input-group">
+								<input type="password" name="clave" value="<?php echo $clave ?>" id="input-clave" class="form-control">
+								<div class="input-group-append">
+									<button type="button" id="button-clave" class="btn btn-light border"><i class="fa fa-eye"></i></button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -1005,16 +1024,6 @@
 							<label class="radio-inline"><input type="radio" name="config_aeat_send" value="production"><?php echo $text_aeat_production; ?></label>
 							<?php } ?>
 						</div>
-					</div>
-				</div>
-				<div id="tab-accounting" class="tab-pane">
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
-						<div class="col-sm-6"><input type="text" name="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control" placeholder="700000000"></div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_cliente_account; ?></label>
-						<div class="col-sm-6"><input type="text" name="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control" placeholder="430000000"></div>
 					</div>
 				</div>
 				<div id="tab-fraud" class="tab-pane">

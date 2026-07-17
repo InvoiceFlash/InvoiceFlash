@@ -33,6 +33,96 @@ class Xlsx {
 		return $content;
 	}
 
+	public function read($file_path) {
+		$zip = new ZipArchive();
+
+		if ($zip->open($file_path) !== true) {
+			return false;
+		}
+
+		$shared_strings = array();
+
+		$shared_xml = $zip->getFromName('xl/sharedStrings.xml');
+
+		if ($shared_xml !== false) {
+			$xml = simplexml_load_string($shared_xml);
+
+			foreach ($xml->si as $si) {
+				if (isset($si->t)) {
+					$shared_strings[] = (string)$si->t;
+				} else {
+					$text = '';
+
+					foreach ($si->r as $r) {
+						$text .= (string)$r->t;
+					}
+
+					$shared_strings[] = $text;
+				}
+			}
+		}
+
+		$sheet_xml = $zip->getFromName('xl/worksheets/sheet1.xml');
+
+		$zip->close();
+
+		if ($sheet_xml === false) {
+			return false;
+		}
+
+		$xml = simplexml_load_string($sheet_xml);
+
+		$rows = array();
+
+		if (!isset($xml->sheetData->row)) {
+			return $rows;
+		}
+
+		foreach ($xml->sheetData->row as $row) {
+			$row_data = array();
+			$col_index = 0;
+
+			foreach ($row->c as $cell) {
+				$ref = (string)$cell['r'];
+				$col_letters = preg_replace('/[0-9]/', '', $ref);
+				$target_col = $col_letters ? $this->columnIndex($col_letters) : ($col_index + 1);
+
+				while ($col_index < $target_col - 1) {
+					$row_data[] = '';
+					$col_index++;
+				}
+
+				$type = (string)$cell['t'];
+
+				if ($type == 's') {
+					$value = isset($shared_strings[(int)$cell->v]) ? $shared_strings[(int)$cell->v] : '';
+				} elseif ($type == 'inlineStr') {
+					$value = isset($cell->is->t) ? (string)$cell->is->t : '';
+				} else {
+					$value = (string)$cell->v;
+				}
+
+				$row_data[] = $value;
+				$col_index++;
+			}
+
+			$rows[] = $row_data;
+		}
+
+		return $rows;
+	}
+
+	private function columnIndex($letters) {
+		$letters = strtoupper($letters);
+		$col = 0;
+
+		for ($i = 0; $i < strlen($letters); $i++) {
+			$col = ($col * 26) + (ord($letters[$i]) - 64);
+		}
+
+		return $col;
+	}
+
 	private function escape($value) {
 		return htmlspecialchars((string)$value, ENT_XML1 | ENT_QUOTES, 'UTF-8');
 	}
