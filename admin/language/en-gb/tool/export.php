@@ -1,22 +1,22 @@
 <?php
 // Heading
-$_['heading_title'] = 'Exportador';
+$_['heading_title'] = 'Exporter';
 
 // Text
-$_['text_contaplus'] = 'Exportar facturas a ContaPlus 2014';
-$_['text_sage50'] = 'Exportar facturas a Sage 50';
+$_['text_contaplus'] = 'Export invoices to ContaPlus 2014';
+$_['text_sage50'] = 'Export invoices to Sage 50';
 
 // Entry
-$_['entry_date_start'] = 'Fecha desde:';
-$_['entry_date_end'] = 'Fecha hasta:';
+$_['entry_date_start'] = 'Date from:';
+$_['entry_date_end'] = 'Date to:';
 
 // Warning (shown on the setup page, non-blocking)
-$_['warning_no_sales_account'] = 'No se ha configurado la cuenta contable de ventas en Ajustes.';
-$_['warning_no_customer_account'] = 'No se ha configurado la cuenta contable de clientes por defecto en Ajustes.';
-$_['warning_no_tax_account'] = 'El tipo de IVA "%s" no tiene cuenta contable asignada (Localisation > Tax Rates).';
+$_['warning_no_sales_account'] = 'The sales accounting account has not been configured in Settings.';
+$_['warning_no_customer_account'] = 'The default customer accounting account has not been configured in Settings.';
+$_['warning_no_tax_account'] = 'The tax rate "%s" has no accounting account assigned (Localisation > Tax Rates).';
 
 // Error (blocking, returned instead of the file)
 $_['error_permission'] = 'Warning: You do not have permission to use the exporter!';
-$_['error_no_sales_account'] = 'Debes configurar la cuenta contable de ventas en Ajustes antes de exportar.';
-$_['error_no_tax_account'] = 'Faltan cuentas contables de IVA para los siguientes tipos, configúralas en Localisation > Tax Rates:';
-$_['error_no_invoices'] = 'No se encontraron facturas en el rango de fechas indicado.';
+$_['error_no_sales_account'] = 'You must configure the sales accounting account in Settings before exporting.';
+$_['error_no_tax_account'] = 'Missing tax accounting accounts for the following types, configure them in Localisation > Tax Rates:';
+$_['error_no_invoices'] = 'No invoices were found in the specified date range.';

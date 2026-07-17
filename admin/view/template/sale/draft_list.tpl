@@ -18,7 +18,7 @@
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th class="text-right"><a href="<?php echo $sort_draft; ?>"><?php echo $column_draft_id; echo ($sort == 'o.draft_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_customer; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs"><?php echo $column_simplified; ?></th>
 						<th class="text-right hidden-xs"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs hidden-sm"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'o.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
@@ -30,21 +30,7 @@
 						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/draft&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
 						<td class="text-right"><input type="text" name="filter_draft_id" value="<?php echo $filter_draft_id; ?>" class="form-control text-right"></td>
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
-						<td class="hidden-xs"><select name="filter_draft_status_id" class="form-control">
-							<option value="*">&ndash;</option>
-							<?php if ($filter_draft_status_id == '0') { ?>
-							<option value="0" selected=""><?php echo $text_missing; ?></option>
-							<?php } else { ?>
-							<option value="0"><?php echo $text_missing; ?></option>
-							<?php } ?>
-							<?php foreach ($draft_statuses as $draft_status) { ?>
-							<?php if ($draft_status['draft_status_id'] == $filter_draft_status_id) { ?>
-							<option value="<?php echo $draft_status['draft_status_id']; ?>" selected=""><?php echo $draft_status['name']; ?></option>
-							<?php } else { ?>
-							<option value="<?php echo $draft_status['draft_status_id']; ?>"><?php echo $draft_status['name']; ?></option>
-							<?php } ?>
-							<?php } ?>
-						</select></td>
+						<td class="hidden-xs"></td>
 						<td class="text-right hidden-xs"><input type="text" name="filter_total" value="<?php echo $filter_total; ?>" class="form-control text-right"></td>
 						<td class="hidden-xs"><div class="input-group">
 							<input type="text" name="filter_date_added" class="form-control date"/>
@@ -70,7 +56,7 @@
 							<?php } ?></td>
 						<td class="text-right"><?php echo $draft['draft_id']; ?></td>
 						<td><?php echo $draft['company']; ?></td>
-						<td class="hidden-xs text-<?php echo strtolower($draft['status']); ?>"><?php echo $draft['status']; ?></td>
+						<td class="hidden-xs"><?php echo ($draft['simplified']) ? $text_simplified : $text_normal; ?></td>
 						<td class="text-right hidden-xs"><?php echo $draft['total']; ?></td>
 						<td class="hidden-xs"><?php echo $draft['date_added']; ?></td>
 						<td class="hidden-xs hidden-sm"><?php echo $draft['date_modified']; ?></td>

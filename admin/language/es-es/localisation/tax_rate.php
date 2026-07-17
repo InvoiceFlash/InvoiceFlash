@@ -13,10 +13,10 @@ $_['text_amount'] = 'Cantidad fija';
 // Column
 $_['column_name'] = 'Nombre del impuesto';
 $_['column_rate'] = 'Tasa de Impuesto';
-$_['tipo_columna'] = 'Tipo';
+$_['column_type'] = 'Tipo';
 $_['column_geo_zone'] = 'Geo Zona';
 $_['column_date_added'] = 'Fecha Alta';
-$_['column_date_modified'] = 'Fecha';
+$_['column_account'] = 'Cuenta Contable';
 $_['column_action'] = 'Acci&oacute;n';
 
 // Entry

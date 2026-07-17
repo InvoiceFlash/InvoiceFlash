@@ -68,12 +68,10 @@
 								<button type="button" class="btn btn-default" id="credit" data-action="remove"><b class="badge badge-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_remove; ?></span></button>
 								<?php } } else { echo $total; } ?></td>
 						</tr>
-						<?php if ($draft_status) { ?>
 						<tr>
-							<td><?php echo $text_draft_status; ?></td>
-							<td id="draft-status"><?php echo $draft_status; ?></td>
+							<td><?php echo $entry_simplified; ?></td>
+							<td id="draft-simplified"><?php echo ($simplified) ? $text_simplified : $text_normal; ?></td>
 						</tr>
-						<?php } ?>
 						<?php if ($comment) { ?>
 						<tr>
 							<td><?php echo $text_comment; ?></td>
@@ -245,20 +243,6 @@
 				<div id="tab-history" class="tab-pane">
 					<div id="history" data-href="index.php?route=sale/draft/history&token=<?php echo $token; ?>&draft_id=<?php echo $draft_id; ?>"></div>
 					<div class="form-horizontal">
-						<div class="form-group row">
-							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_draft_status; ?></label>
-							<div class="col-sm-6">
-								<select name="draft_status_id" class="form-control">
-									<?php foreach ($draft_statuses as $draft_statuses) { ?>
-									<?php if ($draft_statuses['draft_status_id'] == $draft_status_id) { ?>
-									<option value="<?php echo $draft_statuses['draft_status_id']; ?>" selected=""><?php echo $draft_statuses['name']; ?></option>
-									<?php } else { ?>
-									<option value="<?php echo $draft_statuses['draft_status_id']; ?>"><?php echo $draft_statuses['name']; ?></option>
-									<?php } ?>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2" for="notify"><?php echo $entry_notify; ?></label>
 							<div class="col-sm-6">

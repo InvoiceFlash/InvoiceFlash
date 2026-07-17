@@ -13,7 +13,7 @@
 						<th class="hidden-xs"><a href="<?php echo $sort_type; ?>"><?php echo $column_type; echo ($sort == 'tr.type') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_geo_zone; ?>"><?php echo $column_geo_zone; echo ($sort == 'gz.name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'tr.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'tr.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="hidden-xs"><a href="<?php echo $sort_account; ?>"><?php echo $column_account; echo ($sort == 'tr.account') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
@@ -31,7 +31,7 @@
 						<td class="hidden-xs"><?php echo $tax_rate['type']; ?></td>
 						<td class="hidden-xs"><?php echo $tax_rate['geo_zone']; ?></td>
 						<td class="hidden-xs"><?php echo $tax_rate['date_added']; ?></td>
-						<td class="hidden-xs"><?php echo $tax_rate['date_modified']; ?></td>
+						<td class="hidden-xs"><?php echo $tax_rate['account']; ?></td>
 						<td class="text-right"><?php foreach ($tax_rate['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
 						<?php } ?></td>

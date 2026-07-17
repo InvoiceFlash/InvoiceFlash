@@ -35,9 +35,6 @@ class ControllerSaleDraft extends Controller {
 				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_draft_status_id'])) {
-				$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-			}
 			
 			if (isset($this->request->get['filter_total'])) {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -98,9 +95,6 @@ class ControllerSaleDraft extends Controller {
 				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_draft_status_id'])) {
-				$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-			}
 			
 			if (isset($this->request->get['filter_total'])) {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -162,9 +156,6 @@ class ControllerSaleDraft extends Controller {
 				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_draft_status_id'])) {
-				$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-			}
 			
 			if (isset($this->request->get['filter_total'])) {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -256,9 +247,6 @@ class ControllerSaleDraft extends Controller {
 				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 
-			if (isset($this->request->get['filter_draft_status_id'])) {
-				$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-			}
 
 			if (isset($this->request->get['filter_total'])) {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -311,12 +299,6 @@ class ControllerSaleDraft extends Controller {
 			$filter_company = null;
 		}
 
-		if (isset($this->request->get['filter_draft_status_id'])) {
-			$filter_draft_status_id = $this->request->get['filter_draft_status_id'];
-		} else {
-			$filter_draft_status_id = null;
-		}
-		
 		if (isset($this->request->get['filter_total'])) {
 			$filter_total = $this->request->get['filter_total'];
 		} else {
@@ -363,9 +345,6 @@ class ControllerSaleDraft extends Controller {
 			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
-		if (isset($this->request->get['filter_draft_status_id'])) {
-			$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-		}
 		
 		if (isset($this->request->get['filter_total'])) {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -433,7 +412,6 @@ class ControllerSaleDraft extends Controller {
 		$data = array(
 			'filter_draft_id'        => $filter_draft_id,
 			'filter_company'	     => $filter_company,
-			'filter_draft_status_id' => $filter_draft_status_id,
 			'filter_total'           => $filter_total,
 			'filter_date_added'      => $filter_date_added,
 			'filter_date_modified'   => $filter_date_modified,
@@ -481,7 +459,9 @@ class ControllerSaleDraft extends Controller {
 
 		$this->data['column_draft_id'] = $this->language->get('column_draft_id');
     	$this->data['column_customer'] = $this->language->get('column_customer');
-		$this->data['column_status'] = $this->language->get('column_status');
+		$this->data['column_simplified'] = $this->language->get('column_simplified');
+		$this->data['text_normal'] = $this->language->get('text_normal');
+		$this->data['text_simplified'] = $this->language->get('text_simplified');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
 		$this->data['column_date_modified'] = $this->language->get('column_date_modified');
@@ -519,9 +499,6 @@ class ControllerSaleDraft extends Controller {
 			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
-		if (isset($this->request->get['filter_draft_status_id'])) {
-			$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-		}
 		
 		if (isset($this->request->get['filter_total'])) {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -562,9 +539,6 @@ class ControllerSaleDraft extends Controller {
 			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
-		if (isset($this->request->get['filter_draft_status_id'])) {
-			$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-		}
 		
 		if (isset($this->request->get['filter_total'])) {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -597,14 +571,9 @@ class ControllerSaleDraft extends Controller {
 
 		$this->data['filter_draft_id'] = $filter_draft_id;
 		$this->data['filter_company'] = $filter_company;
-		$this->data['filter_draft_status_id'] = $filter_draft_status_id;
 		$this->data['filter_total'] = $filter_total;
 		$this->data['filter_date_added'] = $filter_date_added;
 		$this->data['filter_date_modified'] = $filter_date_modified;
-
-		$this->load->model('localisation/draft_status');
-
-		$this->data['draft_statuses'] = $this->model_localisation_draft_status->getDraftStatuses();
 			
 		$this->data['sort'] = $sort;
 		$this->data['order'] = $order;
@@ -644,8 +613,10 @@ class ControllerSaleDraft extends Controller {
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
 		$this->data['entry_fax'] = $this->language->get('entry_fax');
-		$this->data['entry_draft_status'] = $this->language->get('entry_draft_status');
-		$this->data['entry_comment'] = $this->language->get('entry_comment');	
+		$this->data['entry_simplified'] = $this->language->get('entry_simplified');
+		$this->data['text_normal'] = $this->language->get('text_normal');
+		$this->data['text_simplified'] = $this->language->get('text_simplified');
+		$this->data['entry_comment'] = $this->language->get('entry_comment');
 		$this->data['entry_address'] = $this->language->get('entry_address');
 		$this->data['entry_company'] = $this->language->get('entry_company');
 		$this->data['entry_company_id'] = $this->language->get('entry_company_id');
@@ -819,9 +790,6 @@ class ControllerSaleDraft extends Controller {
 			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
-		if (isset($this->request->get['filter_draft_status_id'])) {
-			$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-		}
 		
 		if (isset($this->request->get['filter_total'])) {
 			$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -959,18 +927,14 @@ class ControllerSaleDraft extends Controller {
       		$this->data['fax'] = '';
     	}	
 		
-		if (isset($this->request->post['draft_status_id'])) {
-      		$this->data['draft_status_id'] = $this->request->post['draft_status_id'];
-    	} elseif (!empty($draft_info)) { 
-			$this->data['draft_status_id'] = $draft_info['draft_status_id'];
+		if (isset($this->request->post['simplified'])) {
+      		$this->data['simplified'] = $this->request->post['simplified'];
+    	} elseif (!empty($draft_info)) {
+			$this->data['simplified'] = $draft_info['simplified'];
 		} else {
-      		$this->data['draft_status_id'] = '';
+      		$this->data['simplified'] = 0;
     	}
-			
-		$this->load->model('localisation/draft_status');
-		
-		$this->data['draft_statuses'] = $this->model_localisation_draft_status->getDraftStatuses();	
-		
+
 		$this->load->model('setting/extension');
 
 		$this->data['shipping_option_codes'] = $this->model_sale_draft->getDraftShippingCodes();
@@ -1271,8 +1235,9 @@ class ControllerSaleDraft extends Controller {
 			$this->data['text_fax'] = $this->language->get('text_fax');
 
 			$this->data['text_total'] = $this->language->get('text_total');
-			$this->data['text_draft_status'] = $this->language->get('text_draft_status');
-			$this->data['text_draft_status'] = $this->language->get('text_draft_status');
+			$this->data['entry_simplified'] = $this->language->get('entry_simplified');
+			$this->data['text_normal'] = $this->language->get('text_normal');
+			$this->data['text_simplified'] = $this->language->get('text_simplified');
 			$this->data['text_comment'] = $this->language->get('text_comment');
 			$this->data['text_commission'] = $this->language->get('text_commission');
 			$this->data['text_date_added'] = $this->language->get('text_date_added');
@@ -1335,7 +1300,6 @@ class ControllerSaleDraft extends Controller {
 			$this->data['column_filename'] = $this->language->get('column_filename');
 			$this->data['column_remaining'] = $this->language->get('column_remaining');
 						
-			$this->data['entry_draft_status'] = $this->language->get('entry_draft_status');
 			$this->data['entry_notify'] = $this->language->get('entry_notify');
 			$this->data['entry_comment'] = $this->language->get('entry_comment');
 			
@@ -1363,9 +1327,6 @@ class ControllerSaleDraft extends Controller {
 				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
-			if (isset($this->request->get['filter_draft_status_id'])) {
-				$url .= '&filter_draft_status_id=' . $this->request->get['filter_draft_status_id'];
-			}
 			
 			if (isset($this->request->get['filter_total'])) {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
@@ -1475,16 +1436,8 @@ class ControllerSaleDraft extends Controller {
 			
 			$this->load->model('sale/customer');
 
-			$this->load->model('localisation/draft_status');
+			$this->data['simplified'] = $draft_info['simplified'];
 
-			$draft_status_info = $this->model_localisation_draft_status->getDraftStatus($draft_info['draft_status_id']);
-
-			if ($draft_status_info) {
-				$this->data['draft_status'] = $draft_status_info['name'];
-			} else {
-				$this->data['draft_status'] = '';
-			}
-			
 			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($draft_info['date_added']));
 			$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($draft_info['date_modified']));		
 			$this->data['payment_company'] = $draft_info['payment_company'];
@@ -1537,10 +1490,6 @@ class ControllerSaleDraft extends Controller {
 			}
 		
 			$this->data['totals'] = $this->model_sale_draft->getDraftTotals($this->request->get['draft_id']);
-			
-			$this->data['draft_statuses'] = $this->model_localisation_draft_status->getDraftStatuses();
-
-			$this->data['draft_status_id'] = $draft_info['draft_status_id'];
 
 			$this->template = 'sale/draft_info.tpl';
 			
@@ -1606,7 +1555,6 @@ class ControllerSaleDraft extends Controller {
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 		
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
-		$this->data['column_status'] = $this->language->get('column_status');
 		$this->data['column_notify'] = $this->language->get('column_notify');
 		$this->data['column_comment'] = $this->language->get('column_comment');
 
@@ -1623,7 +1571,6 @@ class ControllerSaleDraft extends Controller {
 		foreach ($results as $result) {
         	$this->data['histories'][] = array(
 				'notify'     => $result['notify'] ? $this->language->get('text_yes') : $this->language->get('text_no'),
-				'status'     => $result['status'],
 				'comment'    => nl2br($result['comment']),
         		'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added']))
         	);

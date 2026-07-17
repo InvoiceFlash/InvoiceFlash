@@ -188,7 +188,7 @@ class ControllerLocalisationTaxRate extends Controller {
 				'type'          => ($result['type'] == 'F' ? $this->language->get('text_amount') : $this->language->get('text_percent')),				
 				'geo_zone'      => $result['geo_zone'],
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
+				'account'       => $result['account'],
 				'selected'      => isset($this->request->post['selected']) && in_array($result['tax_rate_id'], $this->request->post['selected']),
 				'action'        => $action				
 			);
@@ -203,8 +203,8 @@ class ControllerLocalisationTaxRate extends Controller {
 		$this->data['column_type'] = $this->language->get('column_type');
 		$this->data['column_geo_zone'] = $this->language->get('column_geo_zone');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
-		$this->data['column_date_modified'] = $this->language->get('column_date_modified');
-		$this->data['column_action'] = $this->language->get('column_action');	
+		$this->data['column_account'] = $this->language->get('column_account');
+		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
@@ -240,7 +240,7 @@ class ControllerLocalisationTaxRate extends Controller {
 		$this->data['sort_type'] = $this->url->link('localisation/tax_rate', 'token=' . $this->session->data['token'] . '&sort=tr.type' . $url, 'SSL');
 		$this->data['sort_geo_zone'] = $this->url->link('localisation/tax_rate', 'token=' . $this->session->data['token'] . '&sort=gz.name' . $url, 'SSL');
 		$this->data['sort_date_added'] = $this->url->link('localisation/tax_rate', 'token=' . $this->session->data['token'] . '&sort=tr.date_added' . $url, 'SSL');
-		$this->data['sort_date_modified'] = $this->url->link('localisation/tax_rate', 'token=' . $this->session->data['token'] . '&sort=tr.date_modified' . $url, 'SSL');
+		$this->data['sort_account'] = $this->url->link('localisation/tax_rate', 'token=' . $this->session->data['token'] . '&sort=tr.account' . $url, 'SSL');
 
 		$url = '';
 
@@ -281,7 +281,8 @@ class ControllerLocalisationTaxRate extends Controller {
 
 		$this->data['entry_name'] = $this->language->get('entry_name');
 		$this->data['entry_rate'] = $this->language->get('entry_rate');
-		$this->data['entry_type'] = $this->language->get('entry_type');		
+		$this->data['entry_type'] = $this->language->get('entry_type');
+		$this->data['entry_account'] = $this->language->get('entry_account');
 		$this->data['entry_customer_group'] = $this->language->get('entry_customer_group');
 		$this->data['entry_geo_zone'] = $this->language->get('entry_geo_zone');
 

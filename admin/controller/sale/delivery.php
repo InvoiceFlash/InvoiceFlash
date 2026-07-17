@@ -210,7 +210,7 @@ class ControllerSaledelivery extends Controller {
 
 				if ($delivery_info) {
 					$data = $delivery_info;
-					$data['draft_status_id'] = 1;
+					$data['simplified'] = 0;
 
 					$data['draft_product'] = array();
 

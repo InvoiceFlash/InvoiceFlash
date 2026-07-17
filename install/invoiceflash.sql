@@ -7614,6 +7614,7 @@ CREATE TABLE `if_invoice` (
   `comment` text NOT NULL,
   `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `invoice_status_id` int(11) NOT NULL DEFAULT '0',
+  `simplified` tinyint(1) NOT NULL DEFAULT '0',
   `affiliate_id` int(11) NOT NULL,
   `commission` decimal(15,4) NOT NULL,
   `language_id` int(11) NOT NULL,
@@ -7869,7 +7870,7 @@ CREATE TABLE `if_draft` (
   `shipping_code` varchar(128) NOT NULL,
   `comment` text NOT NULL,
   `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
-  `draft_status_id` int(11) NOT NULL DEFAULT '0',
+  `simplified` tinyint(1) NOT NULL DEFAULT '0',
   `affiliate_id` int(11) NOT NULL,
   `commission` decimal(15,4) NOT NULL,
   `language_id` int(11) NOT NULL,
@@ -7934,37 +7935,11 @@ DROP TABLE IF EXISTS `if_draft_history`;
 CREATE TABLE `if_draft_history` (
   `draft_history_id` int(11) NOT NULL AUTO_INCREMENT,
   `draft_id` int(11) NOT NULL,
-  `draft_status_id` int(5) NOT NULL,
   `notify` tinyint(1) NOT NULL DEFAULT '0',
   `comment` text NOT NULL,
   `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`draft_history_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
-DROP TABLE IF EXISTS `if_draft_status`;
-CREATE TABLE `if_draft_status` (
-  `draft_status_id` int(11) NOT NULL AUTO_INCREMENT,
-  `language_id` int(11) NOT NULL,
-  `name` varchar(32) NOT NULL,
-  `color` varchar(50),
-  PRIMARY KEY (`draft_status_id`,`language_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-INSERT INTO `if_draft_status` (`draft_status_id`, `language_id`, `name`) VALUES
-(2, 1, 'Processing'),
-(3, 1, 'Shipped'),
-(7, 1, 'Canceled'),
-(5, 1, 'Complete'),
-(8, 1, 'Denied'),
-(9, 1, 'Canceled Reversal'),
-(10, 1, 'Failed'),
-(11, 1, 'Refunded'),
-(12, 1, 'Reversed'),
-(13, 1, 'Chargeback'),
-(1, 1, 'Pending'),
-(16, 1, 'Voided'),
-(15, 1, 'Processed'),
-(14, 1, 'Expired');
 
 DROP TABLE IF EXISTS `if_product_profile`;
 CREATE TABLE `if_product_profile` (

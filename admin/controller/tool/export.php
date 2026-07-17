@@ -5,6 +5,20 @@ class ControllerToolExport extends Controller {
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
+		$this->data['breadcrumbs'] = array();
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
+		);
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_title'),
+			'href'      => $this->url->link('tool/export', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => ' :: '
+		);
+
 		if (isset($this->session->data['success'])) {
 			$this->data['success'] = $this->session->data['success'];
 

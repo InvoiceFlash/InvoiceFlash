@@ -112,10 +112,10 @@ class ModelSaleDraft extends Model {
 			 `shipping_address_format` = '" . $this->db->escape($shipping_address_format) . "', 
 			 `shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 			 `shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
-			 `comment` = '" . $this->db->escape($data['comment']) . "', 
-			 `draft_status_id` = '" . (int)$data['draft_status_id'] . "', 
-			 `language_id` = '" . (int)$this->config->get('config_language_id') . "', 
-			 `currency_id` = '" . (int)$currency_id . "', 
+			 `comment` = '" . $this->db->escape($data['comment']) . "',
+			 `simplified` = '" . (int)(!empty($data['simplified'])) . "',
+			 `language_id` = '" . (int)$this->config->get('config_language_id') . "',
+			 `currency_id` = '" . (int)$currency_id . "',
 			 `currency_code` = '" . $this->db->escape($currency_code) . "', 
 			 `currency_value` = '" . (float)$currency_value . "',  
 			 `date_added` = now(), 
@@ -247,9 +247,9 @@ class ModelSaleDraft extends Model {
 		`shipping_address_format` = '" . $this->db->escape($shipping_address_format) . "', 
 		`shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 		`shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
-		`comment` = '" . $this->db->escape($data['comment']) . "', 
-		`draft_status_id` = '" . (int)$data['draft_status_id'] . "', 
-		`language_id` = '" . (int)$this->config->get('config_language_id') . "', 
+		`comment` = '" . $this->db->escape($data['comment']) . "',
+		`simplified` = '" . (int)(!empty($data['simplified'])) . "',
+		`language_id` = '" . (int)$this->config->get('config_language_id') . "',
 		`date_modified` = now() WHERE `draft_id` = '" . (int)$draft_id . "'");
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "draft_product WHERE draft_id = '" . (int)$draft_id . "'"); 
@@ -409,7 +409,7 @@ class ModelSaleDraft extends Model {
 				'shipping_code'           => $draft_query->row['shipping_code'],
 				'comment'                 => $draft_query->row['comment'],
 				'total'                   => $draft_query->row['total'],
-				'draft_status_id'       => $draft_query->row['draft_status_id'],
+				'simplified'              => $draft_query->row['simplified'],
 				'commission'              => $draft_query->row['commission'],
 				'language_id'             => $draft_query->row['language_id'],
 				'language_code'           => $language_code,
@@ -427,13 +427,7 @@ class ModelSaleDraft extends Model {
 	}
 
 	public function getDrafts($data = array()) {
-		$sql = "SELECT o.draft_id, o.shipping_company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, c.company AS company FROM `" . DB_PREFIX . "draft` o LEFT JOIN `" . DB_PREFIX . "draft_status` os ON o.draft_status_id = os.draft_status_id LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
-
-		if (isset($data['filter_draft_status_id']) && !is_null($data['filter_draft_status_id'])) {
-			$sql .= " AND o.draft_status_id = '" . (int)$data['filter_draft_status_id'] . "'";
-		} else {
-			$sql .= " AND o.draft_status_id > '0'";
-		}
+		$sql = "SELECT o.draft_id, o.shipping_company, o.simplified, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, c.company AS company FROM `" . DB_PREFIX . "draft` o LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE 1 = 1";
 
 		if (!empty($data['filter_draft_id'])) {
 			$sql .= " AND o.draft_id = '" . (int)$data['filter_draft_id'] . "'";
@@ -454,7 +448,6 @@ class ModelSaleDraft extends Model {
 		$sort_data = array(
 			'o.draft_id',
 			'company',
-			'status',
 			'o.date_added',
 			'o.date_modified',
 			'o.total'
@@ -508,13 +501,7 @@ class ModelSaleDraft extends Model {
 	}
 
 	public function getTotalDrafts($data = array()) {
-		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "draft`";
-
-		if (isset($data['filter_draft_status_id']) && !is_null($data['filter_draft_status_id'])) {
-			$sql .= " WHERE draft_status_id = '" . (int)$data['filter_draft_status_id'] . "'";
-		} else {
-			$sql .= " WHERE draft_status_id > '0'";
-		}
+		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "draft` WHERE 1 = 1";
 
 		if (!empty($data['filter_draft_id'])) {
 			$sql .= " AND draft_id = '" . (int)$data['filter_draft_id'] . "'";
@@ -543,50 +530,44 @@ class ModelSaleDraft extends Model {
 		return $query->row['total'];
 	}
 	
-	public function getTotalDraftsByDraftStatusId($draft_status_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "draft` WHERE draft_status_id = '" . (int)$draft_status_id . "' AND draft_status_id > '0'");
-
-		return $query->row['total'];
-	}
-
 	public function getTotalDraftsByLanguageId($language_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "draft` WHERE language_id = '" . (int)$language_id . "' AND draft_status_id > '0'");
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "draft` WHERE language_id = '" . (int)$language_id . "'");
 
 		return $query->row['total'];
 	}
 
 	public function getTotalDraftsByCurrencyId($currency_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "draft` WHERE currency_id = '" . (int)$currency_id . "' AND draft_status_id > '0'");
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "draft` WHERE currency_id = '" . (int)$currency_id . "'");
 
 		return $query->row['total'];
 	}
 
 	public function getTotalSales() {
-		$query = $this->db->query("SELECT SUM(total) AS total FROM `" . DB_PREFIX . "draft` WHERE draft_status_id > '0'");
+		$query = $this->db->query("SELECT SUM(total) AS total FROM `" . DB_PREFIX . "draft`");
 
 		return $query->row['total'];
 	}
 
 	public function getTotalSalesByYear($year) {
-		$query = $this->db->query("SELECT SUM(total) AS total FROM `" . DB_PREFIX . "draft` WHERE draft_status_id > '0' AND YEAR(date_added) = '" . (int)$year . "' AND date_added < CURDATE() ");
+		$query = $this->db->query("SELECT SUM(total) AS total FROM `" . DB_PREFIX . "draft` WHERE YEAR(date_added) = '" . (int)$year . "' AND date_added < CURDATE() ");
 
 		return $query->row['total'];
 	}
 
 	public function getTotalSalesLastYear($year) {
-		$query = $this->db->query("SELECT SUM(total) AS total FROM `" . DB_PREFIX . "draft` WHERE draft_status_id > '0' AND YEAR(date_added) = '" . (int)$year . "' AND date_added < DATE_SUB(CURDATE(), INTERVAL 1 YEAR) ");
+		$query = $this->db->query("SELECT SUM(total) AS total FROM `" . DB_PREFIX . "draft` WHERE YEAR(date_added) = '" . (int)$year . "' AND date_added < DATE_SUB(CURDATE(), INTERVAL 1 YEAR) ");
 
 		return $query->row['total'];
 	}
 
 	public function addDraftHistory($draft_id, $data) {
-		$this->db->query("UPDATE `" . DB_PREFIX . "draft` SET draft_status_id = '" . (int)$data['draft_status_id'] . "', date_modified = NOW() WHERE draft_id = '" . (int)$draft_id . "'");
+		$this->db->query("UPDATE `" . DB_PREFIX . "draft` SET date_modified = NOW() WHERE draft_id = '" . (int)$draft_id . "'");
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "draft_history SET draft_id = '" . (int)$draft_id . "', draft_status_id = '" . (int)$data['draft_status_id'] . "', notify = '" . (isset($data['notify']) ? (int)$data['notify'] : 0) . "', comment = '" . $this->db->escape(strip_tags($data['comment'])) . "', date_added = NOW()");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "draft_history SET draft_id = '" . (int)$draft_id . "', notify = '" . (isset($data['notify']) ? (int)$data['notify'] : 0) . "', comment = '" . $this->db->escape(strip_tags($data['comment'])) . "', date_added = NOW()");
 
 		$draft_info = $this->getDraft($draft_id);
 
-		
+
 
       	if ($data['notify']) {
 			$language = new Language($draft_info['language_directory']);
@@ -597,14 +578,7 @@ class ModelSaleDraft extends Model {
 
 			$message  = $language->get('text_order') . ' ' . $draft_id . "\n";
 			$message .= $language->get('text_date_added') . ' ' . date($language->get('date_format_short'), strtotime($draft_info['date_added'])) . "\n\n";
-			
-			$draft_status_query = $this->db->query("SELECT * FROM " . DB_PREFIX . "draft_status WHERE draft_status_id = '" . (int)$data['draft_status_id'] . "' AND language_id = '" . (int)$draft_info['language_id'] . "'");
-				
-			if ($draft_status_query->num_rows) {
-				$message .= $language->get('text_draft_status') . "\n";
-				$message .= $draft_status_query->row['name'] . "\n\n";
-			}
-			
+
 			if ($draft_info['customer_id']) {
 				$message .= $language->get('text_link') . "\n";
 				$message .= html_entity_decode($draft_info['store_url'] . 'index.php?route=account/order/info&draft_id=' . $draft_id, ENT_QUOTES, 'UTF-8') . "\n\n";
@@ -635,19 +609,13 @@ class ModelSaleDraft extends Model {
 	}
 
 	public function getDraftHistories($draft_id, $start = 0, $limit = 10) {
-		$query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "draft_history oh LEFT JOIN " . DB_PREFIX . "draft_status os ON oh.draft_status_id = os.draft_status_id WHERE oh.draft_id = '" . (int)$draft_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added ASC LIMIT " . (int)$start . "," . (int)$limit);
+		$query = $this->db->query("SELECT oh.date_added, oh.comment, oh.notify FROM " . DB_PREFIX . "draft_history oh WHERE oh.draft_id = '" . (int)$draft_id . "' ORDER BY oh.date_added ASC LIMIT " . (int)$start . "," . (int)$limit);
 
 		return $query->rows;
 	}
 
 	public function getTotalDraftHistories($draft_id) {
 		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "draft_history WHERE draft_id = '" . (int)$draft_id . "'");
-
-		return $query->row['total'];
-	}
-
-	public function getTotalDraftHistoriesByDraftStatusId($draft_status_id) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "draft_history WHERE draft_status_id = '" . (int)$draft_status_id . "'");
 
 		return $query->row['total'];
 	}

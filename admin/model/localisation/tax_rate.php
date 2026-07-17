@@ -71,8 +71,8 @@ class ModelLocalisationTaxRate extends Model {
 			'tr.type',
 			'gz.name',
 			'tr.date_added',
-			'tr.date_modified'
-		);	
+			'tr.account'
+		);
 
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY " . $data['sort'];	

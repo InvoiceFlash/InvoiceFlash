@@ -98,17 +98,10 @@
 							</div>
 						</div>
 						<div class="form-group col-sm-4">
-							<label class="control-label col-sm-4"><?php echo $entry_draft_status; ?></label>
+							<label class="control-label col-sm-4"><?php echo $entry_simplified; ?></label>
 							<div class="control-field col-sm-8">
-								<select name="draft_status_id" class="form-control">
-									<?php foreach ($draft_statuses as $draft_status) { ?>
-									<?php if ($draft_status['draft_status_id'] == $draft_status_id) { ?>
-									<option value="<?php echo $draft_status['draft_status_id']; ?>" selected=""><?php echo $draft_status['name']; ?></option>
-									<?php } else { ?>
-									<option value="<?php echo $draft_status['draft_status_id']; ?>"><?php echo $draft_status['name']; ?></option>
-									<?php } ?>
-									<?php } ?>
-								</select>
+								<label class="radio-inline"><input type="radio" name="simplified" value="0" <?php echo (!$simplified) ? 'checked=""' : ''; ?>> <?php echo $text_normal; ?></label>
+								<label class="radio-inline"><input type="radio" name="simplified" value="1" <?php echo ($simplified) ? 'checked=""' : ''; ?>> <?php echo $text_simplified; ?></label>
 							</div>
 						</div>
 					</div>
