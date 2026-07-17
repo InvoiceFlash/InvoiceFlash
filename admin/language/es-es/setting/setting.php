@@ -275,7 +275,8 @@ $_['text_image_manager'] = 'Gestor de Im&aacute;genes';
 $_['tab_fraud'] = 'Fraude';
 
 // Payroll
-$_['tab_payroll'] = 'N&oacute;mina';
+$_['tab_payroll'] = 'Banco';
+$_['tab_accounting'] = 'Contabilidad';
 $_['entry_accounting_period'] = 'Periodo Contable:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';

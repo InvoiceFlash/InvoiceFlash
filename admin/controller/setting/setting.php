@@ -199,6 +199,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['tab_fraud'] = $this->language->get('tab_fraud');
 		$this->data['tab_server'] = $this->language->get('tab_server');
 		$this->data['tab_payroll'] = $this->language->get('tab_payroll');
+		$this->data['tab_accounting'] = $this->language->get('tab_accounting');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];

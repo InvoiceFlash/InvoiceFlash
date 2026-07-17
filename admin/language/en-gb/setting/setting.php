@@ -162,7 +162,8 @@ $_['text_mail_message'] = 'Checking that emails are sent correctly.';
 $_['tab_fraud']	 = 'Fraud';
 
 // Payroll
-$_['tab_payroll']	 = 'Payroll';
+$_['tab_payroll']	 = 'Bank';
+$_['tab_accounting']	 = 'Accounting';
 $_['entry_accounting_period'] = 'Accounting Period:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
