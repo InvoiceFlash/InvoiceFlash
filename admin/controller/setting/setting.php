@@ -363,7 +363,19 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_encryption'] = $this->error['encryption'];
 		} else {
 			$this->data['error_encryption'] = '';
-		}		
+		}
+
+		if (isset($this->error['conta_ventas_account'])) {
+			$this->data['error_conta_ventas_account'] = $this->error['conta_ventas_account'];
+		} else {
+			$this->data['error_conta_ventas_account'] = '';
+		}
+
+		if (isset($this->error['conta_cliente_account'])) {
+			$this->data['error_conta_cliente_account'] = $this->error['conta_cliente_account'];
+		} else {
+			$this->data['error_conta_cliente_account'] = '';
+		}
 
 		$this->data['breadcrumbs'] = array();
 
@@ -1322,6 +1334,16 @@ class ControllerSettingSetting extends Controller {
 
 		if ((utf8_strlen($this->request->post['config_encryption']) < 3) || (utf8_strlen($this->request->post['config_encryption']) > 32)) {
 			$this->error['encryption'] = $this->language->get('error_encryption');
+		}
+
+		$conta_digits = (int)$this->request->post['config_conta_digits'];
+
+		if ($this->request->post['config_conta_ventas_account'] && (utf8_strlen($this->request->post['config_conta_ventas_account']) != $conta_digits)) {
+			$this->error['conta_ventas_account'] = sprintf($this->language->get('error_conta_ventas_account'), $conta_digits);
+		}
+
+		if ($this->request->post['config_conta_cliente_account'] && (utf8_strlen($this->request->post['config_conta_cliente_account']) != $conta_digits)) {
+			$this->error['conta_cliente_account'] = sprintf($this->language->get('error_conta_cliente_account'), $conta_digits);
 		}
 
 		if ($this->error && !isset($this->error['warning'])) {

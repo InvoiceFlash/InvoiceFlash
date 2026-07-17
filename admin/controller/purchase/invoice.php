@@ -86,6 +86,119 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->getList();
 	}
 
+	public function checkInvoice() {
+		$this->load->language('purchase/invoice');
+
+		$json = array();
+
+		if ($this->user->hasPermission('modify', 'purchase/invoice')) {
+			unset($this->session->data['cart']);
+
+			$this->load->model('catalog/product');
+
+			$this->session->data['cart'] = array();
+
+			if (isset($this->request->post['invoice_product'])) {
+				foreach ($this->request->post['invoice_product'] as $invoice_product) {
+					$product_info = $this->model_catalog_product->getProduct($invoice_product['product_id']);
+
+					if ($product_info) {
+						$this->session->data['cart'][] = array(
+							'product_id'   => $product_info['product_id'],
+							'name'         => $product_info['name'],
+							'model'        => $product_info['model'],
+							'quantity'     => $invoice_product['quantity'],
+							'price'        => $product_info['price'],
+							'tax_class_id' => $product_info['tax_class_id'],
+							'total'        => ($product_info['price'] * $invoice_product['quantity'])
+						);
+					}
+				}
+			}
+
+			if (!empty($this->request->post['product_id'])) {
+				$product_info = $this->model_catalog_product->getProduct($this->request->post['product_id']);
+
+				if ($product_info) {
+					$quantity = isset($this->request->post['quantity']) ? $this->request->post['quantity'] : 1;
+
+					$use_price = (isset($this->request->post['price_override']) && $this->request->post['price_override'] !== '')
+						? (float)$this->request->post['price_override']
+						: (float)$product_info['price'];
+
+					$this->session->data['cart'][] = array(
+						'product_id'   => $this->request->post['product_id'],
+						'name'         => $product_info['name'],
+						'model'        => $product_info['model'],
+						'quantity'     => $quantity,
+						'price'        => $use_price,
+						'tax_class_id' => $product_info['tax_class_id'],
+						'total'        => ($use_price * $quantity)
+					);
+				} else {
+					$json['error']['product']['not_found'] = $this->language->get('error_action');
+				}
+			}
+
+			$json['invoice_product'] = array();
+
+			$products = $this->session->data['cart'];
+
+			foreach ($products as $product) {
+				$json['invoice_product'][] = array(
+					'product_id'   => $product['product_id'],
+					'name'         => $product['name'],
+					'model'        => $product['model'],
+					'quantity'     => $product['quantity'],
+					'price'        => $this->currency->format($product['price']),
+					'tax_class_id' => $product['tax_class_id'],
+					'total'        => $this->currency->format($product['total'])
+				);
+			}
+
+			$json['invoice_total'] = array();
+
+			$total = 0;
+			$taxes = $this->getTaxes($products);
+
+			$this->load->model('total/sub_total');
+			$this->load->model('total/tax');
+			$this->load->model('total/total');
+
+			$this->model_total_sub_total->getTotal($json['invoice_total'], $total, $taxes);
+			$this->model_total_tax->getTotal($json['invoice_total'], $total, $taxes);
+			$this->model_total_total->getTotal($json['invoice_total'], $total, $taxes);
+
+			if (!isset($json['error'])) {
+				$json['success'] = $this->language->get('text_success');
+			}
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function getTaxes($data) {
+		$this->load->model('catalog/product');
+
+		$tax_data = array();
+
+		foreach ($data as $product) {
+			if ($product['tax_class_id'] != 0) {
+				$tax_rates = $this->model_catalog_product->getProductRates($product['price'], $product['tax_class_id']);
+
+				foreach ($tax_rates as $tax_rate) {
+					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {
+						$tax_data[$tax_rate['tax_rate_id']] = ($tax_rate['amount'] * $product['quantity']);
+					} else {
+						$tax_data[$tax_rate['tax_rate_id']] += ($tax_rate['amount'] * $product['quantity']);
+					}
+				}
+			}
+		}
+
+		return $tax_data;
+	}
+
 	private function buildFilterUrl() {
 		$url = '';
 		$filters = array('filter_invoice_id', 'filter_company', 'filter_invoice_status_id', 'filter_total', 'filter_date_added', 'filter_date_modified', 'sort', 'order', 'page');

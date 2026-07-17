@@ -967,11 +967,21 @@
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
-						<div class="col-sm-6"><input type="text" name="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control" placeholder="700000000"></div>
+						<div class="col-sm-6">
+							<input type="text" name="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control" placeholder="700000000">
+							<?php if ($error_conta_ventas_account) { ?>
+								<div class="help-block text-danger"><?php echo $error_conta_ventas_account; ?></div>
+							<?php } ?>
+						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_cliente_account; ?></label>
-						<div class="col-sm-6"><input type="text" name="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control" placeholder="430000000"></div>
+						<div class="col-sm-6">
+							<input type="text" name="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control" placeholder="430000000">
+							<?php if ($error_conta_cliente_account) { ?>
+								<div class="help-block text-danger"><?php echo $error_conta_cliente_account; ?></div>
+							<?php } ?>
+						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_digits; ?></label>

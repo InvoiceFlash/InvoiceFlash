@@ -10,7 +10,7 @@ $_['text_example']        = 'Ejemplo de fichero Excel';
 $_['text_example_help']   = 'La primera fila debe ser la cabecera y será ignorada. Las columnas deben seguir este orden exacto:';
 $_['text_type_product']   = 'Productos';
 $_['text_type_customer']  = 'Clientes';
-$_['text_type_supplier']  = 'Proveedores (próximamente)';
+$_['text_type_supplier']  = 'Proveedores';
 
 // Entry
 $_['entry_type']          = 'Tipo de Importación:';
@@ -35,7 +35,6 @@ $_['column_country']      = 'País';
 
 // Button
 $_['button_import']       = 'Importar';
-$_['button_template']     = 'Descargar Plantilla';
 
 // Error
 $_['error_permission']    = 'Aviso: No tiene permiso para importar!';

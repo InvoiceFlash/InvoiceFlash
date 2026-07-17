@@ -23,6 +23,8 @@ class ControllerToolImport extends Controller {
 
 				if ($type == 'customer') {
 					$result = $this->model_tool_import->importCustomers($rows);
+				} elseif ($type == 'supplier') {
+					$result = $this->model_tool_import->importSuppliers($rows);
 				} else {
 					$result = $this->model_tool_import->importProducts($rows);
 				}
@@ -40,38 +42,6 @@ class ControllerToolImport extends Controller {
 		$this->getForm();
 	}
 
-	public function template() {
-		require_once(DIR_SYSTEM . 'library/xlsx.php');
-
-		$type = isset($this->request->get['type']) ? $this->request->get['type'] : 'product';
-
-		$xlsx = new Xlsx();
-
-		if ($type == 'customer') {
-			$xlsx->setHeaders(array('Empresa', 'NIF/CIF', 'Email', 'Telefono', 'Direccion', 'Ciudad', 'Codigo Postal', 'Pais'));
-			$xlsx->addRow(array('Empresa de Ejemplo SL', 'B12345678', 'contacto@ejemplo.com', '6754544321', 'Calle Mayor 1', 'Madrid', '28001', 'España'));
-
-			$content = $xlsx->build('Clientes');
-			$filename = 'plantilla_clientes.xlsx';
-		} else {
-			$xlsx->setHeaders(array('Codigo Articulo', 'Descripcion', 'Precio', 'Cantidad', 'Estado'));
-			$xlsx->addRow(array('F001A', 'Descripcion del producto de ejemplo', '19.99', '100', '1'));
-
-			$content = $xlsx->build('Productos');
-			$filename = 'plantilla_productos.xlsx';
-		}
-
-		$this->response->addheader('Pragma: public');
-		$this->response->addheader('Expires: 0');
-		$this->response->addheader('Content-Description: File Transfer');
-		$this->response->addheader('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		$this->response->addheader('Content-Disposition: attachment; filename=' . $filename);
-		$this->response->addheader('Content-Transfer-Encoding: binary');
-		$this->response->addheader('Content-Length: ' . strlen($content));
-
-		$this->response->setOutput($content);
-	}
-
 	protected function getForm() {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
@@ -87,7 +57,6 @@ class ControllerToolImport extends Controller {
 		$this->data['text_type_supplier'] = $this->language->get('text_type_supplier');
 
 		$this->data['button_import'] = $this->language->get('button_import');
-		$this->data['button_template'] = $this->language->get('button_template');
 
 		$this->data['column_code'] = $this->language->get('column_code');
 		$this->data['column_description'] = $this->language->get('column_description');
@@ -141,8 +110,6 @@ class ControllerToolImport extends Controller {
 		);
 
 		$this->data['action'] = $this->url->link('tool/import', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['template_product'] = $this->url->link('tool/import/template', 'token=' . $this->session->data['token'] . '&type=product', 'SSL');
-		$this->data['template_customer'] = $this->url->link('tool/import/template', 'token=' . $this->session->data['token'] . '&type=customer', 'SSL');
 
 		$this->template = 'tool/import.tpl';
 		$this->children = array(

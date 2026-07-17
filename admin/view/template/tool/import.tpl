@@ -22,7 +22,7 @@
 					<select name="type" id="import-type" class="form-control">
 						<option value="product"><?php echo $text_type_product; ?></option>
 						<option value="customer"><?php echo $text_type_customer; ?></option>
-						<option value="supplier" disabled><?php echo $text_type_supplier; ?></option>
+						<option value="supplier"><?php echo $text_type_supplier; ?></option>
 					</select>
 				</div>
 			</div>
@@ -38,8 +38,6 @@
 			<div class="form-group row">
 				<div class="col-sm-10 offset-sm-2">
 					<button type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> <?php echo $button_import; ?></button>
-					<a href="<?php echo $template_product; ?>" id="import-template-product" class="btn btn-default"><i class="fas fa-download"></i> <?php echo $button_template; ?></a>
-					<a href="<?php echo $template_customer; ?>" id="import-template-customer" class="btn btn-default" style="display:none;"><i class="fas fa-download"></i> <?php echo $button_template; ?></a>
 				</div>
 			</div>
 		</form>
@@ -103,13 +101,42 @@
 				</tbody>
 			</table>
 		</div>
+		<div id="import-example-supplier" class="table-responsive" style="display:none;">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<td><?php echo $column_company; ?></td>
+						<td><?php echo $column_nif; ?></td>
+						<td><?php echo $column_email; ?></td>
+						<td><?php echo $column_telephone; ?></td>
+						<td><?php echo $column_address; ?></td>
+						<td><?php echo $column_city; ?></td>
+						<td><?php echo $column_postcode; ?></td>
+						<td><?php echo $column_country; ?></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Proveedor de Ejemplo SL</td>
+						<td>B87654321</td>
+						<td>contacto@proveedor.com</td>
+						<td>6754544321</td>
+						<td>Avenida Industrial 5</td>
+						<td>Barcelona</td>
+						<td>08001</td>
+						<td>España</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
 <script>
 $('#import-type').on('change', function() {
 	var type = $(this).val();
-	$('#import-example-product, #import-template-product').toggle(type == 'product');
-	$('#import-example-customer, #import-template-customer').toggle(type == 'customer');
+	$('#import-example-product').toggle(type == 'product');
+	$('#import-example-customer').toggle(type == 'customer');
+	$('#import-example-supplier').toggle(type == 'supplier');
 });
 </script>
 <?php echo $footer; ?>

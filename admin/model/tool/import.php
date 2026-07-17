@@ -141,6 +141,60 @@ class ModelToolImport extends Model {
 		);
 	}
 
+	public function importSuppliers($rows) {
+		$imported = 0;
+		$updated = 0;
+		$errors = array();
+
+		if (!empty($rows)) {
+			array_shift($rows);
+		}
+
+		$row_number = 1;
+
+		foreach ($rows as $row) {
+			$row_number++;
+
+			if (empty(array_filter($row, function ($value) { return trim((string)$value) !== ''; }))) {
+				continue;
+			}
+
+			$company = isset($row[0]) ? trim($row[0]) : '';
+			$tax_id = isset($row[1]) ? trim($row[1]) : '';
+			$email = isset($row[2]) ? trim($row[2]) : '';
+			$telephone = isset($row[3]) ? trim($row[3]) : '';
+			$address_1 = isset($row[4]) ? trim($row[4]) : '';
+			$city = isset($row[5]) ? trim($row[5]) : '';
+			$postcode = isset($row[6]) ? trim($row[6]) : '';
+			$country_id = $this->resolveCountryId(isset($row[7]) ? trim($row[7]) : '');
+
+			if ($company === '' || $email === '') {
+				$errors[] = sprintf($this->language->get('error_row'), $row_number, $this->language->get('error_required_customer'));
+				continue;
+			}
+
+			$query = $this->db->query("SELECT supplier_id FROM `" . DB_PREFIX . "supplier` WHERE email = '" . $this->db->escape($email) . "'");
+
+			if ($query->num_rows) {
+				$supplier_id = $query->row['supplier_id'];
+
+				$this->db->query("UPDATE `" . DB_PREFIX . "supplier` SET company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($tax_id) . "', telephone = '" . $this->db->escape($telephone) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "', date_modified = NOW() WHERE supplier_id = '" . (int)$supplier_id . "'");
+
+				$updated++;
+			} else {
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "supplier` SET company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($tax_id) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "', status = '1', date_added = NOW(), date_modified = NOW()");
+
+				$imported++;
+			}
+		}
+
+		return array(
+			'imported' => $imported,
+			'updated'  => $updated,
+			'errors'   => $errors
+		);
+	}
+
 	private function resolveCountryId($country) {
 		$country = trim($country);
 

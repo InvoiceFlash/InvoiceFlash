@@ -157,7 +157,7 @@
 							<?php if ($invoice_products) { ?>
 							<?php foreach ($invoice_products as $invoice_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
-								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-invoice-product').click();"><i class="fa fa-trash"></i></a></td>
+								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-purchase-invoice-product').click();"><i class="fa fa-trash"></i></a></td>
 								<td><?php echo $invoice_product['name']; ?><br>
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][invoice_product_id]" value="<?php echo $invoice_product['invoice_product_id']; ?>">
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $invoice_product['product_id']; ?>">
@@ -301,7 +301,7 @@
 			</div>
 			<!-- Fin Modal Buscar Producto -->
 			<!-- Modal Product -->
-			<div class="modal" tab-index="-1" role="dialog" id="ProductModal">
+			<div class="modal" tab-index="-1" role="dialog" id="PurchaseInvoiceProductModal">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -329,7 +329,7 @@
 						</div>
 						<div class="modal-footer">
 							<div class="control-field col-sm-4 col-sm-offset-2">
-								<button type="button" id="button-invoice-product" class="btn btn-info pull-right">
+								<button type="button" id="button-purchase-invoice-product" class="btn btn-info pull-right">
 									<i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span>
 								</button>
 							</div>
@@ -564,7 +564,7 @@ function validateForm(){
 }
 </script>
 <script>
-$('#ProductModal').on('hidden.bs.modal', function () {
+$('#PurchaseInvoiceProductModal').on('hidden.bs.modal', function () {
     $(this).find('#invoice-product').val('');
     $(this).find('#product_id').val(0);
     $(this).find('#pm-quantity').val(1);
@@ -686,7 +686,83 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 	$('#option').html(html);
 
 	bootstrap.Modal.getInstance(document.getElementById('ProductSearchModal')).hide();
-	bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('PurchaseInvoiceProductModal')).show();
+});
+
+$('#button-purchase-invoice-product').on('click', function() {
+	var a = $(this);
+	var data = '#PurchaseInvoiceProductModal input[type="text"],#PurchaseInvoiceProductModal input[type="hidden"],#PurchaseInvoiceProductModal input[type="radio"]:checked,#PurchaseInvoiceProductModal input[type="checkbox"]:checked,#PurchaseInvoiceProductModal select,#PurchaseInvoiceProductModal textarea,';
+	data += '#product input[type="hidden"]';
+	var ajaxData = $.param($(data));
+	var $productModal = $('#PurchaseInvoiceProductModal');
+	if ($productModal.length && $productModal.hasClass('show')) {
+		bootstrap.Modal.getInstance($productModal[0]).hide();
+	}
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('purchase/invoice/checkInvoice', 'token=' . $this->session->data['token'], 'SSL')); ?>',
+		type: 'post',
+		data: ajaxData,
+		dataType: 'json',
+		beforeSend: function() {
+			$('.alert,.text-error').remove();
+			a.button('loading');
+		},
+		success: function(json) {
+			if (json.error && json.error.product && json.error.product.option) {
+				for (var i in json.error.product.option) {
+					$('#option-' + i + ' .control-field').append('<div class="help-block text-danger">' + json.error.product.option[i] + '</div>');
+				}
+			}
+			if (json.invoice_product) {
+				var product_row = 0, option_row = 0, html = '';
+				for (var i = 0; i < json.invoice_product.length; i++) {
+					var product = json.invoice_product[i];
+					html += '<tr id="product-row' + product_row + '">';
+					html += '<td class="text-center"><a class="label label-danger" title="' + $('#button_remove').val() + '" onclick="$(\'#product-row' + product_row + '\').remove();$(\'#button-purchase-invoice-product\').click();"><i class="fa fa-trash"></i></a></td>';
+					html += '<td>' + product.name + '<br><input type="hidden" name="invoice_product[' + product_row + '][invoice_product_id]" value=""><input type="hidden" name="invoice_product[' + product_row + '][product_id]" value="' + product.product_id + '"><input type="hidden" name="invoice_product[' + product_row + '][name]" value="' + product.name + '">';
+					if (product.option) {
+						for (var j = 0; j < product.option.length; j++) {
+							var option = product.option[j];
+							html += '<div class="help">' + option.name + ': ' + option.value + '</div>';
+							html += '<input type="hidden" name="invoice_product[' + product_row + '][invoice_option][' + option_row + '][invoice_option_id]" value="">';
+							html += '<input type="hidden" name="invoice_product[' + product_row + '][invoice_option][' + option_row + '][product_option_id]" value="' + option.product_option_id + '">';
+							html += '<input type="hidden" name="invoice_product[' + product_row + '][invoice_option][' + option_row + '][name]" value="' + option.name + '">';
+							html += '<input type="hidden" name="invoice_product[' + product_row + '][invoice_option][' + option_row + '][value]" value="' + option.value + '">';
+							html += '<input type="hidden" name="invoice_product[' + product_row + '][invoice_option][' + option_row + '][type]" value="' + option.type + '">';
+							option_row++;
+						}
+					}
+					html += '</td>';
+					html += '<td class="d-none d-sm-table-cell">' + product.model + '<input type="hidden" name="invoice_product[' + product_row + '][model]" value="' + product.model + '"></td>';
+					html += '<td class="text-right">' + product.quantity + '<input type="hidden" name="invoice_product[' + product_row + '][quantity]" value="' + product.quantity + '"></td>';
+					html += '<td class="text-right">' + product.price + '<input type="hidden" name="invoice_product[' + product_row + '][price]" value="' + product.price + '"></td>';
+					html += '<td class="text-right">' + product.total + '<input type="hidden" name="invoice_product[' + product_row + '][total]" value="' + product.total + '"><input type="hidden" name="invoice_product[' + product_row + '][tax]" value=""></td>';
+					html += '</tr>';
+					product_row++;
+				}
+				$('#product').html(html);
+			}
+			if (json.invoice_total) {
+				var total_row = 0, html2 = '';
+				for (var i in json.invoice_total) {
+					var total = json.invoice_total[i];
+					html2 += '<tr id="total-row' + total_row + '">';
+					html2 += '<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="invoice_total[' + total_row + '][invoice_total_id]" value=""><input type="hidden" name="invoice_total[' + total_row + '][code]" value="' + total.code + '"><input type="hidden" name="invoice_total[' + total_row + '][title]" value="' + total.title + '"><input type="hidden" name="invoice_total[' + total_row + '][text]" value="' + total.text + '"><input type="hidden" name="invoice_total[' + total_row + '][value]" value="' + total.value + '"><input type="hidden" name="invoice_total[' + total_row + '][sort_order]" value="' + total.sort_order + '">' + total.title + ':</td>';
+					html2 += '<td class="text-right">' + total.text + '</td>';
+					html2 += '</tr>';
+					total_row++;
+				}
+				$('#total').html(html2);
+			}
+		},
+		error: function(jqXHR, textStatus) {
+			var msg = (textStatus === 'parsererror') ? 'Tu sesión ha caducado. Recarga la página e inicia sesión de nuevo.' : 'Error al añadir el producto';
+			alert(msg);
+		},
+		complete: function() {
+			a.button('reset');
+		}
+	});
 });
 
 $('#ProductSearchModal').on('hidden.bs.modal', function() {

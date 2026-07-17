@@ -4,6 +4,7 @@ $_['heading_title']    = 'Total';
 
 // Text
 $_['text_total'] = 'Pedidos Totales';
+$_['text_total2'] = 'Total';
 $_['text_success'] = 'Genial: Se han modificado el total de los totales!';
 $_['text_edit'] = 'Editar el Total del Total';
 
