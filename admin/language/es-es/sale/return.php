@@ -16,7 +16,7 @@ $_['text_history'] = 'Agregar Historia Devoluci&oacute;n';
 
 // Columna
 $_['column_return_id'] = 'Devoluci&oacute;n ID';
-$_['column_order_id'] = 'Orden ID';
+$_['column_order_id'] = 'N&ordm; Pedido';
 $_['column_customer'] = 'Cliente';
 $_['column_product'] = 'Producto';
 $_['column_model'] = 'Modelo';
@@ -29,7 +29,7 @@ $_['column_action'] = 'Acci&oacute;n';
 
 // Entrada
 $_['entry_customer'] = 'Cliente';
-$_['entry_order_id'] = 'Orden ID';
+$_['entry_order_id'] = 'N&ordm; Pedido:';
 $_['entry_date_ordered'] = 'Fecha Orden';
 $_['entry_firstname'] = 'Nombre';
 $_['entry_lastname'] = 'Apellido';

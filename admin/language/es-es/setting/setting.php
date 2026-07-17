@@ -229,3 +229,64 @@ $_['error_ftp_password'] = 'Contrase&ntilde;a FTP requiere!';
 $_['error_error_filename'] = 'Error Log Nombre requerido!';
 $_['error_malformed_filename'] = 'Error de formato incorrecto Entrar Nombre del archivo!';
 $_['error_encryption'] = 'La clave de cifrado debe ser entre 3 y 32 caracteres';
+$_['error_ftp_host'] = '&iexcl;Host FTP obligatorio!';
+$_['error_title'] = '&iexcl;El T&iacute;tulo debe tener entre 3 y 32 caracteres!';
+
+// Entry (claves nuevas)
+$_['entry_title'] = 'T&iacute;tulo:';
+$_['entry_vat_id'] = 'CIF/NIF:';
+$_['entry_catalog_limit'] = '<a data-toggle="tooltip" title="Determina cu&aacute;ntos art&iacute;culos del cat&aacute;logo se muestran por p&aacute;gina (productos, categor&iacute;as, etc.)"><i class="fas fa-question-circle"></i></a> Art&iacute;culos por P&aacute;gina por Defecto (Cat&aacute;logo):';
+$_['entry_admin_limit'] = '<a data-toggle="tooltip" title="Determina cu&aacute;ntos elementos de administraci&oacute;n se muestran por p&aacute;gina (pedidos, clientes, etc.)"><i class="fas fa-question-circle"></i></a> Art&iacute;culos por P&aacute;gina por Defecto (Admin):';
+$_['entry_download'] = 'Permitir Descargas:';
+$_['entry_vat'] = '<a data-toggle="tooltip" title="Validar el n&uacute;mero de IVA con el servicio http://ec.europa.eu."><i class="fas fa-question-circle"></i></a> Validar N&uacute;mero de IVA:';
+$_['entry_quote_prefix'] = '<a data-toggle="tooltip" title="Encabezado usado para construir el ID del Presupuesto (ej. QUO-2026). El n&uacute;mero secuencial se a&ntilde;ade autom&aacute;ticamente."><i class="fas fa-question-circle"></i></a> Prefijo de Presupuesto:';
+$_['entry_purchase_invoice_prefix'] = '<a data-toggle="tooltip" title="Prefijo para las facturas de compra (p.ej. FRA-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Factura de Compra:';
+$_['entry_sales_invoice_prefix'] = '<a data-toggle="tooltip" title="Prefijo para las facturas de venta (p.ej. INV-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Factura de Venta:';
+$_['entry_sales_order_prefix'] = '<a data-toggle="tooltip" title="Prefijo para los pedidos de venta (p.ej. ORD-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Pedido de Venta:';
+$_['entry_guest_checkout'] = '<a data-toggle="tooltip" title="Permite a los clientes finalizar la compra sin crear una cuenta. No estar&aacute; disponible cuando haya un producto descargable en el carrito."><i class="fas fa-question-circle"></i></a> Compra como Invitado:';
+$_['entry_order_edit'] = '<a data-toggle="tooltip" title="N&uacute;mero de d&iacute;as permitidos para editar un pedido."><i class="fas fa-question-circle"></i></a> Edici&oacute;n de Pedidos:';
+$_['entry_stock_status'] = '<a data-toggle="tooltip" title="Establece el estado de sin stock seleccionado por defecto al editar un producto."><i class="fas fa-question-circle"></i></a> Estado de Sin Stock:';
+$_['entry_commission'] = '<a data-toggle="tooltip" title="El porcentaje de comisi&oacute;n de afiliado por defecto."><i class="fas fa-question-circle"></i></a> Comisi&oacute;n de Afiliado (%):';
+$_['entry_ftp_host'] = 'Host FTP:';
+$_['entry_smtp_host'] = 'Host SMTP:';
+$_['entry_smtp_username'] = 'Email SMTP:';
+$_['entry_smtp_password'] = 'Contrase&ntilde;a SMTP:';
+$_['entry_smtp_port'] = 'Puerto SMTP:';
+$_['entry_smtp_timeout'] = 'Tiempo de Espera SMTP:';
+$_['entry_alert_mail'] = '<a data-toggle="tooltip" title="Enviar un email al propietario de la tienda cuando se crea un nuevo pedido."><i class="fas fa-question-circle"></i></a> Alerta de Nuevo Pedido por Email:';
+$_['entry_alert_emails'] = '<a data-toggle="tooltip" title="Emails adicionales a los que quiere que llegue la alerta, adem&aacute;s del email principal de la tienda (separados por comas)."><i class="fas fa-question-circle"></i></a> Emails de Alerta Adicionales:';
+$_['entry_fraud_detection'] = '<a data-toggle="tooltip" title="MaxMind es un servicio de detecci&oacute;n de fraude. Si no tiene una clave de licencia puede registrarse en http://www.maxmind.com/?rId=InvoiceFlash. Una vez obtenida la clave, cop&iacute;ela en el campo de abajo."><i class="fas fa-question-circle"></i></a> Usar Sistema de Detecci&oacute;n de Fraude MaxMind:';
+$_['entry_fraud_key'] = 'Clave de Licencia MaxMind:';
+$_['entry_fraud_score'] = '<a data-toggle="tooltip" title="Cuanto m&aacute;s alta la puntuaci&oacute;n, m&aacute;s probable que el pedido sea fraudulento. Establezca una puntuaci&oacute;n entre 0 y 100."><i class="fas fa-question-circle"></i></a> Puntuaci&oacute;n de Riesgo MaxMind:';
+$_['entry_fraud_status'] = '<a data-toggle="tooltip" title="Los pedidos que superen la puntuaci&oacute;n establecida recibir&aacute;n este estado y no podr&aacute;n alcanzar autom&aacute;ticamente el estado completo."><i class="fas fa-question-circle"></i></a> Estado de Pedido Fraudulento MaxMind:';
+$_['entry_file_extension_allowed'] = '<a data-toggle="tooltip" title="A&ntilde;ada qu&eacute; extensiones de archivo se permite subir. Use una l&iacute;nea nueva para cada valor."><i class="fas fa-question-circle"></i></a> Extensiones de Archivo Permitidas:';
+
+//Button test
+$_['button_test'] = 'Probar Email';
+
+$_['text_mail_subject'] = 'Email de Prueba';
+$_['text_mail_message'] = 'Comprobando que los emails se env&iacute;an correctamente.';
+$_['text_items'] = 'Art&iacute;culos';
+$_['text_browse'] = 'Explorar';
+$_['text_clear'] = 'Borrar';
+$_['text_image_manager'] = 'Gestor de Im&aacute;genes';
+
+// Fraude
+$_['tab_fraud'] = 'Fraude';
+
+// Payroll
+$_['tab_payroll'] = 'N&oacute;mina';
+$_['entry_accounting_period'] = 'Periodo Contable:';
+$_['entry_iban'] = 'IBAN:';
+$_['entry_bic'] = 'BIC:';
+$_['entry_creditor_id'] = 'ID de Acreedor:';
+$_['entry_conta_ventas_account'] = 'Cuenta contable de ventas:';
+$_['entry_conta_cliente_account'] = 'Cuenta contable de clientes (por defecto):';
+$_['entry_certificado'] = 'Certificado:';
+$_['entry_clave'] = 'Contrase&ntilde;a:';
+$_['entry_aeat_active'] = 'Enviar facturas a la AEAT:';
+$_['entry_aeat_send'] = 'Modo de Env&iacute;o:';
+$_['text_aeat_test'] = 'Pruebas';
+$_['text_aeat_production'] = 'Producci&oacute;n';
+
+$_['text_success_mail'] = 'Email de prueba enviado. Revise su bandeja de entrada.';

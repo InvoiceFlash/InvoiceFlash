@@ -199,6 +199,8 @@ $_['error_filetype']                          = 'Invalid file type!';
 $_['error_action']                            = 'Warning: Could not complete this action!';
 
 $_['button_invoice'] 						  = 'Print Order';
+$_['button_convert_delivery']                = 'Convert to Delivery Note';
+$_['text_success_convert']                   = 'Success: The selected orders have been converted to delivery notes!';
 $_['button_generate']                         = 'Generate Delivery';
 $_['tab_product']                             = 'Products and Totals';
 ?>

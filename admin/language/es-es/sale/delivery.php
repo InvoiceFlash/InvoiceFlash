@@ -156,6 +156,8 @@ $_['error_required']    = '&iexcl;%s obligatorio!';
 
 $_['button_delivery'] 						  = 'Imprimir Albar&aacute;n';
 $_['button_generate']                       = 'Generar Factura';
+$_['button_convert_draft']                  = 'Convertir en Borrador';
+$_['text_success_convert']                  = '&Eacute;xito: &iexcl;Los albaranes seleccionados se han convertido en borradores!';
 
 $_['text_success_email']                      = '&Eacute;xito: &iexcl;El email se ha enviado sin problemas!';
 $_['error_to']                                = 'Error: &iexcl;El email de destino no parece ser v&aacute;lido!';

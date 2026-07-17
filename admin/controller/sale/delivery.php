@@ -33,7 +33,7 @@ class ControllerSaledelivery extends Controller {
 			}
 			
 			if (isset($this->request->get['filter_company'])) {
-				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -96,7 +96,7 @@ class ControllerSaledelivery extends Controller {
 			}
 			
 			if (isset($this->request->get['filter_company'])) {
-				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -160,7 +160,7 @@ class ControllerSaledelivery extends Controller {
 			}
 			
 			if (isset($this->request->get['filter_company'])) {
-				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -197,6 +197,102 @@ class ControllerSaledelivery extends Controller {
     	$this->getList();
       }
       
+  	public function convert() {
+		$this->load->language('sale/delivery');
+
+		$this->load->model('sale/delivery');
+		$this->load->model('sale/draft');
+		$this->load->model('tool/user_logs');
+
+    	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			foreach ($this->request->post['selected'] as $delivery_id) {
+				$delivery_info = $this->model_sale_delivery->getDelivery($delivery_id);
+
+				if ($delivery_info) {
+					$data = $delivery_info;
+					$data['draft_status_id'] = 1;
+
+					$data['draft_product'] = array();
+
+					foreach ($this->model_sale_delivery->getDeliveryProducts($delivery_id) as $delivery_product) {
+						$data['draft_product'][] = array(
+							'draft_product_id' => 0,
+							'product_id'       => $delivery_product['product_id'],
+							'name'             => $delivery_product['name'],
+							'model'            => $delivery_product['model'],
+							'quantity'         => $delivery_product['quantity'],
+							'price'            => $delivery_product['price'],
+							'total'            => $delivery_product['total'],
+							'tax'              => $delivery_product['tax'],
+							'draft_option'     => $this->model_sale_delivery->getDeliveryOptions($delivery_id, $delivery_product['delivery_product_id'])
+						);
+					}
+
+					$data['draft_total'] = $this->model_sale_delivery->getDeliveryTotals($delivery_id);
+
+					$this->model_sale_draft->addDraft($data);
+
+					$query = $this->db->query("SELECT draft_id FROM `" . DB_PREFIX . "draft` ORDER BY draft_id DESC LIMIT 1");
+
+					$new_draft_id = $query->row['draft_id'];
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'sale_draft',
+						'document_id'   => (int)$new_draft_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+				}
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success_convert');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_delivery_id'])) {
+				$url .= '&filter_delivery_id=' . $this->request->get['filter_delivery_id'];
+			}
+
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_invoice_status_id'])) {
+				$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
+			}
+
+			if (isset($this->request->get['filter_total'])) {
+				$url .= '&filter_total=' . $this->request->get['filter_total'];
+			}
+
+			if (isset($this->request->get['filter_date_added'])) {
+				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			}
+
+			if (isset($this->request->get['filter_date_modified'])) {
+				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->redirect($this->url->link('sale/delivery', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+    	}
+
+    	$this->getList();
+  	}
+
   	private function getList() {
         if (!extension_loaded('openssl')) {
           $this->data['error_warning'] = 'OpenSSL library is not installed. You cannot sign deliveries.';
@@ -267,7 +363,7 @@ class ControllerSaledelivery extends Controller {
       }
       
       if (isset($this->request->get['filter_company'])) {
-          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
       }
                                           
       if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -315,6 +411,7 @@ class ControllerSaledelivery extends Controller {
       $this->data['invoice'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['print'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['insert'] = $this->url->link('sale/delivery/insert', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['convert'] = $this->url->link('sale/delivery/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
       $this->data['delete'] = $this->url->link('sale/delivery/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
       $this->data['deliveries'] = array();
@@ -382,6 +479,7 @@ class ControllerSaledelivery extends Controller {
 
       $this->data['button_delivery'] = $this->language->get('button_delivery');
       $this->data['button_insert'] = $this->language->get('button_insert');
+      $this->data['button_convert_draft'] = $this->language->get('button_convert_draft');
       $this->data['button_delete'] = $this->language->get('button_delete');
       $this->data['button_filter'] = $this->language->get('button_filter');
 
@@ -408,7 +506,7 @@ class ControllerSaledelivery extends Controller {
       }
       
       if (isset($this->request->get['filter_company'])) {
-          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
       }
                                           
       if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -451,7 +549,7 @@ class ControllerSaledelivery extends Controller {
       }
       
       if (isset($this->request->get['filter_company'])) {
-          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+          $url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
       }
                                           
       if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -691,7 +789,7 @@ class ControllerSaledelivery extends Controller {
 		}
 		
 		if (isset($this->request->get['filter_company'])) {
-			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+			$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 		}
 											
 		if (isset($this->request->get['filter_invoice_status_id'])) {
@@ -1218,7 +1316,7 @@ class ControllerSaledelivery extends Controller {
 			}
 			
 			if (isset($this->request->get['filter_company'])) {
-				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_deliveryS, 'UTF-8'));
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
 												
 			if (isset($this->request->get['filter_invoice_status_id'])) {

@@ -156,6 +156,8 @@ $_['error_required']    = '%s required!';
 
 $_['button_delivery'] 						  = 'Print Delivery';
 $_['button_generate']                       = 'Generate Invoice';
+$_['button_convert_draft']                  = 'Convert to Draft';
+$_['text_success_convert']                  = 'Success: The selected delivery notes have been converted to drafts!';
 
 $_['text_success_email']                      = 'Success: The email has been sent without problems!';
 $_['error_to']                                = 'Error: E-mail to does no seem to be valid!';

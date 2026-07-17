@@ -158,6 +158,9 @@ $_['button_test'] = 'Test Email';
 $_['text_mail_subject'] = 'Testing Email';
 $_['text_mail_message'] = 'Checking that emails are sent correctly.';
 
+// Fraud
+$_['tab_fraud']	 = 'Fraud';
+
 // Payroll
 $_['tab_payroll']	 = 'Payroll';
 $_['entry_accounting_period'] = 'Accounting Period:';

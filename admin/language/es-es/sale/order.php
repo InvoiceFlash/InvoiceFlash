@@ -144,3 +144,7 @@ $_['error_warning'] = 'Advertencia: Por favor, consulte el formulario cuidadosam
 $_['error_permission'] = 'Advertencia: Usted no tiene permiso para modificar &oacute;rdenes!';
 $_['error_curl'] = 'Advertencia: error CURL% s (% s)';
 $_['ERROR_ACTION'] = 'Advertencia: No se pudo completar esta acci&oacute;n!';
+
+$_['button_invoice'] = 'Imprimir Pedido';
+$_['button_convert_delivery'] = 'Convertir a Albar&aacute;n';
+$_['text_success_convert'] = '&Eacute;xito: &iexcl;Los pedidos seleccionados se han convertido en albaranes!';
