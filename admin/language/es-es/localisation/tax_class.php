@@ -7,7 +7,7 @@ $_['text_success'] = 'Genial: Ha modificado clases de impuestos';
 $_['text_list'] = 'Tipo de Iva';
 $_['text_add'] = 'Agregar clase de impuestos ';
 $_['text_edit'] = 'Editar clase de impuestos';
-$_['text_shipping'] = 'Direcci&oacute;n de envío ';
+$_['text_shipping'] = 'Direcci&oacute;n de env&iacute;o ';
 $_['text_payment'] = 'Direcci&oacute;n de Pago ';
 $_['text_store'] = 'Tienda Direcci&oacute;n';
 

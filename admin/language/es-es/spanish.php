@@ -24,7 +24,7 @@ $_['text_close'] = 'Cerrar';
 $_['text_pagination'] = 'Mostrando {start} a {end} de {total} ({pages} P&aacute;ginas)';
 $_['text_loading'] = 'Cargando ...';
 $_['text_no_results'] = 'No hay resultados!';
-$_['text_confirm'] = 'Est&aacute; seguro?';
+$_['text_confirm'] = '¿Está seguro?';
 $_['text_home'] = 'Principal';
 
 // Button
@@ -75,7 +75,7 @@ $_['button_geo_zone_add'] = 'A&ntilde;adir Zona Geo';
 $_['button_history_add'] = 'Agregar Historia';
 $_['button_transaction_add'] = 'A&ntilde;adir transacci&oacute;n';
 $_['button_route_add'] = 'Agregar ruta';
-$_['button_rule_add'] = 'Agregar regla';
+$_['button_add_rule'] = 'Agregar regla';
 $_['button_module_add'] = 'Agregar m&oacute;dulo';
 $_['button_link_add'] = 'A&ntilde;adir enlace';
 $_['button_approve'] = 'Aprobar';
