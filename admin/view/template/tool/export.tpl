@@ -16,13 +16,13 @@
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-3"><?php echo $entry_date_start; ?></label>
 				<div class="col-sm-6">
-					<input type="text" name="date_start" value="<?php echo $date_start; ?>" class="form-control date" placeholder="DD-MM-YYYY">
+					<input type="text" name="date_start" value="<?php echo $date_start; ?>" class="form-control date" placeholder="DD-MM-YYYY" style="width: 140px;">
 				</div>
 			</div>
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-3"><?php echo $entry_date_end; ?></label>
 				<div class="col-sm-6">
-					<input type="text" name="date_end" value="<?php echo $date_end; ?>" class="form-control date" placeholder="DD-MM-YYYY">
+					<input type="text" name="date_end" value="<?php echo $date_end; ?>" class="form-control date" placeholder="DD-MM-YYYY" style="width: 140px;">
 				</div>
 			</div>
 			<div class="form-group row">
