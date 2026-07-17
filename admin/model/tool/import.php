@@ -20,13 +20,13 @@ class ModelToolImport extends Model {
 			}
 
 			$model = isset($row[0]) ? trim($row[0]) : '';
-			$name = isset($row[1]) ? trim($row[1]) : '';
-			$description = isset($row[2]) ? trim($row[2]) : '';
-			$price = isset($row[3]) && $row[3] !== '' ? (float)str_replace(',', '.', $row[3]) : 0;
-			$quantity = isset($row[4]) && $row[4] !== '' ? (int)$row[4] : 0;
-			$status = isset($row[5]) && $row[5] !== '' ? (int)$row[5] : 1;
+			$description = isset($row[1]) ? trim($row[1]) : '';
+			$name = $description;
+			$price = isset($row[2]) && $row[2] !== '' ? (float)str_replace(',', '.', $row[2]) : 0;
+			$quantity = isset($row[3]) && $row[3] !== '' ? (int)$row[3] : 0;
+			$status = isset($row[4]) && $row[4] !== '' ? (int)$row[4] : 1;
 
-			if ($model === '' || $name === '') {
+			if ($model === '' || $description === '') {
 				$errors[] = sprintf($this->language->get('error_row'), $row_number, $this->language->get('error_required'));
 				continue;
 			}
@@ -59,6 +59,79 @@ class ModelToolImport extends Model {
 		}
 
 		$this->cache->delete('product');
+
+		return array(
+			'imported' => $imported,
+			'updated'  => $updated,
+			'errors'   => $errors
+		);
+	}
+
+	public function importCustomers($rows) {
+		$imported = 0;
+		$updated = 0;
+		$errors = array();
+
+		if (!empty($rows)) {
+			array_shift($rows);
+		}
+
+		$row_number = 1;
+
+		foreach ($rows as $row) {
+			$row_number++;
+
+			if (empty(array_filter($row, function ($value) { return trim((string)$value) !== ''; }))) {
+				continue;
+			}
+
+			$company = isset($row[0]) ? trim($row[0]) : '';
+			$nif = isset($row[1]) ? trim($row[1]) : '';
+			$email = isset($row[2]) ? trim($row[2]) : '';
+			$telephone = isset($row[3]) ? trim($row[3]) : '';
+			$address_1 = isset($row[4]) ? trim($row[4]) : '';
+			$city = isset($row[5]) ? trim($row[5]) : '';
+			$postcode = isset($row[6]) ? trim($row[6]) : '';
+
+			if ($company === '' || $email === '') {
+				$errors[] = sprintf($this->language->get('error_row'), $row_number, $this->language->get('error_required_customer'));
+				continue;
+			}
+
+			$query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "customer` WHERE email = '" . $this->db->escape($email) . "'");
+
+			if ($query->num_rows) {
+				$customer_id = $query->row['customer_id'];
+
+				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', telephone = '" . $this->db->escape($telephone) . "', date_modified = NOW() WHERE customer_id = '" . (int)$customer_id . "'");
+
+				$fl_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "fl_customers` WHERE customer_id = '" . (int)$customer_id . "'");
+
+				if ($fl_query->num_rows) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				} else {
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '195', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
+				}
+
+				$updated++;
+			} else {
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', customer_group_id = '1', status = '1', date_added = NOW(), date_modified = NOW()");
+
+				$customer_id = $this->db->getLastId();
+
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '195', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
+
+				if ($address_1 !== '' || $city !== '' || $postcode !== '') {
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '195'");
+
+					$address_id = $this->db->getLastId();
+
+					$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+
+				$imported++;
+			}
+		}
 
 		return array(
 			'imported' => $imported,

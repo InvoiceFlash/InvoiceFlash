@@ -19,9 +19,9 @@
 			<div class="form-group row">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_type; ?></label>
 				<div class="col-sm-10">
-					<select name="type" class="form-control">
+					<select name="type" id="import-type" class="form-control">
 						<option value="product"><?php echo $text_type_product; ?></option>
-						<option value="customer" disabled><?php echo $text_type_customer; ?></option>
+						<option value="customer"><?php echo $text_type_customer; ?></option>
 						<option value="supplier" disabled><?php echo $text_type_supplier; ?></option>
 					</select>
 				</div>
@@ -36,19 +36,19 @@
 			<div class="form-group row">
 				<div class="col-sm-10 offset-sm-2">
 					<button type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> <?php echo $button_import; ?></button>
-					<a href="<?php echo $template; ?>" class="btn btn-default"><i class="fas fa-download"></i> <?php echo $button_template; ?></a>
+					<a href="<?php echo $template_product; ?>" id="import-template-product" class="btn btn-default"><i class="fas fa-download"></i> <?php echo $button_template; ?></a>
+					<a href="<?php echo $template_customer; ?>" id="import-template-customer" class="btn btn-default" style="display:none;"><i class="fas fa-download"></i> <?php echo $button_template; ?></a>
 				</div>
 			</div>
 		</form>
 		<hr>
 		<h4><?php echo $text_example; ?></h4>
 		<p class="text-muted"><?php echo $text_example_help; ?></p>
-		<div class="table-responsive">
+		<div id="import-example-product" class="table-responsive">
 			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
-						<td><?php echo $column_model; ?></td>
-						<td><?php echo $column_name; ?></td>
+						<td><?php echo $column_code; ?></td>
 						<td><?php echo $column_description; ?></td>
 						<td><?php echo $column_price; ?></td>
 						<td><?php echo $column_quantity; ?></td>
@@ -58,16 +58,14 @@
 				<tbody>
 					<tr>
 						<td>REF-001</td>
-						<td>Producto de ejemplo</td>
-						<td>Descripción del producto</td>
+						<td>Descripción del producto de ejemplo</td>
 						<td>19.99</td>
 						<td>100</td>
 						<td>1</td>
 					</tr>
 					<tr>
 						<td>REF-002</td>
-						<td>Otro producto</td>
-						<td>Otra descripción</td>
+						<td>Otra descripción de ejemplo</td>
 						<td>9.50</td>
 						<td>25</td>
 						<td>1</td>
@@ -75,6 +73,39 @@
 				</tbody>
 			</table>
 		</div>
+		<div id="import-example-customer" class="table-responsive" style="display:none;">
+			<table class="table table-bordered table-striped">
+				<thead>
+					<tr>
+						<td><?php echo $column_company; ?></td>
+						<td><?php echo $column_nif; ?></td>
+						<td><?php echo $column_email; ?></td>
+						<td><?php echo $column_telephone; ?></td>
+						<td><?php echo $column_address; ?></td>
+						<td><?php echo $column_city; ?></td>
+						<td><?php echo $column_postcode; ?></td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Empresa de Ejemplo SL</td>
+						<td>B12345678</td>
+						<td>contacto@ejemplo.com</td>
+						<td>600000000</td>
+						<td>Calle Mayor 1</td>
+						<td>Madrid</td>
+						<td>28001</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </div>
+<script>
+$('#import-type').on('change', function() {
+	var type = $(this).val();
+	$('#import-example-product, #import-template-product').toggle(type == 'product');
+	$('#import-example-customer, #import-template-customer').toggle(type == 'customer');
+});
+</script>
 <?php echo $footer; ?>

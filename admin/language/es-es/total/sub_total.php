@@ -6,6 +6,7 @@ $_['heading_title']    = 'Sub-Total';
 $_['text_total'] = 'Pedidos Totales';
 $_['text_success'] = 'Genial: Ha modificado total de subtotal!';
 $_['text_edit'] = 'Editar Sub-Total Total';
+$_['text_sub_total'] = 'Subtotal';
 
 // Entrada
 $_['entry_status'] = 'Estado';

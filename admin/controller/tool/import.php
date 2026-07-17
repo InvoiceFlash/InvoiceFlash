@@ -9,6 +9,7 @@ class ControllerToolImport extends Controller {
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->user->hasPermission('modify', 'tool/import') && $this->validate()) {
 			$file = $this->request->files['file'];
+			$type = isset($this->request->post['type']) ? $this->request->post['type'] : 'product';
 
 			require_once(DIR_SYSTEM . 'library/xlsx.php');
 
@@ -20,7 +21,11 @@ class ControllerToolImport extends Controller {
 			} else {
 				$this->load->model('tool/import');
 
-				$result = $this->model_tool_import->importProducts($rows);
+				if ($type == 'customer') {
+					$result = $this->model_tool_import->importCustomers($rows);
+				} else {
+					$result = $this->model_tool_import->importProducts($rows);
+				}
 
 				$this->session->data['success'] = sprintf($this->language->get('text_success'), $result['imported'], $result['updated']);
 
@@ -38,18 +43,29 @@ class ControllerToolImport extends Controller {
 	public function template() {
 		require_once(DIR_SYSTEM . 'library/xlsx.php');
 
+		$type = isset($this->request->get['type']) ? $this->request->get['type'] : 'product';
+
 		$xlsx = new Xlsx();
 
-		$xlsx->setHeaders(array('Modelo', 'Nombre', 'Descripcion', 'Precio', 'Cantidad', 'Estado'));
-		$xlsx->addRow(array('REF-001', 'Producto de ejemplo', 'Descripcion del producto', '19.99', '100', '1'));
+		if ($type == 'customer') {
+			$xlsx->setHeaders(array('Empresa', 'NIF/CIF', 'Email', 'Telefono', 'Direccion', 'Ciudad', 'Codigo Postal'));
+			$xlsx->addRow(array('Empresa de Ejemplo SL', 'B12345678', 'contacto@ejemplo.com', '600000000', 'Calle Mayor 1', 'Madrid', '28001'));
 
-		$content = $xlsx->build('Productos');
+			$content = $xlsx->build('Clientes');
+			$filename = 'plantilla_clientes.xlsx';
+		} else {
+			$xlsx->setHeaders(array('Codigo Articulo', 'Descripcion', 'Precio', 'Cantidad', 'Estado'));
+			$xlsx->addRow(array('REF-001', 'Descripcion del producto de ejemplo', '19.99', '100', '1'));
+
+			$content = $xlsx->build('Productos');
+			$filename = 'plantilla_productos.xlsx';
+		}
 
 		$this->response->addheader('Pragma: public');
 		$this->response->addheader('Expires: 0');
 		$this->response->addheader('Content-Description: File Transfer');
 		$this->response->addheader('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-		$this->response->addheader('Content-Disposition: attachment; filename=plantilla_productos.xlsx');
+		$this->response->addheader('Content-Disposition: attachment; filename=' . $filename);
 		$this->response->addheader('Content-Transfer-Encoding: binary');
 		$this->response->addheader('Content-Length: ' . strlen($content));
 
@@ -73,12 +89,19 @@ class ControllerToolImport extends Controller {
 		$this->data['button_import'] = $this->language->get('button_import');
 		$this->data['button_template'] = $this->language->get('button_template');
 
-		$this->data['column_model'] = $this->language->get('column_model');
-		$this->data['column_name'] = $this->language->get('column_name');
+		$this->data['column_code'] = $this->language->get('column_code');
 		$this->data['column_description'] = $this->language->get('column_description');
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_status'] = $this->language->get('column_status');
+
+		$this->data['column_company'] = $this->language->get('column_company');
+		$this->data['column_nif'] = $this->language->get('column_nif');
+		$this->data['column_email'] = $this->language->get('column_email');
+		$this->data['column_telephone'] = $this->language->get('column_telephone');
+		$this->data['column_address'] = $this->language->get('column_address');
+		$this->data['column_city'] = $this->language->get('column_city');
+		$this->data['column_postcode'] = $this->language->get('column_postcode');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -117,7 +140,8 @@ class ControllerToolImport extends Controller {
 		);
 
 		$this->data['action'] = $this->url->link('tool/import', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['template'] = $this->url->link('tool/import/template', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['template_product'] = $this->url->link('tool/import/template', 'token=' . $this->session->data['token'] . '&type=product', 'SSL');
+		$this->data['template_customer'] = $this->url->link('tool/import/template', 'token=' . $this->session->data['token'] . '&type=customer', 'SSL');
 
 		$this->template = 'tool/import.tpl';
 		$this->children = array(
