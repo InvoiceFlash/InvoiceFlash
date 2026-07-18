@@ -1643,7 +1643,8 @@ CREATE TABLE `if_language` (
 --
 
 INSERT INTO `if_language` (`language_id`, `name`, `code`, `locale`, `image`, `directory`, `filename`, `sort_order`, `status`) VALUES
-(1, 'English', 'en', 'en_US.UTF-8,en_US,en-gb,english', 'gb.png', 'en-gb', 'english', 1, 1);
+(1, 'English', 'en', 'en_US.UTF-8,en_US,en-gb,english', 'gb.png', 'en-gb', 'english', 1, 1),
+(2, 'Español', 'es', 'es_ES.UTF-8,es_ES,es-es,spanish', 'es.png', 'es-es', 'spanish', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -7709,7 +7710,21 @@ INSERT INTO `if_invoice_status` (`invoice_status_id`, `language_id`, `name`) VAL
 (1, 1, 'Pending'),
 (16, 1, 'Voided'),
 (15, 1, 'Processed'),
-(14, 1, 'Expired');
+(14, 1, 'Expired'),
+(1, 2, 'Pendiente'),
+(2, 2, 'Procesando'),
+(3, 2, 'Enviado'),
+(5, 2, 'Completado'),
+(7, 2, 'Cancelado'),
+(8, 2, 'Denegado'),
+(9, 2, 'Cancelación Revertida'),
+(10, 2, 'Fallido'),
+(11, 2, 'Reembolsado'),
+(12, 2, 'Revertido'),
+(13, 2, 'Contracargo'),
+(14, 2, 'Caducado'),
+(15, 2, 'Procesado'),
+(16, 2, 'Anulado');
 
 /*Table structure for table `purchase_invoice` */
 
