@@ -459,8 +459,8 @@ class ControllerCatalogProduct extends Controller {
 				'model'      => $result['model'],
 				'category'	 => $category,
 				'manufacturer' => $manufacturer,
-				'price'      => $this->currency->format($result['price']),
-				'special'    => $this->currency->format($special),
+				'price'      => $this->currency->format($result['price'], $this->config->get('config_currency')),
+				'special'    => $special ? $this->currency->format($special, $this->config->get('config_currency')) : false,
 				'image'      => $image,
 				'quantity'   => $result['quantity'],
 				'status'     => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
@@ -992,9 +992,9 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 		if (isset($this->request->post['price'])) {
-			$this->data['price'] = $this->currency->format($this->request->post['price']);
+			$this->data['price'] = $this->currency->format($this->request->post['price'], $this->config->get('config_currency'));
 		} elseif (!empty($product_info)) {
-			$this->data['price'] = $this->currency->format($product_info['price']);
+			$this->data['price'] = $this->currency->format($product_info['price'], $this->config->get('config_currency'));
 		} else {
 			$this->data['price'] = '';
 		}

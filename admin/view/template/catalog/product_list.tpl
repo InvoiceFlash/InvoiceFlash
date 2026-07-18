@@ -72,7 +72,7 @@
 						<td class="text-center"><img class="img-thumbnail" src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>"></td>
 						<td><?php echo $product['name']; ?></td>
 						<td class="hidden-xs"><?php echo $product['model']; ?></td>
-						<td class="text-right hidden-xs"><?php if ($product['special']!=0) { ?>
+						<td class="text-right hidden-xs"><?php if ($product['special']) { ?>
 								<s class="text-danger"><?php echo $product['price']; ?></s> <?php echo $product['special']; ?>
 							<?php } else { ?>
 								<?php echo $product['price']; ?>
