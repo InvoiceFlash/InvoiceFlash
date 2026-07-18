@@ -25,3 +25,4 @@ system/backup/
 system/cache/update_*
 docs/suppliers/
 catalog/
+.claude/skills/invoiceFlash/
