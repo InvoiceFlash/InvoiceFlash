@@ -33,16 +33,17 @@ class ModelLocalisationPayment extends Model {
 	}
 	
 	public function getPayments($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "payment_description WHERE language_id = '" . (int)$this->config->get('config_language_id') . "'";
-		
+		$sql = "SELECT pd.*, p.nexpirations, p.displacement, p.days_between FROM " . DB_PREFIX . "payment_description pd LEFT JOIN " . DB_PREFIX . "payment p ON (pd.payment_id = p.payment_id) WHERE pd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+
 		$sort_data = array(
-			'name'
-		);	
+			'name',
+			'nexpirations'
+		);
 
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-			$sql .= " ORDER BY " . $data['sort'];	
+			$sql .= " ORDER BY " . $data['sort'];
 		} else {
-			$sql .= " ORDER BY name";	
+			$sql .= " ORDER BY name";
 		}
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {
 			$sql .= " DESC";

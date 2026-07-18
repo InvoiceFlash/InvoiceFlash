@@ -20,7 +20,6 @@
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right hidden-xs"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs hidden-sm"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'o.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
@@ -51,12 +50,6 @@
 							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 							</div>
 						</div></td>
-						<td class="hidden-xs"><div class="input-group">
-							<input type="text" name="filter_date_modified" class="form-control date"/>
-							<div class="input-group-append">
-							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
-							</div>
-						</div></td>
 						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
 					</tr>
 					<?php if ($invoices) { ?>
@@ -72,7 +65,6 @@
 						<td class="hidden-xs text-<?php echo strtolower($invoice['status']); ?>"><?php echo $invoice['status']; ?></td>
 						<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
 						<td class="hidden-xs"><?php echo $invoice['date_added']; ?></td>
-						<td class="hidden-xs hidden-sm"><?php echo $invoice['date_modified']; ?></td>
 						<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
 							<a href="<?php echo $action['href']; ?>" class="btn btn-<?php echo $action['color']; ?>"><i class="<?php echo $action['icon']; ?>"></i></a>
 						<?php } ?></td>
@@ -80,7 +72,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

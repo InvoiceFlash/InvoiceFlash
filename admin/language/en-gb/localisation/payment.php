@@ -6,6 +6,7 @@ $_['text_success']		    = 'Success: You have modified payment!';
 $_['text_no_results']	    = 'No results!';
 
 $_['column_name']		    = 'Name';
+$_['column_nexpirations']	    = 'No. of Expirations';
 $_['column_action']		    = 'Action';
 
 $_['button_insert']		    = 'Insert';

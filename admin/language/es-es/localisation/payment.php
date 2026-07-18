@@ -6,6 +6,7 @@ $_['text_success']		    = '&Eacute;xito: &iexcl;Ha modificado la forma de pago!'
 $_['text_no_results']	    = '&iexcl;Sin resultados!';
 
 $_['column_name']		    = 'Nombre';
+$_['column_nexpirations']	    = 'N&ordm; de Vencimientos';
 $_['column_action']		    = 'Acci&oacute;n';
 
 $_['button_insert']		    = 'Insertar';

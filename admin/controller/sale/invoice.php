@@ -59,9 +59,6 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 			
-			if (isset($this->request->get['filter_date_modified'])) {
-				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-			}
 													
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
@@ -134,9 +131,6 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 			
-			if (isset($this->request->get['filter_date_modified'])) {
-				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-			}
 													
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
@@ -198,9 +192,6 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 			
-			if (isset($this->request->get['filter_date_modified'])) {
-				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-			}
 													
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
@@ -259,11 +250,6 @@ class ControllerSaleInvoice extends Controller {
 			$filter_date_added = null;
 		}
 		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$filter_date_modified = $this->request->get['filter_date_modified'];
-		} else {
-			$filter_date_modified = null;
-		}
 
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
@@ -305,9 +291,6 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-		}
 
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
@@ -365,7 +348,6 @@ class ControllerSaleInvoice extends Controller {
 			'filter_invoice_status_id' => $filter_invoice_status_id,
 			'filter_total'           => $filter_total,
 			'filter_date_added'      => $filter_date_added,
-			'filter_date_modified'   => $filter_date_modified,
 			'sort'                   => $sort,
 			'order'                  => $order,
 			'start'                  => ($page - 1) * $this->config->get('config_admin_limit'),
@@ -399,7 +381,6 @@ class ControllerSaleInvoice extends Controller {
 				'status'        => $result['status'],
 				'total'         => $this->currency->format($result['total']),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['invoice_id'], $this->request->post['selected']),
 				'action'        => $action
 			);
@@ -415,7 +396,6 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['column_status'] = $this->language->get('column_status');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
-		$this->data['column_date_modified'] = $this->language->get('column_date_modified');
 		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['button_invoice'] = $this->language->get('button_invoice');
@@ -463,9 +443,6 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-		}
 
 		if ($order == 'ASC') {
 			$url .= '&order=DESC';
@@ -482,7 +459,6 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['sort_status'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
 		$this->data['sort_total'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=o.total' . $url, 'SSL');
 		$this->data['sort_date_added'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=o.date_added' . $url, 'SSL');
-		$this->data['sort_date_modified'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . '&sort=o.date_modified' . $url, 'SSL');
 
 		$url = '';
 
@@ -506,9 +482,6 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-		}
 
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
@@ -532,7 +505,6 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['filter_invoice_status_id'] = $filter_invoice_status_id;
 		$this->data['filter_total'] = $filter_total;
 		$this->data['filter_date_added'] = $filter_date_added;
-		$this->data['filter_date_modified'] = $filter_date_modified;
 
 		$this->load->model('localisation/invoice_status');
 
@@ -763,9 +735,6 @@ class ControllerSaleInvoice extends Controller {
 			$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 		}
 		
-		if (isset($this->request->get['filter_date_modified'])) {
-			$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-		}
 
 		if (isset($this->request->get['sort'])) {
 			$url .= '&sort=' . $this->request->get['sort'];
@@ -1204,7 +1173,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['text_comment'] = $this->language->get('text_comment');
 			$this->data['text_commission'] = $this->language->get('text_commission');
 			$this->data['text_date_added'] = $this->language->get('text_date_added');
-			$this->data['text_date_modified'] = $this->language->get('text_date_modified');			
 			$this->data['text_company'] = $this->language->get('text_company');
 			$this->data['text_company_id'] = $this->language->get('text_company_id');
 			$this->data['text_tax_id'] = $this->language->get('text_tax_id');
@@ -1303,9 +1271,6 @@ class ControllerSaleInvoice extends Controller {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
 			
-			if (isset($this->request->get['filter_date_modified'])) {
-				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
-			}
 
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
@@ -1390,7 +1355,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['fax'] = $invoice_info['fax'];
 			$this->data['company'] = $invoice_info['company'];
 			$this->data['date_added'] = $invoice_info['date_added'];
-			$this->data['date_modified'] = $invoice_info['date_modified'];
 			$this->data['comment'] = nl2br($invoice_info['comment']);
 			$this->data['shipping_method'] = $invoice_info['shipping_method'];
 			$this->data['payment_method'] = $invoice_info['payment_method'];
@@ -1415,7 +1379,6 @@ class ControllerSaleInvoice extends Controller {
 			}
 			
 			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($invoice_info['date_added']));
-			$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($invoice_info['date_modified']));		
 			$this->data['payment_company'] = $invoice_info['payment_company'];
 			$this->data['payment_company_id'] = $invoice_info['payment_company_id'];
 			$this->data['payment_tax_id'] = $invoice_info['payment_tax_id'];

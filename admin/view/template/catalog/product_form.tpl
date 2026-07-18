@@ -87,7 +87,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 							<div class="form-group row">
-								<label class="col-form-label col-sm-4"><b class="required">*</b> <?php echo $entry_model; ?></label>
+								<label class="col-form-label col-sm-4"><?php echo $entry_model; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="model" value="<?php echo $model; ?>" class="form-control">
 									<?php if ($error_model) { ?>

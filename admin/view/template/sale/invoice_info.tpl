@@ -85,10 +85,6 @@
 							<td><?php echo $text_date_added; ?></td>
 							<td><?php echo $date_added; ?></td>
 						</tr>
-						<tr>
-							<td><?php echo $text_date_modified; ?></td>
-							<td><?php echo $date_modified; ?></td>
-						</tr>
 					</table>
 				</div>
 				<div id="tab-payment" class="tab-pane">

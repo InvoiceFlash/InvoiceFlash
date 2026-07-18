@@ -9,6 +9,7 @@
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th><a href="<?php echo $sort_name; ?>"><?php echo $column_name; echo ($sort == 'name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th><a href="<?php echo $sort_nexpirations; ?>"><?php echo $column_nexpirations; echo ($sort == 'nexpirations') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
@@ -22,6 +23,7 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $payment['payment_id']; ?>">
 							<?php } ?></td>
 						<td><?php echo $payment['name']; ?></td>
+						<td><?php echo $payment['nexpirations']; ?></td>
 						<td class="text-right"><?php foreach ($payment['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i><span class="hidden-xs"> <?php echo $action['text']; ?></span></a>
 						<?php } ?></td>
@@ -29,7 +31,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

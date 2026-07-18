@@ -184,6 +184,7 @@ class ControllerLocalisationPayment extends Controller {
 			$this->data['payments'][] = array(
 				'payment_id' => $result['payment_id'],
 				'name'              => $result['name'],
+				'nexpirations'      => $result['nexpirations'],
 				'selected'          => isset($this->request->post['selected']) && in_array($result['payment_id'], $this->request->post['selected']),
 				'action'            => $action
 			);
@@ -194,6 +195,7 @@ class ControllerLocalisationPayment extends Controller {
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 
 		$this->data['column_name'] = $this->language->get('column_name');
+		$this->data['column_nexpirations'] = $this->language->get('column_nexpirations');
 		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['button_insert'] = $this->language->get('button_insert');
@@ -226,6 +228,7 @@ class ControllerLocalisationPayment extends Controller {
 		}
 
 		$this->data['sort_name'] = $this->url->link('localisation/payment', 'token=' . $this->session->data['token'] . '&sort=name' . $url, 'SSL');
+		$this->data['sort_nexpirations'] = $this->url->link('localisation/payment', 'token=' . $this->session->data['token'] . '&sort=nexpirations' . $url, 'SSL');
 
 		$url = '';
 

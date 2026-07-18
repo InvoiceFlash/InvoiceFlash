@@ -21,6 +21,8 @@ $_['column_model'] = 'Modelo';
 $_['column_image'] = 'Imagen';
 $_['column_price'] = 'Precio';
 $_['column_quantity'] = 'Cantidad';
+$_['column_category'] = 'Categor&iacute;a';
+$_['column_manufacturer'] = 'Fabricante';
 $_['column_status'] = 'Estado';
 $_['column_action'] = 'Acci&oacute;n';
 
