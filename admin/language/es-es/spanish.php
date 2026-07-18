@@ -60,6 +60,7 @@ $_['button_submit'] = 'Enviar';
 $_['button_invoice_print'] = 'Imprimir Factura';
 $_['button_shipping_print'] = 'Imprimir lista de env&iacute;o';
 $_['button_address_add'] = 'Agregar direcci&oacute;n';
+$_['button_add_address'] = 'Agregar direcci&oacute;n';
 $_['button_attribute_add'] = 'Agregar atributo';
 $_['button_banner_add'] = 'Agregar Banner';
 $_['button_custom_field_value_add'] = 'Agregar campo personalizado';

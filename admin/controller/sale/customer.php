@@ -1219,8 +1219,8 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['countries'] = $this->model_localisation_country->getCountries();
 
-		if (isset($this->request->post['address'])) { 
-			$this->data['addresses'] = $this->request->post['address'];
+		if (isset($this->request->post['customer_address'])) {
+			$this->data['addresses'] = $this->request->post['customer_address'];
 		} elseif (isset($this->request->get['customer_id'])) {
 			$this->data['addresses'] = $this->model_sale_customer->getAddresses($this->request->get['customer_id']);
 		} else {

@@ -280,23 +280,23 @@
 								<?php $address_row=1; ?>
 								<?php foreach ($addresses as $address) { ?>
 								<div class="tab-pane fade" role="tab-panel" id="tab-address-<?php echo $address_row; ?>">
-									<input type="hidden" name="address[<?php echo $address_row; ?>][address_id]" value="<?php echo $address['address_id']; ?>">
+									<input type="hidden" name="customer_address[<?php echo $address_row; ?>][address_id]" value="<?php echo $address['address_id']; ?>">
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company; ?></label>
 											<div class="col-sm-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][company]" value="<?php echo $address['company']; ?>" class="form-control">
+												<input type="text" name="customer_address[<?php echo $address_row; ?>][company]" value="<?php echo $address['company']; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group row company-id-display">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company_id; ?></label>
 											<div class="col-sm-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][company_id]" value="<?php echo $address['company_id']; ?>" class="form-control">
+												<input type="text" name="customer_address[<?php echo $address_row; ?>][company_id]" value="<?php echo $address['company_id']; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group row tax-id-display">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>
 											<div class="col-sm-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][tax_id]" value="<?php echo $address['tax_id']; ?>" class="form-control">
+												<input type="text" name="customer_address[<?php echo $address_row; ?>][tax_id]" value="<?php echo $address['tax_id']; ?>" class="form-control">
 												<?php if (isset($error_address_tax_id[$address_row])) { ?>
 													<div class="help-block text-danger"><?php echo $error_address_tax_id[$address_row]; ?></div>
 												<?php } ?>
@@ -305,7 +305,7 @@
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_1; ?></label>
 											<div class="col-sm-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][address_1]" value="<?php echo $address['address_1']; ?>" class="form-control">
+												<input type="text" name="customer_address[<?php echo $address_row; ?>][address_1]" value="<?php echo $address['address_1']; ?>" class="form-control">
 												<?php if (isset($error_address_address_1[$address_row])) { ?>
 													<div class="help-block text-danger"><?php echo $error_address_address_1[$address_row]; ?></div>
 												<?php } ?>
@@ -314,13 +314,13 @@
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_2; ?></label>
 											<div class="col-sm-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][address_2]" value="<?php echo $address['address_2']; ?>" class="form-control">
+												<input type="text" name="customer_address[<?php echo $address_row; ?>][address_2]" value="<?php echo $address['address_2']; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>
 											<div class="col-sm-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][city]" value="<?php echo $address['city']; ?>" class="form-control">
+												<input type="text" name="customer_address[<?php echo $address_row; ?>][city]" value="<?php echo $address['city']; ?>" class="form-control">
 												<?php if (isset($error_address_city[$address_row])) { ?>
 													<div class="help-block text-danger"><?php echo $error_address_city[$address_row]; ?></div>
 												<?php } ?>
@@ -329,13 +329,13 @@
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>
 											<div class="col-sm-6">
-												<input type="text" name="address[<?php echo $address_row; ?>][postcode]" value="<?php echo $address['postcode']; ?>" class="form-control">
+												<input type="text" name="customer_address[<?php echo $address_row; ?>][postcode]" value="<?php echo $address['postcode']; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
 											<div class="col-sm-6">
-												<select name="address[<?php echo $address_row; ?>][country_id]" onchange="country(this,'<?php echo $address_row; ?>','<?php echo $address['zone_id']; ?>');" class="form-control">
+												<select name="customer_address[<?php echo $address_row; ?>][country_id]" onchange="country(this,'<?php echo $address_row; ?>','<?php echo $address['zone_id']; ?>');" class="form-control">
 													<option value=""><?php echo $text_select; ?></option>
 													<?php foreach ($countries as $country) { ?>
 														<?php if ($country['country_id'] == $address['country_id']) { ?>
@@ -353,7 +353,7 @@
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
 											<div class="col-sm-6">
-												<select name="address[<?php echo $address_row; ?>][zone_id]" class="form-control">
+												<select name="customer_address[<?php echo $address_row; ?>][zone_id]" class="form-control">
 												</select>
 												<?php if (isset($error_address_zone[$address_row])) { ?>
 													<div class="help-block text-danger"><?php echo $error_address_zone[$address_row]; ?></div>
@@ -364,9 +364,9 @@
 											<label class="col-form-label col-sm-10 col-md-2" for="default<?php echo $address_row; ?>"><?php echo $entry_default; ?></label>
 											<div class="col-sm-6">
 												<label class="radio-inline"><?php if (($address['address_id'] == $address_id) || !$addresses) { ?>
-													<input type="radio" name="address[<?php echo $address_row; ?>][default]" value="<?php echo $address_row; ?>" id="default<?php echo $address_row; ?>" checked="">
+													<input type="radio" name="customer_address[<?php echo $address_row; ?>][default]" value="<?php echo $address_row; ?>" id="default<?php echo $address_row; ?>" checked="">
 												<?php } else { ?>
-													<input type="radio" name="address[<?php echo $address_row; ?>][default]" value="<?php echo $address_row; ?>" id="default<?php echo $address_row; ?>">
+													<input type="radio" name="customer_address[<?php echo $address_row; ?>][default]" value="<?php echo $address_row; ?>" id="default<?php echo $address_row; ?>">
 												<?php } ?></label>
 											</div>
 										</div>
@@ -777,7 +777,7 @@
 
 function country(a,b,c){
 
-	var $this=$('select[name="address['+b+'][country_id]"]');
+	var $this=$('select[name="customer_address['+b+'][country_id]"]');
 
 	$.ajax({
 
@@ -837,7 +837,7 @@ function country(a,b,c){
 
 			
 
-			$('select[name="address['+b+'][zone_id]"]').html(html);
+			$('select[name="customer_address['+b+'][zone_id]"]').html(html);
 
 		}
 
@@ -941,13 +941,13 @@ function addAddress(){
 
 	html ='<div class="tab-pane" id="tab-address-'+address_row+'">';
 
-	html+='<input type="hidden" name="address['+address_row+'][address_id]" value="">';
+	html+='<input type="hidden" name="customer_address['+address_row+'][address_id]" value="">';
 
 	html+='<div class="form-group row">';
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company; ?></label>';
 
-	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][company]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="customer_address['+address_row+'][company]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
@@ -955,7 +955,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_company_id; ?></label>';
 
-	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][company_id]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="customer_address['+address_row+'][company_id]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
@@ -963,7 +963,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_id; ?></label>';
 
-	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][tax_id]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="customer_address['+address_row+'][tax_id]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';		
 
@@ -971,7 +971,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_1; ?></label>';
 
-	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][address_1]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="customer_address['+address_row+'][address_1]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
@@ -979,7 +979,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_address_2; ?></label>';
 
-	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][address_2]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="customer_address['+address_row+'][address_2]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
@@ -987,7 +987,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_city; ?></label>';
 
-	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][city]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="customer_address['+address_row+'][city]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
@@ -995,7 +995,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>';
 
-	html+='<div class="col-sm-6"><input type="text" name="address['+address_row+'][postcode]" value="" class="form-control" class="form-control"></div>';
+	html+='<div class="col-sm-6"><input type="text" name="customer_address['+address_row+'][postcode]" value="" class="form-control" class="form-control"></div>';
 
 	html+='</div>';
 
@@ -1003,7 +1003,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>';
 
-	html+='<div class="col-sm-6"><select name="address['+address_row+'][country_id]" onchange="country(this, \''+address_row+'\', \'0\');" class="form-control">';
+	html+='<div class="col-sm-6"><select name="customer_address['+address_row+'][country_id]" onchange="country(this, \''+address_row+'\', \'0\');" class="form-control">';
 
 	html+='<option value=""><?php echo $text_select; ?></option>';
 
@@ -1021,7 +1021,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>';
 
-	html+='<div class="col-sm-6"><select name="address['+address_row+'][zone_id]" class="form-control"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></div>';
+	html+='<div class="col-sm-6"><select name="customer_address['+address_row+'][zone_id]" class="form-control"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></div>';
 
 	html+='</div>';
 
@@ -1029,7 +1029,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2" for="default'+address_row+'"><?php echo $entry_default; ?></label>';
 
-	html+='<div class="col-sm-6"><label class="radio-inline"><input type="radio" name="address['+address_row+'][default]" value="1" id="default'+address_row+'"></label></div>';
+	html+='<div class="col-sm-6"><label class="radio-inline"><input type="radio" name="customer_address['+address_row+'][default]" value="1" id="default'+address_row+'"></label></div>';
 
 	html+='</div>';
 
@@ -1041,7 +1041,7 @@ function addAddress(){
 
 	
 
-	$('select[name="address['+address_row+'][country_id]"]').change();
+	$('select[name="customer_address['+address_row+'][country_id]"]').change();
 
 	
 
