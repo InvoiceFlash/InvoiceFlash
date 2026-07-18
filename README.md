@@ -8,13 +8,17 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ---
-### 0.0.9 
+### 0.0.10 
 - [ ] Edit language
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-- [ ] Export SAGE/ContaSol
 - [ ] Mod PEPPOL support
 - [ ] Multi Store
-- [ ] MCP Server
+
+### 0.0.9 
+- [x] Import products, customer, suppliers from *.xlsx
+- [x] Export payroll SAGE/ContaSol
+- [x] MCP Server
+- [x] Languaje Spanish
 
 ### 0.0.8 
 - [x] Upgraded to Boostrap 5.x
