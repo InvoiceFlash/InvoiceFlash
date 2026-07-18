@@ -99,9 +99,9 @@
 						</div>
 						<div class="form-group col-sm-4">
 							<label class="control-label col-sm-4"><?php echo $entry_simplified; ?></label>
-							<div class="control-field col-sm-8">
-								<label class="radio-inline"><input type="radio" name="simplified" value="0" <?php echo (!$simplified) ? 'checked=""' : ''; ?>> <?php echo $text_normal; ?></label>
-								<label class="radio-inline"><input type="radio" name="simplified" value="1" <?php echo ($simplified) ? 'checked=""' : ''; ?>> <?php echo $text_simplified; ?></label>
+							<div class="control-field col-sm-8 d-flex align-items-center" style="min-height:38px; gap:15px;">
+								<label class="radio-inline m-0 p-0" style="padding-left:20px;"><input type="radio" name="simplified" value="0" <?php echo (!$simplified) ? 'checked=""' : ''; ?>> <?php echo $text_normal; ?></label>
+								<label class="radio-inline m-0 p-0" style="padding-left:20px;"><input type="radio" name="simplified" value="1" <?php echo ($simplified) ? 'checked=""' : ''; ?>> <?php echo $text_simplified; ?></label>
 							</div>
 						</div>
 					</div>
@@ -713,6 +713,10 @@ $('#CustomerSearchModal').on('hidden.bs.modal', function() {
 });
 
 function osDoSearch() {
+	var btn = $('#os-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#os-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/draft/searchOrders', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
@@ -721,7 +725,7 @@ function osDoSearch() {
 		success: function(json) {
 			$('#os-warning').hide();
 			if (!json || !json.length) {
-				$('#os-results').html('<tr><td colspan="5" class="text-center">No se encontraron pedidos</td></tr>');
+				$('#os-results').html('<tr><td colspan="5" class="text-center">No se encontraron albaranes</td></tr>');
 				return;
 			}
 			var html = '';
@@ -735,6 +739,13 @@ function osDoSearch() {
 				html += '</tr>';
 			}
 			$('#os-results').html(html);
+		},
+		error: function() {
+			$('#os-warning').text('Error al buscar albaranes').show();
+			$('#os-results').html('<tr><td colspan="5" class="text-center">Error al buscar albaranes</td></tr>');
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
 		}
 	});
 }

@@ -1143,7 +1143,8 @@ CREATE TABLE `if_customer_group_description` (
 --
 
 INSERT INTO `if_customer_group_description` (`customer_group_id`, `language_id`, `name`, `description`) VALUES
-(1, 1, 'Default', 'test');
+(1, 1, 'Default', 'test'),
+(1, 2, 'Predeterminado', 'test');
 
 -- --------------------------------------------------------
 
@@ -8244,6 +8245,8 @@ CREATE TABLE `if_shipping_methods` (
 
 INSERT INTO `if_shipping_methods`(`shipping_id`,`name`,`language_id`) VALUES (1,'Paid shipping',1);
 INSERT INTO `if_shipping_methods`(`shipping_id`,`name`,`language_id`) VALUES (2,'Freight Collect',1);
+INSERT INTO `if_shipping_methods`(`shipping_id`,`name`,`language_id`) VALUES (3,'Free of charge',1);
+INSERT INTO `if_shipping_methods`(`shipping_id`,`name`,`language_id`) VALUES (3,'Sin coste',2);
 
 DROP TABLE IF EXISTS `if_payment`;
 CREATE TABLE `if_payment` (

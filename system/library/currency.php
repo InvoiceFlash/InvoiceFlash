@@ -51,7 +51,7 @@ class Currency {
 		}
 	}
 
-	public function format($number, $currency = '', $value = '', $format = true) {
+	public function format($number, $currency = '', $value = '', $format = true, $spaced = false) {
 		if ($currency && $this->has($currency)) {
 			$symbol_left   = $this->currencies[$currency]['symbol_left'];
 			$symbol_right  = $this->currencies[$currency]['symbol_right'];
@@ -79,7 +79,7 @@ class Currency {
 		$string = '';
 
 		if (($symbol_left) && ($format)) {
-			$string .= $symbol_left;
+			$string .= $symbol_left . ($spaced ? ' ' : '');
 		}
 
 		if ($format) {
@@ -97,7 +97,7 @@ class Currency {
 		$string .= number_format(round($value, (int)$decimal_place), (int)$decimal_place, $decimal_point, $thousand_point);
 
 		if (($symbol_right) && ($format)) {
-			$string .= $symbol_right;
+			$string .= ($spaced ? ' ' : '') . $symbol_right;
 		}
 
 		return $string;

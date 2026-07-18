@@ -1276,4 +1276,9 @@ document.getElementById('EmailModal').addEventListener('shown.bs.modal', functio
 	$('#subject').trigger('focus');
 });
 </script>
+<script>
+<?php if ($error_warning) { ?>
+alertMessage('danger','<?php echo $error_warning; ?>');
+<?php } ?>
+</script>
 <?php echo $footer; ?>

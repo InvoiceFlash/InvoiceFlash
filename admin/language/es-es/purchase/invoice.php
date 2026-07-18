@@ -120,7 +120,7 @@ $_['tab_history']                  = 'Historial';
 
 // Buttons
 $_['button_invoice']               = 'Imprimir Factura';
-$_['button_insert']                = 'A&ntilde;adir Nuevo';
+$_['button_insert']                = 'Insertar';
 $_['button_delete']                = 'Anular';
 $_['button_filter']                = 'Filtro';
 $_['button_save']                  = 'Guardar';

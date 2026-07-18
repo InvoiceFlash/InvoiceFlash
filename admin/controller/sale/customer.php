@@ -113,7 +113,7 @@ class ControllerSaleCustomer extends Controller {
 			if (!isset($this->request->get['continue'])) {
 				$this->redirect($this->url->link('sale/customer', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 			}else{
-				$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . $url . '&product_id=' . $product_id  . '&continue=true', 'SSL'));
+				$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . $url . '&customer_id=' . $this->request->get['customer_id']  . '&continue=true', 'SSL'));
 			}
 
 		}

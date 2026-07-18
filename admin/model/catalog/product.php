@@ -394,6 +394,7 @@ class ModelCatalogProduct extends Model {
 		$sort_data = array(
 			'pd.name',
 			'p.model',
+			'p.sku',
 			'p.price',
 			'p.quantity',
 			'p.manufacturer_id',
@@ -639,7 +640,11 @@ class ModelCatalogProduct extends Model {
 		if (!empty($data['filter_model'])) {
 			$sql .= " AND p.model LIKE '" . $this->db->escape($data['filter_model']) . "%'";
 		}
-		
+
+		if (!empty($data['filter_sku'])) {
+			$sql .= " AND p.sku LIKE '%" . $this->db->escape($data['filter_sku']) . "%'";
+		}
+
 		if (!empty($data['filter_manufacturer'])) {
 			$sql .= " AND p.manufacturer_id LIKE '" . $this->db->escape($data['filter_manufacturer']) . "%'";
 		}

@@ -157,7 +157,7 @@ class ModelSaleCustomer extends Model {
 	}
 
 	public function getCustomers($data = array()) {
-		$sql = "SELECT c.customer_id, c.company, c.telephone, c.customer_group_id, cgd.name AS customer_group , c.email, c.status, c.ip, c.date_added FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id) WHERE cgd.language_id = '" . (int)$this->config->get('config_language_id') . "'";
+		$sql = "SELECT c.customer_id, c.company, c.telephone, c.customer_group_id, cgd.name AS customer_group , c.email, c.status, c.ip, c.date_added FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "customer_group_description cgd ON (c.customer_group_id = cgd.customer_group_id AND cgd.language_id = '" . (int)$this->config->get('config_language_id') . "') WHERE 1 = 1";
 
 		$implode = array();
 

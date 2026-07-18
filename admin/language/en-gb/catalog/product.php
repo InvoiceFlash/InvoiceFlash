@@ -18,6 +18,7 @@ $_['text_amount']            = 'Fixed Amount';
 // Column
 $_['column_name']            = 'Product Name';
 $_['column_model']           = 'Model';
+$_['column_sku']             = 'SKU';
 $_['column_category']        = 'Category';
 $_['column_manufacturer']        = 'Manufacturer';
 $_['column_image']           = 'Image';
@@ -103,6 +104,7 @@ $_['error_warning']          = 'Warning: Please check the form carefully for err
 $_['error_permission']       = 'Warning: You do not have permission to modify products!';
 $_['error_name']             = 'Product Name must be greater than 3 and less than 255 characters!';
 $_['error_model']            = 'Product Model must be greater than 3 and less than 64 characters!';
+$_['error_sku']              = 'SKU is required and must be less than 64 characters!';
 
 // Tab Log
 $_['column_table'] = 'Table Name';

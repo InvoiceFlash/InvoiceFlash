@@ -39,6 +39,7 @@ $_['button_cancel_recurring'] = 'Cancelar pagos peri&oacute;dicos';
 $_['button_continue'] = 'Continuar';
 $_['button_clear'] = 'Borrar';
 $_['button_close'] = 'Cerrar';
+$_['button_convert'] = 'Convertir en Factura';
 $_['button_enable'] = 'Habilitar';
 $_['button_disable'] = 'Desactivar';
 $_['button_filter'] = 'Filtro';

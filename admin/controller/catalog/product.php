@@ -277,6 +277,12 @@ class ControllerCatalogProduct extends Controller {
 			$filter_model = null;
 		}
 
+		if (isset($this->request->get['filter_sku'])) {
+			$filter_sku = $this->request->get['filter_sku'];
+		} else {
+			$filter_sku = null;
+		}
+
 		if (isset($this->request->get['filter_price'])) {
 			$filter_price = $this->request->get['filter_price'];
 		} else {
@@ -392,8 +398,9 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['products'] = array();
 
 		$data = array(
-			'filter_name'	  => $filter_name, 
+			'filter_name'	  => $filter_name,
 			'filter_model'	  => $filter_model,
+			'filter_sku'	  => $filter_sku,
 			'filter_price'	  => $filter_price,
 			'filter_quantity' => $filter_quantity,
 			'filter_category' => $filter_category,
@@ -456,11 +463,11 @@ class ControllerCatalogProduct extends Controller {
 			$this->data['products'][] = array(
 				'product_id' => $result['product_id'],
 				'name'       => $result['name'],
-				'model'      => $result['model'],
+				'sku'        => $result['sku'],
 				'category'	 => $category,
 				'manufacturer' => $manufacturer,
-				'price'      => $this->currency->format($result['price'], $this->config->get('config_currency')),
-				'special'    => $special ? $this->currency->format($special, $this->config->get('config_currency')) : false,
+				'price'      => $this->currency->format($result['price'], $this->config->get('config_currency'), '', true, true),
+				'special'    => $special ? $this->currency->format($special, $this->config->get('config_currency'), '', true, true) : false,
 				'image'      => $image,
 				'quantity'   => $result['quantity'],
 				'status'     => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
@@ -480,7 +487,7 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['column_name'] = $this->language->get('column_name');		
 		$this->data['column_category'] = $this->language->get('column_category');		
 		$this->data['column_manufacturer'] = $this->language->get('column_manufacturer');		
-		$this->data['column_model'] = $this->language->get('column_model');		
+		$this->data['column_sku'] = $this->language->get('column_sku');
 		$this->data['column_price'] = $this->language->get('column_price');		
 		$this->data['column_quantity'] = $this->language->get('column_quantity');		
 		$this->data['column_status'] = $this->language->get('column_status');		
@@ -552,7 +559,7 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 		$this->data['sort_name'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=pd.name' . $url, 'SSL');
-		$this->data['sort_model'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.model' . $url, 'SSL');
+		$this->data['sort_sku'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.sku' . $url, 'SSL');
 		$this->data['sort_category'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.category' . $url, 'SSL');
 		$this->data['sort_manufacturer'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.manufacturer' . $url, 'SSL');
 		$this->data['sort_price'] = $this->url->link('catalog/product', 'token=' . $this->session->data['token'] . '&sort=p.price' . $url, 'SSL');
@@ -611,6 +618,7 @@ class ControllerCatalogProduct extends Controller {
 
 		$this->data['filter_name'] = $filter_name;
 		$this->data['filter_model'] = $filter_model;
+		$this->data['filter_sku'] = $filter_sku;
 		$this->data['filter_price'] = $filter_price;
 		$this->data['filter_category'] = $filter_category;
 		$this->data['filter_manufacturer'] = $filter_manufacturer;
@@ -782,7 +790,13 @@ class ControllerCatalogProduct extends Controller {
 			$this->data['error_model'] = $this->error['model'];
 		} else {
 			$this->data['error_model'] = '';
-		}		
+		}
+
+		if (isset($this->error['sku'])) {
+			$this->data['error_sku'] = $this->error['sku'];
+		} else {
+			$this->data['error_sku'] = '';
+		}
 
 		if (isset($this->error['date_available'])) {
 			$this->data['error_date_available'] = $this->error['date_available'];
@@ -1460,6 +1474,10 @@ class ControllerCatalogProduct extends Controller {
 
 		if (utf8_strlen($this->request->post['model']) > 64) {
 			$this->error['model'] = $this->language->get('error_model');
+		}
+
+		if ((utf8_strlen($this->request->post['sku']) < 1) || (utf8_strlen($this->request->post['sku']) > 64)) {
+			$this->error['sku'] = $this->language->get('error_sku');
 		}
 
 		if ($this->error && !isset($this->error['warning'])) {

@@ -96,9 +96,12 @@
 								</div>
 							</div>
 							<div class="form-group row">
-								<label class="col-form-label col-sm-4"><?php echo $entry_sku; ?></label>
+								<label class="col-form-label col-sm-4"><b class="required">*</b> <?php echo $entry_sku; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="sku" value="<?php echo $sku; ?>" class="form-control">
+									<?php if ($error_sku) { ?>
+									<div class="help-block error"><?php echo $error_sku; ?></div>
+									<?php } ?>
 								</div>
 							</div>
 							<div class="form-group row">

@@ -18,6 +18,7 @@ $_['text_amount'] = 'cantidad fija';
 // Column
 $_['column_name'] = 'Nombre';
 $_['column_model'] = 'Modelo';
+$_['column_sku'] = 'SKU';
 $_['column_image'] = 'Imagen';
 $_['column_price'] = 'Precio';
 $_['column_quantity'] = 'Cantidad';
@@ -106,4 +107,5 @@ $_['error_permission'] = 'Advertencia: Usted no tiene permiso para modificar pro
 $_['error_name'] = 'Nombre del producto debe ser mayor que 3 y menos de 255 caracteres!';
 $_['error_meta_title'] = 'Meta T&iacute;tulo debe ser superior a 3 y menos de 255 caracteres!';
 $_['error_model'] = 'Modelo Producto debe ser mayor que 1 y menos de 64 caracteres!';
+$_['error_sku'] = 'El SKU es obligatorio y debe tener menos de 64 caracteres!';
 $_['error_keyword'] = 'palabra clave SEO ya en uso!';

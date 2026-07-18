@@ -16,8 +16,8 @@
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th class="text-center"><?php echo $column_image; ?></th>
+						<th class="hidden-xs"><a href="<?php echo $sort_sku; ?>"><?php echo $column_sku; echo ($sort == 'p.sku') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_name; ?>"><?php echo $column_name; echo ($sort == 'pd.name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_model; ?>"><?php echo $column_model; echo ($sort == 'pd.model') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_price; ?>"><?php echo $column_price; echo ($sort == 'p.price') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs" style="width:15%; "><a href="<?php echo $sort_category; ?>"><?php echo $column_category; echo ($sort == 'p2c.category') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs" style="width:15%; "><a href="<?php echo $sort_manufacturer; ?>"><?php echo $column_manufacturer; echo ($sort == 'p.manufacturer_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
@@ -30,8 +30,8 @@
 					<tr id="filter" class="info">
 						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=catalog/product&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
 						<td></td>
+						<td class="hidden-xs"><input type="text" name="filter_sku" value="<?php echo $filter_sku; ?>" class="form-control"></td>
 						<td><input type="text" name="filter_name" value="<?php echo $filter_name; ?>" data-target="name" data-url="catalog/product" class="form-control"></td>
-						<td class="hidden-xs"><input type="text" name="filter_model" value="<?php echo $filter_model; ?>" class="form-control" data-target="model" data-url="catalog/product" class="form-control"></td>
 						<td class="text-right hidden-xs"><input type="text" name="filter_price" value="<?php echo $filter_price; ?>" class="form-control"></td>
 						<td class="hidden-xs"><select name="filter_category" class="form-control">
 							<option value="*">&ndash;</option>
@@ -70,8 +70,8 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $product['product_id']; ?>">
 							<?php } ?></td>
 						<td class="text-center"><img class="img-thumbnail" src="<?php echo $product['image']; ?>" alt="<?php echo $product['name']; ?>"></td>
+						<td class="hidden-xs"><?php echo $product['sku']; ?></td>
 						<td><?php echo $product['name']; ?></td>
-						<td class="hidden-xs"><?php echo $product['model']; ?></td>
 						<td class="text-right hidden-xs"><?php if ($product['special']) { ?>
 								<s class="text-danger"><?php echo $product['price']; ?></s> <?php echo $product['special']; ?>
 							<?php } else { ?>
@@ -98,7 +98,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="10"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

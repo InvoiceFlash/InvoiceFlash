@@ -32,7 +32,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_company; ?></label>
 										<div class="col-sm-6">
-											<input type="text" name="company" value="<?php echo $company; ?>" class="form-control">
+											<input type="text" name="company" value="<?php echo $company; ?>" id="input-company" class="form-control">
 											<?php if ($error_company) { ?>
 											<div class="help-block text-danger"><?php echo $error_company; ?></div>
 											<?php } ?>
@@ -343,6 +343,11 @@ $('#button-web').click(function(){
 	} else {
 		alert('<?php echo $error_web; ?>');
 	}
+});
+</script>
+<script>
+$(document).ready(function() {
+	$('#input-company').trigger('focus');
 });
 </script>
 <?php echo $footer; ?>
