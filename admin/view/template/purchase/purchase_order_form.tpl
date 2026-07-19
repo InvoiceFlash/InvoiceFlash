@@ -100,7 +100,6 @@
 							<tr>
 								<th></th>
 								<th><?php echo $column_product; ?></th>
-								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -116,9 +115,8 @@
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][purchase_order_product_id]" value="<?php echo $purchase_order_product['purchase_order_product_id']; ?>">
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $purchase_order_product['product_id']; ?>">
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][name]" value="<?php echo $purchase_order_product['name']; ?>">
+									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][model]" value="<?php echo $purchase_order_product['model']; ?>">
 								</td>
-								<td class="d-none d-sm-table-cell"><?php echo $purchase_order_product['model']; ?>
-									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][model]" value="<?php echo $purchase_order_product['model']; ?>"></td>
 								<td class="text-right"><?php echo $purchase_order_product['quantity']; ?>
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $purchase_order_product['quantity']; ?>"></td>
 								<td class="text-right"><?php echo $purchase_order_product['price']; ?>
@@ -132,7 +130,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -142,7 +140,7 @@
 							<?php foreach ($purchase_order_totals as $purchase_order_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="4"><?php echo $purchase_order_total['title']; ?>:
+								<td class="text-right" colspan="3"><?php echo $purchase_order_total['title']; ?>:
 									<input type="hidden" name="purchase_order_total[<?php echo $total_row; ?>][purchase_order_total_id]" value="<?php echo $purchase_order_total['purchase_order_total_id']; ?>">
 									<input type="hidden" name="purchase_order_total[<?php echo $total_row; ?>][code]" value="<?php echo $purchase_order_total['code']; ?>">
 									<input type="hidden" name="purchase_order_total[<?php echo $total_row; ?>][title]" value="<?php echo $purchase_order_total['title']; ?>">

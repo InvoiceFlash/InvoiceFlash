@@ -164,12 +164,15 @@ $_['text_mail_message'] = 'Checking that emails are sent correctly.';
 $_['tab_fraud']	 = 'Fraud';
 
 // Payroll
-$_['tab_payroll']	 = 'Bank';
+$_['tab_payroll']	 = 'Banks';
 $_['tab_accounting']	 = 'Accounting';
 $_['tab_hacienda']	 = 'Tax Office';
 $_['entry_accounting_period'] = 'Accounting Period:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
+$_['entry_bank_name'] = 'Bank Name';
+$_['entry_bank_default'] = 'Default';
+$_['button_add_bank'] = 'Add Bank';
 $_['entry_creditor_id'] = 'Creditor Id:';
 $_['entry_conta_ventas_account'] = 'Sales accounting account:';
 $_['entry_conta_cliente_account'] = 'Customer accounting account (default):';

@@ -240,7 +240,7 @@ class ControllerSaleReceipt extends Controller {
 				'invoice_id'    => $result['invoice_id'],
 				'customer'      => $result['customer'],
 				'status'        => $result['paid'],
-				'total'         => $this->currency->format($result['amount'], $result['currency_code'], $result['currency_value']),
+				'total'         => $this->currency->format($result['amount'], $result['currency_code'], $result['currency_value'], true, true),
 				'date_due'    => date($this->language->get('date_format_short'), strtotime($result['date_due'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['receipt_id'], $this->request->post['selected']),

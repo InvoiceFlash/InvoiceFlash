@@ -1353,8 +1353,7 @@ $(function(){
 						product=json['purchase_order_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();"><i class="fa fa-trash"></i></a></td>';
-						html+='<td>'+product['name']+'<br><input type="hidden" name="purchase_order_product['+product_row+'][purchase_order_product_id]" value=""><input type="hidden" name="purchase_order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="purchase_order_product['+product_row+'][name]" value="'+product['name']+'"></td>';
-						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="purchase_order_product['+product_row+'][model]" value="'+product['model']+'"></td>';
+						html+='<td>'+product['name']+'<br><input type="hidden" name="purchase_order_product['+product_row+'][purchase_order_product_id]" value=""><input type="hidden" name="purchase_order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="purchase_order_product['+product_row+'][name]" value="'+product['name']+'"><input type="hidden" name="purchase_order_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="purchase_order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="purchase_order_product['+product_row+'][price]" value="'+product['price']+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="purchase_order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="purchase_order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
@@ -1369,7 +1368,7 @@ $(function(){
 					for(i in json['purchase_order_total']){
 						total=json['purchase_order_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="purchase_order_total['+total_row+'][purchase_order_total_id]" value=""><input type="hidden" name="purchase_order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="purchase_order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="purchase_order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="purchase_order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="purchase_order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="3"><input type="hidden" name="purchase_order_total['+total_row+'][purchase_order_total_id]" value=""><input type="hidden" name="purchase_order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="purchase_order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="purchase_order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="purchase_order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="purchase_order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
 						html+='<td class="text-right">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
@@ -1562,8 +1561,8 @@ $(function(){
 								option_row++;
 							}
 						}
+						html+='<input type="hidden" name="invoice_product['+product_row+'][model]" value="'+product['model']+'">';
 						html+='</td>';
-						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="invoice_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="invoice_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="invoice_product['+product_row+'][price]" value="'+product['price']+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="invoice_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="invoice_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
@@ -1578,7 +1577,7 @@ $(function(){
 					for(i in json['invoice_total']){
 						total=json['invoice_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="invoice_total['+total_row+'][invoice_total_id]" value=""><input type="hidden" name="invoice_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="invoice_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="invoice_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="invoice_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="invoice_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="3"><input type="hidden" name="invoice_total['+total_row+'][invoice_total_id]" value=""><input type="hidden" name="invoice_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="invoice_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="invoice_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="invoice_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="invoice_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
 						html+='<td class="text-right">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;

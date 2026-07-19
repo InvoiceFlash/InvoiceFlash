@@ -947,14 +947,39 @@
 					</div>
 				</div>
 				<div id="tab-payroll" class="tab-pane">
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_iban ?></label>
-						<div class="col-sm-6"><input type="text" name="iban" value="<?php echo $iban ?>" maxlength="34" class="form-control" style="width: 260px;"></div>
+					<div class="table-responsive">
+						<table class="table table-bordered table-striped table-hover" id="bank-table">
+							<thead>
+								<tr>
+									<th><?php echo $entry_bank_name; ?></th>
+									<th><?php echo $entry_iban; ?></th>
+									<th><?php echo $entry_bic; ?></th>
+									<th class="text-center"><?php echo $entry_bank_default; ?></th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody id="bank-rows">
+								<?php $bank_row = 0; ?>
+								<?php if ($banks) { ?>
+								<?php foreach ($banks as $bank) { ?>
+								<tr id="bank-row<?php echo $bank_row; ?>">
+									<td><input type="text" name="banks[<?php echo $bank_row; ?>][name]" value="<?php echo $bank['name']; ?>" class="form-control"></td>
+									<td><input type="text" name="banks[<?php echo $bank_row; ?>][iban]" value="<?php echo $bank['iban']; ?>" maxlength="34" class="form-control"></td>
+									<td><input type="text" name="banks[<?php echo $bank_row; ?>][bic]" value="<?php echo $bank['bic']; ?>" maxlength="11" class="form-control"></td>
+									<td class="text-center"><input type="radio" name="bank_default" value="<?php echo $bank_row; ?>"<?php echo ((string)$bank_row === (string)$bank_default) ? ' checked=""' : ''; ?>></td>
+									<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#bank-row<?php echo $bank_row; ?>').remove();"><i class="fa fa-trash"></i></a></td>
+								</tr>
+								<?php $bank_row++; ?>
+								<?php } ?>
+								<?php } else { ?>
+								<tr id="bank-row-empty">
+									<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+								</tr>
+								<?php } ?>
+							</tbody>
+						</table>
 					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_bic ?></label>
-						<div class="col-sm-6"><input type="text" name="bic" value="<?php echo $bic ?>" maxlength="11" class="form-control" style="width: 140px;"></div>
-					</div>
+					<button type="button" id="button-add-bank" class="btn btn-info"><i class="fa fa-plus-circle"></i> <span><?php echo $button_add_bank; ?></span></button>
 				</div>
 				<div id="tab-accounting" class="tab-pane">
 					<div class="form-group row">
@@ -1242,6 +1267,26 @@
 	});
 
 	contaAccountUpdateMaxLength();
+
+	var bankRowIndex = <?php echo $bank_row; ?>;
+
+	$('#button-add-bank').on('click', function() {
+		$('#bank-row-empty').remove();
+
+		var checked = $('#bank-rows input[type="radio"]').length ? '' : ' checked=""';
+
+		var html = '<tr id="bank-row' + bankRowIndex + '">' +
+			'<td><input type="text" name="banks[' + bankRowIndex + '][name]" class="form-control"></td>' +
+			'<td><input type="text" name="banks[' + bankRowIndex + '][iban]" maxlength="34" class="form-control"></td>' +
+			'<td><input type="text" name="banks[' + bankRowIndex + '][bic]" maxlength="11" class="form-control"></td>' +
+			'<td class="text-center"><input type="radio" name="bank_default" value="' + bankRowIndex + '"' + checked + '></td>' +
+			'<td class="text-center"><a class="label label-danger" onclick="$(this).closest(\'tr\').remove();"><i class="fa fa-trash"></i></a></td>' +
+			'</tr>';
+
+		$('#bank-rows').append(html);
+
+		bankRowIndex++;
+	});
 
 	function test() {
 		$('#mcResponse').html('<img src="view/image/ajax-loader.gif" width="25px" height="25px">');

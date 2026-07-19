@@ -14,27 +14,7 @@
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
 					<button class="btn btn-warning pull-right" type="button" title="Albaranes Pendientes de facturar" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs">Albaranes Pendientes</span></button>
-					<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal"><i class="fas fa-comment"></i><span></span></button>
-					<!-- Modal -->
-					<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModalLabel" aria-hidden="true">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="CommentModalLabel"><?php echo $entry_comment; ?></h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-						<div class="modal-body">
-							<div class="form-group">
-								<div class="control-field">
-									<textarea name="comment" class="form-control" cols="60" rows="10"><?php echo $comment; ?></textarea>
-								</div>
-							</div>
-						</div>
-						</div>
-					</div>
-					</div>
+					<input type="hidden" name="comment" value="<?php echo $comment; ?>">
 				</div>
 				<div class="card-body">
 					<div class="row">
@@ -118,7 +98,6 @@
 							<tr>
 								<th></th>
 								<th><?php echo $column_product; ?></th>
-								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -145,9 +124,8 @@
 										<input type="hidden" name="draft_product[<?php echo $product_row; ?>][draft_option][<?php echo $option_row; ?>][type]" value="<?php echo $option['type']; ?>">
 									<?php $option_row++; ?>
 									<?php } ?>
+									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][model]" value="<?php echo $draft_product['model']; ?>">
 								</td>
-								<td class="d-none d-sm-table-cell"><?php echo $draft_product['model']; ?>
-									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][model]" value="<?php echo $draft_product['model']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $draft_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="<?php echo $draft_product['catalog_price_raw']; ?>" name="draft_product[<?php echo $product_row; ?>][price]" value="<?php echo $draft_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $draft_product['total']; ?>
@@ -159,7 +137,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -169,7 +147,7 @@
 							<?php foreach ($draft_totals as $draft_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="4"><?php echo $draft_total['title']; ?>:
+								<td class="text-right" colspan="3"><?php echo $draft_total['title']; ?>:
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][draft_total_id]" value="<?php echo $draft_total['draft_total_id']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][code]" value="<?php echo $draft_total['code']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][title]" value="<?php echo $draft_total['title']; ?>">

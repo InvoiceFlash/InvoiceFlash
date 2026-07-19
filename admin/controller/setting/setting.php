@@ -10,6 +10,37 @@ class ControllerSettingSetting extends Controller {
 		$this->load->model('setting/setting');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+			$raw_banks = (isset($this->request->post['banks']) && is_array($this->request->post['banks'])) ? $this->request->post['banks'] : array();
+			$submitted_default = isset($this->request->post['bank_default']) ? (string)$this->request->post['bank_default'] : null;
+
+			$banks = array();
+			$default_index = null;
+
+			foreach ($raw_banks as $bank_key => $bank) {
+				$name = isset($bank['name']) ? trim($bank['name']) : '';
+				$iban = isset($bank['iban']) ? str_replace(array('-', ' '), '', trim($bank['iban'])) : '';
+				$bic  = isset($bank['bic']) ? trim($bank['bic']) : '';
+
+				if (($name === '') && ($iban === '') && ($bic === '')) {
+					continue;
+				}
+
+				if (($submitted_default !== null) && ((string)$bank_key === $submitted_default)) {
+					$default_index = count($banks);
+				}
+
+				$banks[] = array('name' => $name, 'iban' => $iban, 'bic' => $bic);
+			}
+
+			if (($default_index === null) && $banks) {
+				$default_index = 0;
+			}
+
+			$this->request->post['banks'] = $banks;
+			$this->request->post['bank_default'] = ($default_index !== null) ? $default_index : '';
+			$this->request->post['iban'] = $banks ? $banks[$default_index]['iban'] : '';
+			$this->request->post['bic'] = $banks ? $banks[$default_index]['bic'] : '';
+
 			if (isset($this->request->post['config_vat_id'])) {
 				$this->request->post['config_vat_id'] = preg_replace('/[^A-Za-z0-9]/', '', $this->request->post['config_vat_id']);
 			}
@@ -175,6 +206,11 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_accounting_period'] = $this->language->get('entry_accounting_period');
 		$this->data['entry_iban'] = $this->language->get('entry_iban');
 		$this->data['entry_bic'] = $this->language->get('entry_bic');
+		$this->data['entry_bank_name'] = $this->language->get('entry_bank_name');
+		$this->data['entry_bank_default'] = $this->language->get('entry_bank_default');
+		$this->data['button_add_bank'] = $this->language->get('button_add_bank');
+		$this->data['button_remove'] = $this->language->get('button_remove');
+		$this->data['text_no_results'] = $this->language->get('text_no_results');
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
 		$this->data['entry_conta_ventas_account'] = $this->language->get('entry_conta_ventas_account');
 		$this->data['entry_conta_cliente_account'] = $this->language->get('entry_conta_cliente_account');
@@ -1183,11 +1219,31 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$this->data['iban'] = str_replace(array("-", " "), "", (string)$this->config->get('iban'));
 		}
-		
+
 		if (isset($this->request->post['bic'])) {
 			$this->data['bic'] = $this->request->post['bic'];
 		} else {
 			$this->data['bic'] = $this->config->get('bic');
+		}
+
+		if (isset($this->request->post['banks'])) {
+			$this->data['banks'] = $this->request->post['banks'];
+			$this->data['bank_default'] = isset($this->request->post['bank_default']) ? $this->request->post['bank_default'] : null;
+		} else {
+			$this->data['banks'] = $this->config->get('banks');
+			$this->data['bank_default'] = $this->config->get('bank_default');
+
+			if (!$this->data['banks']) {
+				$legacy_iban = str_replace(array('-', ' '), '', (string)$this->config->get('iban'));
+				$legacy_bic = (string)$this->config->get('bic');
+
+				if (($legacy_iban !== '') || ($legacy_bic !== '')) {
+					$this->data['banks'] = array(array('name' => '', 'iban' => $legacy_iban, 'bic' => $legacy_bic));
+					$this->data['bank_default'] = 0;
+				} else {
+					$this->data['banks'] = array();
+				}
+			}
 		}
 		
 		if (isset($this->request->post['creditor_id'])) {

@@ -277,12 +277,15 @@ $_['text_image_manager'] = 'Gestor de Im&aacute;genes';
 $_['tab_fraud'] = 'Fraude';
 
 // Payroll
-$_['tab_payroll'] = 'Banco';
+$_['tab_payroll'] = 'Bancos';
 $_['tab_accounting'] = 'Contabilidad';
 $_['tab_hacienda'] = 'Hacienda';
 $_['entry_accounting_period'] = 'Periodo Contable:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
+$_['entry_bank_name'] = 'Nombre del Banco';
+$_['entry_bank_default'] = 'Predeterminado';
+$_['button_add_bank'] = 'A&ntilde;adir Banco';
 $_['entry_creditor_id'] = 'ID de Acreedor:';
 $_['entry_conta_ventas_account'] = 'Cuenta contable de ventas:';
 $_['entry_conta_cliente_account'] = 'Cuenta contable de clientes (por defecto):';

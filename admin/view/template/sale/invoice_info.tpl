@@ -4,8 +4,8 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a>
 			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></button>
+			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Imprimir</span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
@@ -153,7 +153,6 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_product; ?></th>
-								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -170,7 +169,6 @@
 									<div class="help"><?php echo $option['name']; ?>: <a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></div>
 									<?php } ?>
 									<?php } ?></td>
-								<td class="d-none d-sm-table-cell"><?php echo $product['model']; ?></td>
 								<td class="text-right"><?php echo $product['quantity']; ?></td>
 								<td class="text-right"><?php echo $product['price']; ?></td>
 								<td class="text-right"><?php echo $product['total']; ?></td>
@@ -178,8 +176,7 @@
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
-									<td class="d-none d-sm-table-cell"></td>
-									<td colspan="3" class="text-right"><?php echo $total['title']; ?>:</td>
+									<td colspan="2" class="text-right"><?php echo $total['title']; ?>:</td>
 									<td class="text-right"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
