@@ -428,12 +428,10 @@ class ModelSaleOrder extends Model {
 	}
 
 	public function getOrders($data = array()) {
-		$sql = "SELECT o.order_id, o.shipping_company, os.name AS `status`, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, c.company AS company FROM `" . DB_PREFIX . "order` o LEFT JOIN `" . DB_PREFIX . "order_status` os ON o.order_status_id = os.order_status_id LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
+		$sql = "SELECT o.order_id, o.shipping_company, os.name AS `status`, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified, c.company AS company FROM `" . DB_PREFIX . "order` o LEFT JOIN `" . DB_PREFIX . "order_status` os ON (o.order_status_id = os.order_status_id AND os.language_id = '" . $this->config->get('config_language_id') . "') LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE 1 = 1";
 
 		if (isset($data['filter_order_status_id']) && !is_null($data['filter_order_status_id'])) {
 			$sql .= " AND o.order_status_id = '" . (int)$data['filter_order_status_id'] . "'";
-		} else {
-			$sql .= " AND o.order_status_id > '0'";
 		}
 
 		if (!empty($data['filter_order_id'])) {
@@ -509,12 +507,10 @@ class ModelSaleOrder extends Model {
 	}
 
 	public function getTotalOrders($data = array()) {
-		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order`";
+		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "order` WHERE 1 = 1";
 
 		if (isset($data['filter_order_status_id']) && !is_null($data['filter_order_status_id'])) {
-			$sql .= " WHERE order_status_id = '" . (int)$data['filter_order_status_id'] . "'";
-		} else {
-			$sql .= " WHERE order_status_id > '0'";
+			$sql .= " AND order_status_id = '" . (int)$data['filter_order_status_id'] . "'";
 		}
 
 		if (!empty($data['filter_order_id'])) {

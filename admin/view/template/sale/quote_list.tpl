@@ -46,7 +46,7 @@
 					</tr>
 					<?php if ($quotes) { ?>
 					<?php foreach ($quotes as $quote) { ?>
-					<tr>
+					<tr<?php echo $quote['converted'] ? ' style="background-color:#fdfd96;"' : ''; ?>>
 						<td class="rowlink-skip text-center"><?php if ($quote['selected']) { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $quote['quote_id']; ?>" checked="">
 							<?php } else { ?>

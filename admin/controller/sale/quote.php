@@ -496,10 +496,11 @@ class ControllerSaleQuote extends Controller {
               'quote_id'      => $result['quote_id'],
               'company'       => $result['company'],
               'status'        => $result['status'],
-              'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+              'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value'], true, true),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
               'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
               'selected'      => isset($this->request->post['selected']) && in_array($result['quote_id'], $this->request->post['selected']),
+              'converted'     => ($result['invoice_no'] != 0),
               'action'        => $action
           );
       }
@@ -1452,7 +1453,7 @@ class ControllerSaleQuote extends Controller {
 			$this->data['comment'] = nl2br($quote_info['comment']);
 			$this->data['shipping_method'] = $quote_info['shipping_method'];
 			$this->data['payment_method'] = $quote_info['payment_method'];
-			$this->data['total'] = $this->currency->format($quote_info['total'], $quote_info['currency_code'], $quote_info['currency_value']);
+			$this->data['total'] = $this->currency->format($quote_info['total'], $quote_info['currency_code'], $quote_info['currency_value'], true, true);
 			
 			if ($quote_info['total'] < 0) {
 				$this->data['credit'] = $quote_info['total'];
@@ -1472,8 +1473,8 @@ class ControllerSaleQuote extends Controller {
 				$this->data['invoice_status'] = '';
 			}
 			
-			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($quote_info['date_added']));
-			$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($quote_info['date_modified']));		
+			$this->data['date_added'] = date($this->language->get('date_format_short') . ' H:i', strtotime($quote_info['date_added']));
+			$this->data['date_modified'] = date($this->language->get('date_format_short') . ' H:i', strtotime($quote_info['date_modified']));
 			$this->data['payment_company'] = $quote_info['payment_company'];
 			$this->data['payment_company_id'] = $quote_info['payment_company_id'];
 			$this->data['payment_tax_id'] = $quote_info['payment_tax_id'];

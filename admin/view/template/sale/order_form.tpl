@@ -97,20 +97,6 @@
 								<?php } ?>
 							</div>
 						</div>
-						<div class="form-group col-sm-4">
-							<label class="control-label col-sm-4"><?php echo $entry_order_status; ?></label>
-							<div class="control-field col-sm-8">
-								<select name="order_status_id" class="form-control">
-									<?php foreach ($order_statuses as $order_status) { ?>
-									<?php if ($order_status['order_status_id'] == $order_status_id) { ?>
-									<option value="<?php echo $order_status['order_status_id']; ?>" selected=""><?php echo $order_status['name']; ?></option>
-									<?php } else { ?>
-									<option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-									<?php } ?>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -616,6 +602,10 @@ $('#searchCustomer').click(function(e) {
 });
 
 function csDoSearch() {
+	var btn = $('#cs-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#cs-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
@@ -644,6 +634,14 @@ function csDoSearch() {
 				html += '</tr>';
 			}
 			$('#cs-results').html(html);
+		},
+		error: function() {
+			$('#cs-warning').text('Error al buscar clientes').show();
+			$('#cs-results').html('<tr><td colspan="4" class="text-center">Error al buscar clientes</td></tr>');
+			csCustomers = [];
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
 		}
 	});
 }
