@@ -8349,6 +8349,21 @@ CREATE TABLE `if_delivery` (
   PRIMARY KEY (`delivery_id`)
 ) ENGINE=MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_delivery_status`;
+CREATE TABLE `if_delivery_status` (
+  `delivery_status_id` int(11) NOT NULL AUTO_INCREMENT,
+  `language_id` int(11) NOT NULL,
+  `name` varchar(32) NOT NULL,
+  `color` varchar(50),
+  PRIMARY KEY (`delivery_status_id`,`language_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+INSERT INTO `if_delivery_status` (`delivery_status_id`, `language_id`, `name`, `color`) VALUES
+(1, 1, 'Pending delivery notes', NULL),
+(1, 2, 'Albaranes pendientes', NULL),
+(2, 1, 'In Invoice Draft', '#fdfd96'),
+(2, 2, 'En Borrador de Factura', '#fdfd96');
+
 DROP TABLE IF EXISTS `if_delivery_product`;
 CREATE TABLE `if_delivery_product` (
   `delivery_product_id` int(11) NOT NULL AUTO_INCREMENT,

@@ -80,7 +80,7 @@
 <script>
 function validate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Select a draft to print');
+		alert('Seleccione un borrador para imprimir');
 	} else {
 		$('input[type="checkbox"]:checked').each(function(){
 			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');

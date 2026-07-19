@@ -4,7 +4,7 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button onclick="validate();" class="btn btn-success btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_delivery; ?></span></button>
+			<button onclick="validate();" class="btn btn-info btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_delivery; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_draft; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
@@ -38,10 +38,10 @@
 							<option value="0"><?php echo $text_missing; ?></option>
 							<?php } ?>
 							<?php foreach ($invoice_statuses as $invoice_status) { ?>
-							<?php if ($invoice_status['invoice_status_id'] == $filter_invoice_status_id) { ?>
-							<option value="<?php echo $invoice_status['invoice_status_id']; ?>" selected=""><?php echo $invoice_status['name']; ?></option>
+							<?php if ($invoice_status['delivery_status_id'] == $filter_invoice_status_id) { ?>
+							<option value="<?php echo $invoice_status['delivery_status_id']; ?>" selected=""><?php echo $invoice_status['name']; ?></option>
 							<?php } else { ?>
-							<option value="<?php echo $invoice_status['invoice_status_id']; ?>"><?php echo $invoice_status['name']; ?></option>
+							<option value="<?php echo $invoice_status['delivery_status_id']; ?>"><?php echo $invoice_status['name']; ?></option>
 							<?php } ?>
 							<?php } ?>
 						</select></td>
@@ -62,7 +62,7 @@
 					</tr>
 					<?php if ($deliveries) { ?>
 					<?php foreach ($deliveries as $delivery) { ?>
-					<tr>
+					<tr<?php echo $delivery['status_color'] ? ' style="background-color:' . $delivery['status_color'] . ';"' : ''; ?>>
 						<td class="rowlink-skip text-center"><?php if ($delivery['selected']) { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $delivery['delivery_id']; ?>" checked="">
 							<?php } else { ?>
@@ -93,7 +93,7 @@
 <script>
 function validate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Select a delivery to print');
+		alert('Seleccione un albarán para imprimir');
 	} else {
 		var form = document.getElementById('form');
 		form.setAttribute('target', '_blank');

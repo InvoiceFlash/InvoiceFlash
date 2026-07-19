@@ -456,6 +456,7 @@ class ControllerSaledelivery extends Controller {
               'delivery_id'      => $result['delivery_id'],
               'company'       => $result['company'],
               'status'        => $result['status'] ? $result['status'] : $this->language->get('text_missing'),
+              'status_color'  => $result['color'],
               'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
               'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
@@ -592,9 +593,9 @@ class ControllerSaledelivery extends Controller {
       $this->data['filter_date_added'] = $filter_date_added;
       $this->data['filter_date_modified'] = $filter_date_modified;
 
-      $this->load->model('localisation/invoice_status');
+      $this->load->model('localisation/delivery_status');
 
-      $this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
+      $this->data['invoice_statuses'] = $this->model_localisation_delivery_status->getDeliveryStatuses();
           
       $this->data['sort'] = $sort;
       $this->data['order'] = $order;
@@ -932,10 +933,10 @@ class ControllerSaledelivery extends Controller {
       		$this->data['invoice_status_id'] = '';
     	}
 			
-		$this->load->model('localisation/invoice_status');
-		
-		$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();	
-		
+		$this->load->model('localisation/delivery_status');
+
+		$this->data['invoice_statuses'] = $this->model_localisation_delivery_status->getDeliveryStatuses();
+
 		$this->load->model('setting/extension');
 
 		$this->data['shipping_option_codes'] = $this->model_sale_delivery->getdeliveryShippingCodes();
@@ -1416,9 +1417,9 @@ class ControllerSaledelivery extends Controller {
 			
 			$this->load->model('sale/customer');
 
-			$this->load->model('localisation/invoice_status');
+			$this->load->model('localisation/delivery_status');
 
-			$delivery_status_info = $this->model_localisation_invoice_status->getInvoiceStatus($delivery_info['invoice_status_id']);
+			$delivery_status_info = $this->model_localisation_delivery_status->getDeliveryStatus($delivery_info['invoice_status_id']);
 
 			if ($delivery_status_info) {
 				$this->data['invoice_status'] = $delivery_status_info['name'];
@@ -1480,7 +1481,7 @@ class ControllerSaledelivery extends Controller {
 		
 			$this->data['totals'] = $this->model_sale_delivery->getdeliveryTotals($this->request->get['delivery_id']);
 			
-			$this->data['invoice_statuses'] = $this->model_localisation_invoice_status->getInvoiceStatuses();
+			$this->data['invoice_statuses'] = $this->model_localisation_delivery_status->getDeliveryStatuses();
 
 			$this->data['invoice_status_id'] = $delivery_info['invoice_status_id'];
 

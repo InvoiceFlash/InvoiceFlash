@@ -582,7 +582,7 @@ class ModelSaleDelivery extends Model {
 	}
 
 	public function getDeliveryHistories($delivery_id, $start = 0, $limit = 10) {
-		$query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "delivery_history oh LEFT JOIN " . DB_PREFIX . "invoice_status os ON oh.delivery_status_id = os.invoice_status_id WHERE oh.delivery_id = '" . (int)$delivery_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added ASC LIMIT " . (int)$start . "," . (int)$limit);
+		$query = $this->db->query("SELECT oh.date_added, os.name AS status, oh.comment, oh.notify FROM " . DB_PREFIX . "delivery_history oh LEFT JOIN " . DB_PREFIX . "delivery_status os ON oh.delivery_status_id = os.delivery_status_id WHERE oh.delivery_id = '" . (int)$delivery_id . "' AND os.language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY oh.date_added ASC LIMIT " . (int)$start . "," . (int)$limit);
 
 		return $query->rows;
 	}
