@@ -8186,6 +8186,18 @@ CREATE TABLE `if_fl_contracts_status` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS `if_customer_document`;
+CREATE TABLE `if_customer_document` (
+  `document_id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `stored_filename` varchar(255) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`document_id`),
+  KEY `customer_id` (`customer_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 DROP TABLE IF EXISTS `if_fl_supplier_contracts`;
 CREATE TABLE `if_fl_supplier_contracts` (
   `contracts_id` int(10) unsigned NOT NULL AUTO_INCREMENT,

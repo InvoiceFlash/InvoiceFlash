@@ -1005,53 +1005,31 @@ class ModelSaleCustomer extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_contacts WHERE customer_contacts_id = " . (int)$customer_contacts_id);
 	}
 
-	public function getCustomerContracts ($customer_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_contracts WHERE customer_id = " . (int)$customer_id);
+	public function getCustomerDocuments($customer_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer_document WHERE customer_id = '" . (int)$customer_id . "' ORDER BY date_added DESC");
 
 		return $query->rows;
 	}
 
-	public function getCustomerContract($contracts_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_contracts WHERE contracts_id = " . (int)$contracts_id);
+	public function getCustomerDocument($document_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer_document WHERE document_id = '" . (int)$document_id . "'");
 
 		return $query->row;
 	}
 
-	public function getCustomerContractStatus() {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_contracts_status");
+	public function addCustomerDocument($customer_id, $filename, $stored_filename) {
+		$this->db->query("INSERT INTO " . DB_PREFIX . "customer_document SET
+			customer_id = '" . (int)$customer_id . "',
+			filename = '" . $this->db->escape($filename) . "',
+			stored_filename = '" . $this->db->escape($stored_filename) . "',
+			date_added = NOW(),
+			user_id = '" . (int)$this->user->getId() . "'");
 
-		return $query->rows;
+		return $this->db->getLastId();
 	}
 
-	public function addCustomerContract($data, $customer_id) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_contracts SET 
-			customer_id = " . (int)$customer_id . ", 
-			narticulo = " . (int)$data['product_id'] . ", 
-			quantity = " . (int)$data['quantity'] . ", 
-			dcompra = DATE('" . $data['date_purchased'] . "'),
-			dfinsoport = DATE('" . $data['end_support'] . "'),
-			mnotas = '" . $this->db->escape($data['notes']) . "',
-			contract_status = " . (int)$data['contract_status_id'] . ",
-			talta = now(), 
-			nusualta = '" . $this->user->getID() . "',
-			caplalta = 'web'");
-	}
-
-	public function editCustomerContract($data, $contracts_id) {
-		$this->db->query("UPDATE " . DB_PREFIX . "fl_contracts SET 
-			narticulo = " . (int)$data['product_id'] . ", 
-			quantity = " . (int)$data['quantity'] . ", 
-			dcompra = DATE('" . $data['date_purchased'] . "'),
-			dfinsoport = DATE('" . $data['end_support'] . "'),
-			mnotas = '" . $this->db->escape($data['notes']) . "',
-			contract_status = " . (int)$data['contract_status_id'] . ",
-			tultmod = now(), 
-			nusuultmod = '" . $this->user->getID() . "',
-			caplultmod = 'web' WHERE contracts_id = " . (int)$contracts_id);
-	}
-
-	public function deleteCustomerContract($contracts_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "fl_contracts WHERE contracts_id = " . (int)$contracts_id);
+	public function deleteCustomerDocument($document_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_document WHERE document_id = '" . (int)$document_id . "'");
 	}
  
  	function addCustomerNote($data, $customer_id) {

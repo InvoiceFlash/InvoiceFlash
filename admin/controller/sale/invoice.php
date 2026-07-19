@@ -364,7 +364,7 @@ class ControllerSaleInvoice extends Controller {
 			$action[] = array(
 				'href' => $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'] . $url, 'SSL'),
 				'icon' => 'far fa-eye',
-				'color' => 'info'
+				'color' => $this->model_sale_invoice->hasInvoiceHistoryComment($result['invoice_id']) ? 'pastel-pink' : 'info'
 			);
 			
 			if ($this->model_sale_invoice->getPaidReceipts($result['invoice_id']) == 0)	{
@@ -379,7 +379,7 @@ class ControllerSaleInvoice extends Controller {
 				'invoice_id'      => $result['invoice_id'],
 				'company'       => $result['company'],
 				'status'        => $result['status'],
-				'total'         => $this->currency->format($result['total']),
+				'total'         => $this->currency->format($result['total'], '', '', true, true),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['invoice_id'], $this->request->post['selected']),
 				'action'        => $action

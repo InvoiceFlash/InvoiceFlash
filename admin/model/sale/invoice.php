@@ -791,6 +791,12 @@ class ModelSaleInvoice extends Model {
 		return $query->rows;
 	}
 
+	public function hasInvoiceHistoryComment($invoice_id) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "invoice_history WHERE invoice_id = '" . (int)$invoice_id . "' AND comment != ''");
+
+		return $query->row['total'] > 0;
+	}
+
 	public function getTotalInvoiceHistories($invoice_id) {
 		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "invoice_history WHERE invoice_id = '" . (int)$invoice_id . "'");
 

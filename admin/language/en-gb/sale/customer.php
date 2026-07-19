@@ -195,18 +195,17 @@ $_['entry_notas'] = 'Notes:';
 
 $_['text_error_contact_name'] = 'Warning: Name field must have between 3 and 50 characters!';
 
-// contracts
-$_['heading_title_contract'] = 'Contracts';
-$_['tab_contracts'] = 'Contracts';
-$_['column_article'] = 'Article';
-$_['column_quantity'] = 'Quantity';
-$_['column_end_support'] = 'End Support';
-$_['button_add_contract'] = 'Add Contract';
-$_['entry_article'] = 'Article:';
-$_['entry_quantity'] = 'Quantity:';
-$_['entry_date'] = 'Date Purchased:';
-$_['entry_end_support'] = 'End Support:';
-$_['entry_notes'] = 'Notes:';
+// customer documents
+$_['heading_title_contract'] = 'Documents';
+$_['tab_contracts'] = 'Documents';
+$_['column_filename'] = 'Filename';
+$_['button_add_contract'] = 'Add Document';
+$_['entry_document'] = 'Document (PDF or XLSX):';
+$_['button_view'] = 'View';
+$_['text_no_documents'] = 'No documents attached';
+$_['error_upload'] = 'Warning: You must select a file!';
+$_['error_document_type'] = 'Warning: Only PDF or XLSX files are allowed!';
+$_['error_document_upload'] = 'Warning: The file could not be uploaded!';
 
 // notes
 $_['heading_title_note'] = 'Note';

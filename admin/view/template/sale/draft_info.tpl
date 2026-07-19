@@ -6,7 +6,7 @@
 		<div class="pull-right">
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
-			<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Print</span></button>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Imprimir</span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
@@ -46,14 +46,6 @@
 							<td><?php echo $customer_group; ?></td>
 						</tr>
 						<?php } ?>
-						<tr>
-							<td><?php echo $text_email; ?></td>
-							<td><?php echo $email; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_telephone; ?></td>
-							<td><?php echo $telephone; ?></td>
-						</tr>
 						<?php if ($fax) { ?>
 						<tr>
 							<td><?php echo $text_fax; ?></td>
@@ -90,58 +82,6 @@
 				</div>
 				<div id="tab-payment" class="tab-pane">
 					<table class="table table-bordered table-striped table-hover info-page">
-						<?php if ($payment_company) { ?>
-						<tr>
-							<td><?php echo $text_company; ?></td>
-							<td><?php echo $payment_company; ?></td>
-						</tr>
-						<?php } ?>
-						<?php if ($payment_company_id) { ?>
-						<tr>
-							<td><?php echo $text_company_id; ?></td>
-							<td><?php echo $payment_company_id; ?></td>
-						</tr>
-						<?php } ?>	
-						<?php if ($payment_tax_id) { ?>
-						<tr>
-							<td><?php echo $text_tax_id; ?></td>
-							<td><?php echo $payment_tax_id; ?></td>
-						</tr>
-						<?php } ?>
-						<tr>
-							<td><?php echo $text_address_1; ?></td>
-							<td><?php echo $payment_address_1; ?></td>
-						</tr>
-						<?php if ($payment_address_2) { ?>
-						<tr>
-							<td><?php echo $text_address_2; ?></td>
-							<td><?php echo $payment_address_2; ?></td>
-						</tr>
-						<?php } ?>
-						<tr>
-							<td><?php echo $text_city; ?></td>
-							<td><?php echo $payment_city; ?></td>
-						</tr>
-						<?php if ($payment_postcode) { ?>
-						<tr>
-							<td><?php echo $text_postcode; ?></td>
-							<td><?php echo $payment_postcode; ?></td>
-						</tr>
-						<?php } ?>
-						<tr>
-							<td><?php echo $text_zone; ?></td>
-							<td><?php echo $payment_zone; ?></td>
-						</tr>
-						<?php if ($payment_zone_code) { ?>
-						<tr>
-							<td><?php echo $text_zone_code; ?></td>
-							<td><?php echo $payment_zone_code; ?></td>
-						</tr>
-						<?php } ?>
-						<tr>
-							<td><?php echo $text_country; ?></td>
-							<td><?php echo $payment_country; ?></td>
-						</tr>
 						<tr>
 							<td><?php echo $text_payment_method; ?></td>
 							<td><?php echo $payment_method; ?></td>

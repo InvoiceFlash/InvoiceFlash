@@ -3,6 +3,7 @@
 $_['heading_title']            = 'Pedidos';
 
 // Text
+$_['text_success'] = '&Eacute;xito: &iexcl;Ha modificado los pedidos!';
 $_['text_list'] = 'Lista de Pedidos';
 $_['text_add'] = 'A&nacute;adir Pedidos ';
 $_['text_edit'] = 'Editar Pedidos';
@@ -50,7 +51,7 @@ $_['text_invoice'] = 'Pedido';
 $_['text_from'] = 'Enviado desde';
 $_['text_to'] = 'CLIENTE:';
 $_['text_ship_to'] = 'DIRECCI&Oacute;N DE ENV&Iacute;O:';
-$_['text_missing'] = '&oacute;rdenes Missing';
+$_['text_missing'] = 'Pendiente Entrega';
 $_['text_default'] = 'Por defecto';
 $_['text_product'] = 'Agregar Producto (s)';
 $_['text_voucher'] = 'A&nacute;adir vale (s)';
@@ -99,6 +100,8 @@ $_['column_action'] = 'Acci&oacute;n';
 $_['column_weight'] = 'Peso del producto';
 
 // Entry
+$_['entry_shipping'] = 'M&eacute;todo de Env&iacute;o';
+$_['entry_payment'] = 'Forma de Pago';
 $_['entry_store'] = 'tienda';
 $_['entry_customer'] = 'Cliente';
 $_['entry_customer_group'] = 'Grupo de Clientes';

@@ -23,6 +23,6 @@ system/logs/error.txt
 download/certificado/
 system/backup/
 system/cache/update_*
-docs/suppliers/
+docs/
 catalog/
 .claude/skills/invoiceFlash/

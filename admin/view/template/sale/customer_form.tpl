@@ -601,9 +601,8 @@
 						<table class="table table-bordered table-striped table-hover">
 			              <thead>
 			                <tr>
-			                  <th><?php echo $column_article ?></th>
-			                  <th><?php echo $column_quantity ?></th>
-			                  <th><?php echo $column_end_support ?></th>
+			                  <th><?php echo $column_filename ?></th>
+			                  <th><?php echo $column_date_added ?></th>
 			                  <th></th>
 			                </tr>
 			              </thead>
@@ -611,21 +610,20 @@
 			                <?php if ($contracts): ?>
 			                  <?php foreach ($contracts as $contract): ?>
 			                    <tr>
-			                      <td><?php echo $contract['product']; ?><input type="hidden" name="contracts_id" value="<?php echo $contract['contracts_id']; ?>"></td>
-			                      <td><?php echo $contract['quantity']; ?></td>
-			                      <td><?php echo $contract['end_support']; ?></td>
+			                      <td><?php echo $contract['filename']; ?><input type="hidden" name="document_id" value="<?php echo $contract['document_id']; ?>"></td>
+			                      <td><?php echo $contract['date_added']; ?></td>
 			                       <td class="text-right"><?php foreach ($contract['action'] as $action): ?>
 			                        <?php echo $action['link']; ?>
 			                      <?php endforeach ?></td>
 			                    </tr>
 			                  <?php endforeach ?>
-											<?php else: ?>
-											<tr><td colspan="5" class="text-center"><?php echo $text_no_results; ?></td></tr>
+										<?php else: ?>
+										<tr><td colspan="3" class="text-center"><?php echo $text_no_results; ?></td></tr>
 			                <?php endif ?>
 			              </tbody>
 			              <tfoot>
 			                <tr>
-			                  <td colspan="5" class="text-right"><a href="<?php echo $add_contract ?>" class="btn btn-info"><?php echo $button_add_contract ?></a></td>
+			                  <td colspan="3" class="text-right"><a href="<?php echo $add_contract ?>" class="btn btn-info"><?php echo $button_add_contract ?></a></td>
 			                </tr>
 			              </tfoot>
 			            </table>

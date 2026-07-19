@@ -106,4 +106,16 @@ $('#btn-delete').on('click', function(e) {
 	}
 });
 </script>
+<style>
+.btn-pastel-pink {
+	background-color: #f8c8dc;
+	border-color: #f8c8dc;
+	color: #6b2d45;
+}
+.btn-pastel-pink:hover {
+	background-color: #f4a9c6;
+	border-color: #f4a9c6;
+	color: #6b2d45;
+}
+</style>
 <?php echo $footer; ?>

@@ -631,12 +631,11 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['button_add_contact'] = $this->language->get('button_add_contact');
 		$this->data['button_remove_contact'] = $this->language->get('button_remove_contact');
 
-		// Contratos
+		// Documentos
 		$this->data['tab_contracts'] = $this->language->get('tab_contracts');
 
-		$this->data['column_article'] = $this->language->get('column_article');
-		$this->data['column_quantity'] = $this->language->get('column_quantity');
-		$this->data['column_end_support'] = $this->language->get('column_end_support');
+		$this->data['column_filename'] = $this->language->get('column_filename');
+		$this->data['column_date_added'] = $this->language->get('column_date_added');
 
 		$this->data['button_add_contract'] = $this->language->get('button_add_contract');
 
@@ -1001,40 +1000,29 @@ class ControllerSaleCustomer extends Controller {
 
 			$this->data['add_contact'] = $this->url->link('sale/customer/insertContact', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'], 'SSL');
 
-			// Contracts
+			// Customer documents
 			$this->data['contracts'] = array();
 
 			if (isset($customer_info)) {
-				$results = $this->model_sale_customer->getCustomerContracts($this->request->get['customer_id']);
+				$results = $this->model_sale_customer->getCustomerDocuments($this->request->get['customer_id']);
 
 				foreach ($results as $result) {
 					$action = array();
 
-					$link = $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
+					$link = $this->url->link('sale/customer/viewContract', 'token=' . $this->session->data['token'] . '&document_id=' . $result['document_id'], 'SSL');
 					$action[] = array(
-						'link' => '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i> <span class="hidden-xs">'.$this->language->get('text_edit').'</span></a>'
+						'link' => '<a class="btn btn-default" href="'.$link.'" target="_blank"><i class="fa fa-eye"></i> <span class="hidden-xs">'.$this->language->get('button_view').'</span></a>'
 					);
 
-					$link = $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
+					$link = $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&document_id=' . $result['document_id'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
 					$action[] = array(
-						'link' => '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i> <span class="hidden-xs">'.$this->language->get('text_delete').'</span></a>'
+						'link' => '<a class="btn btn-danger" href="'.$link.'" onclick="return confirm(text_confirm);"><i class="fa fa-trash"></i> <span class="hidden-xs">'.$this->language->get('text_delete').'</span></a>'
 					);
 
-					$this->load->model('catalog/product');
-
-					if ($result['narticulo'] > 0) {
-						$product = $this->model_catalog_product->getProduct($result['narticulo']);
-						$product_name = $product['name'];
-					} else {
-						$product_name = '';
-					}
-					
-				
 					$this->data['contracts'][] = array(
-						'contracts_id'	=> $result['contracts_id'],
-						'product'		=> $product_name,
-						'quantity'		=> $result['quantity'],
-						'end_support'	=> date($this->language->get('date_format_short'), strtotime($result['dfinsoport'])),
+						'document_id'	=> $result['document_id'],
+						'filename'		=> $result['filename'],
+						'date_added'	=> date($this->language->get('date_format_short') . ' H:i', strtotime($result['date_added'])),
 						'action'		=> $action
 					);
 				}
@@ -1955,26 +1943,6 @@ class ControllerSaleCustomer extends Controller {
 	}
 
 
-	public function updateContract() {
-		$this->load->language('sale/customer');
-
-    	$this->document->setTitle($this->language->get('heading_title'));
-
-		$this->load->model('sale/customer');
-
-		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
-
-      	  	$this->model_sale_customer->editCustomerContract($this->request->post, $this->request->get['contracts_id']);
-
-			$this->session->data['success'] = $this->language->get('text_success');
-
-
-			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&contracts_id=' . $this->request->get['contracts_id'], 'SSL'));
-		}
-
-		$this->getContractForm();
-	}
-
 	public function insertContract() {
 		$this->load->language('sale/customer');
 
@@ -1982,26 +1950,62 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->load->model('sale/customer');
 
-		if (($this->request->server['REQUEST_METHOD'] == 'POST')) {
-      	  	$this->model_sale_customer->addCustomerContract($this->request->post, $this->request->get['customer_id']);
-			$this->session->data['success'] = $this->language->get('text_success');
-			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'));
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->user->hasPermission('modify', 'sale/customer')) {
+			$customer_id = (int)$this->request->get['customer_id'];
+
+			if (!isset($_FILES['document']) || empty($_FILES['document']['tmp_name']) || !is_uploaded_file($_FILES['document']['tmp_name'])) {
+				$this->error['warning'] = $this->language->get('error_upload');
+			} else {
+				$ext = strtolower(pathinfo($_FILES['document']['name'], PATHINFO_EXTENSION));
+
+				if (!in_array($ext, array('pdf', 'xlsx'))) {
+					$this->error['warning'] = $this->language->get('error_document_type');
+				} else {
+					$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
+					$dir  = $base . '/docs/customers/' . $customer_id . '/';
+
+					if (!is_dir($dir)) {
+						mkdir($dir, 0777, true);
+					}
+
+					$stored_filename = uniqid() . '.' . $ext;
+
+					if (move_uploaded_file($_FILES['document']['tmp_name'], $dir . $stored_filename)) {
+						$this->model_sale_customer->addCustomerDocument($customer_id, $_FILES['document']['name'], $stored_filename);
+
+						$this->session->data['success'] = $this->language->get('text_success');
+
+						$this->redirect($this->url->link('sale/customer/insertContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $customer_id, 'SSL'));
+					} else {
+						$this->error['warning'] = $this->language->get('error_document_upload');
+					}
+				}
+			}
 		}
 
 		$this->getContractForm();
 	}
 
 	public function deleteContract() {
-		
 		$this->load->language('sale/customer');
 
     	$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('sale/customer');
 
-		if (isset($this->request->get['contracts_id'])) {
+		if (isset($this->request->get['document_id']) && $this->user->hasPermission('modify', 'sale/customer')) {
+			$document_info = $this->model_sale_customer->getCustomerDocument($this->request->get['document_id']);
 
-      	  	$this->model_sale_customer->deleteCustomerContract($this->request->get['contracts_id']);
+			if ($document_info) {
+				$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
+				$file = $base . '/docs/customers/' . (int)$document_info['customer_id'] . '/' . $document_info['stored_filename'];
+
+				if (is_file($file)) {
+					@unlink($file);
+				}
+
+				$this->model_sale_customer->deleteCustomerDocument($this->request->get['document_id']);
+			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -2011,22 +2015,68 @@ class ControllerSaleCustomer extends Controller {
 		$this->getForm();
 	}
 
+	public function viewContract() {
+		if (!$this->user->hasPermission('access', 'sale/customer')) {
+			http_response_code(403);
+			exit('Permission denied');
+		}
+
+		if (empty($this->request->get['document_id'])) {
+			http_response_code(400);
+			exit('Missing document_id');
+		}
+
+		$this->load->model('sale/customer');
+
+		$document_info = $this->model_sale_customer->getCustomerDocument((int)$this->request->get['document_id']);
+
+		if (!$document_info) {
+			http_response_code(404);
+			exit('Document not found');
+		}
+
+		$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
+		$file = $base . '/docs/customers/' . (int)$document_info['customer_id'] . '/' . $document_info['stored_filename'];
+
+		if (!is_file($file)) {
+			http_response_code(404);
+			exit('File not found');
+		}
+
+		$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+		$mime_types = array(
+			'pdf'  => 'application/pdf',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		);
+
+		$content_type = isset($mime_types[$ext]) ? $mime_types[$ext] : 'application/octet-stream';
+
+		while (ob_get_level() > 0) {
+			ob_end_clean();
+		}
+
+		header('Content-Type: ' . $content_type);
+		header('Content-Disposition: inline; filename="' . basename($document_info['filename']) . '"');
+		header('Content-Length: ' . filesize($file));
+		header('Cache-Control: private');
+		readfile($file);
+		exit;
+	}
+
 	public function getContractForm() {
 		$this->load->model('sale/customer');
 
-		$this->data['heading_title'] 			= $this->language->get('heading_title_contract');
+		$this->data['heading_title'] = $this->language->get('heading_title_contract');
 
-		$this->data['entry_article'] 			= $this->language->get('entry_article');
-		$this->data['entry_quantity'] 			= $this->language->get('entry_quantity');
-		$this->data['entry_date'] 				= $this->language->get('entry_date');
-		$this->data['entry_end_support'] 		= $this->language->get('entry_end_support');
-		$this->data['entry_notes'] 				= $this->language->get('entry_notes');
-		$this->data['entry_status'] 			= $this->language->get('entry_status');
-
-		$this->data['button_save']				= $this->language->get('button_save');
-		$this->data['button_cancel']			= $this->language->get('button_cancel');
-
-		$this->data['text_select']				= $this->language->get('text_select');
+		$this->data['entry_document'] = $this->language->get('entry_document');
+		$this->data['button_upload']  = $this->language->get('button_upload');
+		$this->data['button_view']    = $this->language->get('button_view');
+		$this->data['button_cancel']  = $this->language->get('button_cancel');
+		$this->data['column_filename'] = $this->language->get('column_filename');
+		$this->data['column_date_added'] = $this->language->get('column_date_added');
+		$this->data['column_action']  = $this->language->get('column_action');
+		$this->data['text_no_documents'] = $this->language->get('text_no_documents');
 
 		$this->data['breadcrumbs'] = array();
 
@@ -2042,90 +2092,40 @@ class ControllerSaleCustomer extends Controller {
 			'separator' => ' :: '
 		);
 
-		if (isset($this->request->get['contracts_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-      		$contract_info = $this->model_sale_customer->getCustomerContract($this->request->get['contracts_id']);
-		}
-		
-		if (isset($this->request->get['contracts_id'])) {
-			$this->data['contracts_id'] = $this->request->get['contracts_id'];
-		} else {
-			$this->data['contracts_id'] = 0;
-		}
-		
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
 		} else {
 			$this->data['error_warning'] = '';
 		}
 
-		$this->load->model('catalog/product');
-		$this->data['products'] = $this->model_catalog_product->getProducts();
+		$customer_id = (int)$this->request->get['customer_id'];
 
-		if (isset($this->request->post['product_id'])) {
-			$this->data['product_id'] = $this->request->post['product_id'];
-		} elseif (isset($contract_info)) {
-			$this->data['product_id'] = $contract_info['narticulo'];
-		} else {
-			$this->data['product_id'] = 0;
+		$this->data['customer_id'] = $customer_id;
+
+		$documents = $this->model_sale_customer->getCustomerDocuments($customer_id);
+
+		$this->data['documents'] = array();
+
+		foreach ($documents as $document) {
+			$this->data['documents'][] = array(
+				'document_id' => $document['document_id'],
+				'filename'    => $document['filename'],
+				'date_added'  => date($this->language->get('date_format_short') . ' H:i', strtotime($document['date_added'])),
+				'view'        => $this->url->link('sale/customer/viewContract', 'token=' . $this->session->data['token'] . '&document_id=' . $document['document_id'], 'SSL'),
+				'delete'      => $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&document_id=' . $document['document_id'] . '&customer_id=' . $customer_id, 'SSL')
+			);
 		}
 
-		if (isset($this->request->post['quantity'])) {
-			$this->data['quantity'] = $this->request->post['quantity'];
-		} elseif (isset($contract_info)) {
-			$this->data['quantity'] = $contract_info['quantity'];
-		} else {
-			$this->data['quantity'] = 1;
-		}
+		$this->data['action'] = $this->url->link('sale/customer/insertContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $customer_id, 'SSL');
 
-		if (isset($this->request->post['date_purchased'])) {
-			$this->data['date_purchased'] = $this->request->post['date_purchased'];
-		} elseif (isset($contract_info)) {
-			$this->data['date_purchased'] = $contract_info['dcompra'];
-		} else {
-			$this->data['date_purchased'] = '';
-		}
-
-		if (isset($this->request->post['end_support'])) {
-			$this->data['end_support'] = $this->request->post['end_support'];
-		} elseif (isset($contract_info)) {
-			$this->data['end_support'] = $contract_info['dfinsoport'];
-		} else {
-			$this->data['end_support'] = '';
-		}
-
-		if (isset($this->request->post['notes'])) {
-			$this->data['notes'] = $this->request->post['notes'];
-		} elseif (isset($contract_info)) {
-			$this->data['notes'] = $contract_info['mnotas'];
-		} else {
-			$this->data['notes'] = '';
-		}
-
-		$this->data['contract_statuses'] = $this->model_sale_customer->getCustomerContractStatus();
-
-		if (isset($this->request->post['contract_status_id'])) {
-			$this->data['contract_status_id'] = $this->request->post['contract_status_id'];
-		} elseif (isset($contract_info)) {
-			$this->data['contract_status_id'] = $contract_info['contract_status'];
-		} else {
-			$this->data['contract_status_id'] = 0;
-		}
-
-		if ($this->data['contracts_id'] == 0) {
-			$this->data['action'] = $this->url->link('sale/customer/insertContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
-		} else {
-			$this->data['action'] = $this->url->link('sale/customer/updateContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&contracts_id=' . $this->data['contracts_id'], 'SSL');
-		}
-
-		$this->data['cancel'] = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');		
+		$this->data['cancel'] = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $customer_id, 'SSL');
 
 		$this->template = 'sale/customer_contract.tpl';
 		$this->children = array(
 			'common/header',
-			
 			'common/footer',
 		);
-				
+
 		$this->response->setOutput($this->render());
 	}
 

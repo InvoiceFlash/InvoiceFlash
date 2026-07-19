@@ -195,18 +195,17 @@ $_['entry_notas'] = 'Notas:';
 
 $_['text_error_contact_name'] = 'Advertencia: &iexcl;El campo Nombre debe tener entre 3 y 50 caracteres!';
 
-// contracts
-$_['heading_title_contract'] = 'Contratos';
-$_['tab_contracts'] = 'Contratos';
-$_['column_article'] = 'Art&iacute;culo';
-$_['column_quantity'] = 'Cantidad';
-$_['column_end_support'] = 'Fin de Soporte';
-$_['button_add_contract'] = 'A&ntilde;adir Contrato';
-$_['entry_article'] = 'Art&iacute;culo:';
-$_['entry_quantity'] = 'Cantidad:';
-$_['entry_date'] = 'Fecha de Compra:';
-$_['entry_end_support'] = 'Fin de Soporte:';
-$_['entry_notes'] = 'Notas:';
+// documentos del cliente
+$_['heading_title_contract'] = 'Documentos';
+$_['tab_contracts'] = 'Documentos';
+$_['column_filename'] = 'Nombre de Archivo';
+$_['button_add_contract'] = 'A&ntilde;adir Documento';
+$_['entry_document'] = 'Documento (PDF o XLSX):';
+$_['button_view'] = 'Ver';
+$_['text_no_documents'] = 'No hay documentos adjuntos';
+$_['error_upload'] = 'Advertencia: &iexcl;Debe seleccionar un archivo!';
+$_['error_document_type'] = 'Advertencia: &iexcl;Solo se permiten archivos PDF o XLSX!';
+$_['error_document_upload'] = 'Advertencia: &iexcl;No se pudo subir el archivo!';
 
 // notes
 $_['heading_title_note'] = 'Nota';
