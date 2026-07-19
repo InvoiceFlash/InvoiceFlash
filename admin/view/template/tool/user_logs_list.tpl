@@ -3,14 +3,17 @@
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="fa fa-history hidden-xs"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-right">
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+		</div>
 	</div>
 	<div class="panel-body">
+		<form class="form-inline" method="post" enctype="multipart/form-data" id="form">
 		<table class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
-					<th width="30"></th>
+					<th width="30" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 					<th><?php echo $column_date_from; ?></th>
-					<th><?php echo $column_date_to; ?></th>
 					<th><?php echo $column_username; ?></th>
 					<th><?php echo $column_action; ?></th>
 					<th><?php echo $column_document; ?></th>
@@ -26,12 +29,6 @@
 					<td>
 						<div class="input-group">
 							<input type="text" name="filter_date_from" value="<?php echo $filter_date_from; ?>" class="form-control date" placeholder="DD-MM-YYYY">
-							<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
-						</div>
-					</td>
-					<td>
-						<div class="input-group">
-							<input type="text" name="filter_date_to" value="<?php echo $filter_date_to; ?>" class="form-control date" placeholder="DD-MM-YYYY">
 							<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 						</div>
 					</td>
@@ -60,8 +57,8 @@
 				<?php if ($logs) { ?>
 				<?php foreach ($logs as $log) { ?>
 				<tr>
-					<td></td>
-					<td class="text-nowrap" colspan="2"><?php echo $log['date_added']; ?></td>
+					<td class="text-center"><input type="checkbox" name="selected[]" value="<?php echo $log['log_id']; ?>"></td>
+					<td class="text-nowrap"><?php echo $log['date_added']; ?></td>
 					<td><?php echo $log['username']; ?></td>
 					<td>
 						<?php if ($log['action_raw'] == 'login') { ?>
@@ -85,11 +82,12 @@
 				<?php } ?>
 				<?php } else { ?>
 				<tr>
-					<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
+					<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
 				</tr>
 				<?php } ?>
 			</tbody>
 		</table>
+		</form>
 		<div class="pagination"><?php echo str_replace('....', '', $pagination); ?></div>
 	</div>
 </div>

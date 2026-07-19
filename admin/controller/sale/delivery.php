@@ -23,6 +23,21 @@ class ControllerSaledelivery extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 		
 			$this->model_sale_delivery->adddelivery($this->request->post);
+
+			$query = $this->db->query("SELECT delivery_id FROM `" . DB_PREFIX . "delivery` ORDER BY delivery_id DESC LIMIT 1");
+
+			$new_delivery_id = $query->row['delivery_id'];
+
+			$this->load->model('tool/user_logs');
+
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'create',
+				'document_type' => 'sale_delivery',
+				'document_id'   => (int)$new_delivery_id,
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
 			
 			$this->session->data['success'] = $this->language->get('text_success');
 		  

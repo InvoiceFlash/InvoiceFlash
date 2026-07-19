@@ -8,6 +8,22 @@ class ControllerToolUserLogs extends Controller {
 		$this->getList();
 	}
 
+	public function delete() {
+		$this->load->language('tool/user_logs');
+		$this->document->setTitle($this->language->get('heading_title'));
+		$this->load->model('tool/user_logs');
+
+		if (isset($this->request->post['selected']) && $this->user->hasPermission('modify', 'tool/user_logs')) {
+			foreach ($this->request->post['selected'] as $log_id) {
+				$this->model_tool_user_logs->deleteLog($log_id);
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success');
+		}
+
+		$this->redirect($this->url->link('tool/user_logs', 'token=' . $this->session->data['token'], 'SSL'));
+	}
+
 	private function getList() {
 		$filter_username  = isset($this->request->get['filter_username'])  ? $this->request->get['filter_username']  : '';
 		$filter_action    = isset($this->request->get['filter_action'])    ? $this->request->get['filter_action']    : '';
@@ -45,6 +61,10 @@ class ControllerToolUserLogs extends Controller {
 			switch ($row['document_type']) {
 				case 'sale_invoice':     $doc_label = $this->language->get('text_sale_invoice');     break;
 				case 'purchase_invoice': $doc_label = $this->language->get('text_purchase_invoice'); break;
+				case 'quote':            $doc_label = $this->language->get('text_quote');             break;
+				case 'sale_order':       $doc_label = $this->language->get('text_sale_order');        break;
+				case 'sale_delivery':    $doc_label = $this->language->get('text_sale_delivery');     break;
+				case 'sale_draft':       $doc_label = $this->language->get('text_sale_draft');        break;
 				default:                 $doc_label = '';
 			}
 
@@ -53,9 +73,18 @@ class ControllerToolUserLogs extends Controller {
 				$href = $this->url->link('sale/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$row['document_id'], 'SSL');
 			} elseif ($row['document_type'] === 'purchase_invoice' && $row['document_id']) {
 				$href = $this->url->link('purchase/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$row['document_id'], 'SSL');
+			} elseif ($row['document_type'] === 'quote' && $row['document_id']) {
+				$href = $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$row['document_id'], 'SSL');
+			} elseif ($row['document_type'] === 'sale_order' && $row['document_id']) {
+				$href = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . (int)$row['document_id'], 'SSL');
+			} elseif ($row['document_type'] === 'sale_delivery' && $row['document_id']) {
+				$href = $this->url->link('sale/delivery/info', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$row['document_id'], 'SSL');
+			} elseif ($row['document_type'] === 'sale_draft' && $row['document_id']) {
+				$href = $this->url->link('sale/draft/info', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$row['document_id'], 'SSL');
 			}
 
 			$logs[] = array(
+				'log_id'      => $row['log_id'],
 				'date_added'  => $row['date_added'],
 				'username'    => $row['username'],
 				'action'      => $action_label,
@@ -82,6 +111,7 @@ class ControllerToolUserLogs extends Controller {
 		$pagination->url   = $this->url->link('tool/user_logs', 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
 
 		$this->data['logs']             = $logs;
+		$this->data['delete']           = $this->url->link('tool/user_logs/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['pagination']       = $pagination->render();
 		$this->data['users']            = $users;
 		$this->data['token']            = $this->session->data['token'];
@@ -96,13 +126,13 @@ class ControllerToolUserLogs extends Controller {
 		$this->data['text_create']      = $this->language->get('text_create');
 		$this->data['text_edit']        = $this->language->get('text_edit');
 		$this->data['column_date_from']  = $this->language->get('column_date_from');
-		$this->data['column_date_to']    = $this->language->get('column_date_to');
 		$this->data['column_username']  = $this->language->get('column_username');
 		$this->data['column_action']    = $this->language->get('column_action');
 		$this->data['column_document']  = $this->language->get('column_document');
 		$this->data['column_reference'] = $this->language->get('column_reference');
 		$this->data['column_ip']        = $this->language->get('column_ip');
 		$this->data['button_filter']    = $this->language->get('button_filter');
+		$this->data['button_delete']    = $this->language->get('button_delete');
 
 		$this->data['breadcrumbs'] = array();
 		$this->data['breadcrumbs'][] = array(

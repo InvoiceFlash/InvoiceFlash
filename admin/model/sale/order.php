@@ -164,9 +164,10 @@ class ModelSaleOrder extends Model {
 			$total += $order_total['value'];
 		}
 
-		// Update order total			 
-		$this->db->query("UPDATE `" . DB_PREFIX . "order` SET total = '" . (float)$total . "' WHERE order_id = '" . (int)$order_id . "'"); 	
-	
+		// Update order total
+		$this->db->query("UPDATE `" . DB_PREFIX . "order` SET total = '" . (float)$total . "' WHERE order_id = '" . (int)$order_id . "'");
+
+		return $order_id;
 	}
 
 	public function getOrderTotals($order_id) {

@@ -17,11 +17,15 @@ class ModelToolUserLogs extends Model {
 			CASE l.document_type
 				WHEN 'sale_invoice'     THEN CONCAT(si.invoice_prefix, LPAD(si.invoice_no, 5, '0'))
 				WHEN 'purchase_invoice' THEN CONCAT(pi.invoice_prefix, LPAD(pi.invoice_no, 5, '0'))
+				WHEN 'quote'            THEN CONCAT('#', q.quote_id)
+				WHEN 'sale_order'       THEN CONCAT('#', o.order_id)
 				ELSE ''
 			END AS document_ref,
 			CASE l.document_type
 				WHEN 'sale_invoice'     THEN si.invoice_id
 				WHEN 'purchase_invoice' THEN pi.invoice_id
+				WHEN 'quote'            THEN q.quote_id
+				WHEN 'sale_order'       THEN o.order_id
 				ELSE 0
 			END AS doc_id_check
 			FROM `" . DB_PREFIX . "user_activity_log` l
@@ -29,6 +33,10 @@ class ModelToolUserLogs extends Model {
 				ON l.document_type = 'sale_invoice' AND l.document_id = si.invoice_id
 			LEFT JOIN `" . DB_PREFIX . "purchase_invoice` pi
 				ON l.document_type = 'purchase_invoice' AND l.document_id = pi.invoice_id
+			LEFT JOIN `" . DB_PREFIX . "quote` q
+				ON l.document_type = 'quote' AND l.document_id = q.quote_id
+			LEFT JOIN `" . DB_PREFIX . "order` o
+				ON l.document_type = 'sale_order' AND l.document_id = o.order_id
 			WHERE 1";
 
 		if (!empty($data['filter_username'])) {
@@ -81,6 +89,10 @@ class ModelToolUserLogs extends Model {
 
 	public function getUsers() {
 		return $this->db->query("SELECT DISTINCT username FROM `" . DB_PREFIX . "user_activity_log` ORDER BY username ASC")->rows;
+	}
+
+	public function deleteLog($log_id) {
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "user_activity_log` WHERE log_id = '" . (int)$log_id . "'");
 	}
 }
 ?>

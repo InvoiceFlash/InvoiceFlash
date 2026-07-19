@@ -163,8 +163,10 @@ class ModelSaleQuote extends Model {
 			$total += $quote_total['value'];
 		}
 
-		// Update quote total			 
-		$this->db->query("UPDATE `" . DB_PREFIX . "quote` SET total = '" . (float)$total . "' WHERE quote_id = '" . (int)$quote_id . "'"); 	
+		// Update quote total
+		$this->db->query("UPDATE `" . DB_PREFIX . "quote` SET total = '" . (float)$total . "' WHERE quote_id = '" . (int)$quote_id . "'");
+
+		return $quote_id;
 	}
 
 	public function getQuoteTotals($quote_id) {
