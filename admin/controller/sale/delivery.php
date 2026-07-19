@@ -205,6 +205,10 @@ class ControllerSaledelivery extends Controller {
 		$this->load->model('tool/user_logs');
 
     	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			$this->load->model('localisation/delivery_status');
+
+			$converted = array();
+
 			foreach ($this->request->post['selected'] as $delivery_id) {
 				$delivery_info = $this->model_sale_delivery->getDelivery($delivery_id);
 
@@ -244,7 +248,32 @@ class ControllerSaledelivery extends Controller {
 						'document_id'   => (int)$new_draft_id,
 						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 					));
+
+					// Mark the delivery note as invoiced-in-draft
+					$this->model_sale_delivery->addDeliveryHistory($delivery_id, array(
+						'delivery_status_id' => 2,
+						'notify'             => 0,
+						'comment'            => ''
+					));
+
+					$new_status = $this->model_localisation_delivery_status->getDeliveryStatus(2);
+
+					$converted[] = array(
+						'delivery_id'  => $delivery_id,
+						'status'       => $new_status ? $new_status['name'] : '',
+						'status_color' => $new_status ? $new_status['color'] : ''
+					);
 				}
+			}
+
+			if (isset($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+				$this->response->addHeader('Content-Type: application/json');
+				$this->response->setOutput(json_encode(array(
+					'success'   => $this->language->get('text_success_convert'),
+					'converted' => $converted
+				)));
+
+				return;
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success_convert');

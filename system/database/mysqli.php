@@ -45,7 +45,7 @@ final class DBMySQLi {
 	}
 
 	public function escape($value) {
-		return $this->link->real_escape_string($value);
+		return $this->link->real_escape_string((string)$value);
 	}
 
 	public function countAffected() {

@@ -5,7 +5,7 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button onclick="validate();" class="btn btn-info btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_delivery; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_draft; ?></span></button>
+			<button type="button" onclick="convertToDraft();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_draft; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
@@ -57,7 +57,7 @@
 					</tr>
 					<?php if ($deliveries) { ?>
 					<?php foreach ($deliveries as $delivery) { ?>
-					<tr<?php echo $delivery['status_color'] ? ' style="background-color:' . $delivery['status_color'] . ';"' : ''; ?>>
+					<tr id="delivery-row-<?php echo $delivery['delivery_id']; ?>"<?php echo $delivery['status_color'] ? ' style="background-color:' . $delivery['status_color'] . ';"' : ''; ?>>
 						<td class="rowlink-skip text-center"><?php if ($delivery['selected']) { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $delivery['delivery_id']; ?>" checked="">
 							<?php } else { ?>
@@ -65,7 +65,7 @@
 							<?php } ?></td>
 						<td class="text-right"><?php echo $delivery['delivery_id']; ?></td>
 						<td><?php echo $delivery['company']; ?></td>
-						<td class="hidden-xs text-<?php echo strtolower($delivery['status']); ?>"><?php echo $delivery['status']; ?></td>
+						<td id="delivery-status-<?php echo $delivery['delivery_id']; ?>" class="hidden-xs text-<?php echo strtolower($delivery['status']); ?>"><?php echo $delivery['status']; ?></td>
 						<td class="text-right hidden-xs"><?php echo $delivery['total']; ?></td>
 						<td class="hidden-xs"><?php echo $delivery['date_added']; ?></td>
 						<td class="hidden-xs hidden-sm"><?php echo $delivery['date_modified']; ?></td>
@@ -94,6 +94,47 @@ function validate() {
 		form.setAttribute('target', '_blank');
 		document.form.submit();
 	}
+}
+
+function convertToDraft() {
+	var $checked = $('input[name="selected[]"]:checked');
+
+	if (!$checked.length) {
+		alert('Seleccione un albarán para convertir');
+		return;
+	}
+
+	if (!confirm(text_confirm)) {
+		return;
+	}
+
+	var $btn = $('#btn-convert');
+	$btn.prop('disabled', true);
+
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $convert); ?>',
+		type: 'post',
+		dataType: 'json',
+		data: $checked.serialize(),
+		success: function(json) {
+			if (json['converted']) {
+				json['converted'].forEach(function(item) {
+					$('#delivery-row-' + item['delivery_id']).attr('style', item['status_color'] ? 'background-color:' + item['status_color'] + ';' : '');
+					$('#delivery-status-' + item['delivery_id']).text(item['status']);
+				});
+			}
+
+			if (json['success']) {
+				alertMessage('success', json['success']);
+			}
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+			alertMessage('danger', thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		},
+		complete: function() {
+			$btn.prop('disabled', false);
+		}
+	});
 }
 </script>
 <?php echo $footer; ?>
