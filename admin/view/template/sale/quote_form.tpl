@@ -134,10 +134,8 @@
 								</td>
 								<td class="d-none d-sm-table-cell"><?php echo $quote_product['model']; ?>
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][model]" value="<?php echo $quote_product['model']; ?>"></td>
-								<td class="text-right"><?php echo $quote_product['quantity']; ?>
-									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $quote_product['quantity']; ?>"></td>
-								<td class="text-right"><?php echo $quote_product['price']; ?>
-									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][price]" value="<?php echo $quote_product['price']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $quote_product['quantity']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="<?php echo $quote_product['catalog_price_raw']; ?>" name="quote_product[<?php echo $product_row; ?>][price]" value="<?php echo $quote_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $quote_product['total']; ?>
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][total]" value="<?php echo $quote_product['total']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][tax]" value="<?php echo $quote_product['tax']; ?>"></td>
@@ -826,5 +824,34 @@ $('#CustomerModal').on('show.bs.modal', function(e){
 		$('#order-customer').focus();
 	}
 });
+
+function quoteMarkPriceChanged(input) {
+	var $input = $(input);
+	var current = parseFloat($input.val().replace(',', '.')) || 0;
+	var original = parseFloat($input.data('catalog-price')) || 0;
+
+	$input.toggleClass('quote-price-changed', current.toFixed(2) !== original.toFixed(2));
+}
+
+$(document).on('input', '.quote-price', function() {
+	quoteMarkPriceChanged(this);
+});
+
+$(document).on('change', '.quote-qty, .quote-price', function() {
+	quoteMarkPriceChanged(this);
+	$('#button-quote-product').click();
+});
+
+$('.quote-price').each(function() {
+	quoteMarkPriceChanged(this);
+});
 </script>
+<style>
+.quote-price-changed {
+	color: #b30000;
+	font-weight: bold;
+	border-color: #b30000;
+	background-color: #fdf0f0;
+}
+</style>
 <?php echo $footer; ?>

@@ -1177,6 +1177,8 @@ class ControllerSaleQuote extends Controller {
 				$quote_option = array();
 			}
 											
+			$product_info = $this->model_catalog_product->getProduct($quote_product['product_id']);
+
 			$this->data['quote_products'][] = array(
 				'quote_product_id' => $quote_product['quote_product_id'],
 				'product_id'       => $quote_product['product_id'],
@@ -1185,6 +1187,8 @@ class ControllerSaleQuote extends Controller {
 				'option'           => $quote_option,
 				'quantity'         => $quote_product['quantity'],
 				'price'            => $this->currency->format($quote_product['price']),
+				'price_raw'         => number_format((float)$quote_product['price'], 2, '.', ''),
+				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$quote_product['price'], 2, '.', ''),
 				'total'            => $this->currency->format($quote_product['total']),
 				'tax'              => $quote_product['tax']
 			);
@@ -2076,16 +2080,21 @@ class ControllerSaleQuote extends Controller {
 						}
 					}
 
-					if ($product_info) {	
+					if ($product_info) {
+						$use_price = (isset($quote_product['price']) && $quote_product['price'] !== '')
+							? (float)preg_replace('/[^-0-9\.]/', '', $quote_product['price'])
+							: (float)$product_info['price'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'], 
-							'model'		 => $product_info['model'], 
-							'quantity' 	 => $quote_product['quantity'], 
+							'name'		 => $product_info['name'],
+							'model'		 => $product_info['model'],
+							'quantity' 	 => $quote_product['quantity'],
 							'option'	 => $option_data,
-							'price'		 => $product_info['price'], 
+							'price'		 => $use_price,
+							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($product_info['price']*$quote_product['quantity']),
+							'total'		 => ($use_price*$quote_product['quantity']),
 							'shipping'	 => $product_info['shipping']
 						);
 					}
@@ -2167,14 +2176,16 @@ class ControllerSaleQuote extends Controller {
 				}
 				
 				$json['quote_product'][] = array(
-					'product_id' 	=> $product['product_id'],
-					'name'       	=> $product['name'],
-					'model'      	=> $product['model'], 
-					'quantity'   	=> $product['quantity'],
-					'option'   		=> $option,
-					'price'      	=> $this->currency->format($product['price']),	
-					'tax_class_id'	=> $product['tax_class_id'], 
-					'total'      	=> $this->currency->format($product['total'])
+					'product_id' 	    => $product['product_id'],
+					'name'       	    => $product['name'],
+					'model'      	    => $product['model'],
+					'quantity'   	    => $product['quantity'],
+					'option'   		    => $option,
+					'price'      	    => $this->currency->format($product['price']),
+					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
+					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
+					'tax_class_id'	    => $product['tax_class_id'],
+					'total'      	    => $this->currency->format($product['total'])
 				);
 			}
 
