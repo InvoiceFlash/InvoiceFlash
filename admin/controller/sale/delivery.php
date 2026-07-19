@@ -455,7 +455,7 @@ class ControllerSaledelivery extends Controller {
           $this->data['deliveries'][] = array(
               'delivery_id'      => $result['delivery_id'],
               'company'       => $result['company'],
-              'status'        => $result['status'],
+              'status'        => $result['status'] ? $result['status'] : $this->language->get('text_missing'),
               'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
               'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
               'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),

@@ -781,6 +781,7 @@ $(function(){
 
 		var popover = new bootstrap.Popover(this, {
 			html: true,
+			sanitize: false,
 			placement: 'right',
 			trigger: 'manual',
 			content: function() {

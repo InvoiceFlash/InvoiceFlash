@@ -1,29 +1,28 @@
 <div id="filemanager" class="modal-dialog modal-lg">
   <div class="modal-content">
     <div class="modal-header">
-      <button type="button" class="close" data-bs-dismiss="modal" aria-hidden="true">&times;</button>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       <h4 class="modal-title"><?php echo $heading_title; ?></h4>
     </div>
     <div class="modal-body">
       <div class="row">
-        <div class="col-sm-5"><a href="<?php echo $parent; ?>" data-toggle="tooltip" title="<?php echo $button_parent; ?>" id="button-parent" class="btn btn-default"><i class="fas fa-folder-minus"></i></a> <a href="<?php echo $refresh; ?>" data-toggle="tooltip" title="<?php echo $button_refresh; ?>" id="button-refresh" class="btn btn-default"><i class="fas fa-sync"></i></i></a>
-          <button type="button" data-toggle="tooltip" title="<?php echo $button_upload; ?>" id="button-upload1" class="btn btn-primary"><i class="fa fa-upload"></i></button>
-          <button type="button" data-toggle="tooltip" title="<?php echo $button_folder; ?>" id="button-folder" class="btn btn-default"><i class="fa fa-folder"></i></button>
-          <button type="button" data-toggle="tooltip" title="<?php echo $button_delete; ?>" id="button-delete" class="btn btn-danger"><i class="far fa-trash-alt"></i></i></button>
+        <div class="col-sm-5"><a href="<?php echo $parent; ?>" data-bs-toggle="tooltip" title="<?php echo $button_parent; ?>" id="button-parent" class="btn btn-secondary"><i class="fas fa-folder-minus"></i></a> <a href="<?php echo $refresh; ?>" data-bs-toggle="tooltip" title="<?php echo $button_refresh; ?>" id="button-refresh" class="btn btn-secondary"><i class="fas fa-sync"></i></i></a>
+          <button type="button" data-bs-toggle="tooltip" title="<?php echo $button_upload; ?>" id="button-upload1" class="btn btn-primary"><i class="fa fa-upload"></i></button>
+          <button type="button" data-bs-toggle="tooltip" title="<?php echo $button_folder; ?>" id="button-folder" class="btn btn-secondary"><i class="fa fa-folder"></i></button>
+          <button type="button" data-bs-toggle="tooltip" title="<?php echo $button_delete; ?>" id="button-delete" class="btn btn-danger"><i class="far fa-trash-alt"></i></i></button>
         </div>
         <div class="col-sm-7">
           <div class="input-group">
             <input type="text" name="search" value="<?php echo $filter_name; ?>" placeholder="<?php echo $entry_search; ?>" class="form-control">
-            <span class="input-group-btn">
-            <button type="button" data-toggle="tooltip" title="<?php echo $button_search; ?>" id="button-search" class="btn btn-primary"><i class="fa fa-search"></i></button>
-            </span></div>
+            <button type="button" data-bs-toggle="tooltip" title="<?php echo $button_search; ?>" id="button-search" class="btn btn-primary"><i class="fa fa-search"></i></button>
+          </div>
         </div>
       </div>
       <hr />
       <?php foreach (array_chunk($images, 4) as $image) { ?>
       <div class="row">
         <?php foreach ($image as $image) { ?>
-        <div class="col-sm-3 col-xs-6 text-center">
+        <div class="col-sm-3 col-6 text-center">
           <?php if ($image['type'] == 'directory') { ?>
           <div class="text-center"><a href="<?php echo $image['href']; ?>" class="directory" style="vertical-align: middle;"><i class="fa fa-folder fa-5x"></i></a></div>
           <label>
@@ -167,15 +166,16 @@ $('#button-upload1').on('click', function() {
 	}, 500);
 });
 
-$('#button-folder').popover({
+new bootstrap.Popover(document.getElementById('button-folder'), {
 	html: true,
+	sanitize: false,
 	placement: 'bottom',
 	trigger: 'click',
 	title: '<?php echo $entry_folder; ?>',
 	content: function() {
 		html  = '<div class="input-group">';
 		html += '  <input type="text" name="folder" value="" placeholder="<?php echo $entry_folder; ?>" class="form-control">';
-		html += '  <span class="input-group-btn"><button type="button" title="<?php echo $button_folder; ?>" id="button-create" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></span>';
+		html += '  <button type="button" title="<?php echo $button_folder; ?>" id="button-create" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button>';
 		html += '</div>';
 
 		return html;

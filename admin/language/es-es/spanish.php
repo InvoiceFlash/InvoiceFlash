@@ -45,6 +45,7 @@ $_['button_disable'] = 'Desactivar';
 $_['button_filter'] = 'Filtro';
 $_['button_export'] = 'Exportar a Excel';
 $_['button_add_product'] = 'A&ntilde;adir Producto';
+$_['button_add_image'] = 'A&ntilde;adir Imagen';
 $_['tab_product'] = 'Productos';
 $_['button_send'] = 'Enviar';
 $_['button_edit'] = 'Editar';
