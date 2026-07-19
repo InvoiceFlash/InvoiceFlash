@@ -165,6 +165,10 @@ class ModelSaleCustomer extends Model {
 			$implode[] = "c.company LIKE '%" . $this->db->escape($data['filter_company']) . "%'";
 		}
 
+		if (!empty($data['filter_contact'])) {
+			$implode[] = "CONCAT(c.firstname, ' ', c.lastname) LIKE '%" . $this->db->escape($data['filter_contact']) . "%'";
+		}
+
 		if (!empty($data['filter_telephone'])) {
 			$implode[] = "telephone LIKE '%" . $this->db->escape($data['filter_telephone']) . "%'";
 		}
@@ -375,6 +379,12 @@ class ModelSaleCustomer extends Model {
 		if (!empty($data['filter_company'])) {
 
 			$implode[] = "company LIKE '%" . $this->db->escape($data['filter_company']) . "%'";
+
+		}
+
+		if (!empty($data['filter_contact'])) {
+
+			$implode[] = "CONCAT(firstname, ' ', lastname) LIKE '%" . $this->db->escape($data['filter_contact']) . "%'";
 
 		}
 

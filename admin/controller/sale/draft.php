@@ -444,7 +444,7 @@ class ControllerSaleDraft extends Controller {
 				'draft_id'      => $result['draft_id'],
 				'company'       => $result['company'],
 				'simplified'    => $result['simplified'],
-				'total'         => $this->currency->format($result['total']),
+				'total'         => $this->currency->format($result['total'], '', '', true, true),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['draft_id'], $this->request->post['selected']),
@@ -1426,7 +1426,7 @@ class ControllerSaleDraft extends Controller {
 			$this->data['comment'] = nl2br($draft_info['comment']);
 			$this->data['shipping_method'] = $draft_info['shipping_method'];
 			$this->data['payment_method'] = $draft_info['payment_method'];
-			$this->data['total'] = $this->currency->format($draft_info['total'], $draft_info['currency_code'], $draft_info['currency_value']);
+			$this->data['total'] = $this->currency->format($draft_info['total'], $draft_info['currency_code'], $draft_info['currency_value'], true, true);
 			
 			if ($draft_info['total'] < 0) {
 				$this->data['credit'] = $draft_info['total'];

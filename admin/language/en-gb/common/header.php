@@ -20,6 +20,7 @@ $_['text_potentials']                  = 'Potentials';
 $_['text_customer_group']              = 'Customer Groups';
 $_['text_potentials_group']            = 'Potentials Groups';
 $_['text_customer_ban_ip']             = 'Banned IP';
+$_['text_customer_representative']     = 'Representatives';
 $_['text_custom_field']                = 'Custom Fields';
 $_['text_dashboard']                   = 'Dashboard';
 $_['text_design']                      = 'Design';

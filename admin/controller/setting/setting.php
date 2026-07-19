@@ -203,7 +203,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_google_analytics'] = $this->language->get('entry_google_analytics');
 
 		// Payroll Tab
-		$this->data['entry_accounting_period'] = $this->language->get('entry_accounting_period');
+		$this->data['entry_accounting_period_from'] = $this->language->get('entry_accounting_period_from');
+		$this->data['entry_accounting_period_to'] = $this->language->get('entry_accounting_period_to');
 		$this->data['entry_iban'] = $this->language->get('entry_iban');
 		$this->data['entry_bic'] = $this->language->get('entry_bic');
 		$this->data['entry_bank_name'] = $this->language->get('entry_bank_name');
@@ -1208,10 +1209,16 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_google_analytics'] = $this->config->get('config_google_analytics');
 		}
 
-		if (isset($this->request->post['accounting_period'])) {
-			$this->data['accounting_period'] = $this->request->post['accounting_period'];
+		if (isset($this->request->post['accounting_period_from'])) {
+			$this->data['accounting_period_from'] = $this->request->post['accounting_period_from'];
 		} else {
-			$this->data['accounting_period'] = $this->config->get('accounting_period');
+			$this->data['accounting_period_from'] = $this->config->get('accounting_period_from');
+		}
+
+		if (isset($this->request->post['accounting_period_to'])) {
+			$this->data['accounting_period_to'] = $this->request->post['accounting_period_to'];
+		} else {
+			$this->data['accounting_period_to'] = $this->config->get('accounting_period_to');
 		}
 		
 		if (isset($this->request->post['iban'])) {

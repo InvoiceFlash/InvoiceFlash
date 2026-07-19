@@ -830,6 +830,22 @@ $(function(){
 		});
 	});
 
+	// dismiss the manual-trigger image popover when clicking anywhere outside it
+	$(document).on('click', function(e) {
+		var $target = $(e.target);
+
+		if ($target.closest('a[data-toggle="image"]').length || $target.closest('.popover').length) {
+			return;
+		}
+
+		$('a[data-toggle="image"]').each(function() {
+			var instance = bootstrap.Popover.getInstance(this);
+			if (instance) {
+				instance.dispose();
+			}
+		});
+	});
+
 });
 function newFunction(idNom) {
 	if (idNom == "receptions") {

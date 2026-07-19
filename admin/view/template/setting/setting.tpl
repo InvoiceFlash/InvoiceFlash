@@ -983,8 +983,20 @@
 				</div>
 				<div id="tab-accounting" class="tab-pane">
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period ?></label>
-						<div class="col-sm-6"><input type="text" name="accounting_period" value="<?php echo $accounting_period ?>" class="form-control"></div>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period_from ?></label>
+						<div class="col-sm-3">
+							<div class="input-group">
+								<input type="text" name="accounting_period_from" value="<?php echo $accounting_period_from ?>" class="form-control date">
+								<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+							</div>
+						</div>
+						<label class="col-form-label col-sm-10 col-md-1"><?php echo $entry_accounting_period_to ?></label>
+						<div class="col-sm-3">
+							<div class="input-group">
+								<input type="text" name="accounting_period_to" value="<?php echo $accounting_period_to ?>" class="form-control date">
+								<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+							</div>
+						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?></label>

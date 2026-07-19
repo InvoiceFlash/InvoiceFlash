@@ -182,6 +182,7 @@ $_['tab_contacts'] = 'Contacts';
 $_['column_name'] = 'Name';
 $_['column_contact_email'] = 'Email';
 $_['column_telephone'] = 'Telephone';
+$_['column_puesto'] = 'Position';
 
 $_['button_add_contact'] = 'Add Contact';
 $_['text_delete'] = 'Delete';

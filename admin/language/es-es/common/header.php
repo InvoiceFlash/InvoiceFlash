@@ -16,6 +16,7 @@ $_['text_complete_status'] = 'Completado';
 $_['text_customer'] = 'Clientes';
 $_['text_customer_group'] = 'Grupos de Clientes';
 $_['text_customer_ban_ip'] = 'IPs Bloqueadas';
+$_['text_customer_representative'] = 'Representantes';
 $_['text_quote'] = 'Presupuestos';
 $_['text_delivery'] = 'Albaranes';
 $_['text_draft'] = 'Borradores';

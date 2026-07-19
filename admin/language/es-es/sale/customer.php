@@ -49,7 +49,7 @@ $_['column_points']         = 'Puntos';
 
 $_['column_ip']             = 'IP';
 
-$_['column_total']          = 'Total de Cuentas';
+$_['column_total']          = 'Total';
 
 $_['column_action']         = 'Acci&oacute;n';
 
@@ -182,6 +182,7 @@ $_['tab_contacts'] = 'Contactos';
 $_['column_name'] = 'Nombre';
 $_['column_contact_email'] = 'Email';
 $_['column_telephone'] = 'Tel&eacute;fono';
+$_['column_puesto'] = 'Cargo';
 
 $_['button_add_contact'] = 'A&ntilde;adir Contacto';
 $_['text_delete'] = 'Eliminar';

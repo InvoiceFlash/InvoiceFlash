@@ -626,6 +626,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['column_name'] = $this->language->get('column_name');
 		$this->data['column_telephone'] = $this->language->get('column_telephone');
 		$this->data['column_contact_email'] = $this->language->get('column_contact_email');
+		$this->data['column_puesto'] = $this->language->get('column_puesto');
 		$this->data['column_date'] = $this->language->get('column_date');
 
 		$this->data['button_add_contact'] = $this->language->get('button_add_contact');
@@ -993,6 +994,7 @@ class ControllerSaleCustomer extends Controller {
 						'name' => $result['cname'],
 						'email' => $result['cemail'],
 						'telephone' => $result['ctelef1'],
+						'puesto' => $result['cpuesto'],
 						'action' => $action
 					);
 				}
@@ -1712,9 +1714,11 @@ class ControllerSaleCustomer extends Controller {
 		$this->load->model('sale/customer');
 
 		$filter_company = isset($this->request->post['filter_company']) ? html_entity_decode($this->request->post['filter_company'], ENT_QUOTES, 'UTF-8') : '';
+		$filter_contact = isset($this->request->post['filter_contact']) ? html_entity_decode($this->request->post['filter_contact'], ENT_QUOTES, 'UTF-8') : '';
 
 		$data = array(
 			'filter_company' => $filter_company,
+			'filter_contact' => $filter_contact,
 			'sort'           => 'company',
 			'order'          => 'ASC',
 			'start'          => 0,

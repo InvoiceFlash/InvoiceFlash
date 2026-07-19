@@ -21,7 +21,6 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-bs-toggle="tab"><?php echo $tab_invoice; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-transaction" data-bs-toggle="tab"><?php echo $tab_transaction; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-bs-toggle="tab"><?php echo $tab_reward; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-bs-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
@@ -383,6 +382,7 @@
 		                  <th><?php echo $column_name ?></th>
 		                  <th class="d-none d-sm-table-cell"><?php echo $column_contact_email ?></th>
 		                  <th><?php echo $column_telephone ?></th>
+		                  <th><?php echo $column_puesto ?></th>
 		                  <th></th>
 		                </tr>
 		              </thead>
@@ -393,18 +393,19 @@
 		                      <td><?php echo $contact['name']; ?><input type="hidden" name="contact_id" value="<?php echo $contact['contact_id']; ?>"></td>
 		                      <td class="d-none d-sm-table-cell"><?php echo $contact['email']; ?></td>
 		                      <td><?php echo $contact['telephone']; ?></td>
+		                      <td><?php echo $contact['puesto']; ?></td>
 		                      <td class="text-right"><?php foreach ($contact['action'] as $action): ?>
 		                        <?php echo $action['link']; ?>
 		                      <?php endforeach ?></td>
 		                    </tr>
 		                  <?php endforeach ?>
 						<?php else: ?>
-							<tr><td colspan="4" class="text-center"><?php echo $text_no_results; ?></td></tr>
+							<tr><td colspan="5" class="text-center"><?php echo $text_no_results; ?></td></tr>
 		                <?php endif ?>
 		              </tbody>
 		              <tfoot>
 		                <tr>
-		                  <td class="text-right" colspan="4"><a href="<?php echo $add_contact ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact ?></a></td>
+		                  <td class="text-right" colspan="5"><a href="<?php echo $add_contact ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact ?></a></td>
 		                </tr>
 		              </tfoot>
 		            </table>
@@ -645,26 +646,6 @@
 						<div class="form-group row">
 							<div class="col-sm-10 col-sm-offset-2">
 								<button type="button" id="button-transaction" data-action="customer" data-target="sale" data-id="<?php echo $customer_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_transaction; ?></button>
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane" id="tab-reward">
-						<div id="reward" data-href="index.php?route=sale/customer/reward&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>"></div>
-						<div class="form-group row">
-							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_description; ?></label>
-							<div class="col-sm-6">
-								<input type="text" name="description" value="" class="form-control">
-							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_points; ?></label>
-							<div class="col-sm-6">
-								<input type="text" name="points" value="" class="form-control">
-							</div>
-						</div>
-						<div class="form-group row">
-							<div class="col-sm-10 col-sm-offset-2">
-								<button type="button" id="button-reward" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_reward; ?></button>
 							</div>
 						</div>
 					</div>

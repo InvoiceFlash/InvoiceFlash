@@ -19,7 +19,7 @@
 	<script type="text/javascript" src="view/javascript/jquery/jquery-3.3.1.min.js"></script>
 	<script type="text/javascript" src="view/javascript/moment.js"></script>
 	<script type="text/javascript" src="view/javascript/bootstrap/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="view/javascript/common.js"></script>
+	<script type="text/javascript" src="view/javascript/common.js?v=<?php echo filemtime(DIR_APPLICATION . 'view/javascript/common.js'); ?>"></script>
 	<script type="text/javascript" src="view/javascript/ckeditor/ckeditor.js"></script>
 	<script>
 	if (window.CKEDITOR) {

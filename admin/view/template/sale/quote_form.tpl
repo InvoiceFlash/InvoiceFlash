@@ -180,8 +180,12 @@
 						<div class="modal-body">
 							<div class="row g-2 mb-3">
 								<div class="col-12 col-sm">
-									<label class="control-label">Empresa / Nombre</label>
-									<input type="text" id="cs-company" class="form-control" placeholder="Empresa / Nombre">
+									<label class="control-label">Empresa</label>
+									<input type="text" id="cs-company" class="form-control" placeholder="Empresa">
+								</div>
+								<div class="col-12 col-sm">
+									<label class="control-label">Nombre de Contacto</label>
+									<input type="text" id="cs-contact" class="form-control" placeholder="Nombre de Contacto">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
 									<button type="button" id="cs-search" class="btn btn-primary">Actualizar</button>
@@ -193,13 +197,12 @@
 									<thead>
 										<tr>
 											<th>Empresa</th>
-											<th>Grupo</th>
 											<th>Email</th>
 											<th>Teléfono</th>
 										</tr>
 									</thead>
 									<tbody id="cs-results">
-										<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>
+										<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>
 									</tbody>
 								</table>
 							</div>
@@ -611,34 +614,37 @@ $('#searchCustomer').click(function(e) {
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('CustomerSearchModal')).show();
 });
 
+$('#CustomerSearchModal').on('shown.bs.modal', function() {
+	$('#cs-company').trigger('focus');
+});
+
 function csDoSearch() {
 	var btn = $('#cs-search');
 	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
-	$('#cs-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+	$('#cs-results').html('<tr><td colspan="3" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
-		data: { filter_company: $('#cs-company').val() },
+		data: { filter_company: $('#cs-company').val(), filter_contact: $('#cs-contact').val() },
 		dataType: 'json',
 		success: function(json) {
 			if (json.warning) {
 				$('#cs-warning').text(json.warning).show();
-				$('#cs-results').html('<tr><td colspan="4" class="text-center">' + json.warning + '</td></tr>');
+				$('#cs-results').html('<tr><td colspan="3" class="text-center">' + json.warning + '</td></tr>');
 				csCustomers = [];
 				return;
 			}
 			$('#cs-warning').hide();
 			csCustomers = json;
 			if (!json.length) {
-				$('#cs-results').html('<tr><td colspan="4" class="text-center">No se encontraron clientes</td></tr>');
+				$('#cs-results').html('<tr><td colspan="3" class="text-center">No se encontraron clientes</td></tr>');
 				return;
 			}
 			var html = '';
 			for (var i = 0; i < json.length; i++) {
 				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
 				html += '<td>' + (json[i].company || '') + '</td>';
-				html += '<td>' + (json[i].customer_group || '') + '</td>';
 				html += '<td>' + (json[i].email || '') + '</td>';
 				html += '<td>' + (json[i].telephone || '') + '</td>';
 				html += '</tr>';
@@ -647,7 +653,7 @@ function csDoSearch() {
 		},
 		error: function() {
 			$('#cs-warning').text('Error al buscar clientes').show();
-			$('#cs-results').html('<tr><td colspan="4" class="text-center">Error al buscar clientes</td></tr>');
+			$('#cs-results').html('<tr><td colspan="3" class="text-center">Error al buscar clientes</td></tr>');
 			csCustomers = [];
 		},
 		complete: function() {
@@ -658,7 +664,7 @@ function csDoSearch() {
 
 $('#cs-search').click(csDoSearch);
 
-$('#cs-company').on('keypress', function(e) {
+$('#cs-company, #cs-contact').on('keypress', function(e) {
 	if (e.which == 13) csDoSearch();
 });
 
@@ -687,7 +693,8 @@ $(document).on('dblclick', '#cs-results tr[data-idx]', function() {
 
 $('#CustomerSearchModal').on('hidden.bs.modal', function() {
 	$('#cs-company').val('');
-	$('#cs-results').html('<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
+	$('#cs-contact').val('');
+	$('#cs-results').html('<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
 	$('#cs-warning').hide();
 	csCustomers = [];
 });

@@ -269,6 +269,14 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			if ($this->user->hasPermission('access', 'sale/customer_representative')) {
+				$customers[] = array(
+					'name' => $this->language->get('text_customer_representative'),
+					'href' => $this->url->link('sale/customer_representative', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($customers) {
 				$sales[] = array(
 					'name' => $this->language->get('text_customer'),

@@ -1043,6 +1043,13 @@ INSERT INTO `if_currency` (`currency_id`, `title`, `code`, `symbol_left`, `symbo
 -- Table structure for table `if_customer`
 --
 
+DROP TABLE IF EXISTS `if_customer_representative`;
+CREATE TABLE `if_customer_representative` (
+  `customer_representative_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  PRIMARY KEY (`customer_representative_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `if_customer`;
 CREATE TABLE `if_customer` (
   `customer_id` int(11) NOT NULL AUTO_INCREMENT,
