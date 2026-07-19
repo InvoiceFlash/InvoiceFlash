@@ -61,10 +61,6 @@
 							<td><?php echo $text_email; ?></td>
 							<td><?php echo $email; ?></td>
 						</tr>
-						<tr>
-							<td><?php echo $text_telephone; ?></td>
-							<td><?php echo $telephone; ?></td>
-						</tr>
 						<?php if ($fax) { ?>
 						<tr>
 							<td><?php echo $text_fax; ?></td>
@@ -95,10 +91,22 @@
 							<td><?php echo $text_date_added; ?></td>
 							<td><?php echo $date_added; ?></td>
 						</tr>
+						<?php if ($created_by) { ?>
+						<tr>
+							<td><?php echo $text_created_by; ?></td>
+							<td><?php echo $created_by; ?></td>
+						</tr>
+						<?php } ?>
 						<tr>
 							<td><?php echo $text_date_modified; ?></td>
 							<td><?php echo $date_modified; ?></td>
 						</tr>
+						<?php if ($modified_by) { ?>
+						<tr>
+							<td><?php echo $text_modified_by; ?></td>
+							<td><?php echo $modified_by; ?></td>
+						</tr>
+						<?php } ?>
 					</table>
 				</div>
 				<div id="tab-payment" class="tab-pane">

@@ -197,6 +197,51 @@ class ControllerSaledelivery extends Controller {
     	$this->getList();
       }
       
+  	private function getDraftProductsForDelivery($delivery_id) {
+		$draft_products = array();
+
+		foreach ($this->model_sale_delivery->getDeliveryProducts($delivery_id) as $delivery_product) {
+			$draft_products[] = array(
+				'draft_product_id' => 0,
+				'product_id'       => $delivery_product['product_id'],
+				'name'             => $delivery_product['name'],
+				'model'            => $delivery_product['model'],
+				'quantity'         => $delivery_product['quantity'],
+				'price'            => $delivery_product['price'],
+				'total'            => $delivery_product['total'],
+				'tax'              => $delivery_product['tax'],
+				'draft_option'     => $this->model_sale_delivery->getDeliveryOptions($delivery_id, $delivery_product['delivery_product_id'])
+			);
+		}
+
+		return $draft_products;
+	}
+
+	private function logDraftCreated($new_draft_id) {
+		$this->model_tool_user_logs->addLog(array(
+			'user_id'       => $this->user->getId(),
+			'username'      => $this->user->getUserName(),
+			'action'        => 'create',
+			'document_type' => 'sale_draft',
+			'document_id'   => (int)$new_draft_id,
+			'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+		));
+	}
+
+	private function markDeliveryConverted($delivery_id, $new_status) {
+		$this->model_sale_delivery->addDeliveryHistory($delivery_id, array(
+			'delivery_status_id' => 2,
+			'notify'             => 0,
+			'comment'            => ''
+		));
+
+		return array(
+			'delivery_id'  => $delivery_id,
+			'status'       => $new_status ? $new_status['name'] : '',
+			'status_color' => $new_status ? $new_status['color'] : ''
+		);
+	}
+
   	public function convert() {
 		$this->load->language('sale/delivery');
 
@@ -204,69 +249,141 @@ class ControllerSaledelivery extends Controller {
 		$this->load->model('sale/draft');
 		$this->load->model('tool/user_logs');
 
+		$is_ajax = isset($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
     	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
 			$this->load->model('localisation/delivery_status');
 
-			$converted = array();
+			// Load every selected delivery once, and refuse to touch any of them
+			// if one is already in draft or invoiced status.
+			$deliveries = array();
+			$customer_ids = array();
+			$blocked = false;
 
 			foreach ($this->request->post['selected'] as $delivery_id) {
 				$delivery_info = $this->model_sale_delivery->getDelivery($delivery_id);
 
-				if ($delivery_info) {
-					$data = $delivery_info;
-					$data['simplified'] = 0;
+				if (!$delivery_info) {
+					continue;
+				}
 
-					$data['draft_product'] = array();
+				if (in_array($delivery_info['invoice_status_id'], array(2, 3))) {
+					$blocked = true;
+				}
 
-					foreach ($this->model_sale_delivery->getDeliveryProducts($delivery_id) as $delivery_product) {
-						$data['draft_product'][] = array(
-							'draft_product_id' => 0,
-							'product_id'       => $delivery_product['product_id'],
-							'name'             => $delivery_product['name'],
-							'model'            => $delivery_product['model'],
-							'quantity'         => $delivery_product['quantity'],
-							'price'            => $delivery_product['price'],
-							'total'            => $delivery_product['total'],
-							'tax'              => $delivery_product['tax'],
-							'draft_option'     => $this->model_sale_delivery->getDeliveryOptions($delivery_id, $delivery_product['delivery_product_id'])
-						);
+				$customer_ids[] = $delivery_info['customer_id'];
+				$deliveries[$delivery_id] = $delivery_info;
+			}
+
+			if ($blocked) {
+				$error = $this->language->get('error_already_converted');
+
+				if ($is_ajax) {
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode(array('error' => $error)));
+
+					return;
+				}
+
+				$this->error['warning'] = $error;
+
+				$this->getList();
+
+				return;
+			}
+
+			$group = isset($this->request->post['group']) && ($this->request->post['group'] == '1') && (count($deliveries) > 1);
+
+			if ($group && (count(array_unique($customer_ids)) > 1)) {
+				$error = $this->language->get('error_group_customer');
+
+				if ($is_ajax) {
+					$this->response->addHeader('Content-Type: application/json');
+					$this->response->setOutput(json_encode(array('error' => $error)));
+
+					return;
+				}
+
+				$this->error['warning'] = $error;
+
+				$this->getList();
+
+				return;
+			}
+
+			$new_status = $this->model_localisation_delivery_status->getDeliveryStatus(2);
+			$converted = array();
+
+			if ($group) {
+				$data = null;
+				$all_totals = array();
+
+				foreach ($deliveries as $delivery_id => $delivery_info) {
+					if ($data === null) {
+						$data = $delivery_info;
+						$data['simplified'] = 0;
+						$data['draft_product'] = array();
 					}
 
+					$data['draft_product'] = array_merge($data['draft_product'], $this->getDraftProductsForDelivery($delivery_id));
+
+					$all_totals[] = $this->model_sale_delivery->getDeliveryTotals($delivery_id);
+				}
+
+				// Merge totals from every delivery, summing matching codes (sub_total, tax, shipping, total, ...).
+				$merged_totals = array();
+
+				foreach ($all_totals as $totals) {
+					foreach ($totals as $total_row) {
+						$code = $total_row['code'];
+
+						if (!isset($merged_totals[$code])) {
+							$merged_totals[$code] = $total_row;
+							$merged_totals[$code]['value'] = (float)$total_row['value'];
+						} else {
+							$merged_totals[$code]['value'] += (float)$total_row['value'];
+						}
+					}
+				}
+
+				usort($merged_totals, function($a, $b) {
+					return $a['sort_order'] - $b['sort_order'];
+				});
+
+				foreach ($merged_totals as &$total_row) {
+					$total_row['text'] = $this->currency->format($total_row['value'], $data['currency_code'], $data['currency_value']);
+				}
+				unset($total_row);
+
+				$data['draft_total'] = $merged_totals;
+
+				$this->model_sale_draft->addDraft($data);
+
+				$query = $this->db->query("SELECT draft_id FROM `" . DB_PREFIX . "draft` ORDER BY draft_id DESC LIMIT 1");
+
+				$this->logDraftCreated($query->row['draft_id']);
+
+				foreach ($deliveries as $delivery_id => $delivery_info) {
+					$converted[] = $this->markDeliveryConverted($delivery_id, $new_status);
+				}
+			} else {
+				foreach ($deliveries as $delivery_id => $delivery_info) {
+					$data = $delivery_info;
+					$data['simplified'] = 0;
+					$data['draft_product'] = $this->getDraftProductsForDelivery($delivery_id);
 					$data['draft_total'] = $this->model_sale_delivery->getDeliveryTotals($delivery_id);
 
 					$this->model_sale_draft->addDraft($data);
 
 					$query = $this->db->query("SELECT draft_id FROM `" . DB_PREFIX . "draft` ORDER BY draft_id DESC LIMIT 1");
 
-					$new_draft_id = $query->row['draft_id'];
+					$this->logDraftCreated($query->row['draft_id']);
 
-					$this->model_tool_user_logs->addLog(array(
-						'user_id'       => $this->user->getId(),
-						'username'      => $this->user->getUserName(),
-						'action'        => 'create',
-						'document_type' => 'sale_draft',
-						'document_id'   => (int)$new_draft_id,
-						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
-					));
-
-					// Mark the delivery note as invoiced-in-draft
-					$this->model_sale_delivery->addDeliveryHistory($delivery_id, array(
-						'delivery_status_id' => 2,
-						'notify'             => 0,
-						'comment'            => ''
-					));
-
-					$new_status = $this->model_localisation_delivery_status->getDeliveryStatus(2);
-
-					$converted[] = array(
-						'delivery_id'  => $delivery_id,
-						'status'       => $new_status ? $new_status['name'] : '',
-						'status_color' => $new_status ? $new_status['color'] : ''
-					);
+					$converted[] = $this->markDeliveryConverted($delivery_id, $new_status);
 				}
 			}
 
-			if (isset($this->request->server['HTTP_X_REQUESTED_WITH']) && strtolower($this->request->server['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+			if ($is_ajax) {
 				$this->response->addHeader('Content-Type: application/json');
 				$this->response->setOutput(json_encode(array(
 					'success'   => $this->language->get('text_success_convert'),
@@ -483,6 +600,7 @@ class ControllerSaledelivery extends Controller {
           
           $this->data['deliveries'][] = array(
               'delivery_id'      => $result['delivery_id'],
+              'status_id'     => $result['delivery_status_id'],
               'company'       => $result['company'],
               'status'        => $result['status'] ? $result['status'] : $this->language->get('text_missing'),
               'status_color'  => $result['color'],
@@ -512,6 +630,11 @@ class ControllerSaledelivery extends Controller {
       $this->data['button_convert_draft'] = $this->language->get('button_convert_draft');
       $this->data['button_delete'] = $this->language->get('button_delete');
       $this->data['button_filter'] = $this->language->get('button_filter');
+
+      $this->data['text_group_question'] = $this->language->get('text_group_question');
+      $this->data['text_group_single'] = $this->language->get('text_group_single');
+      $this->data['text_group_merge'] = $this->language->get('text_group_merge');
+      $this->data['error_already_converted'] = $this->language->get('error_already_converted');
 
       $this->data['token'] = $this->session->data['token'];
       

@@ -158,6 +158,11 @@ $_['button_delivery'] 						  = 'Imprimir Albar&aacute;n';
 $_['button_generate']                       = 'Generar Factura';
 $_['button_convert_draft']                  = 'Convertir en Borrador';
 $_['text_success_convert']                  = '&Eacute;xito: &iexcl;Los albaranes seleccionados se han convertido en borradores!';
+$_['text_group_question']                   = '&iquest;C&oacute;mo desea convertir los albaranes seleccionados?';
+$_['text_group_single']                     = 'Un borrador por albar&aacute;n';
+$_['text_group_merge']                      = 'Agrupar en una sola factura';
+$_['error_already_converted']               = 'Advertencia: uno o varios de los albaranes seleccionados ya est&aacute;n en borrador o facturados. No se ha realizado ninguna acci&oacute;n.';
+$_['error_group_customer']                  = 'Advertencia: los albaranes seleccionados pertenecen a clientes diferentes y no se pueden agrupar en una sola factura.';
 
 $_['text_success_email']                      = '&Eacute;xito: &iexcl;El email se ha enviado sin problemas!';
 $_['error_to']                                = 'Error: &iexcl;El email de destino no parece ser v&aacute;lido!';

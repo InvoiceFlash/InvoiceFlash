@@ -78,7 +78,8 @@ class ModelSaleQuote extends Model {
 			$currency_value = 1.00000;			
 		}
 		
-		$sql = "INSERT INTO `" . DB_PREFIX . "quote` SET 
+		$sql = "INSERT INTO `" . DB_PREFIX . "quote` SET
+			`user_id` = '" . (int)$data['user_id'] . "',
 			`invoice_prefix` = '" . $this->db->escape($invoice_prefix) . "',
 			 `store_id` = '" . (int)$data['store_id'] . "', 
 			 `store_name` = '" . $this->db->escape($store_name) . "', 
@@ -214,8 +215,9 @@ class ModelSaleQuote extends Model {
 		}		
 
 
-		$this->db->query("UPDATE `" . DB_PREFIX . "quote` SET 
-		`store_id` = '" . (int)$data['store_id'] . "', 
+		$this->db->query("UPDATE `" . DB_PREFIX . "quote` SET
+		`modified_by` = '" . (int)$data['user_id'] . "',
+		`store_id` = '" . (int)$data['store_id'] . "',
 		`customer_id` = '" . (int)$data['customer_id'] . "', 
 		`customer_group_id` = '" . (int)$data['customer_group_id'] . "', 
 		`email` = '" . $this->db->escape($data['email']) . "', 
@@ -302,9 +304,11 @@ class ModelSaleQuote extends Model {
 	}
 
 	public function getQuote($quote_id) {
-		$quote_query = $this->db->query("SELECT o.*, c.company as company
-			FROM `" . DB_PREFIX . "quote` o 
-		LEFT JOIN " . DB_PREFIX . "customer c ON o.customer_id=c.customer_id  
+		$quote_query = $this->db->query("SELECT o.*, c.company as company, TRIM(CONCAT(u.firstname, ' ', u.lastname)) AS user_fullname, u.username AS user_username, TRIM(CONCAT(mu.firstname, ' ', mu.lastname)) AS modified_by_fullname, mu.username AS modified_by_username
+			FROM `" . DB_PREFIX . "quote` o
+		LEFT JOIN " . DB_PREFIX . "customer c ON o.customer_id=c.customer_id
+		LEFT JOIN " . DB_PREFIX . "user u ON o.user_id=u.user_id
+		LEFT JOIN " . DB_PREFIX . "user mu ON o.modified_by=mu.user_id
 		WHERE o.quote_id = '" . (int)$quote_id . "'");
 		
 		
@@ -370,6 +374,8 @@ class ModelSaleQuote extends Model {
 				'customer_id'             => $quote_query->row['customer_id'],
 				'company'                 => $quote_query->row['company'],
 				'customer_group_id'       => $quote_query->row['customer_group_id'],
+				'created_by'              => $quote_query->row['user_fullname'] ? $quote_query->row['user_fullname'] : $quote_query->row['user_username'],
+				'modified_by'             => $quote_query->row['modified_by_fullname'] ? $quote_query->row['modified_by_fullname'] : $quote_query->row['modified_by_username'],
 				'telephone'               => $quote_query->row['telephone'],
 				'fax'                     => $quote_query->row['fax'],
 				'email'                   => $quote_query->row['email'],
@@ -425,12 +431,10 @@ class ModelSaleQuote extends Model {
 	}
 
 	public function getQuotes($data = array()) {
-		$sql = "SELECT o.quote_id, c.company AS company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."quote` o LEFT JOIN `".DB_PREFIX."invoice_status` os ON o.quote_status_id = os.invoice_status_id LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
+		$sql = "SELECT o.quote_id, c.company AS company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."quote` o LEFT JOIN `".DB_PREFIX."invoice_status` os ON (o.quote_status_id = os.invoice_status_id AND os.language_id = '" . $this->config->get('config_language_id') . "') LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE 1 = 1";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {
 			$sql .= " AND o.quote_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
-		} else {
-			$sql .= " AND o.quote_status_id != '0'";
 		}
 
 		if (!empty($data['filter_quote_id'])) {
@@ -506,12 +510,10 @@ class ModelSaleQuote extends Model {
 	}
 
 	public function getTotalQuotes($data = array()) {
-		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "quote`";
+		$sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "quote` WHERE 1 = 1";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {
-			$sql .= " WHERE quote_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
-		} else {
-			$sql .= " WHERE quote_status_id > '0'";
+			$sql .= " AND quote_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";
 		}
 
 		if (!empty($data['filter_quote_id'])) {

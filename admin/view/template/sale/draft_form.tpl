@@ -2,7 +2,7 @@
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-	<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?> <?php echo ($draft_id) ? 'Nº ' . $draft_id : ''; ?></div>
+	<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo ($draft_id) ? 'Fra. Borrador nº ' . $draft_id : $heading_title; ?></div>
 	<div class="pull-right">
 		<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
 		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>

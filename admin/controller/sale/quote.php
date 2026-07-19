@@ -21,7 +21,9 @@ class ControllerSaleQuote extends Controller {
 		$this->load->model('sale/quote');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-		
+
+			$this->request->post['user_id'] = $this->user->getId();
+
 			$this->model_sale_quote->addQuote($this->request->post);
 			
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -84,6 +86,8 @@ class ControllerSaleQuote extends Controller {
 		$this->load->model('sale/quote');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+
+			$this->request->post['user_id'] = $this->user->getId();
 
 			$this->model_sale_quote->editQuote($this->request->get['quote_id'], $this->request->post);
 	  		
@@ -1260,8 +1264,9 @@ class ControllerSaleQuote extends Controller {
 			$this->data['text_customer'] = $this->language->get('text_customer');
 			$this->data['text_customer_group'] = $this->language->get('text_customer_group');
 			$this->data['text_email'] = $this->language->get('text_email');
-			$this->data['text_telephone'] = $this->language->get('text_telephone');
 			$this->data['text_fax'] = $this->language->get('text_fax');
+			$this->data['text_created_by'] = $this->language->get('text_created_by');
+			$this->data['text_modified_by'] = $this->language->get('text_modified_by');
 			$this->data['text_total'] = $this->language->get('text_total');
 			$this->data['text_invoice_status'] = $this->language->get('text_invoice_status');
 			$this->data['text_comment'] = $this->language->get('text_comment');
@@ -1434,8 +1439,9 @@ class ControllerSaleQuote extends Controller {
 			}
 
 			$this->data['email'] = $quote_info['email'];
-			$this->data['telephone'] = $quote_info['telephone'];
 			$this->data['fax'] = $quote_info['fax'];
+			$this->data['created_by'] = $quote_info['created_by'];
+			$this->data['modified_by'] = $quote_info['modified_by'];
 			$this->data['company'] = $quote_info['company'];
 			$this->data['date_added'] = $quote_info['date_added'];
 			$this->data['date_modified'] = $quote_info['date_modified'];

@@ -422,7 +422,7 @@ class ModelSaleDelivery extends Model {
 	}
 
 	public function getDeliveries($data = array()) {
-		$sql = "SELECT o.delivery_id, c.company AS company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."delivery` o LEFT JOIN `".DB_PREFIX."delivery_status` os ON (o.delivery_status_id = os.delivery_status_id AND os.language_id = '" . $this->config->get('config_language_id') . "') LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE 1 = 1";
+		$sql = "SELECT o.delivery_id, o.delivery_status_id, o.customer_id, c.company AS company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."delivery` o LEFT JOIN `".DB_PREFIX."delivery_status` os ON (o.delivery_status_id = os.delivery_status_id AND os.language_id = '" . $this->config->get('config_language_id') . "') LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE 1 = 1";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {
 			$sql .= " AND o.delivery_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";

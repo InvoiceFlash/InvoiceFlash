@@ -158,6 +158,11 @@ $_['button_delivery'] 						  = 'Print Delivery';
 $_['button_generate']                       = 'Generate Invoice';
 $_['button_convert_draft']                  = 'Convert to Draft';
 $_['text_success_convert']                  = 'Success: The selected delivery notes have been converted to drafts!';
+$_['text_group_question']                   = 'How do you want to convert the selected delivery notes?';
+$_['text_group_single']                     = 'One draft per delivery note';
+$_['text_group_merge']                      = 'Merge into a single invoice';
+$_['error_already_converted']               = 'Warning: one or more of the selected delivery notes are already in draft or invoiced status. No action was taken.';
+$_['error_group_customer']                  = 'Warning: the selected delivery notes belong to different customers and cannot be merged into a single invoice.';
 
 $_['text_success_email']                      = 'Success: The email has been sent without problems!';
 $_['error_to']                                = 'Error: E-mail to does no seem to be valid!';

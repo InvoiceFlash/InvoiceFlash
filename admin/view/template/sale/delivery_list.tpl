@@ -59,9 +59,9 @@
 					<?php foreach ($deliveries as $delivery) { ?>
 					<tr id="delivery-row-<?php echo $delivery['delivery_id']; ?>"<?php echo $delivery['status_color'] ? ' style="background-color:' . $delivery['status_color'] . ';"' : ''; ?>>
 						<td class="rowlink-skip text-center"><?php if ($delivery['selected']) { ?>
-							<input type="checkbox" name="selected[]" value="<?php echo $delivery['delivery_id']; ?>" checked="">
+							<input type="checkbox" name="selected[]" value="<?php echo $delivery['delivery_id']; ?>" data-status-id="<?php echo $delivery['status_id']; ?>" checked="">
 							<?php } else { ?>
-							<input type="checkbox" name="selected[]" value="<?php echo $delivery['delivery_id']; ?>">
+							<input type="checkbox" name="selected[]" value="<?php echo $delivery['delivery_id']; ?>" data-status-id="<?php echo $delivery['status_id']; ?>">
 							<?php } ?></td>
 						<td class="text-right"><?php echo $delivery['delivery_id']; ?></td>
 						<td><?php echo $delivery['company']; ?></td>
@@ -85,6 +85,20 @@
 		<div class="pagination"><?php echo str_replace('....','',$pagination); ?></div>
 	</div>
 </div>
+<div id="ConvertGroupModal" class="modal fade" role="dialog" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title"><?php echo $text_group_question; ?></h4>
+				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body">
+				<button type="button" class="btn btn-default btn-block" id="btn-convert-single" style="margin-bottom:10px;"><?php echo $text_group_single; ?></button>
+				<button type="button" class="btn btn-primary btn-block" id="btn-convert-merge"><?php echo $text_group_merge; ?></button>
+			</div>
+		</div>
+	</div>
+</div>
 <script>
 function validate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
@@ -104,10 +118,35 @@ function convertToDraft() {
 		return;
 	}
 
+	var blocked = false;
+
+	$checked.each(function() {
+		var statusId = parseInt($(this).data('status-id'), 10);
+
+		if (statusId === 2 || statusId === 3) {
+			blocked = true;
+		}
+	});
+
+	if (blocked) {
+		alertMessage('danger', '<?php echo $error_already_converted; ?>');
+		return;
+	}
+
+	if ($checked.length > 1) {
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('ConvertGroupModal')).show();
+		return;
+	}
+
 	if (!confirm(text_confirm)) {
 		return;
 	}
 
+	doConvert(0);
+}
+
+function doConvert(group) {
+	var $checked = $('input[name="selected[]"]:checked');
 	var $btn = $('#btn-convert');
 	$btn.prop('disabled', true);
 
@@ -115,8 +154,13 @@ function convertToDraft() {
 		url: '<?php echo str_replace('&amp;', '&', $convert); ?>',
 		type: 'post',
 		dataType: 'json',
-		data: $checked.serialize(),
+		data: $checked.serialize() + '&group=' + group,
 		success: function(json) {
+			if (json['error']) {
+				alertMessage('danger', json['error']);
+				return;
+			}
+
 			if (json['converted']) {
 				json['converted'].forEach(function(item) {
 					$('#delivery-row-' + item['delivery_id']).attr('style', item['status_color'] ? 'background-color:' + item['status_color'] + ';' : '');
@@ -136,5 +180,15 @@ function convertToDraft() {
 		}
 	});
 }
+
+$('#btn-convert-single').on('click', function() {
+	bootstrap.Modal.getInstance(document.getElementById('ConvertGroupModal')).hide();
+	doConvert(0);
+});
+
+$('#btn-convert-merge').on('click', function() {
+	bootstrap.Modal.getInstance(document.getElementById('ConvertGroupModal')).hide();
+	doConvert(1);
+});
 </script>
 <?php echo $footer; ?>

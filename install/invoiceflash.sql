@@ -7988,6 +7988,8 @@ CREATE TABLE `if_profile_description` (
 DROP TABLE IF EXISTS `if_quote`;
 CREATE TABLE `if_quote` (
   `quote_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  `modified_by` int(11) NOT NULL DEFAULT '0',
   `invoice_no` int(11) NOT NULL DEFAULT '0',
   `invoice_prefix` varchar(26) NOT NULL,
   `store_id` int(11) NOT NULL DEFAULT '0',
@@ -8361,8 +8363,8 @@ CREATE TABLE `if_delivery_status` (
 INSERT INTO `if_delivery_status` (`delivery_status_id`, `language_id`, `name`, `color`) VALUES
 (1, 1, 'Pending delivery notes', NULL),
 (1, 2, 'Pendiente de Facturar', NULL),
-(2, 1, 'In Invoice Draft', '#fdfd96'),
-(2, 2, 'En Borrador de Factura', '#fdfd96');
+(2, 1, 'In Invoice Draft', '#fff9c4'),
+(2, 2, 'En Borrador de Factura', '#fff9c4');
 
 DROP TABLE IF EXISTS `if_delivery_product`;
 CREATE TABLE `if_delivery_product` (
