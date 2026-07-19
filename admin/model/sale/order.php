@@ -78,7 +78,8 @@ class ModelSaleOrder extends Model {
 			$currency_value = 1.00000;			
 		}
 		
-		$sql = "INSERT INTO `" . DB_PREFIX . "order` SET 
+		$sql = "INSERT INTO `" . DB_PREFIX . "order` SET
+			`user_id` = '" . (int)$data['user_id'] . "',
 			`invoice_prefix` = '" . $this->db->escape($invoice_prefix) . "',
 			 `store_id` = '" . (int)$data['store_id'] . "', 
 			 `store_name` = '" . $this->db->escape($store_name) . "', 
@@ -305,9 +306,10 @@ class ModelSaleOrder extends Model {
 	}
 
 	public function getOrder($order_id) {
-		$order_query = $this->db->query("SELECT o.*, c.company as company
-			FROM `" . DB_PREFIX . "order` o 
-			LEFT JOIN " . DB_PREFIX . "customer c ON o.customer_id=c.customer_id  
+		$order_query = $this->db->query("SELECT o.*, c.company as company, TRIM(CONCAT(u.firstname, ' ', u.lastname)) AS user_fullname, u.username AS user_username
+			FROM `" . DB_PREFIX . "order` o
+			LEFT JOIN " . DB_PREFIX . "customer c ON o.customer_id=c.customer_id
+			LEFT JOIN " . DB_PREFIX . "user u ON o.user_id=u.user_id
 			WHERE o.order_id = '" . (int)$order_id . "'");
 		
 		
@@ -373,6 +375,7 @@ class ModelSaleOrder extends Model {
 				'customer_id'             => $order_query->row['customer_id'],
 				'company'                 => $order_query->row['company'],
 				'customer_group_id'       => $order_query->row['customer_group_id'],
+				'created_by'              => $order_query->row['user_fullname'] ? $order_query->row['user_fullname'] : $order_query->row['user_username'],
 				'telephone'               => $order_query->row['telephone'],
 				'fax'                     => $order_query->row['fax'],
 				'email'                   => $order_query->row['email'],

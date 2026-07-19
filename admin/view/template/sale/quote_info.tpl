@@ -4,9 +4,9 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-edit"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> Print PDF</span></a> 
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button> 
-			<a class="btn btn-success" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_quote; ?></span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
+			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-print"></i><span class="hidden-xs"> Imprimir</span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -57,10 +57,6 @@
 							<td><?php echo $customer_group; ?></td>
 						</tr>
 						<?php } ?>
-						<tr>
-							<td><?php echo $text_email; ?></td>
-							<td><?php echo $email; ?></td>
-						</tr>
 						<?php if ($fax) { ?>
 						<tr>
 							<td><?php echo $text_fax; ?></td>

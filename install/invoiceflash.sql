@@ -1947,6 +1947,7 @@ INSERT INTO `if_option_value_description` (`option_value_id`, `language_id`, `op
 DROP TABLE IF EXISTS `if_order`;
 CREATE TABLE `if_order` (
   `order_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL DEFAULT '0',
   `invoice_no` int(11) NOT NULL DEFAULT '0',
   `invoice_prefix` varchar(26) NOT NULL,
   `store_id` int(11) NOT NULL DEFAULT '0',

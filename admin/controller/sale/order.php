@@ -20,7 +20,9 @@ class ControllerSaleOrder extends Controller {
 		$this->load->model('sale/order');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
-		
+
+			$this->request->post['user_id'] = $this->user->getId();
+
 			$this->model_sale_order->addOrder($this->request->post);
 			
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -1315,6 +1317,7 @@ class ControllerSaleOrder extends Controller {
 			$this->data['text_email'] = $this->language->get('text_email');
 			$this->data['text_telephone'] = $this->language->get('text_telephone');
 			$this->data['text_fax'] = $this->language->get('text_fax');
+			$this->data['text_created_by'] = $this->language->get('text_created_by');
 
 			$this->data['text_total'] = $this->language->get('text_total');
 			$this->data['text_order_status'] = $this->language->get('text_order_status');
@@ -1507,13 +1510,14 @@ class ControllerSaleOrder extends Controller {
 			$this->data['email'] = $order_info['email'];
 			$this->data['telephone'] = $order_info['telephone'];
 			$this->data['fax'] = $order_info['fax'];
+			$this->data['created_by'] = $order_info['created_by'];
 			$this->data['company'] = $order_info['company'];
 			$this->data['date_added'] = $order_info['date_added'];
 			$this->data['date_modified'] = $order_info['date_modified'];
 			$this->data['comment'] = nl2br($order_info['comment']);
 			$this->data['shipping_method'] = $order_info['shipping_method'];
 			$this->data['payment_method'] = $order_info['payment_method'];
-			$this->data['total'] = $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value']);
+			$this->data['total'] = $this->currency->format($order_info['total'], $order_info['currency_code'], $order_info['currency_value'], true, true);
 			
 			if ($order_info['total'] < 0) {
 				$this->data['credit'] = $order_info['total'];
@@ -1533,8 +1537,8 @@ class ControllerSaleOrder extends Controller {
 				$this->data['order_status'] = '';
 			}
 			
-			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($order_info['date_added']));
-			$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($order_info['date_modified']));		
+			$this->data['date_added'] = date($this->language->get('date_format_short') . ' H:i', strtotime($order_info['date_added']));
+			$this->data['date_modified'] = date($this->language->get('date_format_short') . ' H:i', strtotime($order_info['date_modified']));
 			$this->data['payment_company'] = $order_info['payment_company'];
 			$this->data['payment_company_id'] = $order_info['payment_company_id'];
 			$this->data['payment_tax_id'] = $order_info['payment_tax_id'];

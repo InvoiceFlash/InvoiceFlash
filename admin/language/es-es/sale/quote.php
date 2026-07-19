@@ -160,6 +160,7 @@ $_['error_required']    = '&iexcl;%s obligatorio!';
 $_['button_quote'] 						  = 'Imprimir Presupuesto';
 $_['button_generate']                       = 'Generar Pedido';
 $_['button_convert_order']                  = 'Convertir a Pedido';
+$_['button_add_history']                    = 'A&ntilde;adir Historial';
 
 $_['text_success_email']                      = '&Eacute;xito: &iexcl;El email se ha enviado sin problemas!';
 $_['error_to']                                = 'Error: &iexcl;El email de destino no parece ser v&aacute;lido!';

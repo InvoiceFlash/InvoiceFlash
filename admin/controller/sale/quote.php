@@ -2331,6 +2331,7 @@ class ControllerSaleQuote extends Controller {
 				'shipping_code' => $quote_info['shipping_code'],
 				'comment' => $quote_info['comment'],
 				'order_status_id' => $quote_info['invoice_status_id'],
+				'user_id' => $this->user->getId(),
 				'order_product' => $order_products,
 				'order_total' => $order_totals
 			);
