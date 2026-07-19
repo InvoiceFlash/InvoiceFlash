@@ -113,7 +113,7 @@ class ModelSaleDelivery extends Model {
 			 `shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 			 `shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
 			 `comment` = '" . $this->db->escape($data['comment']) . "', 
-			 `delivery_status_id` = '" . (int)$data['delivery_status_id'] . "', 
+			 `delivery_status_id` = '" . (isset($data['delivery_status_id']) ? (int)$data['delivery_status_id'] : 1) . "',
 			 `language_id` = '" . (int)$this->config->get('config_language_id') . "', 
 			 `currency_id` = '" . (int)$currency_id . "', 
 			 `currency_code` = '" . $this->db->escape($currency_code) . "', 
@@ -422,7 +422,7 @@ class ModelSaleDelivery extends Model {
 	}
 
 	public function getDeliveries($data = array()) {
-		$sql = "SELECT o.delivery_id, c.company AS company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."delivery` o LEFT JOIN `".DB_PREFIX."invoice_status` os ON (o.delivery_status_id = os.invoice_status_id AND os.language_id = '" . $this->config->get('config_language_id') . "') LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE 1 = 1";
+		$sql = "SELECT o.delivery_id, c.company AS company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, o.date_modified FROM `".DB_PREFIX."delivery` o LEFT JOIN `".DB_PREFIX."delivery_status` os ON (o.delivery_status_id = os.delivery_status_id AND os.language_id = '" . $this->config->get('config_language_id') . "') LEFT JOIN `".DB_PREFIX."customer` c ON o.customer_id = c.customer_id WHERE 1 = 1";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {
 			$sql .= " AND o.delivery_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";

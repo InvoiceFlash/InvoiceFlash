@@ -32,11 +32,6 @@
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
 						<td class="hidden-xs"><select name="filter_invoice_status_id" class="form-control">
 							<option value="*">&ndash;</option>
-							<?php if ($filter_invoice_status_id == '0') { ?>
-							<option value="0" selected=""><?php echo $text_missing; ?></option>
-							<?php } else { ?>
-							<option value="0"><?php echo $text_missing; ?></option>
-							<?php } ?>
 							<?php foreach ($invoice_statuses as $invoice_status) { ?>
 							<?php if ($invoice_status['delivery_status_id'] == $filter_invoice_status_id) { ?>
 							<option value="<?php echo $invoice_status['delivery_status_id']; ?>" selected=""><?php echo $invoice_status['name']; ?></option>

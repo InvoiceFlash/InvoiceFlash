@@ -8360,7 +8360,7 @@ CREATE TABLE `if_delivery_status` (
 
 INSERT INTO `if_delivery_status` (`delivery_status_id`, `language_id`, `name`, `color`) VALUES
 (1, 1, 'Pending delivery notes', NULL),
-(1, 2, 'Albaranes pendientes', NULL),
+(1, 2, 'Pendiente de Facturar', NULL),
 (2, 1, 'In Invoice Draft', '#fdfd96'),
 (2, 2, 'En Borrador de Factura', '#fdfd96');
 

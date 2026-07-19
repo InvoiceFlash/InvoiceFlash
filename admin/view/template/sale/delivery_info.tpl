@@ -261,7 +261,6 @@
 							<div class="col-sm-6">
 								<select name="delivery_status_id" class="form-control">
 									<?php foreach ($invoice_statuses as $invoice_statuses) { ?>
-									<?php if ($invoice_statuses['delivery_status_id'] == 1) { continue; } ?>
 									<?php if ($invoice_statuses['delivery_status_id'] == $invoice_status_id) { ?>
 									<option value="<?php echo $invoice_statuses['delivery_status_id']; ?>" selected=""><?php echo $invoice_statuses['name']; ?></option>
 									<?php } else { ?>
