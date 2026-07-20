@@ -67,10 +67,22 @@ abstract class Controller {
 			$old_value = trim((string)$old[$key]);
 			$new_value = trim((string)$new_value);
 
-			if ($old_value !== $new_value) {
-				$original[$key] = $old_value;
-				$changed[$key]  = $new_value;
+			if ($old_value === $new_value) {
+				continue;
 			}
+
+			// '0' and '' both mean "not set" for id-like fields (country_id,
+			// zone_id, etc.) - posting an empty value for a field that was
+			// already unset isn't a real change.
+			$old_unset = ($old_value === '' || $old_value === '0');
+			$new_unset = ($new_value === '' || $new_value === '0');
+
+			if ($old_unset && $new_unset) {
+				continue;
+			}
+
+			$original[$key] = $old_value;
+			$changed[$key]  = $new_value;
 		}
 
 		return array('original' => $original, 'changed' => $changed);

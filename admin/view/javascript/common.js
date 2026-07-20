@@ -1762,7 +1762,7 @@ $(function(){
 						product=json['quote_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-quote-product\').click();"><i class="fa fa-trash"></i></a></td>';
-						html+='<td>'+product['name']+'<br><input type="hidden" name="quote_product['+product_row+'][quote_product_id]" value=""><input type="hidden" name="quote_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="quote_product['+product_row+'][name]" value="'+product['name']+'">';
+						html+='<td>'+product['name']+' <button type="button" class="btn btn-default btn-xs" onclick="quoteShowDescription('+product['product_id']+');"><i class="fa fa-info-circle"></i></button><br><input type="hidden" name="quote_product['+product_row+'][quote_product_id]" value=""><input type="hidden" name="quote_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="quote_product['+product_row+'][name]" value="'+product['name']+'">';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){
 								option = product['option'][j];

@@ -55,6 +55,7 @@ $_['button_add_attribute']          = 'Add Attribute';
 $_['button_add_banner']             = 'Add Banner';
 $_['button_add_custom_field_value'] = 'Add Custom Field';
 $_['button_add_product']            = 'Add Product';
+$_['button_view_description']       = 'View description';
 $_['button_add_voucher']            = 'Add Voucher';
 $_['button_add_filter']             = 'Add Filter';
 $_['button_add_option']             = 'Add Option';

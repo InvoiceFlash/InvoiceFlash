@@ -730,6 +730,7 @@ class ControllerSaleQuote extends Controller {
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_product'] = $this->language->get('button_add_product');
+		$this->data['button_view_description'] = $this->language->get('button_view_description');
 		$this->data['button_update_total'] = $this->language->get('button_update_total');
 		$this->data['button_remove'] = $this->language->get('button_remove');
 		$this->data['button_upload'] = $this->language->get('button_upload');

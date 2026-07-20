@@ -116,7 +116,9 @@
 							<?php foreach ($quote_products as $quote_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
 								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-quote-product').click();"><i class="fa fa-trash"></i></a></td>
-								<td><?php echo $quote_product['name']; ?><br>
+								<td><?php echo $quote_product['name']; ?>
+									<button type="button" class="btn btn-default btn-xs" title="<?php echo $button_view_description; ?>" onclick="quoteShowDescription(<?php echo (int)$quote_product['product_id']; ?>);"><i class="fa fa-info-circle"></i></button>
+									<br>
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_product_id]" value="<?php echo $quote_product['quote_product_id']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $quote_product['product_id']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][name]" value="<?php echo $quote_product['name']; ?>">
@@ -297,6 +299,21 @@
 				</div>
 			</div>
 			<!-- Fin Modal Product -->
+			<!-- Modal Descripción de Producto -->
+			<div class="modal fade" tabindex="-1" role="dialog" id="ProductDescriptionModal">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="pd-product-name"></h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body" id="pd-product-description">
+							<i class="fa fa-spinner fa-spin"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Descripción de Producto -->
 			<!-- Modal Customer -->
 			<div class="modal" tabindex="-1" role="dialog" id="CustomerModal">
 				<div class="modal-dialog" role="document">
@@ -541,20 +558,6 @@ function validateForm(){
 	// Products
 	if (!$("#product-row0").length > 0) {
 		alert("Inserte al menos un producto");
-		return false;
-	}
-	
-	// Shipping
-	var ship = $('#shipping').val();
-	if (ship=="") {
-		alert("Seleccione un método de envío");
-		return false;
-	}
-
-	// Payment
-	var pay = $('#payment').val();
-	if (pay==""){
-		alert("Seleccione una forma de pago");
 		return false;
 	}
 
@@ -850,6 +853,34 @@ $(document).on('change', '.quote-qty, .quote-price', function() {
 $('.quote-price').each(function() {
 	quoteMarkPriceChanged(this);
 });
+
+function quoteShowDescription(productId) {
+	var $title = $('#pd-product-name');
+	var $body  = $('#pd-product-description');
+
+	$title.text('');
+	$body.html('<i class="fa fa-spinner fa-spin"></i>');
+
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductDescriptionModal')).show();
+
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/getDescription', 'token=' . $this->session->data['token'], 'SSL')); ?>&product_id=' + productId,
+		type: 'get',
+		dataType: 'json',
+		success: function(json) {
+			if (json.error) {
+				$body.text(json.error);
+				return;
+			}
+
+			$title.text(json.name);
+			$body.html(json.description ? json.description : '<?php echo $text_no_results; ?>');
+		},
+		error: function() {
+			$body.text('Error al cargar la descripción');
+		}
+	});
+}
 </script>
 <style>
 .quote-price-changed {

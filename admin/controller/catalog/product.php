@@ -1699,5 +1699,30 @@ class ControllerCatalogProduct extends Controller {
 		$this->response->addheader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	// Returns a product's name + description, used by the "view description"
+	// button on product lines in sale/purchase document forms (quote, order,
+	// delivery, draft, invoices...).
+	public function getDescription() {
+		ob_start();
+		$json = array();
+
+		$this->load->model('catalog/product');
+
+		$product_id = isset($this->request->get['product_id']) ? (int)$this->request->get['product_id'] : 0;
+
+		$product_info = $product_id ? $this->model_catalog_product->getProduct($product_id) : false;
+
+		if ($product_info) {
+			$json['name']        = $product_info['name'];
+			$json['description'] = $product_info['description'];
+		} else {
+			$json['error'] = 'Producto no encontrado';
+		}
+
+		ob_end_clean();
+		$this->response->addheader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
 }
 ?>

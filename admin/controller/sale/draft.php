@@ -1240,22 +1240,26 @@ class ControllerSaleDraft extends Controller {
 	// posted, so price/quantity edits on existing lines show up in the
 	// original/cambiado columns of tool/user_logs (top-level diffFields()
 	// skips nested arrays like draft_product, so line changes need this).
+	//
+	// Matched by position + product_id rather than draft_product_id: editing
+	// a price/quantity field fires the existing "change" handler in
+	// draft_form.tpl, which re-renders the product table via the checkDraft
+	// AJAX call and blanks draft_product_id on every row (it's rebuilt from
+	// the session cart, not the DB), so it can no longer be used as the join
+	// key by the time the form is actually submitted.
 	private function diffDraftProducts($old_products, $new_products) {
 		$original = array();
 		$changed  = array();
 
-		$old_by_id = array();
+		$old_products = array_values($old_products);
+		$new_products = array_values($new_products);
 
-		foreach ($old_products as $product) {
-			$old_by_id[$product['draft_product_id']] = $product;
-		}
-
-		foreach ($new_products as $product) {
-			if (empty($product['draft_product_id']) || !isset($old_by_id[$product['draft_product_id']])) {
+		foreach ($new_products as $i => $product) {
+			if (!isset($old_products[$i]) || (int)$old_products[$i]['product_id'] !== (int)$product['product_id']) {
 				continue;
 			}
 
-			$old   = $old_by_id[$product['draft_product_id']];
+			$old   = $old_products[$i];
 			$label = 'Producto: ' . $old['name'];
 
 			$old_price = number_format((float)preg_replace('/[^-0-9\.]/', '', $old['price']), 2, '.', '');
