@@ -23,6 +23,16 @@ class ControllerPurchaseSupplier extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$supplier_id = $this->model_purchase_supplier->addSupplier($this->request->post);
 
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'create',
+				'document_type' => 'supplier',
+				'document_id'   => (int)$supplier_id,
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
+
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $supplier_id, 'SSL'));
@@ -46,6 +56,16 @@ class ControllerPurchaseSupplier extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_purchase_supplier->editSupplier($this->request->get['supplier_id'], $this->request->post);
+
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'edit',
+				'document_type' => 'supplier',
+				'document_id'   => (int)$this->request->get['supplier_id'],
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
 
 			$this->session->data['success'] = $this->language->get('text_success');
 

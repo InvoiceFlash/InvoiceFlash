@@ -66,12 +66,18 @@ class ControllerToolUserLogs extends Controller {
 				case 'sale_delivery':    $doc_label = $this->language->get('text_sale_delivery');     break;
 				case 'sale_draft':       $doc_label = $this->language->get('text_sale_draft');        break;
 				case 'customer':         $doc_label = $this->language->get('text_customer');          break;
+				case 'supplier':         $doc_label = $this->language->get('text_supplier');          break;
+				case 'purchase_order':   $doc_label = $this->language->get('text_purchase_order');    break;
 				default:                 $doc_label = '';
 			}
 
 			$href = '';
 			if ($row['document_type'] === 'customer' && $row['document_id']) {
 				$href = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . (int)$row['document_id'], 'SSL');
+			} elseif ($row['document_type'] === 'supplier' && $row['document_id']) {
+				$href = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . (int)$row['document_id'], 'SSL');
+			} elseif ($row['document_type'] === 'purchase_order' && $row['document_id']) {
+				$href = $this->url->link('purchase/purchase_order/update', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . (int)$row['document_id'], 'SSL');
 			} elseif ($row['document_type'] === 'sale_invoice' && $row['document_id']) {
 				$href = $this->url->link('sale/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$row['document_id'], 'SSL');
 			} elseif ($row['document_type'] === 'purchase_invoice' && $row['document_id']) {

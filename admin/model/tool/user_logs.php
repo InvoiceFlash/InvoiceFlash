@@ -20,6 +20,8 @@ class ModelToolUserLogs extends Model {
 				WHEN 'quote'            THEN CONCAT('#', q.quote_id)
 				WHEN 'sale_order'       THEN CONCAT('#', o.order_id)
 				WHEN 'customer'         THEN c.company
+				WHEN 'supplier'         THEN s.company
+				WHEN 'purchase_order'   THEN po.po_number
 				ELSE ''
 			END AS document_ref,
 			CASE l.document_type
@@ -28,6 +30,8 @@ class ModelToolUserLogs extends Model {
 				WHEN 'quote'            THEN q.quote_id
 				WHEN 'sale_order'       THEN o.order_id
 				WHEN 'customer'         THEN c.customer_id
+				WHEN 'supplier'         THEN s.supplier_id
+				WHEN 'purchase_order'   THEN po.purchase_order_id
 				ELSE 0
 			END AS doc_id_check
 			FROM `" . DB_PREFIX . "user_activity_log` l
@@ -41,6 +45,10 @@ class ModelToolUserLogs extends Model {
 				ON l.document_type = 'sale_order' AND l.document_id = o.order_id
 			LEFT JOIN `" . DB_PREFIX . "customer` c
 				ON l.document_type = 'customer' AND l.document_id = c.customer_id
+			LEFT JOIN `" . DB_PREFIX . "supplier` s
+				ON l.document_type = 'supplier' AND l.document_id = s.supplier_id
+			LEFT JOIN `" . DB_PREFIX . "purchase_order` po
+				ON l.document_type = 'purchase_order' AND l.document_id = po.purchase_order_id
 			WHERE 1";
 
 		if (!empty($data['filter_username'])) {
