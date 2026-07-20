@@ -1305,6 +1305,8 @@ class ControllerSaledelivery extends Controller {
 				$delivery_option = array();
 			}
 											
+			$product_info = $this->model_catalog_product->getProduct($delivery_product['product_id']);
+
 			$this->data['delivery_products'][] = array(
 				'delivery_product_id' => $delivery_product['delivery_product_id'],
 				'product_id'       => $delivery_product['product_id'],
@@ -1313,6 +1315,8 @@ class ControllerSaledelivery extends Controller {
 				'option'           => $delivery_option,
 				'quantity'         => $delivery_product['quantity'],
 				'price'            => $this->currency->format($delivery_product['price']),
+				'price_raw'         => number_format((float)$delivery_product['price'], 2, '.', ''),
+				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$delivery_product['price'], 2, '.', ''),
 				'total'            => $this->currency->format($delivery_product['total']),
 				'tax'              => $delivery_product['tax']
 			);
@@ -2198,16 +2202,21 @@ class ControllerSaledelivery extends Controller {
 						}
 					}
 
-					if ($product_info) {	
+					if ($product_info) {
+						$use_price = (isset($delivery_product['price']) && $delivery_product['price'] !== '')
+							? (float)preg_replace('/[^-0-9\.]/', '', $delivery_product['price'])
+							: (float)$product_info['price'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'], 
-							'model'		 => $product_info['model'], 
-							'quantity' 	 => $delivery_product['quantity'], 
+							'name'		 => $product_info['name'],
+							'model'		 => $product_info['model'],
+							'quantity' 	 => $delivery_product['quantity'],
 							'option'	 => $option_data,
-							'price'		 => $product_info['price'], 
+							'price'		 => $use_price,
+							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($product_info['price']*$delivery_product['quantity']),
+							'total'		 => ($use_price*$delivery_product['quantity']),
 							'shipping'	 => $product_info['shipping']
 						);
 					}
@@ -2287,11 +2296,13 @@ class ControllerSaledelivery extends Controller {
 				$json['delivery_product'][] = array(
 					'product_id' 	=> $product['product_id'],
 					'name'       	=> $product['name'],
-					'model'      	=> $product['model'], 
+					'model'      	=> $product['model'],
 					'quantity'   	=> $product['quantity'],
 					'option'   		=> $option,
-					'price'      	=> $this->currency->format($product['price']),	
-					'tax_class_id'	=> $product['tax_class_id'], 
+					'price'      	=> $this->currency->format($product['price']),
+					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
+					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
+					'tax_class_id'	=> $product['tax_class_id'],
 					'total'      	=> $this->currency->format($product['total'])
 				);
 			}
@@ -2506,6 +2517,7 @@ class ControllerSaledelivery extends Controller {
 
 		if ($this->user->hasPermission('access', 'sale/delivery')) {
 			$this->load->model('sale/order');
+			$this->load->model('catalog/product');
 
 			$order_id = isset($this->request->post['order_id']) ? (int)$this->request->post['order_id'] : 0;
 
@@ -2537,12 +2549,16 @@ class ControllerSaledelivery extends Controller {
 							);
 						}
 
+						$product_info = $this->model_catalog_product->getProduct($product['product_id']);
+
 						$json['delivery_product'][] = array(
 							'product_id' => $product['product_id'],
 							'name'       => $product['name'],
 							'model'      => $product['model'],
 							'quantity'   => $product['quantity'],
 							'price'      => $this->currency->format($product['price']),
+							'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
+							'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$product['price'], 2, '.', ''),
 							'total'      => $this->currency->format($product['total']),
 							'tax'        => isset($product['tax']) ? $product['tax'] : 0,
 							'option'     => $option_data,
