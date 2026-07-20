@@ -16,6 +16,7 @@ $_['text_quote']         = 'Presupuesto';
 $_['text_sale_order']    = 'Pedido';
 $_['text_sale_delivery'] = 'Albar&aacute;n';
 $_['text_sale_draft']    = 'Borrador';
+$_['text_customer']      = 'Cliente';
 
 $_['column_date_from']   = 'Fecha';
 $_['column_date_to']     = 'Hasta';

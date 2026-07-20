@@ -111,7 +111,6 @@
 							<tr>
 								<th></th>
 								<th><?php echo $column_product; ?></th>
-								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -138,13 +137,10 @@
 										<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][type]" value="<?php echo $option['type']; ?>">
 									<?php $option_row++; ?>
 									<?php } ?>
+									<input type="hidden" name="order_product[<?php echo $product_row; ?>][model]" value="<?php echo $order_product['model']; ?>">
 								</td>
-								<td class="d-none d-sm-table-cell"><?php echo $order_product['model']; ?>
-									<input type="hidden" name="order_product[<?php echo $product_row; ?>][model]" value="<?php echo $order_product['model']; ?>"></td>
-								<td class="text-right"><?php echo $order_product['quantity']; ?>
-									<input type="hidden" name="order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>"></td>
-								<td class="text-right"><?php echo $order_product['price']; ?>
-									<input type="hidden" name="order_product[<?php echo $product_row; ?>][price]" value="<?php echo $order_product['price']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right order-qty" name="order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right order-price" data-catalog-price="<?php echo $order_product['catalog_price_raw']; ?>" name="order_product[<?php echo $product_row; ?>][price]" value="<?php echo $order_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $order_product['total']; ?>
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][total]" value="<?php echo $order_product['total']; ?>">
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][tax]" value="<?php echo $order_product['tax']; ?>"></td>
@@ -154,7 +150,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -164,7 +160,7 @@
 							<?php foreach ($order_totals as $order_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="4"><?php echo $order_total['title']; ?>:
+								<td class="text-right" colspan="3"><?php echo $order_total['title']; ?>:
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][order_total_id]" value="<?php echo $order_total['order_total_id']; ?>">
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][code]" value="<?php echo $order_total['code']; ?>">
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][title]" value="<?php echo $order_total['title']; ?>">
@@ -810,5 +806,34 @@ $('#ps-tbody').on('dblclick', 'tr[data-idx]', function() {
 
     bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
 });
+
+function orderMarkPriceChanged(input) {
+	var $input = $(input);
+	var current = parseFloat($input.val().replace(',', '.')) || 0;
+	var original = parseFloat($input.data('catalog-price')) || 0;
+
+	$input.toggleClass('order-price-changed', current.toFixed(2) !== original.toFixed(2));
+}
+
+$(document).on('input', '.order-price', function() {
+	orderMarkPriceChanged(this);
+});
+
+$(document).on('change', '.order-qty, .order-price', function() {
+	orderMarkPriceChanged(this);
+	$('#button-order-product').click();
+});
+
+$('.order-price').each(function() {
+	orderMarkPriceChanged(this);
+});
 </script>
+<style>
+.order-price-changed {
+	color: #b30000;
+	font-weight: bold;
+	border-color: #b30000;
+	background-color: #fdf0f0;
+}
+</style>
 <?php echo $footer; ?>

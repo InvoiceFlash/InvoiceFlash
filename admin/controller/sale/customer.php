@@ -22,6 +22,16 @@ class ControllerSaleCustomer extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$customer_id = $this->model_sale_customer->addCustomer($this->request->post);
 
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'create',
+				'document_type' => 'customer',
+				'document_id'   => (int)$customer_id,
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
+
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
@@ -73,6 +83,16 @@ class ControllerSaleCustomer extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_sale_customer->editCustomer($this->request->get['customer_id'], $this->request->post);
+
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'edit',
+				'document_type' => 'customer',
+				'document_id'   => (int)$this->request->get['customer_id'],
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
 
 			$this->session->data['success'] = $this->language->get('text_success');
 

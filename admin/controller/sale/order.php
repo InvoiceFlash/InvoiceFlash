@@ -1244,6 +1244,8 @@ class ControllerSaleOrder extends Controller {
 				$order_option = array();
 			}
 											
+			$product_info = $this->model_catalog_product->getProduct($order_product['product_id']);
+
 			$this->data['order_products'][] = array(
 				'order_product_id' => $order_product['order_product_id'],
 				'product_id'       => $order_product['product_id'],
@@ -1252,6 +1254,8 @@ class ControllerSaleOrder extends Controller {
 				'option'           => $order_option,
 				'quantity'         => $order_product['quantity'],
 				'price'			   => $this->currency->format($order_product['price'], $order_info['currency_code'], $order_info['currency_value']),
+				'price_raw'         => number_format((float)$order_product['price'], 2, '.', ''),
+				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$order_product['price'], 2, '.', ''),
 				'total'            => $this->currency->format($order_product['total'], $order_info['currency_code'], $order_info['currency_value']),
 				'tax'              => $order_product['tax']
 			);
@@ -2068,16 +2072,21 @@ class ControllerSaleOrder extends Controller {
 						}
 					}
 
-					if ($product_info) {	
+					if ($product_info) {
+						$use_price = (isset($order_product['price']) && $order_product['price'] !== '')
+							? (float)preg_replace('/[^-0-9\.]/', '', $order_product['price'])
+							: (float)$product_info['price'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'], 
-							'model'		 => $product_info['model'], 
-							'quantity' 	 => $order_product['quantity'], 
+							'name'		 => $product_info['name'],
+							'model'		 => $product_info['model'],
+							'quantity' 	 => $order_product['quantity'],
 							'option'	 => $option_data,
-							'price'		 => $product_info['price'], 
+							'price'		 => $use_price,
+							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($product_info['price']*$order_product['quantity']),
+							'total'		 => ($use_price*$order_product['quantity']),
 							'shipping'	 => $product_info['shipping']
 						);
 					}
@@ -2161,11 +2170,13 @@ class ControllerSaleOrder extends Controller {
 				$json['order_product'][] = array(
 					'product_id' 	=> $product['product_id'],
 					'name'       	=> $product['name'],
-					'model'      	=> $product['model'], 
+					'model'      	=> $product['model'],
 					'quantity'   	=> $product['quantity'],
 					'option'   		=> $option,
-					'price'      	=> $this->currency->format($product['price']),	
-					'tax_class_id'	=> $product['tax_class_id'], 
+					'price'      	=> $this->currency->format($product['price']),
+					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
+					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
+					'tax_class_id'	=> $product['tax_class_id'],
 					'total'      	=> $this->currency->format($product['total'])
 				);
 			}

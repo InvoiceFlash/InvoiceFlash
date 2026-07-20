@@ -65,11 +65,14 @@ class ControllerToolUserLogs extends Controller {
 				case 'sale_order':       $doc_label = $this->language->get('text_sale_order');        break;
 				case 'sale_delivery':    $doc_label = $this->language->get('text_sale_delivery');     break;
 				case 'sale_draft':       $doc_label = $this->language->get('text_sale_draft');        break;
+				case 'customer':         $doc_label = $this->language->get('text_customer');          break;
 				default:                 $doc_label = '';
 			}
 
 			$href = '';
-			if ($row['document_type'] === 'sale_invoice' && $row['document_id']) {
+			if ($row['document_type'] === 'customer' && $row['document_id']) {
+				$href = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . (int)$row['document_id'], 'SSL');
+			} elseif ($row['document_type'] === 'sale_invoice' && $row['document_id']) {
 				$href = $this->url->link('sale/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$row['document_id'], 'SSL');
 			} elseif ($row['document_type'] === 'purchase_invoice' && $row['document_id']) {
 				$href = $this->url->link('purchase/invoice/update', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$row['document_id'], 'SSL');
