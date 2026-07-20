@@ -175,10 +175,8 @@
 								</td>
 								<td class="d-none d-sm-table-cell"><?php echo $invoice_product['model']; ?>
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][model]" value="<?php echo $invoice_product['model']; ?>"></td>
-								<td class="text-right"><?php echo $invoice_product['quantity']; ?>
-									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $invoice_product['quantity']; ?>"></td>
-								<td class="text-right"><?php echo $invoice_product['price']; ?>
-									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][price]" value="<?php echo $invoice_product['price']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right pi-qty" name="invoice_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $invoice_product['quantity']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right pi-price" data-catalog-price="<?php echo $invoice_product['catalog_price_raw']; ?>" name="invoice_product[<?php echo $product_row; ?>][price]" value="<?php echo $invoice_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $invoice_product['total']; ?>
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][total]" value="<?php echo $invoice_product['total']; ?>">
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][tax]" value="<?php echo $invoice_product['tax']; ?>"></td>
@@ -734,8 +732,8 @@ $('#button-purchase-invoice-product').on('click', function() {
 					}
 					html += '</td>';
 					html += '<td class="d-none d-sm-table-cell">' + product.model + '<input type="hidden" name="invoice_product[' + product_row + '][model]" value="' + product.model + '"></td>';
-					html += '<td class="text-right">' + product.quantity + '<input type="hidden" name="invoice_product[' + product_row + '][quantity]" value="' + product.quantity + '"></td>';
-					html += '<td class="text-right">' + product.price + '<input type="hidden" name="invoice_product[' + product_row + '][price]" value="' + product.price + '"></td>';
+					html += '<td class="text-right"><input type="text" class="form-control text-right pi-qty" name="invoice_product[' + product_row + '][quantity]" value="' + product.quantity + '"></td>';
+					html += '<td class="text-right"><input type="text" class="form-control text-right pi-price" data-catalog-price="' + product.catalog_price_raw + '" name="invoice_product[' + product_row + '][price]" value="' + product.price_raw + '"></td>';
 					html += '<td class="text-right">' + product.total + '<input type="hidden" name="invoice_product[' + product_row + '][total]" value="' + product.total + '"><input type="hidden" name="invoice_product[' + product_row + '][tax]" value=""></td>';
 					html += '</tr>';
 					product_row++;
@@ -771,7 +769,36 @@ $('#ProductSearchModal').on('hidden.bs.modal', function() {
 	$('#ps-warning').hide();
 	psProducts = [];
 });
+
+function piMarkPriceChanged(input) {
+	var $input = $(input);
+	var current = parseFloat($input.val().replace(',', '.')) || 0;
+	var original = parseFloat($input.data('catalog-price')) || 0;
+
+	$input.toggleClass('pi-price-changed', current.toFixed(2) !== original.toFixed(2));
+}
+
+$(document).on('input', '.pi-price', function() {
+	piMarkPriceChanged(this);
+});
+
+$(document).on('change', '.pi-qty, .pi-price', function() {
+	piMarkPriceChanged(this);
+	$('#button-purchase-invoice-product').click();
+});
+
+$('.pi-price').each(function() {
+	piMarkPriceChanged(this);
+});
 </script>
+<style>
+.pi-price-changed {
+	color: #b30000;
+	font-weight: bold;
+	border-color: #b30000;
+	background-color: #fdf0f0;
+}
+</style>
 <script>
 $(function(){
 	var supplierMapped = {};

@@ -103,14 +103,19 @@ class ControllerPurchaseInvoice extends Controller {
 					$product_info = $this->model_catalog_product->getProduct($invoice_product['product_id']);
 
 					if ($product_info) {
+						$use_price = (isset($invoice_product['price']) && $invoice_product['price'] !== '')
+							? (float)preg_replace('/[^-0-9\.]/', '', $invoice_product['price'])
+							: (float)$product_info['price'];
+
 						$this->session->data['cart'][] = array(
 							'product_id'   => $product_info['product_id'],
 							'name'         => $product_info['name'],
 							'model'        => $product_info['model'],
 							'quantity'     => $invoice_product['quantity'],
-							'price'        => $product_info['price'],
+							'price'        => $use_price,
+							'catalog_price' => $product_info['price'],
 							'tax_class_id' => $product_info['tax_class_id'],
-							'total'        => ($product_info['price'] * $invoice_product['quantity'])
+							'total'        => ($use_price * $invoice_product['quantity'])
 						);
 					}
 				}
@@ -151,6 +156,8 @@ class ControllerPurchaseInvoice extends Controller {
 					'model'        => $product['model'],
 					'quantity'     => $product['quantity'],
 					'price'        => $this->currency->format($product['price']),
+					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
+					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id' => $product['tax_class_id'],
 					'total'        => $this->currency->format($product['total'])
 				);
@@ -528,6 +535,8 @@ class ControllerPurchaseInvoice extends Controller {
 			$invoice_products = array();
 		}
 
+		$this->load->model('catalog/product');
+
 		$this->data['invoice_products'] = array();
 
 		foreach ($invoice_products as $invoice_product) {
@@ -539,6 +548,8 @@ class ControllerPurchaseInvoice extends Controller {
 				$invoice_option = array();
 			}
 
+			$product_info = $this->model_catalog_product->getProduct($invoice_product['product_id']);
+
 			$this->data['invoice_products'][] = array(
 				'invoice_product_id' => $invoice_product['invoice_product_id'],
 				'product_id'         => $invoice_product['product_id'],
@@ -547,6 +558,8 @@ class ControllerPurchaseInvoice extends Controller {
 				'option'             => $invoice_option,
 				'quantity'           => $invoice_product['quantity'],
 				'price'              => isset($invoice_info) ? $this->currency->format($invoice_product['price'], $invoice_info['currency_code'], $invoice_info['currency_value']) : $invoice_product['price'],
+				'price_raw'         => number_format((float)$invoice_product['price'], 2, '.', ''),
+				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$invoice_product['price'], 2, '.', ''),
 				'total'              => isset($invoice_info) ? $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value']) : $invoice_product['total'],
 				'tax'                => $invoice_product['tax']
 			);

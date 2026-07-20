@@ -117,10 +117,8 @@
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][name]" value="<?php echo $purchase_order_product['name']; ?>">
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][model]" value="<?php echo $purchase_order_product['model']; ?>">
 								</td>
-								<td class="text-right"><?php echo $purchase_order_product['quantity']; ?>
-									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $purchase_order_product['quantity']; ?>"></td>
-								<td class="text-right"><?php echo $purchase_order_product['price']; ?>
-									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][price]" value="<?php echo $purchase_order_product['price']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right po-qty" name="purchase_order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $purchase_order_product['quantity']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right po-price" data-catalog-price="<?php echo $purchase_order_product['catalog_price_raw']; ?>" name="purchase_order_product[<?php echo $product_row; ?>][price]" value="<?php echo $purchase_order_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $purchase_order_product['total']; ?>
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][total]" value="<?php echo $purchase_order_product['total']; ?>">
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][tax]" value="<?php echo $purchase_order_product['tax']; ?>"></td>
@@ -457,5 +455,34 @@ $('#ProductSearchModal').on('hidden.bs.modal', function() {
 	$('#ps-warning').hide();
 	psProducts = [];
 });
+
+function poMarkPriceChanged(input) {
+	var $input = $(input);
+	var current = parseFloat($input.val().replace(',', '.')) || 0;
+	var original = parseFloat($input.data('catalog-price')) || 0;
+
+	$input.toggleClass('po-price-changed', current.toFixed(2) !== original.toFixed(2));
+}
+
+$(document).on('input', '.po-price', function() {
+	poMarkPriceChanged(this);
+});
+
+$(document).on('change', '.po-qty, .po-price', function() {
+	poMarkPriceChanged(this);
+	$('#button-purchase_order-product').click();
+});
+
+$('.po-price').each(function() {
+	poMarkPriceChanged(this);
+});
 </script>
+<style>
+.po-price-changed {
+	color: #b30000;
+	font-weight: bold;
+	border-color: #b30000;
+	background-color: #fdf0f0;
+}
+</style>
 <?php echo $footer; ?>

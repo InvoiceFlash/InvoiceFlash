@@ -1370,8 +1370,8 @@ $(function(){
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();"><i class="fa fa-trash"></i></a></td>';
 						html+='<td>'+product['name']+'<br><input type="hidden" name="purchase_order_product['+product_row+'][purchase_order_product_id]" value=""><input type="hidden" name="purchase_order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="purchase_order_product['+product_row+'][name]" value="'+product['name']+'"><input type="hidden" name="purchase_order_product['+product_row+'][model]" value="'+product['model']+'"></td>';
-						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="purchase_order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="purchase_order_product['+product_row+'][price]" value="'+product['price']+'"></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right po-qty" name="purchase_order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right po-price" data-catalog-price="'+product['catalog_price_raw']+'" name="purchase_order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="purchase_order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="purchase_order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
