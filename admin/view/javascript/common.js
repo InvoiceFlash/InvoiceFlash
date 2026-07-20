@@ -172,6 +172,9 @@ $(document).ready(function() {
 	});
 	$('#btn-delete').on('click',function(e){
 		e.preventDefault();
+		if(!$('input[name="selected[]"]:checked').length){
+			return;
+		}
 		if(confirm(text_confirm)){
 			$('#form').attr('action',$(this).attr('formaction')).submit();
 		}

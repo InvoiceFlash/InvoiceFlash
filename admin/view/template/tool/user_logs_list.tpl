@@ -14,6 +14,7 @@
 				<tr>
 					<th width="30" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 					<th><?php echo $column_date_from; ?></th>
+					<th><?php echo $column_date_to; ?></th>
 					<th><?php echo $column_username; ?></th>
 					<th><?php echo $column_action; ?></th>
 					<th><?php echo $column_document; ?></th>
@@ -30,6 +31,12 @@
 					<td>
 						<div class="input-group">
 							<input type="text" name="filter_date_from" value="<?php echo $filter_date_from; ?>" class="form-control date" placeholder="DD-MM-YYYY">
+							<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						</div>
+					</td>
+					<td>
+						<div class="input-group">
+							<input type="text" name="filter_date_to" value="<?php echo $filter_date_to; ?>" class="form-control date" placeholder="DD-MM-YYYY">
 							<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 						</div>
 					</td>
@@ -64,6 +71,7 @@
 				<tr>
 					<td class="text-center"><input type="checkbox" name="selected[]" value="<?php echo $log['log_id']; ?>"></td>
 					<td class="text-nowrap"><?php echo $log['date_added']; ?></td>
+					<td></td>
 					<td><?php echo $log['username']; ?></td>
 					<td>
 						<?php if ($log['action_raw'] == 'login') { ?>
@@ -96,7 +104,7 @@
 				<?php } ?>
 				<?php } else { ?>
 				<tr>
-					<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
+					<td class="text-center" colspan="9"><?php echo $text_no_results; ?></td>
 				</tr>
 				<?php } ?>
 			</tbody>

@@ -167,6 +167,6 @@ $_['error_paid_out']                          = 'One or more receipts of this in
 $_['error_no_selection']                      = 'Selecciona al menos una factura.';
 
 $_['button_invoice'] 						  = 'Print';
-$_['button_delete']                           = 'Anular';
+$_['button_delete']                           = 'Void';
 
 ?>

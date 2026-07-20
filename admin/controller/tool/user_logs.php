@@ -156,6 +156,7 @@ class ControllerToolUserLogs extends Controller {
 		$this->data['text_edit']        = $this->language->get('text_edit');
 		$this->data['text_delete']      = $this->language->get('text_delete');
 		$this->data['column_date_from']  = $this->language->get('column_date_from');
+		$this->data['column_date_to']    = $this->language->get('column_date_to');
 		$this->data['column_username']  = $this->language->get('column_username');
 		$this->data['column_action']    = $this->language->get('column_action');
 		$this->data['column_document']  = $this->language->get('column_document');

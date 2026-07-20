@@ -121,7 +121,7 @@ $_['tab_history']                  = 'History';
 // Buttons
 $_['button_invoice']               = 'Print Invoice';
 $_['button_insert']                = 'Add New';
-$_['button_delete']                = 'Anular';
+$_['button_delete']                = 'Void';
 $_['button_filter']                = 'Filter';
 $_['button_save']                  = 'Save';
 $_['button_cancel']                = 'Cancel';

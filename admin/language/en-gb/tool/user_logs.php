@@ -21,7 +21,7 @@ $_['text_customer']      = 'Customer';
 $_['text_supplier']      = 'Purchases/Supplier';
 $_['text_purchase_order'] = 'Purchases/Order';
 
-$_['column_date_from']   = 'Date';
+$_['column_date_from']   = 'From';
 $_['column_date_to']     = 'To';
 $_['column_username']    = 'User';
 $_['column_action']      = 'Action';
