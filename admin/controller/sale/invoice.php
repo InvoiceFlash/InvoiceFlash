@@ -862,10 +862,10 @@ class ControllerSaleInvoice extends Controller {
 		
 		if (isset($this->request->post['invoice_status_id'])) {
       		$this->data['invoice_status_id'] = $this->request->post['invoice_status_id'];
-    	} elseif (!empty($invoice_info)) { 
+    	} elseif (!empty($invoice_info)) {
 			$this->data['invoice_status_id'] = $invoice_info['invoice_status_id'];
 		} else {
-      		$this->data['invoice_status_id'] = '';
+      		$this->data['invoice_status_id'] = 1;
     	}
 			
 		$this->load->model('localisation/invoice_status');

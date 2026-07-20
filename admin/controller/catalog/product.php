@@ -1714,8 +1714,18 @@ class ControllerCatalogProduct extends Controller {
 		$product_info = $product_id ? $this->model_catalog_product->getProduct($product_id) : false;
 
 		if ($product_info) {
+			// description is stored HTML-entity-encoded (it's meant to be dropped
+			// straight into a <textarea> for the CKEditor, which decodes it once
+			// on parse) - decode it here too, otherwise the tags show up as
+			// literal text once rendered outside that textarea.
+			$description = html_entity_decode($product_info['description'], ENT_QUOTES, 'UTF-8');
+
 			$json['name']        = $product_info['name'];
-			$json['description'] = $product_info['description'];
+			$json['description'] = $description;
+			// Plain-text version (paragraph/line breaks kept as newlines, tags
+			// stripped) for callers that let the user edit it in a plain
+			// <textarea> rather than render it as HTML.
+			$json['description_text'] = trim(strip_tags(str_replace(array('</p>', '<br>', '<br/>', '<br />'), "\n", $description)));
 		} else {
 			$json['error'] = 'Producto no encontrado';
 		}

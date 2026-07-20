@@ -86,7 +86,7 @@
 				<div class="tab-pane" id="tab-data">
 					<div class="row">
 						<div class="col-sm-6">
-							<div class="form-group row">
+							<div class="form-group row d-none">
 								<label class="col-form-label col-sm-4"><?php echo $entry_model; ?></label>
 								<div class="col-sm-6">
 									<input type="text" name="model" value="<?php echo $model; ?>" class="form-control">

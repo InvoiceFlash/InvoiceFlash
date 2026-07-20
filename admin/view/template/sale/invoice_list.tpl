@@ -4,8 +4,7 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button onclick="validate();" class="btn btn-success btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_invoice; ?></span></button>
-			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
+			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_invoice; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>

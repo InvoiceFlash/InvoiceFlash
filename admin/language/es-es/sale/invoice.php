@@ -166,7 +166,7 @@ $_['error_message']                           = '&iexcl;El mensaje no puede esta
 $_['error_paid_out']                          = 'Uno o m&aacute;s recibos de esta factura ya han sido cobrados, no es posible modificarla.';
 $_['error_no_selection']                      = 'Selecciona al menos una factura.';
 
-$_['button_invoice'] 						  = 'Imprimir Factura';
+$_['button_invoice'] 						  = 'Imprimir';
 $_['button_delete']                           = 'Anular';
 
 ?>

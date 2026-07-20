@@ -720,6 +720,17 @@ class ControllerSaleQuote extends Controller {
 		$this->data['entry_shipping'] = $this->language->get('entry_shipping');
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
+		$this->data['entry_print_extended_description'] = $this->language->get('entry_print_extended_description');
+
+		if (isset($this->request->post['print_extended_description'])) {
+			$this->data['print_extended_description'] = 1;
+		} elseif (isset($this->request->get['quote_id'])) {
+			$this->load->model('sale/quote');
+			$existing_quote = $this->model_sale_quote->getQuote($this->request->get['quote_id']);
+			$this->data['print_extended_description'] = $existing_quote ? (int)$existing_quote['print_extended_description'] : 0;
+		} else {
+			$this->data['print_extended_description'] = 0;
+		}
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
@@ -729,6 +740,7 @@ class ControllerSaleQuote extends Controller {
 			
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
+		$this->data['button_close'] = $this->language->get('button_close');
 		$this->data['button_add_product'] = $this->language->get('button_add_product');
 		$this->data['button_view_description'] = $this->language->get('button_view_description');
 		$this->data['button_update_total'] = $this->language->get('button_update_total');
@@ -1212,7 +1224,8 @@ class ControllerSaleQuote extends Controller {
 				'price_raw'         => number_format((float)$quote_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$quote_product['price'], 2, '.', ''),
 				'total'            => $this->currency->format($quote_product['total']),
-				'tax'              => $quote_product['tax']
+				'tax'              => $quote_product['tax'],
+				'extended_description' => isset($quote_product['extended_description']) ? $quote_product['extended_description'] : ''
 			);
 		}
 		
@@ -1939,8 +1952,14 @@ class ControllerSaleQuote extends Controller {
 						);								
 					}
 
+					if (!empty($quote_info['print_extended_description']) && !empty($product['extended_description'])) {
+						$product_name = nl2br(htmlspecialchars($product['extended_description'], ENT_QUOTES, 'UTF-8'));
+					} else {
+						$product_name = $product['name'];
+					}
+
 					$product_data[] = array(
-						'name'     => $product['name'],
+						'name'     => $product_name,
 						'model'    => $product['model'],
 						'option'   => $option_data,
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
@@ -2117,7 +2136,8 @@ class ControllerSaleQuote extends Controller {
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
 							'total'		 => ($use_price*$quote_product['quantity']),
-							'shipping'	 => $product_info['shipping']
+							'shipping'	 => $product_info['shipping'],
+							'extended_description' => isset($quote_product['extended_description']) ? $quote_product['extended_description'] : ''
 						);
 					}
 				}
@@ -2207,7 +2227,8 @@ class ControllerSaleQuote extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	    => $product['tax_class_id'],
-					'total'      	    => $this->currency->format($product['total'])
+					'total'      	    => $this->currency->format($product['total']),
+					'extended_description' => isset($product['extended_description']) ? $product['extended_description'] : ''
 				);
 			}
 

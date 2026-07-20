@@ -7703,34 +7703,12 @@ CREATE TABLE `if_invoice_status` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 INSERT INTO `if_invoice_status` (`invoice_status_id`, `language_id`, `name`) VALUES
-(2, 1, 'Processing'),
-(3, 1, 'Shipped'),
-(7, 1, 'Canceled'),
-(5, 1, 'Complete'),
-(8, 1, 'Denied'),
-(9, 1, 'Canceled Reversal'),
-(10, 1, 'Failed'),
-(11, 1, 'Refunded'),
-(12, 1, 'Reversed'),
-(13, 1, 'Chargeback'),
 (1, 1, 'Pending'),
-(16, 1, 'Voided'),
-(15, 1, 'Processed'),
-(14, 1, 'Expired'),
+(2, 1, 'Paid'),
+(3, 1, 'Partially Paid'),
 (1, 2, 'Pendiente'),
-(2, 2, 'Procesando'),
-(3, 2, 'Enviado'),
-(5, 2, 'Completado'),
-(7, 2, 'Cancelado'),
-(8, 2, 'Denegado'),
-(9, 2, 'Cancelación Revertida'),
-(10, 2, 'Fallido'),
-(11, 2, 'Reembolsado'),
-(12, 2, 'Revertido'),
-(13, 2, 'Contracargo'),
-(14, 2, 'Caducado'),
-(15, 2, 'Procesado'),
-(16, 2, 'Anulado');
+(2, 2, 'Pagado'),
+(3, 2, 'Parcialmente pagado');
 
 /*Table structure for table `purchase_invoice` */
 
@@ -8042,6 +8020,7 @@ CREATE TABLE `if_quote` (
   `shipping_method` varchar(128) NOT NULL,
   `shipping_code` varchar(128) NOT NULL,
   `comment` text NOT NULL,
+  `print_extended_description` tinyint(1) NOT NULL DEFAULT '0',
   `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `quote_status_id` int(11) NOT NULL DEFAULT '0',
   `affiliate_id` int(11) NOT NULL,
@@ -8080,6 +8059,7 @@ CREATE TABLE `if_quote_product` (
   `price` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `tax` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `extended_description` mediumtext,
   `reward` int(8) NOT NULL,
   PRIMARY KEY (`quote_product_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

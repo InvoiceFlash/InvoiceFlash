@@ -126,6 +126,7 @@ $_['entry_notify']                            = 'Notificar al Cliente:';
 $_['entry_comment']                           = 'Comentario:';
 $_['entry_shipping']                          = 'M&eacute;todo de Env&iacute;o:';
 $_['entry_payment']                           = 'Forma de Pago:';
+$_['entry_print_extended_description']        = 'Imprimir descripción ampliada';
 $_['entry_coupon']                            = 'Cup&oacute;n:';
 $_['entry_voucher']                           = 'Vale:';
 $_['entry_name_ext']          				  = 'Descripci&oacute;n:';

@@ -90,6 +90,14 @@
 								<?php } ?>
 							</div>
 						</div>
+						<div class="form-group col-sm-4">
+							<div class="control-field d-flex align-items-center" style="min-height:38px;">
+								<div class="form-check">
+									<input type="checkbox" class="form-check-input" id="print_extended_description" name="print_extended_description" value="1" <?php echo $print_extended_description ? 'checked' : ''; ?>>
+									<label class="form-check-label" for="print_extended_description"><?php echo $entry_print_extended_description; ?></label>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -116,9 +124,12 @@
 							<?php foreach ($quote_products as $quote_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
 								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-quote-product').click();"><i class="fa fa-trash"></i></a></td>
-								<td><?php echo $quote_product['name']; ?>
-									<button type="button" class="btn btn-default btn-xs" title="<?php echo $button_view_description; ?>" onclick="quoteShowDescription(<?php echo (int)$quote_product['product_id']; ?>);"><i class="fa fa-info-circle"></i></button>
-									<br>
+								<td>
+									<div class="d-flex justify-content-between align-items-start">
+										<span><?php echo $quote_product['name']; ?></span>
+										<button type="button" class="btn btn-default btn-xs" title="<?php echo $button_view_description; ?>" onclick="quoteShowDescription(<?php echo (int)$quote_product['product_id']; ?>, <?php echo $product_row; ?>);"><i class="fa fa-info-circle"></i></button>
+									</div>
+									<input type="hidden" id="quote-extended-description-<?php echo $product_row; ?>" name="quote_product[<?php echo $product_row; ?>][extended_description]" value="<?php echo htmlspecialchars((string)$quote_product['extended_description'], ENT_QUOTES, 'UTF-8'); ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_product_id]" value="<?php echo $quote_product['quote_product_id']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $quote_product['product_id']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][name]" value="<?php echo $quote_product['name']; ?>">
@@ -301,14 +312,18 @@
 			<!-- Fin Modal Product -->
 			<!-- Modal Descripción de Producto -->
 			<div class="modal fade" tabindex="-1" role="dialog" id="ProductDescriptionModal">
-				<div class="modal-dialog" role="document">
+				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="pd-product-name"></h5>
 							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
-						<div class="modal-body" id="pd-product-description">
-							<i class="fa fa-spinner fa-spin"></i>
+						<div class="modal-body">
+							<textarea id="pd-product-description" class="form-control" rows="12"></textarea>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-bs-dismiss="modal"><?php echo $button_close; ?></button>
+							<button type="button" class="btn btn-success" onclick="quoteSaveDescription();"><?php echo $button_save; ?></button>
 						</div>
 					</div>
 				</div>
@@ -854,14 +869,27 @@ $('.quote-price').each(function() {
 	quoteMarkPriceChanged(this);
 });
 
-function quoteShowDescription(productId) {
+var quoteDescriptionRow = null;
+
+function quoteShowDescription(productId, productRow) {
 	var $title = $('#pd-product-name');
 	var $body  = $('#pd-product-description');
+	var $saved = $('#quote-extended-description-' + productRow);
 
-	$title.text('');
-	$body.html('<i class="fa fa-spinner fa-spin"></i>');
+	quoteDescriptionRow = productRow;
 
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductDescriptionModal')).show();
+
+	// Si ya se guardó un texto personalizado para esta línea, se muestra ese
+	// en vez de volver a traer la descripción original del producto.
+	if ($saved.length && $saved.val()) {
+		$title.text('');
+		$body.val($saved.val());
+		return;
+	}
+
+	$title.text('');
+	$body.val('Cargando...');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/getDescription', 'token=' . $this->session->data['token'], 'SSL')); ?>&product_id=' + productId,
@@ -869,17 +897,27 @@ function quoteShowDescription(productId) {
 		dataType: 'json',
 		success: function(json) {
 			if (json.error) {
-				$body.text(json.error);
+				$body.val(json.error);
 				return;
 			}
 
 			$title.text(json.name);
-			$body.html(json.description ? json.description : '<?php echo $text_no_results; ?>');
+			$body.val(json.description_text ? json.description_text : '');
 		},
 		error: function() {
-			$body.text('Error al cargar la descripción');
+			$body.val('Error al cargar la descripción');
 		}
 	});
+}
+
+function quoteSaveDescription() {
+	if (quoteDescriptionRow === null) {
+		return;
+	}
+
+	$('#quote-extended-description-' + quoteDescriptionRow).val($('#pd-product-description').val());
+
+	bootstrap.Modal.getInstance(document.getElementById('ProductDescriptionModal')).hide();
 }
 </script>
 <style>

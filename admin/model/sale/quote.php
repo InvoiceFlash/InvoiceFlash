@@ -113,8 +113,9 @@ class ModelSaleQuote extends Model {
 			 `shipping_address_format` = '" . $this->db->escape($shipping_address_format) . "', 
 			 `shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 			 `shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
-			 `comment` = '" . $this->db->escape($data['comment']) . "', 
-			 `quote_status_id` = '" . (int)$data['invoice_status_id'] . "', 
+			 `comment` = '" . $this->db->escape($data['comment']) . "',
+			 `print_extended_description` = '" . (int)(!empty($data['print_extended_description'])) . "',
+			 `quote_status_id` = '" . (int)$data['invoice_status_id'] . "',
 			 `language_id` = '" . (int)$this->config->get('config_language_id') . "', 
 			 `currency_id` = '" . (int)$currency_id . "', 
 			 `currency_code` = '" . $this->db->escape($currency_code) . "', 
@@ -139,7 +140,7 @@ class ModelSaleQuote extends Model {
 				quote_id = '" . (int)$quote_id . "', 
 				product_id = '" . (int)$quote_product['product_id'] . "', 
 				name = '" . $this->db->escape($quote_product['name']) . "', 
-				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "'");
+				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "', extended_description = '" . $this->db->escape(isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '') . "'");
 				
 				$quote_product_id = $this->db->getLastId();
 	
@@ -249,8 +250,9 @@ class ModelSaleQuote extends Model {
 		`shipping_address_format` = '" . $this->db->escape($shipping_address_format) . "', 
 		`shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 		`shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
-		`comment` = '" . $this->db->escape($data['comment']) . "', 
-		`quote_status_id` = '" . (int)$data['invoice_status_id'] . "', 
+		`comment` = '" . $this->db->escape($data['comment']) . "',
+		`print_extended_description` = '" . (int)(!empty($data['print_extended_description'])) . "',
+		`quote_status_id` = '" . (int)$data['invoice_status_id'] . "',
 		`date_modified` = now() WHERE `quote_id` = '" . (int)$quote_id . "'");
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "quote_product WHERE quote_id = '" . (int)$quote_id . "'"); 
@@ -268,7 +270,7 @@ class ModelSaleQuote extends Model {
 				quote_id = '" . (int)$quote_id . "', 
 				product_id = '" . (int)$quote_product['product_id'] . "', 
 				name = '" . $this->db->escape($quote_product['name']) . "', 
-				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "'");
+				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "', extended_description = '" . $this->db->escape(isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '') . "'");
 			
 				$quote_product_id = $this->db->getLastId();
 	
