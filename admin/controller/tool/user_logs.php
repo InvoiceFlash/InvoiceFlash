@@ -29,6 +29,7 @@ class ControllerToolUserLogs extends Controller {
 		$filter_action    = isset($this->request->get['filter_action'])    ? $this->request->get['filter_action']    : '';
 		$filter_date_from = isset($this->request->get['filter_date_from']) ? $this->request->get['filter_date_from'] : '';
 		$filter_date_to   = isset($this->request->get['filter_date_to'])   ? $this->request->get['filter_date_to']   : '';
+		$filter_reference = isset($this->request->get['filter_reference']) ? $this->request->get['filter_reference'] : '';
 		$page             = isset($this->request->get['page']) ? (int)$this->request->get['page'] : 1;
 		$limit            = 50;
 
@@ -41,6 +42,7 @@ class ControllerToolUserLogs extends Controller {
 			'filter_action'    => $filter_action,
 			'filter_date_from' => $db_date_from,
 			'filter_date_to'   => $db_date_to,
+			'filter_reference' => $filter_reference,
 			'start'            => ($page - 1) * $limit,
 			'limit'            => $limit,
 		);
@@ -55,6 +57,7 @@ class ControllerToolUserLogs extends Controller {
 				case 'login':  $action_label = $this->language->get('text_login');  break;
 				case 'create': $action_label = $this->language->get('text_create'); break;
 				case 'edit':   $action_label = $this->language->get('text_edit');   break;
+				case 'delete': $action_label = $this->language->get('text_delete'); break;
 				default:       $action_label = $row['action'];
 			}
 
@@ -92,6 +95,20 @@ class ControllerToolUserLogs extends Controller {
 				$href = $this->url->link('sale/draft/info', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$row['document_id'], 'SSL');
 			}
 
+			$original = !empty($row['original']) ? json_decode($row['original'], true) : array();
+			$cambiado = !empty($row['cambiado']) ? json_decode($row['cambiado'], true) : array();
+
+			$changes = array();
+			if ($original && $cambiado) {
+				foreach ($cambiado as $field => $new_value) {
+					$changes[] = array(
+						'field'    => ucfirst(str_replace('_', ' ', $field)),
+						'original' => isset($original[$field]) ? $original[$field] : '',
+						'changed'  => $new_value,
+					);
+				}
+			}
+
 			$logs[] = array(
 				'log_id'      => $row['log_id'],
 				'date_added'  => $row['date_added'],
@@ -102,6 +119,7 @@ class ControllerToolUserLogs extends Controller {
 				'reference'   => $row['document_ref'],
 				'href'        => $href,
 				'ip'          => $row['ip'],
+				'changes'     => $changes,
 			);
 		}
 
@@ -110,6 +128,7 @@ class ControllerToolUserLogs extends Controller {
 		if ($filter_action)    $url .= '&filter_action='    . urlencode($filter_action);
 		if ($filter_date_from) $url .= '&filter_date_from=' . urlencode($filter_date_from);
 		if ($filter_date_to)   $url .= '&filter_date_to='   . urlencode($filter_date_to);
+		if ($filter_reference) $url .= '&filter_reference=' . urlencode($filter_reference);
 
 		$this->load->library('pagination');
 		$pagination = new Pagination();
@@ -128,20 +147,30 @@ class ControllerToolUserLogs extends Controller {
 		$this->data['filter_action']    = $filter_action;
 		$this->data['filter_date_from'] = $filter_date_from;
 		$this->data['filter_date_to']   = $filter_date_to;
+		$this->data['filter_reference'] = $filter_reference;
 
 		$this->data['heading_title']    = $this->language->get('heading_title');
 		$this->data['text_no_results']  = $this->language->get('text_no_results');
 		$this->data['text_login']       = $this->language->get('text_login');
 		$this->data['text_create']      = $this->language->get('text_create');
 		$this->data['text_edit']        = $this->language->get('text_edit');
+		$this->data['text_delete']      = $this->language->get('text_delete');
 		$this->data['column_date_from']  = $this->language->get('column_date_from');
 		$this->data['column_username']  = $this->language->get('column_username');
 		$this->data['column_action']    = $this->language->get('column_action');
 		$this->data['column_document']  = $this->language->get('column_document');
 		$this->data['column_reference'] = $this->language->get('column_reference');
 		$this->data['column_ip']        = $this->language->get('column_ip');
+		$this->data['column_changes']   = $this->language->get('column_changes');
+		$this->data['filter_reference_placeholder'] = $this->language->get('filter_reference');
 		$this->data['button_filter']    = $this->language->get('button_filter');
 		$this->data['button_delete']    = $this->language->get('button_delete');
+		$this->data['button_view_changes'] = $this->language->get('button_view_changes');
+		$this->data['text_no_changes']  = $this->language->get('text_no_changes');
+		$this->data['text_changes_title'] = $this->language->get('text_changes_title');
+		$this->data['text_field']       = $this->language->get('text_field');
+		$this->data['text_original']    = $this->language->get('text_original');
+		$this->data['text_changed']     = $this->language->get('text_changed');
 
 		$this->data['breadcrumbs'] = array();
 		$this->data['breadcrumbs'][] = array(

@@ -10,6 +10,7 @@ $_['text_all']           = '-- All --';
 $_['text_login']         = 'Login';
 $_['text_create']        = 'Create';
 $_['text_edit']          = 'Edit';
+$_['text_delete']        = 'Delete';
 $_['text_sale_invoice']  = 'Sales/Invoice';
 $_['text_purchase_invoice'] = 'Purchases/Invoice';
 $_['text_quote']         = 'Sales/Quote';
@@ -27,10 +28,19 @@ $_['column_action']      = 'Action';
 $_['column_document']    = 'Document';
 $_['column_reference']   = 'Reference';
 $_['column_ip']          = 'IP';
+$_['column_changes']     = 'Changes';
 
 $_['filter_date_from']   = 'From:';
 $_['filter_date_to']     = 'To:';
 $_['filter_user']        = 'User:';
 $_['filter_action']      = 'Type:';
+$_['filter_reference']   = 'Reference';
 $_['button_filter']      = 'Filter';
 $_['button_clear']       = 'Clear';
+$_['button_view_changes'] = 'View';
+
+$_['text_no_changes']    = '&ndash;';
+$_['text_changes_title'] = 'Changes made';
+$_['text_field']         = 'Field';
+$_['text_original']      = 'Original';
+$_['text_changed']       = 'Changed';

@@ -49,6 +49,33 @@ abstract class Controller {
 		}		
 	}
 
+	// Compares an "old" record (associative array, e.g. from a getX() model call
+	// made before saving) against the newly posted data and returns only the
+	// scalar fields that actually changed, split into 'original' and 'changed'.
+	// Used to feed tool/user_logs' original/cambiado columns on edit actions.
+	protected function diffFields($old, $new, $skip = array()) {
+		$skip = array_merge(array('token', 'date_added', 'date_modified'), $skip);
+
+		$original = array();
+		$changed  = array();
+
+		foreach ($new as $key => $new_value) {
+			if (in_array($key, $skip) || is_array($new_value) || !array_key_exists($key, $old) || is_array($old[$key])) {
+				continue;
+			}
+
+			$old_value = trim((string)$old[$key]);
+			$new_value = trim((string)$new_value);
+
+			if ($old_value !== $new_value) {
+				$original[$key] = $old_value;
+				$changed[$key]  = $new_value;
+			}
+		}
+
+		return array('original' => $original, 'changed' => $changed);
+	}
+
 	protected function hasAction($child, $args = array()) {
 		$action = new Action($child, $args);
 

@@ -21,8 +21,18 @@ class ControllerSaleDraft extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 		
-			$this->model_sale_draft->addDraft($this->request->post);
-			
+			$new_draft_id = $this->model_sale_draft->addDraft($this->request->post);
+
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'create',
+				'document_type' => 'sale_draft',
+				'document_id'   => (int)$new_draft_id,
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+			));
+
 			$this->session->data['success'] = $this->language->get('text_success');
 		  
 			$url = '';
@@ -81,8 +91,26 @@ class ControllerSaleDraft extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 
+			$draft_before    = $this->model_sale_draft->getDraft($this->request->get['draft_id']);
+			$products_before = $this->model_sale_draft->getDraftProducts($this->request->get['draft_id']);
+
 			$this->model_sale_draft->editDraft($this->request->get['draft_id'], $this->request->post);
-	  		
+
+			$diff         = $this->diffFields($draft_before, $this->request->post);
+			$product_diff = $this->diffDraftProducts($products_before, isset($this->request->post['draft_product']) ? $this->request->post['draft_product'] : array());
+
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'edit',
+				'document_type' => 'sale_draft',
+				'document_id'   => (int)$this->request->get['draft_id'],
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				'original'      => array_merge($diff['original'], $product_diff['original']),
+				'cambiado'      => array_merge($diff['changed'], $product_diff['changed']),
+			));
+
 			$this->session->data['success'] = $this->language->get('text_success');
 	  
 			$url = '';
@@ -140,8 +168,19 @@ class ControllerSaleDraft extends Controller {
 		$this->load->model('sale/draft');
 
     	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			$this->load->model('tool/user_logs');
+
 			foreach ($this->request->post['selected'] as $draft_id) {
 				$this->model_sale_draft->deleteDraft($draft_id);
+
+				$this->model_tool_user_logs->addLog(array(
+					'user_id'       => $this->user->getId(),
+					'username'      => $this->user->getUserName(),
+					'action'        => 'delete',
+					'document_type' => 'sale_draft',
+					'document_id'   => (int)$draft_id,
+					'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				));
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -151,16 +190,16 @@ class ControllerSaleDraft extends Controller {
 			if (isset($this->request->get['filter_draft_id'])) {
 				$url .= '&filter_draft_id=' . $this->request->get['filter_draft_id'];
 			}
-			
+
 			if (isset($this->request->get['filter_company'])) {
 				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
-												
-			
+
+
 			if (isset($this->request->get['filter_total'])) {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
 			}
-						
+
 			if (isset($this->request->get['filter_date_added'])) {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
@@ -919,15 +958,7 @@ class ControllerSaleDraft extends Controller {
       		$this->data['telephone'] = '';
     	}
 		
-    	if (isset($this->request->post['fax'])) {
-      		$this->data['fax'] = $this->request->post['fax'];
-    	} elseif (!empty($draft_info)) { 
-			$this->data['fax'] = $draft_info['fax'];
-		} else {
-      		$this->data['fax'] = '';
-    	}	
-		
-		if (isset($this->request->post['simplified'])) {
+    	if (isset($this->request->post['simplified'])) {
       		$this->data['simplified'] = $this->request->post['simplified'];
     	} elseif (!empty($draft_info)) {
 			$this->data['simplified'] = $draft_info['simplified'];
@@ -1204,7 +1235,49 @@ class ControllerSaleDraft extends Controller {
 	  		return false;
 		}
   	}
-	
+
+	// Compares the product lines a draft had before saving against what was
+	// posted, so price/quantity edits on existing lines show up in the
+	// original/cambiado columns of tool/user_logs (top-level diffFields()
+	// skips nested arrays like draft_product, so line changes need this).
+	private function diffDraftProducts($old_products, $new_products) {
+		$original = array();
+		$changed  = array();
+
+		$old_by_id = array();
+
+		foreach ($old_products as $product) {
+			$old_by_id[$product['draft_product_id']] = $product;
+		}
+
+		foreach ($new_products as $product) {
+			if (empty($product['draft_product_id']) || !isset($old_by_id[$product['draft_product_id']])) {
+				continue;
+			}
+
+			$old   = $old_by_id[$product['draft_product_id']];
+			$label = 'Producto: ' . $old['name'];
+
+			$old_price = number_format((float)preg_replace('/[^-0-9\.]/', '', $old['price']), 2, '.', '');
+			$new_price = number_format((float)preg_replace('/[^-0-9\.]/', '', $product['price']), 2, '.', '');
+
+			if ($old_price !== $new_price) {
+				$original[$label . ' > Precio'] = $old_price;
+				$changed[$label . ' > Precio']  = $new_price;
+			}
+
+			$old_qty = (string)(int)$old['quantity'];
+			$new_qty = (string)(int)$product['quantity'];
+
+			if ($old_qty !== $new_qty) {
+				$original[$label . ' > Cantidad'] = $old_qty;
+				$changed[$label . ' > Cantidad']  = $new_qty;
+			}
+		}
+
+		return array('original' => $original, 'changed' => $changed);
+	}
+
 	public function info() {
 		$this->load->model('sale/draft');
 
@@ -1419,7 +1492,6 @@ class ControllerSaleDraft extends Controller {
 
 			$this->data['email'] = $draft_info['email'];
 			$this->data['telephone'] = $draft_info['telephone'];
-			$this->data['fax'] = $draft_info['fax'];
 			$this->data['company'] = $draft_info['company'];
 			$this->data['date_added'] = $draft_info['date_added'];
 			$this->data['date_modified'] = $draft_info['date_modified'];

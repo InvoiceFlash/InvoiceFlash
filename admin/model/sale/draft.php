@@ -86,9 +86,8 @@ class ModelSaleDraft extends Model {
 			 `customer_id` = '" . (int)$data['customer_id'] . "', 
 			 `customer_group_id` = '" . (int)$data['customer_group_id'] . "', 
 			 `email` = '" . $this->db->escape($data['email']) . "', 
-			 `telephone` = '" . $this->db->escape($data['telephone']) . "', 
-			 `fax` = '" . $this->db->escape($data['fax']) . "', 
-			 `payment_company` = '" . $this->db->escape($data['payment_company']) . "', 
+			 `telephone` = '" . $this->db->escape($data['telephone']) . "',
+			 `payment_company` = '" . $this->db->escape($data['payment_company']) . "',
 			 `payment_address_1` = '" . $this->db->escape($data['payment_address_1']) . "', 
 			 `payment_address_2` = '" . $this->db->escape($data['payment_address_2']) . "', 
 			 `payment_city` = '" . $this->db->escape($data['payment_city']) . "', 
@@ -166,6 +165,8 @@ class ModelSaleDraft extends Model {
 
 		// Update draft total
 		$this->db->query("UPDATE `" . DB_PREFIX . "draft` SET total = '" . (float)$total . "' WHERE draft_id = '" . (int)$draft_id . "'");
+
+		return $draft_id;
 	}
 
 	public function getDraftTotals($draft_id) {
@@ -221,9 +222,8 @@ class ModelSaleDraft extends Model {
 		`customer_id` = '" . (int)$data['customer_id'] . "', 
 		`customer_group_id` = '" . (int)$data['customer_group_id'] . "', 
 		`email` = '" . $this->db->escape($data['email']) . "', 
-		`telephone` = '" . $this->db->escape($data['telephone']) . "', 
-		`fax` = '" . $this->db->escape($data['fax']) . "', 
-		`payment_company` = '" . $this->db->escape($data['payment_company']) . "', 
+		`telephone` = '" . $this->db->escape($data['telephone']) . "',
+		`payment_company` = '" . $this->db->escape($data['payment_company']) . "',
 		`payment_address_1` = '" . $this->db->escape($data['payment_address_1']) . "', 
 		`payment_address_2` = '" . $this->db->escape($data['payment_address_2']) . "', 
 		`payment_city` = '" . $this->db->escape($data['payment_city']) . "', 
@@ -373,7 +373,6 @@ class ModelSaleDraft extends Model {
 				'company'                 => $draft_query->row['company'],
 				'customer_group_id'       => $draft_query->row['customer_group_id'],
 				'telephone'               => $draft_query->row['telephone'],
-				'fax'                     => $draft_query->row['fax'],
 				'email'                   => $draft_query->row['email'],
 				'payment_company'         => $draft_query->row['payment_company'],
 				'payment_company_id'      => $draft_query->row['payment_company_id'],
