@@ -320,6 +320,19 @@ class ControllerAccountingSubaccount extends Controller {
 		$this->data['entry_code'] = $this->language->get('entry_code');
 		$this->data['entry_title'] = $this->language->get('entry_title');
 		$this->data['entry_vat_regime'] = $this->language->get('entry_vat_regime');
+		$this->data['entry_cif'] = $this->language->get('entry_cif');
+		$this->data['entry_phone'] = $this->language->get('entry_phone');
+		$this->data['entry_fax'] = $this->language->get('entry_fax');
+		$this->data['entry_email'] = $this->language->get('entry_email');
+		$this->data['entry_street_type'] = $this->language->get('entry_street_type');
+		$this->data['entry_street'] = $this->language->get('entry_street');
+		$this->data['entry_number'] = $this->language->get('entry_number');
+		$this->data['entry_postcode'] = $this->language->get('entry_postcode');
+		$this->data['entry_city'] = $this->language->get('entry_city');
+		$this->data['entry_province'] = $this->language->get('entry_province');
+		$this->data['entry_country'] = $this->language->get('entry_country');
+		$this->data['entry_country_fiscal_code'] = $this->language->get('entry_country_fiscal_code');
+		$this->data['entry_eu_vat_code'] = $this->language->get('entry_eu_vat_code');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -398,12 +411,16 @@ class ControllerAccountingSubaccount extends Controller {
 			$this->data['title'] = '';
 		}
 
-		if (isset($this->request->post['vat_regime'])) {
-			$this->data['vat_regime'] = $this->request->post['vat_regime'];
-		} elseif (!empty($subaccount_info)) {
-			$this->data['vat_regime'] = $subaccount_info['vat_regime'];
-		} else {
-			$this->data['vat_regime'] = '';
+		$optional_fields = array('vat_regime', 'cif', 'phone', 'fax', 'email', 'street_type', 'street', 'number', 'postcode', 'city', 'province', 'country', 'country_fiscal_code', 'eu_vat_code');
+
+		foreach ($optional_fields as $field) {
+			if (isset($this->request->post[$field])) {
+				$this->data[$field] = $this->request->post[$field];
+			} elseif (!empty($subaccount_info)) {
+				$this->data[$field] = $subaccount_info[$field];
+			} else {
+				$this->data[$field] = '';
+			}
 		}
 
 		$this->template = 'accounting/subaccount_form.tpl';

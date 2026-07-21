@@ -22,32 +22,32 @@
 			<div class="row g-2 align-items-end">
 				<div class="col-12 col-sm-2">
 					<label class="control-label"><?php echo $entry_customer; ?></label>
-					<div class="input-group">
-						<input type="text" id="filter-customer" class="form-control" value="<?php echo $filter_customer; ?>" placeholder="<?php echo $entry_customer; ?>">
-						<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="Buscar Cliente"><i class="fa fa-search"></i></button></div>
+					<div style="position:relative;">
+						<input type="text" id="filter-customer" class="form-control" style="padding-right:2.5rem;" value="<?php echo $filter_customer; ?>" placeholder="<?php echo $entry_customer; ?>">
+						<button type="button" id="searchCustomer" class="btn btn-default" style="position:absolute; top:0; right:0; height:calc(2.0625rem + 2px); border-left:0; border-top-left-radius:0; border-bottom-left-radius:0;" title="Buscar Cliente"><i class="fa fa-search"></i></button>
 					</div>
 				</div>
 				<div class="col-12 col-sm-2">
 					<label class="control-label"><?php echo $entry_reference; ?></label>
 					<input type="text" id="filter-reference" class="form-control" value="<?php echo $filter_reference; ?>" placeholder="<?php echo $entry_reference; ?>">
 				</div>
-				<div class="col-6 col-sm-1">
+				<div class="col-6 col-sm-2">
 					<label class="control-label"><?php echo $entry_date_start; ?></label>
 					<div class="input-group">
 						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>">
 						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
 				</div>
-				<div class="col-6 col-sm-1">
+				<div class="col-6 col-sm-2">
 					<label class="control-label"><?php echo $entry_date_end; ?></label>
 					<div class="input-group">
 						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>">
 						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
 				</div>
-				<div class="col-12 col-sm-3">
+				<div class="col-12 col-sm-2">
 					<label class="control-label d-block">&nbsp;</label>
-					<div class="d-flex align-items-center" style="height: calc(1.5em + .75rem + 2px);">
+					<div class="d-flex align-items-center" style="height: calc(2.0625rem + 2px);">
 						<div class="form-check form-check-inline mb-0">
 							<input type="checkbox" class="form-check-input" id="filter-pending" <?php echo $filter_pending ? 'checked' : ''; ?>>
 							<label class="form-check-label" for="filter-pending"><?php echo $entry_pending; ?></label>
@@ -58,9 +58,9 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-12 col-sm-3">
+				<div class="col-12 col-sm-2">
 					<label class="control-label d-block">&nbsp;</label>
-					<button type="button" onclick="salesStatusFilter();" class="btn btn-info w-100"><i class="fa fa-sync"></i> <?php echo $button_filter; ?></button>
+					<button type="button" onclick="salesStatusFilter();" class="btn btn-info w-100" style="height:calc(2.0625rem + 2px);"><i class="fa fa-sync"></i> <?php echo $button_filter; ?></button>
 				</div>
 			</div>
 		</div>

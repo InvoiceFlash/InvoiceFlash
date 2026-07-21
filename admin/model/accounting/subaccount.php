@@ -1,13 +1,42 @@
 <?php
 class ModelAccountingSubaccount extends Model {
 	public function addSubaccount($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "ctab61 SET code = '" . $this->db->escape($data['code']) . "', title = '" . $this->db->escape($data['title']) . "', vat_regime = '" . $this->db->escape(isset($data['vat_regime']) ? $data['vat_regime'] : '') . "'");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "ctab61 SET " . $this->buildFieldsSql($data));
 
 		return $this->db->getLastId();
 	}
 
 	public function editSubaccount($ctab61_id, $data) {
-		$this->db->query("UPDATE " . DB_PREFIX . "ctab61 SET code = '" . $this->db->escape($data['code']) . "', title = '" . $this->db->escape($data['title']) . "', vat_regime = '" . $this->db->escape(isset($data['vat_regime']) ? $data['vat_regime'] : '') . "' WHERE ctab61_id = '" . (int)$ctab61_id . "'");
+		$this->db->query("UPDATE " . DB_PREFIX . "ctab61 SET " . $this->buildFieldsSql($data) . " WHERE ctab61_id = '" . (int)$ctab61_id . "'");
+	}
+
+	private function buildFieldsSql($data) {
+		$fields = array(
+			'code'                => isset($data['code']) ? $data['code'] : '',
+			'title'               => isset($data['title']) ? $data['title'] : '',
+			'vat_regime'          => isset($data['vat_regime']) ? $data['vat_regime'] : '',
+			'cif'                 => isset($data['cif']) ? $data['cif'] : '',
+			'phone'               => isset($data['phone']) ? $data['phone'] : '',
+			'fax'                 => isset($data['fax']) ? $data['fax'] : '',
+			'email'               => isset($data['email']) ? $data['email'] : '',
+			'street_type'         => isset($data['street_type']) ? $data['street_type'] : '',
+			'street'              => isset($data['street']) ? $data['street'] : '',
+			'number'              => isset($data['number']) ? $data['number'] : '',
+			'postcode'            => isset($data['postcode']) ? $data['postcode'] : '',
+			'city'                => isset($data['city']) ? $data['city'] : '',
+			'province'            => isset($data['province']) ? $data['province'] : '',
+			'country'             => isset($data['country']) ? $data['country'] : '',
+			'country_fiscal_code' => isset($data['country_fiscal_code']) ? $data['country_fiscal_code'] : '',
+			'eu_vat_code'         => isset($data['eu_vat_code']) ? $data['eu_vat_code'] : ''
+		);
+
+		$sql = array();
+
+		foreach ($fields as $column => $value) {
+			$sql[] = "`" . $column . "` = '" . $this->db->escape($value) . "'";
+		}
+
+		return implode(', ', $sql);
 	}
 
 	public function deleteSubaccount($ctab61_id) {
