@@ -2,7 +2,7 @@
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-	<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo ($draft_id) ? 'Fra. Borrador nº ' . $draft_id : $heading_title; ?></div>
+	<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo ($draft_id) ? sprintf($text_heading_draft_no, $draft_id) : $heading_title; ?></div>
 	<div class="pull-right">
 		<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
 		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
@@ -13,7 +13,7 @@
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
-					<button class="btn btn-warning pull-right" type="button" title="Albaranes Pendientes de facturar" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs">Albaranes Pendientes</span></button>
+					<button class="btn btn-warning pull-right" type="button" title="<?php echo $title_pending_deliveries; ?>" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs"><?php echo $text_pending_deliveries; ?></span></button>
 					<input type="hidden" name="comment" value="<?php echo $comment; ?>">
 				</div>
 				<div class="card-body">
@@ -39,7 +39,7 @@
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
-								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="Buscar Cliente"><i class="fa fa-search"></i></button></div>
+								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="<?php echo $title_search_customer; ?>"><i class="fa fa-search"></i></button></div>
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
 							</div>
 						</div>
@@ -168,21 +168,21 @@
 				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Albaranes pendientes</h5>
+							<h5 class="modal-title"><?php echo $text_pending_deliveries; ?></h5>
 							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div class="modal-body">
 							<div class="row g-2 mb-3">
 								<div class="col-12 col-sm-3">
-									<label class="control-label">Nº Albarán</label>
-									<input type="text" id="os-order-id" class="form-control" placeholder="Nº albarán">
+									<label class="control-label"><?php echo $entry_delivery_no; ?></label>
+									<input type="text" id="os-order-id" class="form-control" placeholder="<?php echo $entry_delivery_no; ?>">
 								</div>
 								<div class="col-12 col-sm">
-									<label class="control-label">Cliente</label>
-									<input type="text" id="os-company" class="form-control" placeholder="Empresa">
+									<label class="control-label"><?php echo $entry_customer_filter; ?></label>
+									<input type="text" id="os-company" class="form-control" placeholder="<?php echo $entry_company_name; ?>">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
-									<button type="button" id="os-search" class="btn btn-primary">Actualizar</button>
+									<button type="button" id="os-search" class="btn btn-primary"><?php echo $button_update; ?></button>
 								</div>
 							</div>
 							<div id="os-warning" class="alert alert-warning" style="display:none;"></div>
@@ -190,15 +190,15 @@
 								<table class="table table-bordered table-hover table-striped">
 									<thead>
 										<tr>
-											<th>Nº</th>
-											<th>Cliente</th>
-											<th>Fecha Albarán</th>
-											<th class="text-right">Total</th>
-											<th>Estado</th>
+											<th><?php echo $column_delivery_no; ?></th>
+											<th><?php echo $entry_customer_filter; ?></th>
+											<th><?php echo $column_delivery_date; ?></th>
+											<th class="text-right"><?php echo $column_total; ?></th>
+											<th><?php echo $column_status; ?></th>
 										</tr>
 									</thead>
 									<tbody id="os-results">
-										<tr><td colspan="5" class="text-center">Use los filtros para buscar albaranes</td></tr>
+										<tr><td colspan="5" class="text-center"><?php echo $text_use_filters_deliveries; ?></td></tr>
 									</tbody>
 								</table>
 							</div>
@@ -212,21 +212,21 @@
 				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Buscar Cliente</h5>
+							<h5 class="modal-title"><?php echo $title_search_customer; ?></h5>
 							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div class="modal-body">
 							<div class="row g-2 mb-3">
 								<div class="col-12 col-sm">
-									<label class="control-label">Empresa / Nombre</label>
-									<input type="text" id="cs-company" class="form-control" placeholder="Empresa / Nombre">
+									<label class="control-label"><?php echo $entry_company_name; ?></label>
+									<input type="text" id="cs-company" class="form-control" placeholder="<?php echo $entry_company_name; ?>">
 								</div>
 								<div class="col-12 col-sm">
-									<label class="control-label">Nombre de Contacto</label>
-									<input type="text" id="cs-contact" class="form-control" placeholder="Nombre de Contacto">
+									<label class="control-label"><?php echo $entry_contact_name; ?></label>
+									<input type="text" id="cs-contact" class="form-control" placeholder="<?php echo $entry_contact_name; ?>">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
-									<button type="button" id="cs-search" class="btn btn-primary">Actualizar</button>
+									<button type="button" id="cs-search" class="btn btn-primary"><?php echo $button_update; ?></button>
 								</div>
 							</div>
 							<div id="cs-warning" class="alert alert-warning" style="display:none;"></div>
@@ -234,14 +234,14 @@
 								<table class="table table-bordered table-hover table-striped">
 									<thead>
 										<tr>
-											<th>Empresa</th>
-											<th>Grupo</th>
-											<th>Email</th>
-											<th>Teléfono</th>
+											<th><?php echo $column_company; ?></th>
+											<th><?php echo $column_group; ?></th>
+											<th><?php echo $column_email; ?></th>
+											<th><?php echo $column_telephone; ?></th>
 										</tr>
 									</thead>
 									<tbody id="cs-results">
-										<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>
+										<tr><td colspan="4" class="text-center"><?php echo $text_press_update_customers; ?></td></tr>
 									</tbody>
 								</table>
 							</div>
@@ -255,25 +255,25 @@
 				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Buscar Producto</h5>
+							<h5 class="modal-title"><?php echo $text_search_product_title; ?></h5>
 							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 						</div>
 						<div class="modal-body">
 							<div class="row g-2 mb-3">
 								<div class="col-12 col-sm-3">
-									<label class="control-label">Código / SKU</label>
+									<label class="control-label"><?php echo $entry_sku_search; ?></label>
 									<input type="text" id="ps-sku" class="form-control" placeholder="SKU">
 								</div>
 								<div class="col-12 col-sm">
-									<label class="control-label">Descripción</label>
-									<input type="text" id="ps-name" class="form-control" placeholder="Descripción">
+									<label class="control-label"><?php echo $entry_description; ?></label>
+									<input type="text" id="ps-name" class="form-control" placeholder="<?php echo $entry_description; ?>">
 								</div>
 								<div class="col-12 col-sm-3">
-									<label class="control-label">Modelo</label>
-									<input type="text" id="ps-model" class="form-control" placeholder="Modelo">
+									<label class="control-label"><?php echo $column_model; ?></label>
+									<input type="text" id="ps-model" class="form-control" placeholder="<?php echo $column_model; ?>">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
-									<button type="button" id="ps-search" class="btn btn-primary">Actualizar</button>
+									<button type="button" id="ps-search" class="btn btn-primary"><?php echo $button_update; ?></button>
 								</div>
 							</div>
 							<div id="ps-warning" class="alert alert-warning" style="display:none;"></div>
@@ -282,14 +282,14 @@
 									<thead>
 										<tr>
 											<th>SKU</th>
-											<th>Descripción</th>
-											<th>Modelo</th>
-											<th class="text-right">Precio</th>
+											<th><?php echo $entry_description; ?></th>
+											<th><?php echo $column_model; ?></th>
+											<th class="text-right"><?php echo $column_price; ?></th>
 											<th class="text-right">Stock</th>
 										</tr>
 									</thead>
 									<tbody id="ps-results">
-										<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>
+										<tr><td colspan="5" class="text-center"><?php echo $text_use_filters_products; ?></td></tr>
 									</tbody>
 								</table>
 							</div>
@@ -566,33 +566,49 @@
 <input type="hidden" id="store_url" value="<?php echo $store_url; ?>">
 <input type="hidden" id="button_remove" value="<?php echo $button_remove; ?>">
 <input type="hidden" id="text_no_results" value="<?php echo $text_no_results; ?>">
+<input type="hidden" id="button_update" value="<?php echo $button_update; ?>">
+<input type="hidden" id="text_searching" value="<?php echo $text_searching; ?>">
+<input type="hidden" id="text_no_customers_found" value="<?php echo $text_no_customers_found; ?>">
+<input type="hidden" id="error_search_customers" value="<?php echo $error_search_customers; ?>">
+<input type="hidden" id="text_no_deliveries_found" value="<?php echo $text_no_deliveries_found; ?>">
+<input type="hidden" id="error_search_deliveries" value="<?php echo $error_search_deliveries; ?>">
+<input type="hidden" id="text_no_products_found" value="<?php echo $text_no_products_found; ?>">
+<input type="hidden" id="error_search_products" value="<?php echo $error_search_products; ?>">
+<input type="hidden" id="error_select_customer" value="<?php echo $error_select_customer; ?>">
+<input type="hidden" id="error_select_product" value="<?php echo $error_select_product; ?>">
+<input type="hidden" id="error_select_shipping" value="<?php echo $error_select_shipping; ?>">
+<input type="hidden" id="error_select_payment" value="<?php echo $error_select_payment; ?>">
+<input type="hidden" id="text_select_customer_first" value="<?php echo $text_select_customer_first; ?>">
+<input type="hidden" id="text_use_filters_deliveries" value="<?php echo $text_use_filters_deliveries; ?>">
+<input type="hidden" id="text_use_filters_products" value="<?php echo $text_use_filters_products; ?>">
+<input type="hidden" id="text_press_update_customers" value="<?php echo $text_press_update_customers; ?>">
 <script>
 function validateForm(){
 
 	// Customer
 	var customer = $('#customer_id');
 	if (customer.val() == 0) {
-		alert("Debe indicar un cliente");
+		alert($('#error_select_customer').val());
 		return false;
 	}
 
 	// Products
 	if (!$("#product-row0").length > 0) {
-		alert("Inserte al menos un producto");
+		alert($('#error_select_product').val());
 		return false;
 	}
-	
+
 	// Shipping
 	var ship = $('#shipping').val();
 	if (ship=="") {
-		alert("Seleccione un método de envío");
+		alert($('#error_select_shipping').val());
 		return false;
 	}
 
 	// Payment
 	var pay = $('#payment').val();
 	if (pay==""){
-		alert("Seleccione una forma de pago");
+		alert($('#error_select_payment').val());
 		return false;
 	}
 
@@ -613,10 +629,15 @@ $('#searchCustomer').click(function(e) {
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('CustomerSearchModal')).show();
 });
 
+$('#CustomerSearchModal').on('shown.bs.modal', function() {
+	$('#cs-company').trigger('focus');
+});
+
 function csDoSearch() {
 	var btn = $('#cs-search');
-	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
-	$('#cs-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+	var searching = $('#text_searching').val();
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> ' + searching);
+	$('#cs-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
@@ -633,7 +654,7 @@ function csDoSearch() {
 			$('#cs-warning').hide();
 			csCustomers = json;
 			if (!json.length) {
-				$('#cs-results').html('<tr><td colspan="4" class="text-center">No se encontraron clientes</td></tr>');
+				$('#cs-results').html('<tr><td colspan="4" class="text-center">' + $('#text_no_customers_found').val() + '</td></tr>');
 				return;
 			}
 			var html = '';
@@ -648,12 +669,12 @@ function csDoSearch() {
 			$('#cs-results').html(html);
 		},
 		error: function() {
-			$('#cs-warning').text('Error al buscar clientes').show();
-			$('#cs-results').html('<tr><td colspan="4" class="text-center">Error al buscar clientes</td></tr>');
+			$('#cs-warning').text($('#error_search_customers').val()).show();
+			$('#cs-results').html('<tr><td colspan="4" class="text-center">' + $('#error_search_customers').val() + '</td></tr>');
 			csCustomers = [];
 		},
 		complete: function() {
-			btn.prop('disabled', false).html('Actualizar');
+			btn.prop('disabled', false).html($('#button_update').val());
 		}
 	});
 }
@@ -690,15 +711,16 @@ $(document).on('dblclick', '#cs-results tr[data-idx]', function() {
 $('#CustomerSearchModal').on('hidden.bs.modal', function() {
 	$('#cs-company').val('');
 	$('#cs-contact').val('');
-	$('#cs-results').html('<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
+	$('#cs-results').html('<tr><td colspan="4" class="text-center">' + $('#text_press_update_customers').val() + '</td></tr>');
 	$('#cs-warning').hide();
 	csCustomers = [];
 });
 
 function osDoSearch() {
 	var btn = $('#os-search');
-	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
-	$('#os-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+	var searching = $('#text_searching').val();
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> ' + searching);
+	$('#os-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/draft/searchOrders', 'token=' . $this->session->data['token'], 'SSL')); ?>',
@@ -708,7 +730,7 @@ function osDoSearch() {
 		success: function(json) {
 			$('#os-warning').hide();
 			if (!json || !json.length) {
-				$('#os-results').html('<tr><td colspan="5" class="text-center">No se encontraron albaranes</td></tr>');
+				$('#os-results').html('<tr><td colspan="5" class="text-center">' + $('#text_no_deliveries_found').val() + '</td></tr>');
 				return;
 			}
 			var html = '';
@@ -724,11 +746,11 @@ function osDoSearch() {
 			$('#os-results').html(html);
 		},
 		error: function() {
-			$('#os-warning').text('Error al buscar albaranes').show();
-			$('#os-results').html('<tr><td colspan="5" class="text-center">Error al buscar albaranes</td></tr>');
+			$('#os-warning').text($('#error_search_deliveries').val()).show();
+			$('#os-results').html('<tr><td colspan="5" class="text-center">' + $('#error_search_deliveries').val() + '</td></tr>');
 		},
 		complete: function() {
-			btn.prop('disabled', false).html('Actualizar');
+			btn.prop('disabled', false).html($('#button_update').val());
 		}
 	});
 }
@@ -796,7 +818,7 @@ $(document).on('dblclick', '#os-results tr[data-order-id]', function() {
 
 $('#OrderSearchModal').on('hidden.bs.modal', function() {
 	$('#os-order-id, #os-company').val('');
-	$('#os-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar albaranes</td></tr>');
+	$('#os-results').html('<tr><td colspan="5" class="text-center">' + $('#text_use_filters_deliveries').val() + '</td></tr>');
 	$('#os-warning').hide();
 });
 
@@ -808,7 +830,7 @@ var psToday = (function() {
 
 $('#addProduct').click(function(e) {
 	if ($('#customer_id').val() == 0) {
-		alert('Por favor, seleccione un cliente primero');
+		alert($('#text_select_customer_first').val());
 		$('#order-customer').focus();
 	} else {
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductSearchModal')).show();
@@ -817,8 +839,9 @@ $('#addProduct').click(function(e) {
 
 function psDoSearch() {
 	var btn = $('#ps-search');
-	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
-	$('#ps-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+	var searching = $('#text_searching').val();
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> ' + searching);
+	$('#ps-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
@@ -835,7 +858,7 @@ function psDoSearch() {
 			$('#ps-warning').hide();
 			psProducts = json;
 			if (!json.length) {
-				$('#ps-results').html('<tr><td colspan="5" class="text-center">No se encontraron productos</td></tr>');
+				$('#ps-results').html('<tr><td colspan="5" class="text-center">' + $('#text_no_products_found').val() + '</td></tr>');
 				return;
 			}
 			var html = '';
@@ -851,12 +874,12 @@ function psDoSearch() {
 			$('#ps-results').html(html);
 		},
 		error: function() {
-			$('#ps-warning').text('Error al buscar productos').show();
-			$('#ps-results').html('<tr><td colspan="5" class="text-center">Error al buscar productos</td></tr>');
+			$('#ps-warning').text($('#error_search_products').val()).show();
+			$('#ps-results').html('<tr><td colspan="5" class="text-center">' + $('#error_search_products').val() + '</td></tr>');
 			psProducts = [];
 		},
 		complete: function() {
-			btn.prop('disabled', false).html('Actualizar');
+			btn.prop('disabled', false).html($('#button_update').val());
 		}
 	});
 }
@@ -918,7 +941,7 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 
 $('#ProductSearchModal').on('hidden.bs.modal', function() {
 	$('#ps-sku, #ps-name, #ps-model').val('');
-	$('#ps-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>');
+	$('#ps-results').html('<tr><td colspan="5" class="text-center">' + $('#text_use_filters_products').val() + '</td></tr>');
 	$('#ps-warning').hide();
 	psProducts = [];
 });

@@ -135,6 +135,42 @@ $_['error_required']    = '&iexcl;%s obligatorio!';
 //add
 $_['tab_draft']             				  = 'Borrador';
 
+// Modal search
+$_['text_heading_draft_no']                   = 'Fra. Borrador n&ordm; %s';
+$_['text_pending_deliveries']                 = 'Albaranes Pendientes';
+$_['title_pending_deliveries']                = 'Albaranes Pendientes de facturar';
+$_['title_search_customer']                   = 'Buscar Cliente';
+$_['entry_delivery_no']                       = 'N&ordm; Albar&aacute;n';
+$_['entry_customer_filter']                   = 'Cliente';
+$_['entry_company_name']                      = 'Empresa / Nombre';
+$_['entry_contact_name']                      = 'Nombre de Contacto';
+$_['entry_sku_search']                        = 'C&oacute;digo / SKU';
+$_['entry_description']                       = 'Descripci&oacute;n';
+$_['column_delivery_no']                      = 'N&ordm;';
+$_['column_delivery_date']                    = 'Fecha Albar&aacute;n';
+$_['column_status']                           = 'Estado';
+$_['column_company']                          = 'Empresa';
+$_['column_group']                            = 'Grupo';
+$_['column_email']                            = 'Email';
+$_['column_telephone']                        = 'Tel&eacute;fono';
+$_['text_use_filters_deliveries']             = 'Use los filtros para buscar albaranes';
+$_['text_search_product_title']               = 'Buscar Producto';
+$_['text_use_filters_products']               = 'Use los filtros para buscar productos';
+$_['text_press_update_customers']             = 'Pulsa Actualizar para listar los clientes';
+$_['button_update']                           = 'Actualizar';
+$_['text_searching']                          = 'Buscando...';
+$_['text_no_customers_found']                 = 'No se encontraron clientes';
+$_['error_search_customers']                  = 'Error al buscar clientes';
+$_['text_no_deliveries_found']                = 'No se encontraron albaranes';
+$_['error_search_deliveries']                 = 'Error al buscar albaranes';
+$_['text_no_products_found']                  = 'No se encontraron productos';
+$_['error_search_products']                   = 'Error al buscar productos';
+$_['error_select_customer']                   = 'Debe indicar un cliente';
+$_['error_select_product']                    = 'Inserte al menos un producto';
+$_['error_select_shipping']                   = 'Seleccione un m&eacute;todo de env&iacute;o';
+$_['error_select_payment']                    = 'Seleccione una forma de pago';
+$_['text_select_customer_first']              = 'Por favor, seleccione un cliente primero';
+
 // Error
 $_['error_warning']                           = 'Advertencia: &iexcl;Por favor, revise el formulario cuidadosamente en busca de errores!';
 $_['error_permission']                        = 'Advertencia: &iexcl;No tiene permiso para modificar borradores!';

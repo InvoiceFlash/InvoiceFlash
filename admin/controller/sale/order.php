@@ -1795,6 +1795,10 @@ class ControllerSaleOrder extends Controller {
 		} else {
 			$lcReport = '';
 		}
+
+		if ($lcReport !== '' && (!preg_match('/^[A-Za-z0-9_-]+\.tpl$/', $lcReport) || !is_file(DIR_TEMPLATE . 'sale/reports/' . $lcReport))) {
+			$lcReport = '';
+		}
         // End add
 	
 		foreach ($invoices as $order_id) {
@@ -1953,10 +1957,12 @@ class ControllerSaleOrder extends Controller {
 
 		$this->data['logo'] = $this->config->get('config_logo');
 
+		$pdf_template = ($lcReport == '') ? 'sale/order_printPDF.tpl' : 'sale/reports/' . $lcReport;
+
 		if ($lcFormat=='pdf') {
-			$this->renderPDF('sale/order_printPDF.tpl', 'pdf', 'order', $order_id);
+			$this->renderPDF($pdf_template, 'pdf', 'order', $order_id);
 		} elseif ($lcFormat=='email') {
-			$this->renderPDF('sale/order_printPDF.tpl', 'email', 'order', $order_id);
+			$this->renderPDF($pdf_template, 'email', 'order', $order_id);
 
 			$json = array();
 

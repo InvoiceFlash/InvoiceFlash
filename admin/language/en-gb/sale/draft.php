@@ -128,12 +128,48 @@ $_['entry_shipping']                          = 'Shipping Method:';
 $_['entry_payment']                           = 'Payment Method:';
 $_['entry_coupon']                            = 'Coupon:';
 $_['entry_voucher']                           = 'Voucher:';
-$_['entry_name_ext']          				  = 'Descripcion:';
-$_['entry_price']             				  = 'Nuevo Precio:';
+$_['entry_name_ext']          				  = 'Description:';
+$_['entry_price']             				  = 'New Price:';
 $_['error_required']    = '%s required!';
 
 //add
 $_['tab_draft']             				  = 'Draft';
+
+// Modal search
+$_['text_heading_draft_no']                   = 'Draft No. %s';
+$_['text_pending_deliveries']                 = 'Pending Deliveries';
+$_['title_pending_deliveries']                = 'Deliveries pending to be invoiced';
+$_['title_search_customer']                   = 'Search Customer';
+$_['entry_delivery_no']                       = 'Delivery No.';
+$_['entry_customer_filter']                   = 'Customer';
+$_['entry_company_name']                      = 'Company / Name';
+$_['entry_contact_name']                      = 'Contact Name';
+$_['entry_sku_search']                        = 'Code / SKU';
+$_['entry_description']                       = 'Description';
+$_['column_delivery_no']                      = 'No.';
+$_['column_delivery_date']                    = 'Delivery Date';
+$_['column_status']                           = 'Status';
+$_['column_company']                          = 'Company';
+$_['column_group']                            = 'Group';
+$_['column_email']                            = 'Email';
+$_['column_telephone']                        = 'Telephone';
+$_['text_use_filters_deliveries']             = 'Use the filters to search deliveries';
+$_['text_search_product_title']               = 'Search Product';
+$_['text_use_filters_products']               = 'Use the filters to search products';
+$_['text_press_update_customers']             = 'Click Update to list customers';
+$_['button_update']                           = 'Update';
+$_['text_searching']                          = 'Searching...';
+$_['text_no_customers_found']                 = 'No customers found';
+$_['error_search_customers']                  = 'Error searching customers';
+$_['text_no_deliveries_found']                = 'No deliveries found';
+$_['error_search_deliveries']                 = 'Error searching deliveries';
+$_['text_no_products_found']                  = 'No products found';
+$_['error_search_products']                   = 'Error searching products';
+$_['error_select_customer']                   = 'You must select a customer';
+$_['error_select_product']                    = 'Insert at least one product';
+$_['error_select_shipping']                   = 'Select a shipping method';
+$_['error_select_payment']                    = 'Select a payment method';
+$_['text_select_customer_first']              = 'Please select a customer first';
 
 // Error
 $_['error_warning']                           = 'Warning: Please check the form carefully for errors!';

@@ -705,6 +705,42 @@ class ControllerSaleDraft extends Controller {
 		$this->data['tab_product'] = $this->language->get('tab_product');
 		$this->data['tab_total'] = $this->language->get('tab_total');
 
+		// Modal search
+		$this->data['text_heading_draft_no'] = $this->language->get('text_heading_draft_no');
+		$this->data['text_pending_deliveries'] = $this->language->get('text_pending_deliveries');
+		$this->data['title_pending_deliveries'] = $this->language->get('title_pending_deliveries');
+		$this->data['title_search_customer'] = $this->language->get('title_search_customer');
+		$this->data['entry_delivery_no'] = $this->language->get('entry_delivery_no');
+		$this->data['entry_customer_filter'] = $this->language->get('entry_customer_filter');
+		$this->data['entry_company_name'] = $this->language->get('entry_company_name');
+		$this->data['entry_contact_name'] = $this->language->get('entry_contact_name');
+		$this->data['entry_sku_search'] = $this->language->get('entry_sku_search');
+		$this->data['entry_description'] = $this->language->get('entry_description');
+		$this->data['column_delivery_no'] = $this->language->get('column_delivery_no');
+		$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
+		$this->data['column_status'] = $this->language->get('column_status');
+		$this->data['column_company'] = $this->language->get('column_company');
+		$this->data['column_group'] = $this->language->get('column_group');
+		$this->data['column_email'] = $this->language->get('column_email');
+		$this->data['column_telephone'] = $this->language->get('column_telephone');
+		$this->data['text_use_filters_deliveries'] = $this->language->get('text_use_filters_deliveries');
+		$this->data['text_search_product_title'] = $this->language->get('text_search_product_title');
+		$this->data['text_use_filters_products'] = $this->language->get('text_use_filters_products');
+		$this->data['text_press_update_customers'] = $this->language->get('text_press_update_customers');
+		$this->data['button_update'] = $this->language->get('button_update');
+		$this->data['text_searching'] = $this->language->get('text_searching');
+		$this->data['text_no_customers_found'] = $this->language->get('text_no_customers_found');
+		$this->data['error_search_customers'] = $this->language->get('error_search_customers');
+		$this->data['text_no_deliveries_found'] = $this->language->get('text_no_deliveries_found');
+		$this->data['error_search_deliveries'] = $this->language->get('error_search_deliveries');
+		$this->data['text_no_products_found'] = $this->language->get('text_no_products_found');
+		$this->data['error_search_products'] = $this->language->get('error_search_products');
+		$this->data['error_select_customer'] = $this->language->get('error_select_customer');
+		$this->data['error_select_product'] = $this->language->get('error_select_product');
+		$this->data['error_select_shipping'] = $this->language->get('error_select_shipping');
+		$this->data['error_select_payment'] = $this->language->get('error_select_payment');
+		$this->data['text_select_customer_first'] = $this->language->get('text_select_customer_first');
+
  		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
 		} else {
