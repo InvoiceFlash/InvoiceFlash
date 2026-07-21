@@ -350,6 +350,14 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
+			// Sales - Sales Status
+			if ($this->user->hasPermission('access', 'sale/sales_status')) {
+				$sales[] = array(
+					'name' => $this->language->get('text_sales_status'),
+					'href' => $this->url->link('sale/sales_status', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 
 			if ($sales) {
 				$this->data['menus'][] = array(
