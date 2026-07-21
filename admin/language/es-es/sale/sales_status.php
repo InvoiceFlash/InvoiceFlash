@@ -13,11 +13,9 @@ $_['column_status']   = 'Estado';
 
 // Entry / Filtros
 $_['entry_customer']   = 'Cliente';
-$_['entry_currency']   = 'Divisa';
 $_['entry_reference']  = 'Ref./Observaciones';
 $_['entry_date_start'] = 'Desde';
 $_['entry_date_end']   = 'Hasta';
-$_['entry_invoices']   = 'Facturas';
 $_['entry_pending']    = 'Pendientes';
 $_['entry_paid']       = 'Cobradas';
 

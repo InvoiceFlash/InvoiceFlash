@@ -19,49 +19,48 @@
 
 	<div class="panel-body">
 		<div id="filter" class="well">
-			<div class="row g-2">
+			<div class="row g-2 align-items-end">
 				<div class="col-12 col-sm-2">
 					<label class="control-label"><?php echo $entry_customer; ?></label>
-					<input type="text" id="filter-customer" class="form-control" value="<?php echo $filter_customer; ?>" placeholder="<?php echo $entry_customer; ?>">
+					<div class="input-group">
+						<input type="text" id="filter-customer" class="form-control" value="<?php echo $filter_customer; ?>" placeholder="<?php echo $entry_customer; ?>">
+						<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="Buscar Cliente"><i class="fa fa-search"></i></button></div>
+					</div>
 				</div>
 				<div class="col-12 col-sm-2">
-					<label class="control-label"><?php echo $entry_currency; ?></label>
-					<select id="filter-currency" class="form-control">
-						<option value="">---</option>
-						<?php foreach ($currencies as $currency) { ?>
-						<option value="<?php echo $currency['currency_code']; ?>" <?php echo ($currency['currency_code'] == $filter_currency_code) ? 'selected' : ''; ?>><?php echo $currency['currency_code']; ?></option>
-						<?php } ?>
-					</select>
-				</div>
-				<div class="col-12 col-sm-3">
 					<label class="control-label"><?php echo $entry_reference; ?></label>
 					<input type="text" id="filter-reference" class="form-control" value="<?php echo $filter_reference; ?>" placeholder="<?php echo $entry_reference; ?>">
 				</div>
-				<div class="col-12 col-sm-5">
-					<label class="control-label"><?php echo $entry_invoices; ?></label>
-					<div>
-						<div class="form-check form-check-inline">
+				<div class="col-6 col-sm-1">
+					<label class="control-label"><?php echo $entry_date_start; ?></label>
+					<div class="input-group">
+						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>">
+						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+					</div>
+				</div>
+				<div class="col-6 col-sm-1">
+					<label class="control-label"><?php echo $entry_date_end; ?></label>
+					<div class="input-group">
+						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>">
+						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+					</div>
+				</div>
+				<div class="col-12 col-sm-3">
+					<label class="control-label d-block">&nbsp;</label>
+					<div class="d-flex align-items-center" style="height: calc(1.5em + .75rem + 2px);">
+						<div class="form-check form-check-inline mb-0">
 							<input type="checkbox" class="form-check-input" id="filter-pending" <?php echo $filter_pending ? 'checked' : ''; ?>>
 							<label class="form-check-label" for="filter-pending"><?php echo $entry_pending; ?></label>
 						</div>
-						<div class="form-check form-check-inline">
+						<div class="form-check form-check-inline mb-0">
 							<input type="checkbox" class="form-check-input" id="filter-paid" <?php echo $filter_paid ? 'checked' : ''; ?>>
 							<label class="form-check-label" for="filter-paid"><?php echo $entry_paid; ?></label>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row g-2 mt-1 align-items-end">
-				<div class="col-12 col-sm-2">
-					<label class="control-label"><?php echo $entry_date_start; ?></label>
-					<input type="text" id="filter-date-start" class="form-control" placeholder="aaaa-mm-dd" value="<?php echo $filter_date_start; ?>">
-				</div>
-				<div class="col-12 col-sm-2">
-					<label class="control-label"><?php echo $entry_date_end; ?></label>
-					<input type="text" id="filter-date-end" class="form-control" placeholder="aaaa-mm-dd" value="<?php echo $filter_date_end; ?>">
-				</div>
-				<div class="col-12 col-sm-8 text-end">
-					<button type="button" onclick="salesStatusFilter();" class="btn btn-info"><i class="fa fa-sync"></i> <?php echo $button_filter; ?></button>
+				<div class="col-12 col-sm-3">
+					<label class="control-label d-block">&nbsp;</label>
+					<button type="button" onclick="salesStatusFilter();" class="btn btn-info w-100"><i class="fa fa-sync"></i> <?php echo $button_filter; ?></button>
 				</div>
 			</div>
 		</div>
@@ -120,15 +119,54 @@
 		</div>
 	</div>
 </div>
+<!-- Modal Buscar Cliente -->
+<div class="modal" tabindex="-1" role="dialog" id="CustomerSearchModal">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Buscar Cliente</h5>
+				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+			<div class="modal-body">
+				<div class="row g-2 mb-3">
+					<div class="col-12 col-sm">
+						<label class="control-label">Empresa</label>
+						<input type="text" id="cs-company" class="form-control" placeholder="Empresa">
+					</div>
+					<div class="col-12 col-sm">
+						<label class="control-label">Nombre de Contacto</label>
+						<input type="text" id="cs-contact" class="form-control" placeholder="Nombre de Contacto">
+					</div>
+					<div class="col-12 col-sm-auto d-flex align-items-end">
+						<button type="button" id="cs-search" class="btn btn-primary">Actualizar</button>
+					</div>
+				</div>
+				<div id="cs-warning" class="alert alert-warning" style="display:none;"></div>
+				<div style="overflow-x:auto;">
+					<table class="table table-bordered table-hover table-striped">
+						<thead>
+							<tr>
+								<th>Empresa</th>
+								<th>Email</th>
+								<th>Teléfono</th>
+							</tr>
+						</thead>
+						<tbody id="cs-results">
+							<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Fin Modal Buscar Cliente -->
 <script type="text/javascript"><!--
 function salesStatusFilter() {
 	var params = '';
 
 	var customer = $('#filter-customer').val();
 	if (customer) params += '&filter_customer=' + encodeURIComponent(customer);
-
-	var currency = $('#filter-currency').val();
-	if (currency) params += '&filter_currency_code=' + encodeURIComponent(currency);
 
 	var reference = $('#filter-reference').val();
 	if (reference) params += '&filter_reference=' + encodeURIComponent(reference);
@@ -142,6 +180,83 @@ function salesStatusFilter() {
 
 	location = 'index.php?route=sale/sales_status&token=<?php echo $token; ?>' + params;
 }
+
+var csCustomers = [];
+
+$('#searchCustomer').click(function(e) {
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('CustomerSearchModal')).show();
+});
+
+$('#CustomerSearchModal').on('shown.bs.modal', function() {
+	$('#cs-company').trigger('focus');
+});
+
+function csDoSearch() {
+	var btn = $('#cs-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#cs-results').html('<tr><td colspan="3" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
+	$.ajax({
+		url: 'index.php?route=sale/customer/searchCustomers&token=<?php echo $token; ?>',
+		type: 'post',
+		data: { filter_company: $('#cs-company').val(), filter_contact: $('#cs-contact').val() },
+		dataType: 'json',
+		success: function(json) {
+			if (json.warning) {
+				$('#cs-warning').text(json.warning).show();
+				$('#cs-results').html('<tr><td colspan="3" class="text-center">' + json.warning + '</td></tr>');
+				csCustomers = [];
+				return;
+			}
+			$('#cs-warning').hide();
+			csCustomers = json;
+			if (!json.length) {
+				$('#cs-results').html('<tr><td colspan="3" class="text-center">No se encontraron clientes</td></tr>');
+				return;
+			}
+			var html = '';
+			for (var i = 0; i < json.length; i++) {
+				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
+				html += '<td>' + (json[i].company || '') + '</td>';
+				html += '<td>' + (json[i].email || '') + '</td>';
+				html += '<td>' + (json[i].telephone || '') + '</td>';
+				html += '</tr>';
+			}
+			$('#cs-results').html(html);
+		},
+		error: function() {
+			$('#cs-warning').text('Error al buscar clientes').show();
+			$('#cs-results').html('<tr><td colspan="3" class="text-center">Error al buscar clientes</td></tr>');
+			csCustomers = [];
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
+		}
+	});
+}
+
+$('#cs-search').click(csDoSearch);
+
+$('#cs-company, #cs-contact').on('keypress', function(e) {
+	if (e.which == 13) csDoSearch();
+});
+
+$(document).on('dblclick', '#cs-results tr[data-idx]', function() {
+	var idx = parseInt($(this).data('idx'));
+	var c = csCustomers[idx];
+
+	$('#filter-customer').val(c.company);
+
+	bootstrap.Modal.getInstance(document.getElementById('CustomerSearchModal')).hide();
+});
+
+$('#CustomerSearchModal').on('hidden.bs.modal', function() {
+	$('#cs-company').val('');
+	$('#cs-contact').val('');
+	$('#cs-results').html('<tr><td colspan="3" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
+	$('#cs-warning').hide();
+	csCustomers = [];
+});
 //--></script>
 
 <?php echo $footer; ?>

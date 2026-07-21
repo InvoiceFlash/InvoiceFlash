@@ -13,11 +13,9 @@ $_['column_status']   = 'Status';
 
 // Entry / Filters
 $_['entry_customer']   = 'Customer';
-$_['entry_currency']   = 'Currency';
 $_['entry_reference']  = 'Ref./Notes';
 $_['entry_date_start'] = 'From';
 $_['entry_date_end']   = 'To';
-$_['entry_invoices']   = 'Invoices';
 $_['entry_pending']    = 'Pending';
 $_['entry_paid']       = 'Paid';
 

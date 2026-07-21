@@ -419,6 +419,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Accounting - Sub-Accounts
+			if ($this->user->hasPermission('access', 'accounting/subaccount')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_subaccounts'),
+					'href' => $this->url->link('accounting/subaccount', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($accounting) {
 				$this->data['menus'][] = array(
 					'id' => 'accounting',

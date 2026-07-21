@@ -7,13 +7,11 @@ class ControllerSaleSalesStatus extends Controller {
 		$this->document->setTitle($this->language->get('heading_title'));
 
 		$this->load->model('sale/sales_status');
-		$this->load->model('localisation/currency');
 
-		$filter_customer      = isset($this->request->get['filter_customer'])      ? $this->request->get['filter_customer']      : '';
-		$filter_reference     = isset($this->request->get['filter_reference'])     ? $this->request->get['filter_reference']     : '';
-		$filter_currency_code = isset($this->request->get['filter_currency_code']) ? $this->request->get['filter_currency_code'] : '';
-		$filter_date_start    = isset($this->request->get['filter_date_start'])    ? $this->request->get['filter_date_start']    : '';
-		$filter_date_end      = isset($this->request->get['filter_date_end'])      ? $this->request->get['filter_date_end']      : '';
+		$filter_customer   = isset($this->request->get['filter_customer'])   ? $this->request->get['filter_customer']   : '';
+		$filter_reference  = isset($this->request->get['filter_reference'])  ? $this->request->get['filter_reference']  : '';
+		$filter_date_start = isset($this->request->get['filter_date_start']) ? $this->request->get['filter_date_start'] : '';
+		$filter_date_end   = isset($this->request->get['filter_date_end'])   ? $this->request->get['filter_date_end']   : '';
 
 		// Sin filtro aplicado todavia (primera carga), Pendientes/Cobradas empiezan marcadas
 		if (isset($this->request->get['filter_applied'])) {
@@ -47,15 +45,14 @@ class ControllerSaleSalesStatus extends Controller {
 		);
 
 		$data = array(
-			'filter_customer'      => $filter_customer,
-			'filter_reference'     => $filter_reference,
-			'filter_currency_code' => $filter_currency_code,
-			'filter_date_start'    => $filter_date_start,
-			'filter_date_end'      => $filter_date_end,
-			'filter_pending'       => $filter_pending,
-			'filter_paid'          => $filter_paid,
-			'start'                => ($page - 1) * $this->config->get('config_admin_limit'),
-			'limit'                => $this->config->get('config_admin_limit')
+			'filter_customer'   => $filter_customer,
+			'filter_reference'  => $filter_reference,
+			'filter_date_start' => $this->toSqlDate($filter_date_start),
+			'filter_date_end'   => $this->toSqlDate($filter_date_end),
+			'filter_pending'    => $filter_pending,
+			'filter_paid'       => $filter_paid,
+			'start'             => ($page - 1) * $this->config->get('config_admin_limit'),
+			'limit'             => $this->config->get('config_admin_limit')
 		);
 
 		$total = $this->model_sale_sales_status->getTotalSalesStatus($data);
@@ -102,25 +99,20 @@ class ControllerSaleSalesStatus extends Controller {
 		$this->data['column_status']    = $this->language->get('column_status');
 
 		$this->data['entry_customer']   = $this->language->get('entry_customer');
-		$this->data['entry_currency']   = $this->language->get('entry_currency');
 		$this->data['entry_reference']  = $this->language->get('entry_reference');
 		$this->data['entry_date_start'] = $this->language->get('entry_date_start');
 		$this->data['entry_date_end']   = $this->language->get('entry_date_end');
-		$this->data['entry_invoices']   = $this->language->get('entry_invoices');
 		$this->data['entry_pending']    = $this->language->get('entry_pending');
 		$this->data['entry_paid']       = $this->language->get('entry_paid');
 
 		$this->data['button_filter'] = $this->language->get('button_filter');
 
-		$this->data['currencies'] = $this->model_sale_sales_status->getCurrencyCodes();
-
-		$this->data['filter_customer']      = $filter_customer;
-		$this->data['filter_reference']     = $filter_reference;
-		$this->data['filter_currency_code'] = $filter_currency_code;
-		$this->data['filter_date_start']    = $filter_date_start;
-		$this->data['filter_date_end']      = $filter_date_end;
-		$this->data['filter_pending']       = $filter_pending;
-		$this->data['filter_paid']          = $filter_paid;
+		$this->data['filter_customer']   = $filter_customer;
+		$this->data['filter_reference']  = $filter_reference;
+		$this->data['filter_date_start'] = $filter_date_start;
+		$this->data['filter_date_end']   = $filter_date_end;
+		$this->data['filter_pending']    = $filter_pending;
+		$this->data['filter_paid']       = $filter_paid;
 
 		$this->data['token'] = $this->session->data['token'];
 
@@ -142,10 +134,19 @@ class ControllerSaleSalesStatus extends Controller {
 		$this->response->setOutput($this->render());
 	}
 
+	// El datepicker (clase .date de common.js) envia DD-MM-YYYY; el modelo compara en formato YYYY-MM-DD.
+	private function toSqlDate($date) {
+		if (empty($date) || !preg_match('/^(\d{2})-(\d{2})-(\d{4})$/', $date, $match)) {
+			return '';
+		}
+
+		return $match[3] . '-' . $match[2] . '-' . $match[1];
+	}
+
 	private function buildUrl() {
 		$url = '';
 
-		foreach (array('filter_customer', 'filter_reference', 'filter_currency_code', 'filter_date_start', 'filter_date_end', 'filter_pending', 'filter_paid', 'filter_applied') as $key) {
+		foreach (array('filter_customer', 'filter_reference', 'filter_date_start', 'filter_date_end', 'filter_pending', 'filter_paid', 'filter_applied') as $key) {
 			if (isset($this->request->get[$key])) {
 				$url .= '&' . $key . '=' . $this->request->get[$key];
 			}

@@ -51,10 +51,6 @@ class ModelSaleSalesStatus extends Model {
 			$sql .= " AND t.comment LIKE '%" . $this->db->escape($data['filter_reference']) . "%'";
 		}
 
-		if (!empty($data['filter_currency_code'])) {
-			$sql .= " AND t.currency_code = '" . $this->db->escape($data['filter_currency_code']) . "'";
-		}
-
 		if (!empty($data['filter_date_start'])) {
 			$sql .= " AND t.sort_date >= '" . $this->db->escape($data['filter_date_start']) . " 00:00:00'";
 		}
@@ -88,7 +84,6 @@ class ModelSaleSalesStatus extends Model {
 				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
 				COALESCE(q.customer_id, o.customer_id, d.customer_id, i.customer_id) AS customer_id,
 				COALESCE(q.comment, o.comment, d.comment, i.comment) AS comment,
-				COALESCE(q.currency_code, o.currency_code, d.currency_code, i.currency_code) AS currency_code,
 				COALESCE(i.date_added, d.date_added, o.date_added, q.date_added) AS sort_date
 			FROM " . DB_PREFIX . "quote q
 			LEFT JOIN `" . DB_PREFIX . "order` o ON o.order_id = q.invoice_no
@@ -109,7 +104,6 @@ class ModelSaleSalesStatus extends Model {
 				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
 				COALESCE(o.customer_id, d.customer_id, i.customer_id) AS customer_id,
 				COALESCE(o.comment, d.comment, i.comment) AS comment,
-				COALESCE(o.currency_code, d.currency_code, i.currency_code) AS currency_code,
 				COALESCE(i.date_added, d.date_added, o.date_added) AS sort_date
 			FROM `" . DB_PREFIX . "order` o
 			LEFT JOIN " . DB_PREFIX . "delivery d ON d.delivery_id = o.invoice_no
@@ -129,7 +123,6 @@ class ModelSaleSalesStatus extends Model {
 				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
 				COALESCE(d.customer_id, i.customer_id) AS customer_id,
 				COALESCE(d.comment, i.comment) AS comment,
-				COALESCE(d.currency_code, i.currency_code) AS currency_code,
 				COALESCE(i.date_added, d.date_added) AS sort_date
 			FROM " . DB_PREFIX . "delivery d
 			LEFT JOIN " . DB_PREFIX . "invoice i ON i.invoice_id = d.invoice_no
@@ -147,23 +140,10 @@ class ModelSaleSalesStatus extends Model {
 				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
 				i.customer_id AS customer_id,
 				i.comment AS comment,
-				i.currency_code AS currency_code,
 				i.date_added AS sort_date
 			FROM " . DB_PREFIX . "invoice i
 			LEFT JOIN " . DB_PREFIX . "invoice_status ist ON ist.invoice_status_id = i.invoice_status_id AND ist.language_id = " . $language_id . "
 			WHERE i.invoice_id NOT IN (SELECT invoice_no FROM " . DB_PREFIX . "delivery WHERE invoice_no > 0)
 		";
-	}
-
-	public function getCurrencyCodes() {
-		$query = $this->db->query("
-			SELECT currency_code FROM " . DB_PREFIX . "quote WHERE currency_code != ''
-			UNION SELECT currency_code FROM `" . DB_PREFIX . "order` WHERE currency_code != ''
-			UNION SELECT currency_code FROM " . DB_PREFIX . "delivery WHERE currency_code != ''
-			UNION SELECT currency_code FROM " . DB_PREFIX . "invoice WHERE currency_code != ''
-			ORDER BY currency_code
-		");
-
-		return $query->rows;
 	}
 }
