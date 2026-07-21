@@ -23,7 +23,7 @@
 						<div class="col-xs-4 col-sm-3">
 							<div class="nav flex-column" id="vtabs-supplier">
 								<a href="#tab-supplier-general" class="nav-link active" role="tab" aria-selected="true" data-bs-toggle="pill"><?php echo $tab_general; ?></a>
-								<a href="#tab-supplier-notes" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_notes; ?></a>
+								<a href="#tab-supplier-notes" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"<?php if ($notes) { ?> style="background-color:#fdf6d3;"<?php } ?>><?php echo $tab_notes; ?></a>
 							</div>
 						</div>
 						<div class="col-xs-8 col-sm-9">

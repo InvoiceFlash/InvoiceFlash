@@ -84,6 +84,7 @@ $_['column_date_modified']                    = 'Fecha de Modificaci&oacute;n';
 $_['column_total']                            = 'Total';
 $_['column_product']                          = 'Producto';
 $_['column_model']                            = 'Modelo';
+$_['column_delivery_date']                    = 'Fecha de Entrega';
 $_['column_quantity']                         = 'Cantidad';
 $_['column_price']                            = 'Precio Unitario';
 $_['column_filename']                         = 'Nombre de Archivo';
@@ -159,6 +160,7 @@ $_['error_action']                            = 'Advertencia: &iexcl;No se pudo 
 $_['error_required']    = '&iexcl;%s obligatorio!';
 
 $_['button_quote'] 						  = 'Imprimir Presupuesto';
+$_['button_view']                           = 'Ver';
 $_['button_generate']                       = 'Generar Pedido';
 $_['button_convert_order']                  = 'Convertir a Pedido';
 $_['button_add_history']                    = 'A&ntilde;adir Historial';

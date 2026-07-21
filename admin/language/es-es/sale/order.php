@@ -90,6 +90,7 @@ $_['column_date_modified'] = 'Fecha de modificaci&oacute;n';
 $_['column_total'] = 'Total';
 $_['column_product'] = 'ART&Iacute;CULOS:';
 $_['column_model'] = 'MODELO:';
+$_['column_delivery_date'] = 'Fecha de Entrega';
 $_['column_quantity'] = 'CANTIDAD:';
 $_['column_price'] = 'PRECIO UNITARIO:';
 $_['column_comment'] = 'COMENTARIO DEL CLIENTE:';

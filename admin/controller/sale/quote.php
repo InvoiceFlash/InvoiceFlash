@@ -471,6 +471,7 @@ class ControllerSaleQuote extends Controller {
          );
 
       $this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['printPDF'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
       $this->data['print'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['insert'] = $this->url->link('sale/quote/insert', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['convert'] = $this->url->link('sale/quote/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -539,6 +540,7 @@ class ControllerSaleQuote extends Controller {
       $this->data['column_action'] = $this->language->get('column_action');
 
       $this->data['button_quote'] = $this->language->get('button_quote');
+      $this->data['button_view'] = $this->language->get('button_view');
       $this->data['button_insert'] = $this->language->get('button_insert');
       $this->data['button_convert_order'] = $this->language->get('button_convert_order');
       $this->data['button_delete'] = $this->language->get('button_delete');
@@ -734,10 +736,11 @@ class ControllerSaleQuote extends Controller {
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
+		$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_total'] = $this->language->get('column_total');
-			
+
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_close'] = $this->language->get('button_close');
@@ -1363,6 +1366,7 @@ class ControllerSaleQuote extends Controller {
 
 			$this->data['column_product'] = $this->language->get('column_product');
 			$this->data['column_model'] = $this->language->get('column_model');
+			$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
 			$this->data['column_quantity'] = $this->language->get('column_quantity');
 			$this->data['column_price'] = $this->language->get('column_price');
 			$this->data['column_total'] = $this->language->get('column_total');

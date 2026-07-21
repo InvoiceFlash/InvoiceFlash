@@ -223,6 +223,7 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_product; ?></th>
+								<th><?php echo $column_delivery_date; ?></th>
 								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
@@ -232,14 +233,16 @@
 						<tbody>
 							<?php foreach ($products as $product) { ?>
 							<tr>
-								<td><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a>
+								<td><a href="<?php echo $product['href']; ?>"><?php echo $product['name']; ?></a></td>
+								<td>
 									<?php foreach ($product['option'] as $option) { ?>
 									<?php if ($option['type'] != 'file'){ ?>
-									<div class="help"><?php echo $option['name']; ?>: <?php echo $option['value']; ?></div>
+									<div><?php echo $option['value']; ?></div>
 									<?php } else { ?>
-									<div class="help"><?php echo $option['name']; ?>: <a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></div>
+									<div><a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></div>
 									<?php } ?>
-									<?php } ?></td>
+									<?php } ?>
+								</td>
 								<td class="d-none d-sm-table-cell"><?php echo $product['model']; ?></td>
 								<td class="text-right"><?php echo $product['quantity']; ?></td>
 								<td class="text-right"><?php echo $product['price']; ?></td>
@@ -249,7 +252,7 @@
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
 									<td class="d-none d-sm-table-cell"></td>
-									<td colspan="3" class="text-right"><?php echo $total['title']; ?>:</td>
+									<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>
 									<td class="text-right"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>

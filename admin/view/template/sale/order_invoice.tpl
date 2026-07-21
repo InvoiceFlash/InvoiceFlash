@@ -9,6 +9,12 @@
 <link href="view/stylesheet/main.css" rel="stylesheet">
 <script src="view\javascript\jquery\jquery-3.3.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
+<style>
+@media print {
+	@page { size: auto; margin: 0; }
+	body { margin: 15mm 10mm; }
+}
+</style>
 </head>
 <body style="padding-top:0;">
 <div class="container">

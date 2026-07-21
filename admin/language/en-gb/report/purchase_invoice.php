@@ -25,5 +25,5 @@ $_['entry_status']          = 'Estado Factura:';
 $_['entry_supplier']        = 'Proveedor:';
 
 // Button
-$_['button_export']         = 'Exportar Excel';
+$_['button_export']         = 'Export Excel';
 ?>

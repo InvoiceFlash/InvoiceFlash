@@ -1263,24 +1263,26 @@ $(function(){
 						product=json['order_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-order-product\').click();"><i class="fa fa-trash"></i></a></td>';
-						html+='<td>'+product['name']+'<br><input type="hidden" name="order_product['+product_row+'][order_product_id]" value=""><input type="hidden" name="order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="order_product['+product_row+'][name]" value="'+product['name']+'">';
+						html+='<td>'+product['name']+'<input type="hidden" name="order_product['+product_row+'][order_product_id]" value=""><input type="hidden" name="order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="order_product['+product_row+'][name]" value="'+product['name']+'">';
+						var deliveryDateHtml='';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){
 								option = product['option'][j];
-								
-								html+='<div class="help">'+option['name']+':'+option['value']+'</div>';
+
+								deliveryDateHtml+='<div>'+option['value']+'</div>';
 								html+='<input type="hidden" name="order_product['+product_row+'][order_option]['+option_row+'][order_option_id]" value="'+option['order_option_id']+'">';
 								html+='<input type="hidden" name="order_product['+product_row+'][order_option]['+option_row+'][product_option_id]" value="'+option['product_option_id']+'">';
 								html+='<input type="hidden" name="order_product['+product_row+'][order_option]['+option_row+'][product_option_value_id]" value="'+option['product_option_value_id']+'">';
 								html+='<input type="hidden" name="order_product['+product_row+'][order_option]['+option_row+'][name]" value="'+option['name']+'">';
 								html+='<input type="hidden" name="order_product['+product_row+'][order_option]['+option_row+'][value]" value="'+option['value']+'">';
 								html+='<input type="hidden" name="order_product['+product_row+'][order_option]['+option_row+'][type]" value="'+option['type']+'">';
-								
+
 								option_row++;
 							}
 						}
 						html+='<input type="hidden" name="order_product['+product_row+'][model]" value="'+product['model']+'">';
 						html+='</td>';
+						html+='<td>'+deliveryDateHtml+'</td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right order-qty" name="order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right order-price" data-catalog-price="'+product['catalog_price_raw']+'" name="order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
@@ -1766,22 +1768,24 @@ $(function(){
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-quote-product\').click();"><i class="fa fa-trash"></i></a></td>';
 						html+='<td><div class="d-flex justify-content-between align-items-start"><span>'+product['name']+'</span><button type="button" class="btn btn-default btn-xs" onclick="quoteShowDescription('+product['product_id']+', '+product_row+');"><i class="fa fa-info-circle"></i></button></div><input type="hidden" id="quote-extended-description-'+product_row+'" name="quote_product['+product_row+'][extended_description]" value="'+(product['extended_description'] ? product['extended_description'].replace(/"/g, '&quot;') : '')+'"><input type="hidden" name="quote_product['+product_row+'][quote_product_id]" value=""><input type="hidden" name="quote_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="quote_product['+product_row+'][name]" value="'+product['name']+'">';
+						var deliveryDateHtml='';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){
 								option = product['option'][j];
-								
-								html+='<div class="help">'+option['name']+':'+option['value']+'</div>';
+
+								deliveryDateHtml+='<div>'+option['value']+'</div>';
 								html+='<input type="hidden" name="quote_product['+product_row+'][quote_option]['+option_row+'][quote_option_id]" value="'+option['quote_option_id']+'">';
 								html+='<input type="hidden" name="quote_product['+product_row+'][quote_option]['+option_row+'][product_option_id]" value="'+option['product_option_id']+'">';
 								html+='<input type="hidden" name="quote_product['+product_row+'][quote_option]['+option_row+'][product_option_value_id]" value="'+option['product_option_value_id']+'">';
 								html+='<input type="hidden" name="quote_product['+product_row+'][quote_option]['+option_row+'][name]" value="'+option['name']+'">';
 								html+='<input type="hidden" name="quote_product['+product_row+'][quote_option]['+option_row+'][value]" value="'+option['value']+'">';
 								html+='<input type="hidden" name="quote_product['+product_row+'][quote_option]['+option_row+'][type]" value="'+option['type']+'">';
-								
+
 								option_row++;
 							}
 						}
 						html+='</td>';
+						html+='<td>'+deliveryDateHtml+'</td>';
 						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="quote_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="'+product['catalog_price_raw']+'" name="quote_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';

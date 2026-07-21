@@ -111,6 +111,7 @@
 							<tr>
 								<th></th>
 								<th><?php echo $column_product; ?></th>
+								<th><?php echo $column_delivery_date; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -123,12 +124,11 @@
 							<?php foreach ($order_products as $order_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
 								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-order-product').click();"><i class="fa fa-trash"></i></a></td>
-								<td><?php echo $order_product['name']; ?><br>
+								<td><?php echo $order_product['name']; ?>
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_product_id]" value="<?php echo $order_product['order_product_id']; ?>">
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $order_product['product_id']; ?>">
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][name]" value="<?php echo $order_product['name']; ?>">
 									<?php foreach ($order_product['option'] as $option) { ?>
-										<div class="help"><?php echo $option['name']; ?>: <?php echo $option['value']; ?></div>
 										<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][order_option_id]" value="<?php echo $option['order_option_id']; ?>">
 										<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][product_option_id]" value="<?php echo $option['product_option_id']; ?>">
 										<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][product_option_value_id]" value="<?php echo $option['product_option_value_id']; ?>">
@@ -138,6 +138,11 @@
 									<?php $option_row++; ?>
 									<?php } ?>
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][model]" value="<?php echo $order_product['model']; ?>">
+								</td>
+								<td>
+									<?php foreach ($order_product['option'] as $option) { ?>
+										<div><?php echo $option['value']; ?></div>
+									<?php } ?>
 								</td>
 								<td class="text-right"><input type="text" class="form-control text-right order-qty" name="order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right order-price" data-catalog-price="<?php echo $order_product['catalog_price_raw']; ?>" name="order_product[<?php echo $product_row; ?>][price]" value="<?php echo $order_product['price_raw']; ?>"></td>
@@ -150,7 +155,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -160,7 +165,7 @@
 							<?php foreach ($order_totals as $order_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="3"><?php echo $order_total['title']; ?>:
+								<td class="text-right" colspan="4"><?php echo $order_total['title']; ?>:
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][order_total_id]" value="<?php echo $order_total['order_total_id']; ?>">
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][code]" value="<?php echo $order_total['code']; ?>">
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][title]" value="<?php echo $order_total['title']; ?>">

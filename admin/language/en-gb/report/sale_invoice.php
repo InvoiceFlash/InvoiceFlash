@@ -9,7 +9,7 @@ $_['text_all_customers']    = 'All Customers';
 // Column
 $_['column_invoiceid']      = 'Invoice ID';
 $_['column_customer']       = 'Customer Name';
-$_['column_date_added']     = 'Date Added';
+$_['column_date_added']     = 'Date';
 $_['column_address']        = 'Address';
 $_['column_city']           = 'City';
 $_['column_postcode']       = 'Postcode';
@@ -35,5 +35,5 @@ $_['entry_status']          = 'Invoice Status:';
 $_['entry_customer']        = 'Customer:';
 
 // Button
-$_['button_export']         = 'Exportar Excel';
+$_['button_export']         = 'Export Excel';
 ?>

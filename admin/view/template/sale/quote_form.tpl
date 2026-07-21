@@ -112,6 +112,7 @@
 							<tr>
 								<th></th>
 								<th><?php echo $column_product; ?></th>
+								<th><?php echo $column_delivery_date; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -134,7 +135,6 @@
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $quote_product['product_id']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][name]" value="<?php echo $quote_product['name']; ?>">
 									<?php foreach ($quote_product['option'] as $option) { ?>
-										<div class="help"><?php echo $option['name']; ?>: <?php echo $option['value']; ?></div>
 										<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_option][<?php echo $option_row; ?>][quote_option_id]" value="<?php echo $option['quote_option_id']; ?>">
 										<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_option][<?php echo $option_row; ?>][product_option_id]" value="<?php echo $option['product_option_id']; ?>">
 										<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_option][<?php echo $option_row; ?>][product_option_value_id]" value="<?php echo $option['product_option_value_id']; ?>">
@@ -144,6 +144,11 @@
 									<?php $option_row++; ?>
 									<?php } ?>
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][model]" value="<?php echo $quote_product['model']; ?>">
+								</td>
+								<td>
+									<?php foreach ($quote_product['option'] as $option) { ?>
+										<div><?php echo $option['value']; ?></div>
+									<?php } ?>
 								</td>
 								<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $quote_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="<?php echo $quote_product['catalog_price_raw']; ?>" name="quote_product[<?php echo $product_row; ?>][price]" value="<?php echo $quote_product['price_raw']; ?>"></td>
@@ -156,7 +161,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -166,7 +171,7 @@
 							<?php foreach ($quote_totals as $quote_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="3"><?php echo $quote_total['title']; ?>:
+								<td class="text-right" colspan="4"><?php echo $quote_total['title']; ?>:
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][quote_total_id]" value="<?php echo $quote_total['quote_total_id']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][code]" value="<?php echo $quote_total['code']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][title]" value="<?php echo $quote_total['title']; ?>">

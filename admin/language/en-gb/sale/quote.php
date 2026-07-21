@@ -84,6 +84,7 @@ $_['column_date_modified']                    = 'Date Modified';
 $_['column_total']                            = 'Total';
 $_['column_product']                          = 'Product';
 $_['column_model']                            = 'Model';
+$_['column_delivery_date']                    = 'Delivery Date';
 $_['column_quantity']                         = 'Quantity';
 $_['column_price']                            = 'Unit Price';
 $_['column_filename']                         = 'Filename';
@@ -159,6 +160,7 @@ $_['error_action']                            = 'Warning: Could not complete thi
 $_['error_required']    = '%s required!';
 
 $_['button_quote'] 						  = 'Print Quote';
+$_['button_view']                           = 'View';
 $_['button_generate']                       = 'Generate Order';
 $_['button_convert_order']                  = 'Convert to Order';
 

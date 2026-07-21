@@ -9,7 +9,7 @@ $_['text_all_customers']    = 'Todos los Clientes';
 // Column
 $_['column_invoiceid']      = 'ID Factura';
 $_['column_customer']       = 'Nombre del Cliente';
-$_['column_date_added']     = 'Fecha de Alta';
+$_['column_date_added']     = 'Fecha';
 $_['column_address']        = 'Direcci&oacute;n';
 $_['column_city']           = 'Ciudad';
 $_['column_postcode']       = 'C&oacute;digo Postal';
