@@ -101,6 +101,98 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		$this->getList();
 	}
 
+	public function convertToInvoice() {
+		$this->load->language('purchase/purchase_order');
+
+		$this->load->model('purchase/purchase_order');
+		$this->load->model('purchase/invoice');
+		$this->load->model('purchase/supplier');
+		$this->load->model('tool/user_logs');
+
+		if (isset($this->request->post['selected']) && $this->validateConvert()) {
+			foreach ($this->request->post['selected'] as $purchase_order_id) {
+				$purchase_order_info = $this->model_purchase_purchase_order->getPurchaseOrder($purchase_order_id);
+
+				if ($purchase_order_info) {
+					$supplier_info = $this->model_purchase_supplier->getSupplier($purchase_order_info['supplier_id']);
+
+					$invoice_products = array();
+
+					foreach ($this->model_purchase_purchase_order->getPurchaseOrderProducts($purchase_order_id) as $purchase_order_product) {
+						$invoice_products[] = array(
+							'invoice_product_id' => 0,
+							'product_id'         => $purchase_order_product['product_id'],
+							'name'               => $purchase_order_product['name'],
+							'model'              => $purchase_order_product['model'],
+							'quantity'           => $purchase_order_product['quantity'],
+							'price'              => $purchase_order_product['price'],
+							'total'              => $purchase_order_product['total'],
+							'tax'                => $purchase_order_product['tax']
+						);
+					}
+
+					$data = array(
+						'store_id'            => $purchase_order_info['store_id'],
+						'supplier_id'         => $purchase_order_info['supplier_id'],
+						'supplier_invoice_no' => '',
+						'email'               => $supplier_info ? $supplier_info['email'] : '',
+						'telephone'           => $supplier_info ? $supplier_info['telephone'] : '',
+						'fax'                 => $supplier_info ? $supplier_info['fax'] : '',
+						'payment_company'     => $supplier_info ? $supplier_info['company'] : '',
+						'payment_company_id'  => $supplier_info ? $supplier_info['company_id'] : '',
+						'payment_tax_id'      => $supplier_info ? $supplier_info['tax_id'] : '',
+						'payment_address_1'   => $supplier_info ? $supplier_info['address_1'] : '',
+						'payment_address_2'   => $supplier_info ? $supplier_info['address_2'] : '',
+						'payment_city'        => $supplier_info ? $supplier_info['city'] : '',
+						'payment_postcode'    => $supplier_info ? $supplier_info['postcode'] : '',
+						'payment_country_id'  => $supplier_info ? $supplier_info['country_id'] : 0,
+						'payment_zone_id'     => $supplier_info ? $supplier_info['zone_id'] : 0,
+						'payment_method'      => $purchase_order_info['payment_method'],
+						'payment_code'        => $purchase_order_info['payment_code'],
+						'shipping_company'    => $supplier_info ? $supplier_info['company'] : '',
+						'shipping_address_1'  => $supplier_info ? $supplier_info['address_1'] : '',
+						'shipping_address_2'  => $supplier_info ? $supplier_info['address_2'] : '',
+						'shipping_city'       => $supplier_info ? $supplier_info['city'] : '',
+						'shipping_postcode'   => $supplier_info ? $supplier_info['postcode'] : '',
+						'shipping_country_id' => $supplier_info ? $supplier_info['country_id'] : 0,
+						'shipping_zone_id'    => $supplier_info ? $supplier_info['zone_id'] : 0,
+						'shipping_method'     => $purchase_order_info['shipping_method'],
+						'shipping_code'       => $purchase_order_info['shipping_code'],
+						'comment'             => $purchase_order_info['po_number'],
+						'invoice_status_id'   => 1,
+						'invoice_product'     => $invoice_products,
+						'invoice_total'       => $this->model_purchase_purchase_order->getPurchaseOrderTotals($purchase_order_id)
+					);
+
+					$new_invoice_id = $this->model_purchase_invoice->addInvoice($data);
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'purchase_invoice',
+						'document_id'   => (int)$new_invoice_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+				}
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success_convert');
+
+			$this->redirect($this->url->link('purchase/purchase_order', 'token=' . $this->session->data['token'] . $this->buildFilterUrl(), 'SSL'));
+		}
+
+		$this->getList();
+	}
+
+	private function validateConvert() {
+		if (!$this->user->hasPermission('modify', 'purchase/purchase_order')) {
+			$this->error['warning'] = $this->language->get('error_permission');
+		}
+
+		return !$this->error;
+	}
+
 	protected function getList() {
 		$filter_purchase_order_id = isset($this->request->get['filter_purchase_order_id']) ? $this->request->get['filter_purchase_order_id'] : null;
 		$filter_supplier = isset($this->request->get['filter_supplier']) ? $this->request->get['filter_supplier'] : null;
@@ -130,6 +222,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 
 		$this->data['insert'] = $this->url->link('purchase/purchase_order/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('purchase/purchase_order/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['convert'] = $this->url->link('purchase/purchase_order/convertToInvoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		$this->data['purchase_orders'] = array();
 
@@ -193,6 +286,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['button_convert_invoice'] = $this->language->get('button_convert_invoice');
 
 		$this->data['token'] = $this->session->data['token'];
 

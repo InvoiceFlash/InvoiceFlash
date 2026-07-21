@@ -31,6 +31,7 @@ $_['text_purchase_invoice'] = 'Facturas';
 $_['text_accounting'] = 'Contabilidad';
 $_['text_chart_of_accounts'] = 'Plan Contable';
 $_['text_subaccounts'] = 'Subcuentas';
+$_['text_pyg'] = 'Cuenta de P&eacute;rdidas y Ganancias';
 $_['text_report_sale_order'] = 'Pedidos';
 $_['text_report_sale_tax'] = 'Impuestos';
 $_['text_report_sale_shipping'] = 'Env&iacute;os';

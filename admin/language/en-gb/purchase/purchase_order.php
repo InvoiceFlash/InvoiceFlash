@@ -4,6 +4,7 @@ $_['heading_title']                  = 'Purchase Orders';
 
 // Text
 $_['text_success']                   = 'Success: You have modified purchase orders!';
+$_['text_success_convert']           = 'Success: The selected purchase orders have been converted to invoices!';
 $_['text_purchase_order_id']         = 'Purchase Order ID:';
 $_['text_store']                     = 'Store:';
 $_['text_supplier']                  = 'Supplier:';
@@ -60,6 +61,7 @@ $_['button_cancel']                  = 'Cancel';
 $_['button_add_product']             = 'Add Product';
 $_['button_remove']                  = 'Remove';
 $_['button_add_history']             = 'Add History';
+$_['button_convert_invoice']         = 'Create Invoice';
 
 // Tab
 $_['tab_supplier']                   = 'Purchase Order';

@@ -4,6 +4,7 @@ $_['heading_title']                  = 'Pedidos de Compra';
 
 // Text
 $_['text_success']                   = '&Eacute;xito: &iexcl;Ha modificado los pedidos de compra!';
+$_['text_success_convert']           = '&Eacute;xito: &iexcl;Los pedidos de compra seleccionados se han convertido en facturas!';
 $_['text_purchase_order_id']         = 'ID Pedido de Compra:';
 $_['text_store']                     = 'Tienda:';
 $_['text_supplier']                  = 'Proveedor:';
@@ -60,6 +61,7 @@ $_['button_cancel']                  = 'Cancelar';
 $_['button_add_product']             = 'A&ntilde;adir Producto';
 $_['button_remove']                  = 'Eliminar';
 $_['button_add_history']             = 'A&ntilde;adir Historial';
+$_['button_convert_invoice']         = 'Crear Factura';
 
 // Tab
 $_['tab_supplier']                   = 'Pedido de Compra';

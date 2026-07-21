@@ -127,6 +127,7 @@ $_['text_purchase_invoice']            = 'Invoices';
 $_['text_accounting']                  = 'Accounting';
 $_['text_chart_of_accounts']           = 'Chart of Accounts';
 $_['text_subaccounts']                 = 'Sub-Accounts';
+$_['text_pyg']                         = 'Profit and Loss Account';
 $_['text_web']                		   = 'Web';
 $_['text_marketing']                   = 'Marketing';
 $_['text_report_customer_support']     = 'Customer Support Contract';

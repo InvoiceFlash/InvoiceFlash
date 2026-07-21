@@ -33,14 +33,14 @@
 				</div>
 				<div class="col-6 col-sm-2">
 					<label class="control-label"><?php echo $entry_date_start; ?></label>
-					<div class="input-group">
+					<div class="input-group mb-0">
 						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>">
 						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
 				</div>
 				<div class="col-6 col-sm-2">
 					<label class="control-label"><?php echo $entry_date_end; ?></label>
-					<div class="input-group">
+					<div class="input-group mb-0">
 						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>">
 						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>

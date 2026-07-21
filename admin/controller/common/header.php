@@ -428,6 +428,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Accounting - Profit and Loss Account
+			if ($this->user->hasPermission('access', 'accounting/pyg')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_pyg'),
+					'href' => $this->url->link('accounting/pyg', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($accounting) {
 				$this->data['menus'][] = array(
 					'id' => 'accounting',
