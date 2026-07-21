@@ -52,52 +52,16 @@
 				</div>
 			</div>
 			<div class="row g-2 mt-1 align-items-end">
-				<div class="col-12">
-					<label class="control-label d-block"><?php echo $entry_period; ?></label>
-					<div class="d-flex flex-wrap align-items-center gap-2">
-						<div class="form-check form-check-inline">
-							<input type="radio" class="form-check-input" name="period_mode" id="period-all" value="all" <?php echo ($period_mode == 'all') ? 'checked' : ''; ?>>
-							<label class="form-check-label" for="period-all"><?php echo $text_all; ?></label>
-						</div>
-						<div class="form-check form-check-inline">
-							<input type="radio" class="form-check-input" name="period_mode" id="period-quarter" value="quarter" <?php echo ($period_mode == 'quarter') ? 'checked' : ''; ?>>
-							<label class="form-check-label" for="period-quarter"><?php echo $text_quarter; ?></label>
-						</div>
-						<select id="filter-quarter" class="form-control d-inline-block" style="width:70px;">
-							<?php for ($q = 1; $q <= 4; $q++) { ?>
-							<option value="<?php echo $q; ?>" <?php echo ($q == $filter_quarter) ? 'selected' : ''; ?>><?php echo $q; ?></option>
-							<?php } ?>
-						</select>
-						<select id="filter-quarter-year" class="form-control d-inline-block" style="width:90px;">
-							<?php foreach ($years as $year) { ?>
-							<option value="<?php echo $year; ?>" <?php echo ($year == $filter_quarter_year) ? 'selected' : ''; ?>><?php echo $year; ?></option>
-							<?php } ?>
-						</select>
-
-						<div class="form-check form-check-inline ms-3">
-							<input type="radio" class="form-check-input" name="period_mode" id="period-month" value="month" <?php echo ($period_mode == 'month') ? 'checked' : ''; ?>>
-							<label class="form-check-label" for="period-month"><?php echo $text_month; ?></label>
-						</div>
-						<select id="filter-month" class="form-control d-inline-block" style="width:130px;">
-							<?php foreach ($months as $month) { ?>
-							<option value="<?php echo $month['value']; ?>" <?php echo ($month['value'] == $filter_month) ? 'selected' : ''; ?>><?php echo $month['text']; ?></option>
-							<?php } ?>
-						</select>
-						<select id="filter-month-year" class="form-control d-inline-block" style="width:90px;">
-							<?php foreach ($years as $year) { ?>
-							<option value="<?php echo $year; ?>" <?php echo ($year == $filter_month_year) ? 'selected' : ''; ?>><?php echo $year; ?></option>
-							<?php } ?>
-						</select>
-
-						<div class="form-check form-check-inline ms-3">
-							<input type="radio" class="form-check-input" name="period_mode" id="period-dates" value="dates" <?php echo ($period_mode == 'dates') ? 'checked' : ''; ?>>
-							<label class="form-check-label" for="period-dates"><?php echo $text_dates; ?></label>
-						</div>
-						<input type="text" id="filter-date-start" class="form-control d-inline-block" style="width:120px;" placeholder="aaaa-mm-dd" value="<?php echo $filter_date_start; ?>">
-						<input type="text" id="filter-date-end" class="form-control d-inline-block" style="width:120px;" placeholder="aaaa-mm-dd" value="<?php echo $filter_date_end; ?>">
-
-						<button type="button" onclick="salesStatusFilter();" class="btn btn-info ms-auto"><i class="fa fa-sync"></i> <?php echo $button_filter; ?></button>
-					</div>
+				<div class="col-12 col-sm-2">
+					<label class="control-label"><?php echo $entry_date_start; ?></label>
+					<input type="text" id="filter-date-start" class="form-control" placeholder="aaaa-mm-dd" value="<?php echo $filter_date_start; ?>">
+				</div>
+				<div class="col-12 col-sm-2">
+					<label class="control-label"><?php echo $entry_date_end; ?></label>
+					<input type="text" id="filter-date-end" class="form-control" placeholder="aaaa-mm-dd" value="<?php echo $filter_date_end; ?>">
+				</div>
+				<div class="col-12 col-sm-8 text-end">
+					<button type="button" onclick="salesStatusFilter();" class="btn btn-info"><i class="fa fa-sync"></i> <?php echo $button_filter; ?></button>
 				</div>
 			</div>
 		</div>
@@ -169,12 +133,6 @@ function salesStatusFilter() {
 	var reference = $('#filter-reference').val();
 	if (reference) params += '&filter_reference=' + encodeURIComponent(reference);
 
-	var periodMode = $('input[name="period_mode"]:checked').val();
-	params += '&period_mode=' + encodeURIComponent(periodMode);
-	params += '&filter_quarter=' + encodeURIComponent($('#filter-quarter').val());
-	params += '&filter_quarter_year=' + encodeURIComponent($('#filter-quarter-year').val());
-	params += '&filter_month=' + encodeURIComponent($('#filter-month').val());
-	params += '&filter_month_year=' + encodeURIComponent($('#filter-month-year').val());
 	params += '&filter_date_start=' + encodeURIComponent($('#filter-date-start').val());
 	params += '&filter_date_end=' + encodeURIComponent($('#filter-date-end').val());
 

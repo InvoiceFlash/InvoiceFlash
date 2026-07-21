@@ -407,6 +407,27 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Accounting
+			$accounting = array();
+
+			// Accounting - Chart of Accounts
+			if ($this->user->hasPermission('access', 'accounting/chart')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_chart_of_accounts'),
+					'href' => $this->url->link('accounting/chart', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($accounting) {
+				$this->data['menus'][] = array(
+					'id' => 'accounting',
+					'name' => $this->language->get('text_accounting'),
+					'href' => '',
+					'children' => $accounting
+				);
+			}
+
 			// Reports
 			$reports = array();
 

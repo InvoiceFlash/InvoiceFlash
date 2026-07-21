@@ -12,33 +12,17 @@ $_['column_date']     = 'Fecha';
 $_['column_status']   = 'Estado';
 
 // Entry / Filtros
-$_['entry_customer']  = 'Cliente';
-$_['entry_currency']  = 'Divisa';
-$_['entry_reference'] = 'Ref./Observaciones';
-$_['entry_period']    = 'Periodo';
-$_['entry_invoices']  = 'Facturas';
-$_['entry_pending']   = 'Pendientes';
-$_['entry_paid']      = 'Cobradas';
+$_['entry_customer']   = 'Cliente';
+$_['entry_currency']   = 'Divisa';
+$_['entry_reference']  = 'Ref./Observaciones';
+$_['entry_date_start'] = 'Desde';
+$_['entry_date_end']   = 'Hasta';
+$_['entry_invoices']   = 'Facturas';
+$_['entry_pending']    = 'Pendientes';
+$_['entry_paid']       = 'Cobradas';
 
 // Text
-$_['text_all']       = 'Todo';
-$_['text_quarter']   = 'Trimestre';
-$_['text_month']     = 'Mes';
-$_['text_dates']     = 'Fechas';
 $_['text_no_results'] = 'No se han encontrado resultados.';
-
-$_['text_month_1']  = 'Enero';
-$_['text_month_2']  = 'Febrero';
-$_['text_month_3']  = 'Marzo';
-$_['text_month_4']  = 'Abril';
-$_['text_month_5']  = 'Mayo';
-$_['text_month_6']  = 'Junio';
-$_['text_month_7']  = 'Julio';
-$_['text_month_8']  = 'Agosto';
-$_['text_month_9']  = 'Septiembre';
-$_['text_month_10'] = 'Octubre';
-$_['text_month_11'] = 'Noviembre';
-$_['text_month_12'] = 'Diciembre';
 
 // Button
 $_['button_filter'] = 'Actualizar';

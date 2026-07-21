@@ -12,15 +12,8 @@ class ControllerSaleSalesStatus extends Controller {
 		$filter_customer      = isset($this->request->get['filter_customer'])      ? $this->request->get['filter_customer']      : '';
 		$filter_reference     = isset($this->request->get['filter_reference'])     ? $this->request->get['filter_reference']     : '';
 		$filter_currency_code = isset($this->request->get['filter_currency_code']) ? $this->request->get['filter_currency_code'] : '';
-
-		$period_mode = isset($this->request->get['period_mode']) ? $this->request->get['period_mode'] : 'all';
-
-		$filter_quarter      = isset($this->request->get['filter_quarter'])      ? (int)$this->request->get['filter_quarter']      : (int)ceil(date('n') / 3);
-		$filter_quarter_year = isset($this->request->get['filter_quarter_year']) ? (int)$this->request->get['filter_quarter_year'] : (int)date('Y');
-		$filter_month        = isset($this->request->get['filter_month'])        ? (int)$this->request->get['filter_month']        : (int)date('n');
-		$filter_month_year   = isset($this->request->get['filter_month_year'])   ? (int)$this->request->get['filter_month_year']   : (int)date('Y');
-		$filter_date_start   = isset($this->request->get['filter_date_start'])   ? $this->request->get['filter_date_start']        : '';
-		$filter_date_end     = isset($this->request->get['filter_date_end'])     ? $this->request->get['filter_date_end']          : '';
+		$filter_date_start    = isset($this->request->get['filter_date_start'])    ? $this->request->get['filter_date_start']    : '';
+		$filter_date_end      = isset($this->request->get['filter_date_end'])      ? $this->request->get['filter_date_end']      : '';
 
 		// Sin filtro aplicado todavia (primera carga), Pendientes/Cobradas empiezan marcadas
 		if (isset($this->request->get['filter_applied'])) {
@@ -29,21 +22,6 @@ class ControllerSaleSalesStatus extends Controller {
 		} else {
 			$filter_pending = 1;
 			$filter_paid    = 1;
-		}
-
-		$date_start = '';
-		$date_end   = '';
-
-		if ($period_mode == 'quarter' && $filter_quarter >= 1 && $filter_quarter <= 4) {
-			$start_month = (($filter_quarter - 1) * 3) + 1;
-			$date_start  = sprintf('%04d-%02d-01', $filter_quarter_year, $start_month);
-			$date_end    = date('Y-m-t', strtotime($date_start . ' +2 months'));
-		} elseif ($period_mode == 'month' && $filter_month >= 1 && $filter_month <= 12) {
-			$date_start = sprintf('%04d-%02d-01', $filter_month_year, $filter_month);
-			$date_end   = date('Y-m-t', strtotime($date_start));
-		} elseif ($period_mode == 'dates') {
-			$date_start = $filter_date_start;
-			$date_end   = $filter_date_end;
 		}
 
 		if (isset($this->request->get['page'])) {
@@ -72,8 +50,8 @@ class ControllerSaleSalesStatus extends Controller {
 			'filter_customer'      => $filter_customer,
 			'filter_reference'     => $filter_reference,
 			'filter_currency_code' => $filter_currency_code,
-			'filter_date_start'    => $date_start,
-			'filter_date_end'      => $date_end,
+			'filter_date_start'    => $filter_date_start,
+			'filter_date_end'      => $filter_date_end,
 			'filter_pending'       => $filter_pending,
 			'filter_paid'          => $filter_paid,
 			'start'                => ($page - 1) * $this->config->get('config_admin_limit'),
@@ -123,42 +101,22 @@ class ControllerSaleSalesStatus extends Controller {
 		$this->data['column_date']      = $this->language->get('column_date');
 		$this->data['column_status']    = $this->language->get('column_status');
 
-		$this->data['entry_customer']  = $this->language->get('entry_customer');
-		$this->data['entry_currency']  = $this->language->get('entry_currency');
-		$this->data['entry_reference'] = $this->language->get('entry_reference');
-		$this->data['entry_period']    = $this->language->get('entry_period');
-		$this->data['entry_invoices']  = $this->language->get('entry_invoices');
-		$this->data['entry_pending']   = $this->language->get('entry_pending');
-		$this->data['entry_paid']      = $this->language->get('entry_paid');
-
-		$this->data['text_all']     = $this->language->get('text_all');
-		$this->data['text_quarter'] = $this->language->get('text_quarter');
-		$this->data['text_month']   = $this->language->get('text_month');
-		$this->data['text_dates']   = $this->language->get('text_dates');
+		$this->data['entry_customer']   = $this->language->get('entry_customer');
+		$this->data['entry_currency']   = $this->language->get('entry_currency');
+		$this->data['entry_reference']  = $this->language->get('entry_reference');
+		$this->data['entry_date_start'] = $this->language->get('entry_date_start');
+		$this->data['entry_date_end']   = $this->language->get('entry_date_end');
+		$this->data['entry_invoices']   = $this->language->get('entry_invoices');
+		$this->data['entry_pending']    = $this->language->get('entry_pending');
+		$this->data['entry_paid']       = $this->language->get('entry_paid');
 
 		$this->data['button_filter'] = $this->language->get('button_filter');
-
-		$this->data['months'] = array();
-		for ($m = 1; $m <= 12; $m++) {
-			$this->data['months'][] = array(
-				'value' => $m,
-				'text'  => $this->language->get('text_month_' . $m)
-			);
-		}
-
-		$current_year = (int)date('Y');
-		$this->data['years'] = range($current_year - 5, $current_year + 1);
 
 		$this->data['currencies'] = $this->model_sale_sales_status->getCurrencyCodes();
 
 		$this->data['filter_customer']      = $filter_customer;
 		$this->data['filter_reference']     = $filter_reference;
 		$this->data['filter_currency_code'] = $filter_currency_code;
-		$this->data['period_mode']          = $period_mode;
-		$this->data['filter_quarter']       = $filter_quarter;
-		$this->data['filter_quarter_year']  = $filter_quarter_year;
-		$this->data['filter_month']         = $filter_month;
-		$this->data['filter_month_year']    = $filter_month_year;
 		$this->data['filter_date_start']    = $filter_date_start;
 		$this->data['filter_date_end']      = $filter_date_end;
 		$this->data['filter_pending']       = $filter_pending;
@@ -187,7 +145,7 @@ class ControllerSaleSalesStatus extends Controller {
 	private function buildUrl() {
 		$url = '';
 
-		foreach (array('filter_customer', 'filter_reference', 'filter_currency_code', 'period_mode', 'filter_quarter', 'filter_quarter_year', 'filter_month', 'filter_month_year', 'filter_date_start', 'filter_date_end', 'filter_pending', 'filter_paid', 'filter_applied') as $key) {
+		foreach (array('filter_customer', 'filter_reference', 'filter_currency_code', 'filter_date_start', 'filter_date_end', 'filter_pending', 'filter_paid', 'filter_applied') as $key) {
 			if (isset($this->request->get[$key])) {
 				$url .= '&' . $key . '=' . $this->request->get[$key];
 			}
