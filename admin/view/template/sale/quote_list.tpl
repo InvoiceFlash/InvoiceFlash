@@ -4,8 +4,8 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-edit"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button type="button" onclick="submitQuotes(invoiceUrl);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
-			<button type="button" onclick="submitQuotes(printPDFUrl);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
+			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
+			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_order; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
@@ -75,9 +75,6 @@
 	</div>
 </div>
 <script>
-var invoiceUrl = '<?php echo $invoice; ?>';
-var printPDFUrl = '<?php echo $printPDF; ?>';
-
 function submitQuotes(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
 		alert('Seleccione un presupuesto para ver');

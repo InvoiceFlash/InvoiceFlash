@@ -2133,7 +2133,7 @@ class ControllerSaledelivery extends Controller {
 
 			$this->response->setOutput(json_encode($json));
 		} else {
-			$this->template = 'sale/delivery_print.tpl';
+			$this->template = 'sale/delivery_invoice.tpl';
 			
 			$this->response->setOutput($this->render());
 		}

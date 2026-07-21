@@ -72,19 +72,19 @@
 	<table class="table table-bordered">
 		<tr>
 			<th><?php echo $column_product; ?></th>
-			<th><?php echo $column_model; ?></th>
+			<th><?php echo $column_delivery_date; ?></th>
 			<th class="text-right"><?php echo $column_quantity; ?></th>
 			<th class="text-right"><?php echo $column_price; ?></th>
 			<th class="text-right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($quote['product'] as $product) { ?>
 		<tr>
-			<td><?php echo $product['name']; ?>
+			<td><?php echo $product['name']; ?></td>
+			<td>
 				<?php foreach ($product['option'] as $option) { ?>
-				<br>
-				&nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
-				<?php } ?></td>
-			<td><?php echo $product['model']; ?></td>
+				<div><?php echo $option['value']; ?></div>
+				<?php } ?>
+			</td>
 			<td class="text-right"><?php echo $product['quantity']; ?></td>
 			<td class="text-right"><?php echo $product['price']; ?></td>
 			<td class="text-right"><?php echo $product['total']; ?></td>

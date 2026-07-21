@@ -4,7 +4,8 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> Imprimir</span></button>
+			<button onclick="printPDF();" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
+			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="far fa-eye"></i><span class="hidden-xs"> View</span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_delivery; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
@@ -91,6 +92,7 @@
 	</div>
 </div>
 <?php include DIR_TEMPLATE . 'sale/print_modal.tpl'; ?>
+<form action="<?php echo $printPDF; ?>" id="formPrintPDF" method="post" target="_blank" style="display:none;"></form>
 <script>
 function validate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
@@ -99,8 +101,21 @@ function validate() {
 		$('input[type="checkbox"]:checked').each(function(){
 			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');
 		});
-		
+
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('PrintModal')).toggle();
+	}
+}
+function printPDF() {
+	if (!$('input[type="checkbox"]').is(':checked')) {
+		alert('Seleccione un pedido para imprimir');
+	} else {
+		$('#formPrintPDF input[name="selected[]"]').remove();
+
+		$('input[type="checkbox"]:checked').each(function(){
+			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrintPDF');
+		});
+
+		$('#formPrintPDF').submit();
 	}
 }
 $(document).ready(function(){

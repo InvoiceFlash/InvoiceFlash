@@ -488,6 +488,7 @@ class ControllerSaleOrder extends Controller {
 
 		$this->data['invoice'] = $this->url->link('sale/order/invoice', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['print'] = $this->url->link('sale/order/invoice', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['printPDF'] = $this->url->link('sale/order/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
 		$this->data['insert'] = $this->url->link('sale/order/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['convert'] = $this->url->link('sale/order/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('sale/order/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');

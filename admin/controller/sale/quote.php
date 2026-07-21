@@ -1807,6 +1807,7 @@ class ControllerSaleQuote extends Controller {
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_image'] = $this->language->get('column_image');
 		$this->data['column_model'] = $this->language->get('column_model');
+		$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_total'] = $this->language->get('column_total');
