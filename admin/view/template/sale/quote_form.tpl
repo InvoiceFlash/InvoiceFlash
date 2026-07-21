@@ -127,13 +127,12 @@
 								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-quote-product').click();"><i class="fa fa-trash"></i></a></td>
 								<td>
 									<div class="d-flex justify-content-between align-items-start">
-										<span><?php echo $quote_product['name']; ?></span>
-										<button type="button" class="btn btn-default btn-xs" title="<?php echo $button_view_description; ?>" onclick="quoteShowDescription(<?php echo (int)$quote_product['product_id']; ?>, <?php echo $product_row; ?>);"><i class="fa fa-info-circle"></i></button>
+										<input type="text" class="form-control quote-name" name="quote_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$quote_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
+										<button type="button" class="btn btn-default btn-xs ms-2" title="<?php echo $button_view_description; ?>" onclick="quoteShowDescription(<?php echo (int)$quote_product['product_id']; ?>, <?php echo $product_row; ?>);"><i class="fa fa-info-circle"></i></button>
 									</div>
 									<input type="hidden" id="quote-extended-description-<?php echo $product_row; ?>" name="quote_product[<?php echo $product_row; ?>][extended_description]" value="<?php echo htmlspecialchars((string)$quote_product['extended_description'], ENT_QUOTES, 'UTF-8'); ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_product_id]" value="<?php echo $quote_product['quote_product_id']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $quote_product['product_id']; ?>">
-									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][name]" value="<?php echo $quote_product['name']; ?>">
 									<?php foreach ($quote_product['option'] as $option) { ?>
 										<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_option][<?php echo $option_row; ?>][quote_option_id]" value="<?php echo $option['quote_option_id']; ?>">
 										<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_option][<?php echo $option_row; ?>][product_option_id]" value="<?php echo $option['product_option_id']; ?>">

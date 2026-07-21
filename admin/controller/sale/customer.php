@@ -579,6 +579,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_confirm'] = $this->language->get('entry_confirm');
 		$this->data['entry_newsletter'] = $this->language->get('entry_newsletter');
 		$this->data['entry_customer_group'] = $this->language->get('entry_customer_group');
+		$this->data['entry_customer_representative'] = $this->language->get('entry_customer_representative');
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		$this->data['entry_company'] = $this->language->get('entry_company');
 		$this->data['entry_company_id'] = $this->language->get('entry_company_id');
@@ -1203,6 +1204,18 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['customer_group_id'] = $customer_info['customer_group_id'];
 		} else {
 			$this->data['customer_group_id'] = $this->config->get('config_customer_group_id');
+		}
+
+		$this->load->model('sale/customer_representative');
+
+		$this->data['customer_representatives'] = $this->model_sale_customer_representative->getCustomerRepresentatives();
+
+		if (isset($this->request->post['customer_representative_id'])) {
+			$this->data['customer_representative_id'] = $this->request->post['customer_representative_id'];
+		} elseif (!empty($customer_info)) {
+			$this->data['customer_representative_id'] = $customer_info['customer_representative_id'];
+		} else {
+			$this->data['customer_representative_id'] = 0;
 		}
 
 		if (isset($this->request->post['status'])) {

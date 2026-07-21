@@ -416,6 +416,7 @@ class ModelSaleQuote extends Model {
 				'shipping_method'         => $quote_query->row['shipping_method'],
 				'shipping_code'           => $quote_query->row['shipping_code'],
 				'comment'                 => $quote_query->row['comment'],
+				'print_extended_description' => $quote_query->row['print_extended_description'],
 				'total'                   => $quote_query->row['total'],
 				'invoice_status_id'       => $quote_query->row['quote_status_id'],
 				'commission'              => $quote_query->row['commission'],

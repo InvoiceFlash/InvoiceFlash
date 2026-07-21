@@ -8230,6 +8230,7 @@ CREATE TABLE `if_fl_customers` (
   `postcode` varchar(10) DEFAULT NULL,
   `country_id` int(11) DEFAULT 0,
   `zone_id` int(11) DEFAULT 0,
+  `customer_representative_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`customer_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

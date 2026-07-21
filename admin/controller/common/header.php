@@ -21,6 +21,7 @@ class ControllerCommonHeader extends Controller {
 	
 		$this->data['heading_title'] = $this->language->get('heading_title');
 		$this->data['text_confirm'] = $this->language->get('text_confirm');
+		$this->data['text_select_warning'] = $this->language->get('text_select_warning');
 
 		$this->data['update_available'] = false;
 		$this->data['update_compare_url'] = '';

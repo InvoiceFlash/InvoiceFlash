@@ -179,6 +179,16 @@ $(document).ready(function() {
 			$('#form').attr('action',$(this).attr('formaction')).submit();
 		}
 	});
+	$('#btn-copy').on('click',function(e){
+		e.preventDefault();
+		if(!$('input[name="selected[]"]:checked').length){
+			alert(text_select_warning);
+			return;
+		}
+		if(confirm(text_confirm)){
+			$('#form').attr('action',$(this).attr('formaction')).submit();
+		}
+	});
 	$('a').click(function(){
 		if($(this).attr('href')!=null&&$(this).attr('href').indexOf('uninstall',1)!=-1){
 			if(!confirm(text_confirm)){
@@ -1767,7 +1777,8 @@ $(function(){
 						product=json['quote_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-quote-product\').click();"><i class="fa fa-trash"></i></a></td>';
-						html+='<td><div class="d-flex justify-content-between align-items-start"><span>'+product['name']+'</span><button type="button" class="btn btn-default btn-xs" onclick="quoteShowDescription('+product['product_id']+', '+product_row+');"><i class="fa fa-info-circle"></i></button></div><input type="hidden" id="quote-extended-description-'+product_row+'" name="quote_product['+product_row+'][extended_description]" value="'+(product['extended_description'] ? product['extended_description'].replace(/"/g, '&quot;') : '')+'"><input type="hidden" name="quote_product['+product_row+'][quote_product_id]" value=""><input type="hidden" name="quote_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="quote_product['+product_row+'][name]" value="'+product['name']+'">';
+						var productNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+						html+='<td><div class="d-flex justify-content-between align-items-start"><input type="text" class="form-control quote-name" name="quote_product['+product_row+'][name]" value="'+productNameAttr+'"><button type="button" class="btn btn-default btn-xs ms-2" onclick="quoteShowDescription('+product['product_id']+', '+product_row+');"><i class="fa fa-info-circle"></i></button></div><input type="hidden" id="quote-extended-description-'+product_row+'" name="quote_product['+product_row+'][extended_description]" value="'+(product['extended_description'] ? product['extended_description'].replace(/"/g, '&quot;') : '')+'"><input type="hidden" name="quote_product['+product_row+'][quote_product_id]" value=""><input type="hidden" name="quote_product['+product_row+'][product_id]" value="'+product['product_id']+'">';
 						var deliveryDateHtml='';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){

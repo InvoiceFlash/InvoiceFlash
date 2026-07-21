@@ -30,6 +30,7 @@
 	<script type="text/javascript" src="view/javascript/datepicker/bootstrap-datetimepicker.min.js"></script>
 	<script>
 	var text_confirm='<?php echo $text_confirm; ?>';
+	var text_select_warning='<?php echo $text_select_warning; ?>';
 	</script>
 	<link rel="shortcut icon" href="view/image/setting.png">
 </head>

@@ -315,6 +315,10 @@
 									<label class="control-label">Empresa / Nombre</label>
 									<input type="text" id="cs-company" class="form-control" placeholder="Empresa / Nombre">
 								</div>
+								<div class="col-12 col-sm">
+									<label class="control-label">Nombre de Contacto</label>
+									<input type="text" id="cs-contact" class="form-control" placeholder="Nombre de Contacto">
+								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
 									<button type="button" id="cs-search" class="btn btn-primary">Actualizar</button>
 								</div>
@@ -658,7 +662,7 @@ function csDoSearch() {
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
-		data: { filter_company: $('#cs-company').val() },
+		data: { filter_company: $('#cs-company').val(), filter_contact: $('#cs-contact').val() },
 		dataType: 'json',
 		success: function(json) {
 			if (json.warning) {
@@ -689,7 +693,7 @@ function csDoSearch() {
 
 $('#cs-search').click(csDoSearch);
 
-$('#cs-company').on('keypress', function(e) {
+$('#cs-company, #cs-contact').on('keypress', function(e) {
 	if (e.which == 13) csDoSearch();
 });
 
@@ -718,6 +722,7 @@ $(document).on('dblclick', '#cs-results tr[data-idx]', function() {
 
 $('#CustomerSearchModal').on('hidden.bs.modal', function() {
 	$('#cs-company').val('');
+	$('#cs-contact').val('');
 	$('#cs-results').html('<tr><td colspan="4" class="text-center">Pulsa Actualizar para listar los clientes</td></tr>');
 	$('#cs-warning').hide();
 	csCustomers = [];

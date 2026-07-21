@@ -5,6 +5,7 @@ $_['heading_title']                           = 'Presupuestos';
 // Text
 $_['text_success']                            = '&Eacute;xito: &iexcl;Ha modificado los presupuestos!';
 $_['text_success_convert']                    = '&Eacute;xito: &iexcl;Los presupuestos seleccionados se han convertido en pedidos!';
+$_['text_success_copy']                       = '&Eacute;xito: &iexcl;Los presupuestos seleccionados se han duplicado!';
 $_['text_quote_id']                           = 'ID de Presupuesto:';
 $_['text_invoice_no']                         = 'N&ordm; de Pedido:';
 $_['text_invoice_date']                       = 'Fecha:';

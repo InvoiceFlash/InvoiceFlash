@@ -200,6 +200,64 @@ class ControllerCatalogProduct extends Controller {
 		$this->getList();
 	}
 
+	public function export() {
+		$this->language->load('catalog/product');
+
+		if (!$this->user->hasPermission('access', 'catalog/product') || empty($this->request->post['selected'])) {
+			$this->redirect($this->url->link('catalog/product', 'token=' . $this->session->data['token'], 'SSL'));
+		}
+
+		$this->load->model('catalog/product');
+		$this->load->model('catalog/category');
+		$this->load->model('catalog/manufacturer');
+
+		$products = $this->model_catalog_product->getProductsByIds($this->request->post['selected']);
+
+		$categories = $this->model_catalog_category->getCategories();
+
+		require_once(DIR_SYSTEM . 'library/xlsx.php');
+
+		$xlsx = new Xlsx();
+
+		$xlsx->setHeaders(array(
+			$this->language->get('column_sku'),
+			$this->language->get('column_name'),
+			$this->language->get('column_category'),
+			$this->language->get('column_manufacturer'),
+			$this->language->get('column_price'),
+			$this->language->get('column_quantity'),
+			$this->language->get('column_status')
+		));
+
+		foreach ($products as $product) {
+			$product_categories = $this->model_catalog_product->getProductCategories($product['product_id']);
+
+			$category_names = array();
+
+			foreach ($categories as $category) {
+				if (in_array($category['category_id'], $product_categories)) {
+					$category_names[] = $category['name'];
+				}
+			}
+
+			$manufacturer_info = $this->model_catalog_manufacturer->getManufacturer($product['manufacturer_id']);
+
+			$xlsx->addRow(array(
+				$product['sku'],
+				$product['name'],
+				implode(', ', $category_names),
+				$manufacturer_info ? $manufacturer_info['name'] : '',
+				$this->currency->format($product['price'], $this->config->get('config_currency'), '', true, true),
+				$product['quantity'],
+				$product['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')
+			));
+		}
+
+		$this->response->addHeader('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		$this->response->addHeader('Content-Disposition: attachment; filename="products_' . date('Y-m-d') . '.xlsx"');
+		$this->response->setOutput($xlsx->build($this->language->get('heading_title')));
+	}
+
 	public function copy() {
 		$this->language->load('catalog/product');
 
@@ -392,8 +450,9 @@ class ControllerCatalogProduct extends Controller {
 		);
 
 		$this->data['insert'] = $this->url->link('catalog/product/insert', 'token=' . $this->session->data['token'] . $url, 'SSL');
-		$this->data['copy'] = $this->url->link('catalog/product/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');	
+		$this->data['copy'] = $this->url->link('catalog/product/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('catalog/product/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['export'] = $this->url->link('catalog/product/export', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		$this->data['products'] = array();
 
@@ -493,10 +552,11 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['column_status'] = $this->language->get('column_status');		
 		$this->data['column_action'] = $this->language->get('column_action');		
 
-		$this->data['button_copy'] = $this->language->get('button_copy');		
-		$this->data['button_insert'] = $this->language->get('button_insert');		
-		$this->data['button_delete'] = $this->language->get('button_delete');		
+		$this->data['button_copy'] = $this->language->get('button_copy');
+		$this->data['button_insert'] = $this->language->get('button_insert');
+		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['button_export'] = $this->language->get('button_export');
 
 		$this->data['token'] = $this->session->data['token'];
 

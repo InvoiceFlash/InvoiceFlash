@@ -355,6 +355,134 @@ class ControllerSaleQuote extends Controller {
     	$this->getList();
   	}
 
+  	public function copy() {
+		$this->load->language('sale/quote');
+
+		$this->load->model('sale/quote');
+		$this->load->model('tool/user_logs');
+
+		if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			foreach ($this->request->post['selected'] as $quote_id) {
+				$quote_info = $this->model_sale_quote->getQuote($quote_id);
+
+				if ($quote_info) {
+					$quote_products = array();
+
+					foreach ($this->model_sale_quote->getQuoteProducts($quote_id) as $quote_product) {
+						$quote_products[] = array(
+							'quote_product_id'    => 0,
+							'product_id'          => $quote_product['product_id'],
+							'name'                => $quote_product['name'],
+							'model'               => $quote_product['model'],
+							'quote_option'        => $this->model_sale_quote->getQuoteOptions($quote_id, $quote_product['quote_product_id']),
+							'quantity'            => $quote_product['quantity'],
+							'price'               => $quote_product['price'],
+							'total'               => $quote_product['total'],
+							'tax'                 => $quote_product['tax'],
+							'extended_description' => $quote_product['extended_description']
+						);
+					}
+
+					$data = array(
+						'user_id'                     => $this->user->getId(),
+						'store_id'                    => $quote_info['store_id'],
+						'customer_id'                 => $quote_info['customer_id'],
+						'customer_group_id'           => $quote_info['customer_group_id'],
+						'email'                       => $quote_info['email'],
+						'telephone'                   => $quote_info['telephone'],
+						'fax'                         => $quote_info['fax'],
+						'payment_company'             => $quote_info['payment_company'],
+						'payment_company_id'          => $quote_info['payment_company_id'],
+						'payment_tax_id'               => $quote_info['payment_tax_id'],
+						'payment_address_1'           => $quote_info['payment_address_1'],
+						'payment_address_2'           => $quote_info['payment_address_2'],
+						'payment_city'                => $quote_info['payment_city'],
+						'payment_postcode'            => $quote_info['payment_postcode'],
+						'payment_country'             => $quote_info['payment_country'],
+						'payment_country_id'          => $quote_info['payment_country_id'],
+						'payment_zone'                => $quote_info['payment_zone'],
+						'payment_zone_id'             => $quote_info['payment_zone_id'],
+						'payment_address_format'      => $quote_info['payment_address_format'],
+						'payment_method'              => $quote_info['payment_method'],
+						'payment_code'                => $quote_info['payment_code'],
+						'shipping_company'            => $quote_info['shipping_company'],
+						'shipping_address_1'          => $quote_info['shipping_address_1'],
+						'shipping_address_2'          => $quote_info['shipping_address_2'],
+						'shipping_city'               => $quote_info['shipping_city'],
+						'shipping_postcode'           => $quote_info['shipping_postcode'],
+						'shipping_country'            => $quote_info['shipping_country'],
+						'shipping_country_id'         => $quote_info['shipping_country_id'],
+						'shipping_zone'               => $quote_info['shipping_zone'],
+						'shipping_zone_id'            => $quote_info['shipping_zone_id'],
+						'shipping_address_format'     => $quote_info['shipping_address_format'],
+						'shipping_method'             => $quote_info['shipping_method'],
+						'shipping_code'               => $quote_info['shipping_code'],
+						'comment'                     => $quote_info['comment'],
+						'print_extended_description'  => $quote_info['print_extended_description'],
+						'invoice_status_id'           => $quote_info['invoice_status_id'],
+						'quote_product'               => $quote_products,
+						'quote_total'                 => $this->model_sale_quote->getQuoteTotals($quote_id)
+					);
+
+					$new_quote_id = $this->model_sale_quote->addQuote($data);
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'quote',
+						'document_id'   => (int)$new_quote_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+				}
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success_copy');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_quote_id'])) {
+				$url .= '&filter_quote_id=' . $this->request->get['filter_quote_id'];
+			}
+
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_invoice_status_id'])) {
+				$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
+			}
+
+			if (isset($this->request->get['filter_total'])) {
+				$url .= '&filter_total=' . $this->request->get['filter_total'];
+			}
+
+			if (isset($this->request->get['filter_date_added'])) {
+				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			}
+
+			if (isset($this->request->get['filter_date_modified'])) {
+				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->redirect($this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+		}
+
+		$this->getList();
+	}
+
   	private function getList() {
         if (!extension_loaded('openssl')) {
           $this->data['error_warning'] = 'OpenSSL library is not installed. You cannot sign quotes.';
@@ -475,6 +603,7 @@ class ControllerSaleQuote extends Controller {
       $this->data['print'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['insert'] = $this->url->link('sale/quote/insert', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['convert'] = $this->url->link('sale/quote/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
+      $this->data['copy'] = $this->url->link('sale/quote/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
       $this->data['delete'] = $this->url->link('sale/quote/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
       $this->data['quotes'] = array();
@@ -543,6 +672,7 @@ class ControllerSaleQuote extends Controller {
       $this->data['button_view'] = $this->language->get('button_view');
       $this->data['button_insert'] = $this->language->get('button_insert');
       $this->data['button_convert_order'] = $this->language->get('button_convert_order');
+      $this->data['button_copy'] = $this->language->get('button_copy');
       $this->data['button_delete'] = $this->language->get('button_delete');
       $this->data['button_filter'] = $this->language->get('button_filter');
 
@@ -2131,9 +2261,13 @@ class ControllerSaleQuote extends Controller {
 							? (float)preg_replace('/[^-0-9\.]/', '', $quote_product['price'])
 							: (float)$product_info['price'];
 
+						$use_name = (isset($quote_product['name']) && trim($quote_product['name']) !== '')
+							? $quote_product['name']
+							: $product_info['name'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'],
+							'name'		 => $use_name,
 							'model'		 => $product_info['model'],
 							'quantity' 	 => $quote_product['quantity'],
 							'option'	 => $option_data,

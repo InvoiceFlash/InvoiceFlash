@@ -7,6 +7,7 @@
 			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
 			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_order; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-default btn-spacer"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>

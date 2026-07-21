@@ -91,6 +91,8 @@ $_['entry_newsletter']      = 'Bolet&iacute;n:';
 
 $_['entry_customer_group']  = 'Grupo de Clientes:';
 
+$_['entry_customer_representative'] = 'Representante:';
+
 $_['entry_status']          = 'Estado:';
 
 $_['entry_password']        = 'Contrase&ntilde;a:';

@@ -150,6 +150,21 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_representative; ?></label>
+										<div class="col-sm-6">
+											<select name="customer_representative_id" class="form-control">
+												<option value="0"><?php echo $text_none; ?></option>
+												<?php foreach ($customer_representatives as $customer_representative) { ?>
+													<?php if ($customer_representative['customer_representative_id'] == $customer_representative_id) { ?>
+													<option value="<?php echo $customer_representative['customer_representative_id']; ?>" selected=""><?php echo $customer_representative['name']; ?></option>
+													<?php } else { ?>
+													<option value="<?php echo $customer_representative['customer_representative_id']; ?>"><?php echo $customer_representative['name']; ?></option>
+													<?php } ?>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status; ?></label>
 										<div class="col-sm-6">
 											<select name="status" class="form-control">

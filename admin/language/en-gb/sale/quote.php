@@ -5,6 +5,7 @@ $_['heading_title']                           = 'Quotes';
 // Text
 $_['text_success']                            = 'Success: You have modified quotes!';
 $_['text_success_convert']                    = 'Success: The selected quotes have been converted to orders!';
+$_['text_success_copy']                       = 'Success: The selected quotes have been copied!';
 $_['text_quote_id']                           = 'Quote ID:';
 $_['text_invoice_no']                         = 'Order No.:';
 $_['text_invoice_date']                       = 'Date:';
