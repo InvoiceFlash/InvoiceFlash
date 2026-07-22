@@ -997,6 +997,10 @@
 								<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 							</div>
 						</div>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period_fiscal_year ?></label>
+						<div class="col-sm-1">
+							<input type="text" name="accounting_period_fiscal_year" value="<?php echo $accounting_period_fiscal_year ?>" maxlength="3" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);">
+						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?></label>

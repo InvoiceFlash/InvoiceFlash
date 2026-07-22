@@ -282,6 +282,7 @@ $_['tab_accounting'] = 'Contabilidad';
 $_['tab_hacienda'] = 'Hacienda';
 $_['entry_accounting_period_from'] = 'Periodo Contable desde:';
 $_['entry_accounting_period_to'] = 'Hasta:';
+$_['entry_accounting_period_fiscal_year'] = 'Ir&aacute;n al ejercicio:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
 $_['entry_bank_name'] = 'Nombre del Banco';

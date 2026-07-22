@@ -398,6 +398,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Purchases - Suppliers Status
+			if ($this->user->hasPermission('access', 'purchase/suppliers_status')) {
+				$purchases[] = array(
+					'name' => $this->language->get('text_suppliers_status'),
+					'href' => $this->url->link('purchase/suppliers_status', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($purchases) {
 				$this->data['menus'][] = array(
 					'id' => 'purchase',
@@ -433,6 +442,15 @@ class ControllerCommonHeader extends Controller {
 				$accounting[] = array(
 					'name' => $this->language->get('text_pyg'),
 					'href' => $this->url->link('accounting/pyg', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			// Accounting - Create Journal Entries
+			if ($this->user->hasPermission('access', 'accounting/entry')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_entry'),
+					'href' => $this->url->link('accounting/entry', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}

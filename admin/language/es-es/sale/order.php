@@ -154,3 +154,4 @@ $_['ERROR_ACTION'] = 'Advertencia: No se pudo completar esta acci&oacute;n!';
 $_['button_invoice'] = 'Imprimir Pedido';
 $_['button_convert_delivery'] = 'Convertir a Albar&aacute;n';
 $_['text_success_convert'] = '&Eacute;xito: &iexcl;Los pedidos seleccionados se han convertido en albaranes!';
+$_['text_success_copy'] = '&Eacute;xito: &iexcl;Los pedidos seleccionados se han duplicado!';

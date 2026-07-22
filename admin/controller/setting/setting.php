@@ -205,6 +205,7 @@ class ControllerSettingSetting extends Controller {
 		// Payroll Tab
 		$this->data['entry_accounting_period_from'] = $this->language->get('entry_accounting_period_from');
 		$this->data['entry_accounting_period_to'] = $this->language->get('entry_accounting_period_to');
+		$this->data['entry_accounting_period_fiscal_year'] = $this->language->get('entry_accounting_period_fiscal_year');
 		$this->data['entry_iban'] = $this->language->get('entry_iban');
 		$this->data['entry_bic'] = $this->language->get('entry_bic');
 		$this->data['entry_bank_name'] = $this->language->get('entry_bank_name');
@@ -1220,7 +1221,13 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$this->data['accounting_period_to'] = $this->config->get('accounting_period_to');
 		}
-		
+
+		if (isset($this->request->post['accounting_period_fiscal_year'])) {
+			$this->data['accounting_period_fiscal_year'] = $this->request->post['accounting_period_fiscal_year'];
+		} else {
+			$this->data['accounting_period_fiscal_year'] = $this->config->get('accounting_period_fiscal_year');
+		}
+
 		if (isset($this->request->post['iban'])) {
 			$this->data['iban'] = str_replace(array("-", " "), "", $this->request->post['iban']);
 		} else {

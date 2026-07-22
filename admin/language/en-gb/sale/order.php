@@ -203,6 +203,7 @@ $_['error_action']                            = 'Warning: Could not complete thi
 $_['button_invoice'] 						  = 'Print Order';
 $_['button_convert_delivery']                = 'Convert to Delivery Note';
 $_['text_success_convert']                   = 'Success: The selected orders have been converted to delivery notes!';
+$_['text_success_copy']                      = 'Success: The selected orders have been copied!';
 $_['button_generate']                         = 'Generate Delivery';
 $_['tab_product']                             = 'Products and Totals';
 ?>

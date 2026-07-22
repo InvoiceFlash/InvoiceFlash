@@ -371,6 +371,133 @@ class ControllerSaleOrder extends Controller {
     	$this->getList();
   	}
 
+  	public function copy() {
+		$this->load->language('sale/order');
+
+		$this->load->model('sale/order');
+		$this->load->model('tool/user_logs');
+
+		if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			foreach ($this->request->post['selected'] as $order_id) {
+				$order_info = $this->model_sale_order->getOrder($order_id);
+
+				if ($order_info) {
+					$order_products = array();
+
+					foreach ($this->model_sale_order->getOrderProducts($order_id) as $order_product) {
+						$order_products[] = array(
+							'order_product_id' => 0,
+							'product_id'       => $order_product['product_id'],
+							'name'             => $order_product['name'],
+							'model'            => $order_product['model'],
+							'order_option'     => $this->model_sale_order->getOrderOptions($order_id, $order_product['order_product_id']),
+							'quantity'         => $order_product['quantity'],
+							'price'            => $order_product['price'],
+							'total'            => $order_product['total'],
+							'tax'              => $order_product['tax'],
+							'reward'           => $order_product['reward']
+						);
+					}
+
+					$data = array(
+						'user_id'                 => $this->user->getId(),
+						'store_id'                => $order_info['store_id'],
+						'customer_id'             => $order_info['customer_id'],
+						'customer_group_id'       => $order_info['customer_group_id'],
+						'email'                   => $order_info['email'],
+						'telephone'               => $order_info['telephone'],
+						'fax'                     => $order_info['fax'],
+						'payment_company'         => $order_info['payment_company'],
+						'payment_company_id'      => $order_info['payment_company_id'],
+						'payment_tax_id'          => $order_info['payment_tax_id'],
+						'payment_address_1'       => $order_info['payment_address_1'],
+						'payment_address_2'       => $order_info['payment_address_2'],
+						'payment_city'            => $order_info['payment_city'],
+						'payment_postcode'        => $order_info['payment_postcode'],
+						'payment_country'         => $order_info['payment_country'],
+						'payment_country_id'      => $order_info['payment_country_id'],
+						'payment_zone'            => $order_info['payment_zone'],
+						'payment_zone_id'         => $order_info['payment_zone_id'],
+						'payment_address_format'  => $order_info['payment_address_format'],
+						'payment_method'          => $order_info['payment_method'],
+						'payment_code'            => $order_info['payment_code'],
+						'shipping_company'        => $order_info['shipping_company'],
+						'shipping_address_1'      => $order_info['shipping_address_1'],
+						'shipping_address_2'      => $order_info['shipping_address_2'],
+						'shipping_city'           => $order_info['shipping_city'],
+						'shipping_postcode'       => $order_info['shipping_postcode'],
+						'shipping_country'        => $order_info['shipping_country'],
+						'shipping_country_id'     => $order_info['shipping_country_id'],
+						'shipping_zone'           => $order_info['shipping_zone'],
+						'shipping_zone_id'        => $order_info['shipping_zone_id'],
+						'shipping_address_format' => $order_info['shipping_address_format'],
+						'shipping_method'         => $order_info['shipping_method'],
+						'shipping_code'           => $order_info['shipping_code'],
+						'comment'                 => $order_info['comment'],
+						'order_status_id'         => $order_info['order_status_id'],
+						'order_product'           => $order_products,
+						'order_total'             => $this->model_sale_order->getOrderTotals($order_id)
+					);
+
+					$new_order_id = $this->model_sale_order->addOrder($data);
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'sale_order',
+						'document_id'   => (int)$new_order_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+				}
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success_copy');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_order_id'])) {
+				$url .= '&filter_order_id=' . $this->request->get['filter_order_id'];
+			}
+
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_order_status_id'])) {
+				$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
+			}
+
+			if (isset($this->request->get['filter_total'])) {
+				$url .= '&filter_total=' . $this->request->get['filter_total'];
+			}
+
+			if (isset($this->request->get['filter_date_added'])) {
+				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			}
+
+			if (isset($this->request->get['filter_date_modified'])) {
+				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->redirect($this->url->link('sale/order', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+		}
+
+		$this->getList();
+	}
+
   	private function getList() {
   		if (!extension_loaded('openssl')) {
 			$this->data['error_warning'] = 'OpenSSL library is not installed. You cannot sign invoices.';
@@ -491,6 +618,7 @@ class ControllerSaleOrder extends Controller {
 		$this->data['printPDF'] = $this->url->link('sale/order/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
 		$this->data['insert'] = $this->url->link('sale/order/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['convert'] = $this->url->link('sale/order/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['copy'] = $this->url->link('sale/order/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['delete'] = $this->url->link('sale/order/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		// add print selection
@@ -575,6 +703,7 @@ class ControllerSaleOrder extends Controller {
 		$this->data['button_invoice'] = $this->language->get('button_invoice');
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_convert_delivery'] = $this->language->get('button_convert_delivery');
+		$this->data['button_copy'] = $this->language->get('button_copy');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 

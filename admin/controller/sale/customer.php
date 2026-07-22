@@ -141,6 +141,81 @@ class ControllerSaleCustomer extends Controller {
 		$this->getForm();
 	}
 
+	public function sepa() {
+		$this->language->load('sale/customer');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$customer_id = isset($this->request->get['customer_id']) ? (int)$this->request->get['customer_id'] : 0;
+
+		$this->load->model('sale/customer');
+
+		$customer_info = $this->model_sale_customer->getCustomer($customer_id);
+
+		if (!$customer_info) {
+			$this->redirect($this->url->link('sale/customer', 'token=' . $this->session->data['token'], 'SSL'));
+			return;
+		}
+
+		if (isset($this->request->server['HTTPS']) && (($this->request->server['HTTPS'] == 'on') || ($this->request->server['HTTPS'] == '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		$this->data['direction'] = $this->language->get('direction');
+
+		// Datos del acreedor (la propia empresa)
+		$this->data['creditor_id']      = (string)$this->config->get('creditor_id');
+		$this->data['creditor_name']    = (string)$this->config->get('config_name');
+		$this->data['creditor_address'] = (string)$this->config->get('config_address');
+
+		$banks = $this->config->get('banks');
+		$bank_default = $this->config->get('bank_default');
+
+		if ($banks && isset($banks[$bank_default])) {
+			$this->data['creditor_iban'] = $banks[$bank_default]['iban'];
+			$this->data['creditor_bic']  = $banks[$bank_default]['bic'];
+		} else {
+			$this->data['creditor_iban'] = (string)$this->config->get('iban');
+			$this->data['creditor_bic']  = (string)$this->config->get('bic');
+		}
+
+		// Datos del deudor (el cliente)
+		$this->data['customer_id']    = $customer_id;
+		$this->data['debtor_name']    = $customer_info['company'];
+		$this->data['debtor_nif']     = $customer_info['nif'];
+		$this->data['debtor_address'] = $customer_info['address'];
+		$this->data['debtor_city']    = $customer_info['city'];
+		$this->data['debtor_postcode'] = $customer_info['postcode'];
+		$this->data['debtor_iban']    = $customer_info['bank_cc'];
+		$this->data['debtor_bic']     = $customer_info['bic'];
+
+		if (!empty($customer_info['country_id'])) {
+			$this->load->model('localisation/country');
+
+			$country_info = $this->model_localisation_country->getCountry($customer_info['country_id']);
+
+			$this->data['debtor_country'] = $country_info ? $country_info['name'] : '';
+		} else {
+			$this->data['debtor_country'] = '';
+		}
+
+		if (!empty($customer_info['zone_id'])) {
+			$this->load->model('localisation/zone');
+
+			$zone_info = $this->model_localisation_zone->getZone($customer_info['zone_id']);
+
+			$this->data['debtor_province'] = $zone_info ? $zone_info['name'] : '';
+		} else {
+			$this->data['debtor_province'] = '';
+		}
+
+		$this->data['mandate_reference'] = $this->data['creditor_id'] . '...' . str_pad($customer_id, 5, '0', STR_PAD_LEFT);
+
+		$this->renderPDF('sale/customer_sepa_printPDF.tpl', 'pdf', 'sepa', $customer_id);
+	}
+
 	public function delete() {
 		$this->language->load('sale/customer');
 
@@ -818,6 +893,8 @@ class ControllerSaleCustomer extends Controller {
 
 		$this->data['cancel'] = $this->url->link('sale/customer', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['new_email'] = $this->url->link('sale/customer/new_email', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'], 'SSL');
+		$this->data['sepa'] = $this->url->link('sale/customer/sepa', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'], 'SSL');
+		$this->data['button_sepa'] = $this->language->get('button_sepa');
 
 		if (isset($this->request->get['customer_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$customer_info = $this->model_sale_customer->getCustomer($this->request->get['customer_id']);
@@ -1185,6 +1262,8 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['contable_account'] = '';
 		}
+
+		$this->data['contable_account_maxlength'] = (int)$this->config->get('config_conta_digits') ?: 10;
 
 		if (isset($this->request->post['digital_invoice'])) {
 			$this->data['digital_invoice'] = $this->request->post['digital_invoice'];

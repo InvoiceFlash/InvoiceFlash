@@ -169,6 +169,7 @@ $_['tab_accounting']	 = 'Accounting';
 $_['tab_hacienda']	 = 'Tax Office';
 $_['entry_accounting_period_from'] = 'Accounting Period from:';
 $_['entry_accounting_period_to'] = 'to:';
+$_['entry_accounting_period_fiscal_year'] = 'Will go to fiscal year:';
 $_['entry_iban'] = 'IBAN:';
 $_['entry_bic'] = 'BIC:';
 $_['entry_bank_name'] = 'Bank Name';

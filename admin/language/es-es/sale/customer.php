@@ -224,6 +224,7 @@ $_['text_subject'] = 'Asunto:';
 $_['text_message'] = 'Mensaje:';
 
 $_['button_new_email'] = 'Nuevo Email';
+$_['button_sepa'] = 'SEPA B2B';
 $_['button_send'] = 'Enviar';
 $_['button_upload'] = 'Subir';
 

@@ -4,6 +4,9 @@
 	<div class="card-header">
 		<div class="float-left h2"><i class="hidden-xs fa fa-user"></i><span> <?php echo $heading_title; ?></span></div>
 		<div class="float-right">
+			<?php if ($customer_id) { ?>
+			<a class="btn btn-default" href="<?php echo $sepa; ?>" target="_blank"><i class="fa fa-university"></i><span class="hidden-xs"> <?php echo $button_sepa; ?></span></a>
+			<?php } ?>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
 			<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
@@ -257,7 +260,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_contable_account; ?></label>
 										<div class="col-sm-6">
-											<input type="text" name="contable_account" value="<?php echo $contable_account; ?>" class="form-control" placeholder="430000000">
+											<input type="text" name="contable_account" value="<?php echo $contable_account; ?>" maxlength="<?php echo $contable_account_maxlength; ?>" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" placeholder="430000000">
 										</div>
 									</div>
 									 <div class="form-group row">
