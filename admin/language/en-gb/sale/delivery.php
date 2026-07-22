@@ -154,10 +154,11 @@ $_['error_filetype']                          = 'Invalid file type!';
 $_['error_action']                            = 'Warning: Could not complete this action!';
 $_['error_required']    = '%s required!';
 
-$_['button_delivery'] 						  = 'Print Delivery';
+$_['button_delivery'] 						  = 'Print';
 $_['button_generate']                       = 'Generate Invoice';
 $_['button_convert_draft']                  = 'Convert to Draft';
 $_['text_success_convert']                  = 'Success: The selected delivery notes have been converted to drafts!';
+$_['text_success_copy']                     = 'Success: The selected delivery notes have been copied!';
 $_['text_group_question']                   = 'How do you want to convert the selected delivery notes?';
 $_['text_group_single']                     = 'One draft per delivery note';
 $_['text_group_merge']                      = 'Merge into a single invoice';

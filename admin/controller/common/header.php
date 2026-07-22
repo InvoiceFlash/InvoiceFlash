@@ -611,6 +611,25 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Reports - Accounting
+			$r_accounting = array();
+
+			if ($this->user->hasPermission('access', 'report/journal')) {
+				$r_accounting[] = array(
+					'name' => $this->language->get('text_report_journal'),
+					'href' => $this->url->link('report/journal', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($r_accounting) {
+				$reports[] = array(
+					'name' => $this->language->get('text_accounting'),
+					'href' => '',
+					'children' => $r_accounting
+				);
+			}
+
 			if ($reports) {
 				$this->data['menus'][] = array(
 					'id' => 'reports',

@@ -154,10 +154,11 @@ $_['error_filetype']                          = '&iexcl;Tipo de archivo no v&aac
 $_['error_action']                            = 'Advertencia: &iexcl;No se pudo completar esta acci&oacute;n!';
 $_['error_required']    = '&iexcl;%s obligatorio!';
 
-$_['button_delivery'] 						  = 'Imprimir Albar&aacute;n';
+$_['button_delivery'] 						  = 'Imprimir';
 $_['button_generate']                       = 'Generar Factura';
 $_['button_convert_draft']                  = 'Convertir en Borrador';
 $_['text_success_convert']                  = '&Eacute;xito: &iexcl;Los albaranes seleccionados se han convertido en borradores!';
+$_['text_success_copy']                     = '&Eacute;xito: &iexcl;Los albaranes seleccionados se han duplicado!';
 $_['text_group_question']                   = '&iquest;C&oacute;mo desea convertir los albaranes seleccionados?';
 $_['text_group_single']                     = 'Un borrador por albar&aacute;n';
 $_['text_group_merge']                      = 'Agrupar en una sola factura';

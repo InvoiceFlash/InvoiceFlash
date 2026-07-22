@@ -16,12 +16,10 @@ $_['entry_debit']   = 'Debit';
 $_['entry_credit']  = 'Credit';
 
 // Text
-$_['text_total']       = 'Totals';
-$_['text_success']     = 'Success: journal entry saved!';
-$_['text_new_tooltip'] = 'New line (Ctrl+N)';
+$_['text_total']   = 'Totals';
+$_['text_success'] = 'Success: journal entry saved!';
 
 // Button
-$_['button_new']  = 'New';
 $_['button_save'] = 'Save';
 
 // Error

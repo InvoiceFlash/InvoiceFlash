@@ -211,6 +211,92 @@ class ControllerSaleInvoice extends Controller {
     	$this->getList();
   	}
 
+  	public function copy() {
+		$this->load->language('sale/invoice');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('sale/invoice');
+		$this->load->model('sale/draft');
+
+		$new_draft_id = 0;
+
+		if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			$this->load->model('tool/user_logs');
+
+			foreach ($this->request->post['selected'] as $invoice_id) {
+				$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
+
+				if ($invoice_info) {
+					$draft_products = array();
+
+					foreach ($this->model_sale_invoice->getInvoiceProducts($invoice_id) as $invoice_product) {
+						$draft_products[] = array(
+							'draft_product_id' => 0,
+							'product_id'       => $invoice_product['product_id'],
+							'name'             => $invoice_product['name'],
+							'model'            => $invoice_product['model'],
+							'quantity'         => $invoice_product['quantity'],
+							'price'            => $invoice_product['price'],
+							'total'            => $invoice_product['total'],
+							'tax'              => $invoice_product['tax'],
+							'draft_option'     => $this->model_sale_invoice->getInvoiceOptions($invoice_id, $invoice_product['invoice_product_id'])
+						);
+					}
+
+					$data = array(
+						'store_id'                => $invoice_info['store_id'],
+						'customer_id'             => $invoice_info['customer_id'],
+						'customer_group_id'       => $invoice_info['customer_group_id'],
+						'email'                   => $invoice_info['email'],
+						'telephone'               => $invoice_info['telephone'],
+						'payment_company'         => $invoice_info['payment_company'],
+						'payment_address_1'       => $invoice_info['payment_address_1'],
+						'payment_address_2'       => $invoice_info['payment_address_2'],
+						'payment_city'            => $invoice_info['payment_city'],
+						'payment_postcode'        => $invoice_info['payment_postcode'],
+						'payment_country_id'      => $invoice_info['payment_country_id'],
+						'payment_zone_id'         => $invoice_info['payment_zone_id'],
+						'payment_method'          => $invoice_info['payment_method'],
+						'payment_code'            => $invoice_info['payment_code'],
+						'shipping_company'        => $invoice_info['shipping_company'],
+						'shipping_address_1'      => $invoice_info['shipping_address_1'],
+						'shipping_address_2'      => $invoice_info['shipping_address_2'],
+						'shipping_city'           => $invoice_info['shipping_city'],
+						'shipping_postcode'       => $invoice_info['shipping_postcode'],
+						'shipping_country_id'     => $invoice_info['shipping_country_id'],
+						'shipping_zone_id'        => $invoice_info['shipping_zone_id'],
+						'shipping_method'         => $invoice_info['shipping_method'],
+						'shipping_code'           => $invoice_info['shipping_code'],
+						'comment'                 => $invoice_info['comment'],
+						'simplified'              => $invoice_info['simplified'],
+						'draft_product'           => $draft_products,
+						'draft_total'             => $this->model_sale_invoice->getInvoiceTotals($invoice_id)
+					);
+
+					$new_draft_id = $this->model_sale_draft->addDraft($data);
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'sale_draft',
+						'document_id'   => (int)$new_draft_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+				}
+			}
+		}
+
+		if ($new_draft_id) {
+			$this->session->data['success'] = $this->language->get('text_success_copy');
+
+			$this->redirect($this->url->link('sale/draft/update', 'token=' . $this->session->data['token'] . '&draft_id=' . $new_draft_id, 'SSL'));
+		}
+
+		$this->getList();
+  	}
+
   	private function getList() {
   		if (!extension_loaded('openssl')) {
 			$this->data['error_warning'] = 'OpenSSL library is not installed. You cannot sign invoices.';
@@ -322,6 +408,7 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['print'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['insert'] = $this->url->link('sale/invoice/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('sale/invoice/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['copy'] = $this->url->link('sale/invoice/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		// add print selection
 		$reports = array_slice(scandir(DIR_TEMPLATE . 'sale/reports'), 2);
@@ -401,6 +488,9 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['button_invoice'] = $this->language->get('button_invoice');
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
+		$this->data['text_void_tooltip'] = $this->language->get('text_void_tooltip');
+		$this->data['button_copy'] = $this->language->get('button_copy');
+		$this->data['text_confirm_copy_draft'] = $this->language->get('text_confirm_copy_draft');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 
 		$this->data['error_no_selection'] = $this->language->get('error_no_selection');

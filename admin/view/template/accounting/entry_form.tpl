@@ -37,7 +37,7 @@
 					<label class="control-label"><?php echo $entry_account; ?></label>
 					<input type="text" id="input-account" class="form-control conta-account" maxlength="<?php echo $conta_digits; ?>" placeholder="<?php echo $conta_digits; ?> d&iacute;gitos" autocomplete="off" autofocus>
 				</div>
-				<div class="col-12 col-sm-4">
+				<div class="col-12 col-sm-6">
 					<label class="control-label"><?php echo $entry_concept; ?></label>
 					<input type="text" id="input-concept" class="form-control" autocomplete="off">
 				</div>
@@ -48,9 +48,6 @@
 				<div class="col-6 col-sm-2">
 					<label class="control-label"><?php echo $entry_credit; ?></label>
 					<input type="text" id="input-credit" class="form-control text-right" autocomplete="off">
-				</div>
-				<div class="col-12 col-sm-2">
-					<button type="button" id="btn-new-line" class="btn btn-info w-100" title="<?php echo $text_new_tooltip; ?>" data-bs-toggle="tooltip"><i class="fa fa-plus-circle"></i> <?php echo $button_new; ?></button>
 				</div>
 			</div>
 
@@ -100,33 +97,52 @@ function entryEscape(text) {
 
 function entryPadAccount(el) {
 	var val = el.value;
+	var dotIndex = val.indexOf('.');
+	var digits = entryConfig.digits;
 
-	if (val.indexOf('.') !== -1) {
-		var digitsOnly = val.replace(/[^0-9]/g, '').substr(0, entryConfig.digits);
+	if (dotIndex !== -1) {
+		// El punto se sustituye por ceros en su sitio: lo escrito antes del punto
+		// es el prefijo, lo escrito despues queda fijo al final (p.ej. 430.28 -> 4300000028).
+		var before = val.substring(0, dotIndex).replace(/[^0-9]/g, '');
+		var after = val.substring(dotIndex + 1).replace(/[^0-9]/g, '');
 
-		while (digitsOnly.length < entryConfig.digits) {
+		if (before.length + after.length > digits) {
+			before = before.substr(0, Math.max(0, digits - after.length));
+		}
+
+		var zeros = '';
+		while (before.length + zeros.length + after.length < digits) {
+			zeros += '0';
+		}
+
+		el.value = (before + zeros + after).substr(0, digits);
+	} else {
+		// Sin punto: si se ha dejado vacio o a medias, se completa con ceros a la derecha al salir del campo.
+		var digitsOnly = val.replace(/[^0-9]/g, '').substr(0, digits);
+
+		while (digitsOnly.length < digits) {
 			digitsOnly += '0';
 		}
 
 		el.value = digitsOnly;
-	} else {
-		el.value = val.replace(/[^0-9]/g, '').substr(0, entryConfig.digits);
-	}
-
-	var pos = el.value.length;
-	if (el.setSelectionRange) {
-		el.setSelectionRange(pos, pos);
 	}
 }
 
+// Mientras se escribe solo se filtran caracteres invalidos (se admite el punto).
+// El relleno con ceros se aplica al salir del campo (blur), no al teclear el punto.
 $('#input-account').on('input', function() {
-	// setTimeout 0: en algunos navegadores el valor tecleado se aplica DESPUES
-	// del handler 'input', y una asignacion sincrona a .value se pisa hasta el
-	// siguiente repintado (visualmente parece que "no rellena hasta salir del campo").
-	var el = this;
-	setTimeout(function() {
-		entryPadAccount(el);
-	}, 0);
+	this.value = this.value.replace(/[^0-9.]/g, '');
+});
+
+$('#input-account').on('blur', function() {
+	entryPadAccount(this);
+});
+
+$('#input-account').on('keypress', function(e) {
+	if (e.which === 13) {
+		e.preventDefault();
+		$('#input-concept').trigger('focus');
+	}
 });
 
 $('#input-debit, #input-credit').on('input', function() {
@@ -198,11 +214,18 @@ function entryAddLine() {
 
 	entryUpdateTotals();
 
-	$('#input-account, #input-concept, #input-debit, #input-credit').val('');
+	var totals = entryGetTotals();
+	var balanced = Math.abs(totals.debit - totals.credit) < 0.005;
+
+	$('#input-account, #input-debit, #input-credit').val('');
+
+	// El concepto se mantiene (para no repetirlo linea a linea) hasta que el asiento cuadra.
+	if (balanced) {
+		$('#input-concept').val('');
+	}
+
 	$('#input-account').trigger('focus');
 }
-
-$('#btn-new-line').on('click', entryAddLine);
 
 // Al salir de Haber (tabulando o con el raton) la linea se anade sola y el foco vuelve a Cuenta.
 $('#input-credit').on('blur', function() {

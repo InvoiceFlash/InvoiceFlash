@@ -454,6 +454,135 @@ class ControllerSaledelivery extends Controller {
     	$this->getList();
   	}
 
+  	public function copy() {
+		$this->load->language('sale/delivery');
+
+		$this->load->model('sale/delivery');
+		$this->load->model('tool/user_logs');
+
+		if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			foreach ($this->request->post['selected'] as $delivery_id) {
+				$delivery_info = $this->model_sale_delivery->getDelivery($delivery_id);
+
+				if ($delivery_info) {
+					$delivery_products = array();
+
+					foreach ($this->model_sale_delivery->getDeliveryProducts($delivery_id) as $delivery_product) {
+						$delivery_products[] = array(
+							'delivery_product_id' => 0,
+							'product_id'          => $delivery_product['product_id'],
+							'name'                => $delivery_product['name'],
+							'model'               => $delivery_product['model'],
+							'delivery_option'     => $this->model_sale_delivery->getDeliveryOptions($delivery_id, $delivery_product['delivery_product_id']),
+							'quantity'            => $delivery_product['quantity'],
+							'price'               => $delivery_product['price'],
+							'total'               => $delivery_product['total'],
+							'tax'                 => $delivery_product['tax']
+						);
+					}
+
+					$data = array(
+						'store_id'                => $delivery_info['store_id'],
+						'customer_id'             => $delivery_info['customer_id'],
+						'customer_group_id'       => $delivery_info['customer_group_id'],
+						'email'                   => $delivery_info['email'],
+						'telephone'               => $delivery_info['telephone'],
+						'fax'                     => $delivery_info['fax'],
+						'payment_company'         => $delivery_info['payment_company'],
+						'payment_company_id'      => $delivery_info['payment_company_id'],
+						'payment_tax_id'          => $delivery_info['payment_tax_id'],
+						'payment_address_1'       => $delivery_info['payment_address_1'],
+						'payment_address_2'       => $delivery_info['payment_address_2'],
+						'payment_city'            => $delivery_info['payment_city'],
+						'payment_postcode'        => $delivery_info['payment_postcode'],
+						'payment_country'         => $delivery_info['payment_country'],
+						'payment_country_id'      => $delivery_info['payment_country_id'],
+						'payment_zone'            => $delivery_info['payment_zone'],
+						'payment_zone_id'         => $delivery_info['payment_zone_id'],
+						'payment_address_format'  => $delivery_info['payment_address_format'],
+						'payment_method'          => $delivery_info['payment_method'],
+						'payment_code'            => $delivery_info['payment_code'],
+						'shipping_company'        => $delivery_info['shipping_company'],
+						'shipping_address_1'      => $delivery_info['shipping_address_1'],
+						'shipping_address_2'      => $delivery_info['shipping_address_2'],
+						'shipping_city'           => $delivery_info['shipping_city'],
+						'shipping_postcode'       => $delivery_info['shipping_postcode'],
+						'shipping_country'        => $delivery_info['shipping_country'],
+						'shipping_country_id'     => $delivery_info['shipping_country_id'],
+						'shipping_zone'           => $delivery_info['shipping_zone'],
+						'shipping_zone_id'        => $delivery_info['shipping_zone_id'],
+						'shipping_address_format' => $delivery_info['shipping_address_format'],
+						'shipping_method'         => $delivery_info['shipping_method'],
+						'shipping_code'           => $delivery_info['shipping_code'],
+						'comment'                 => $delivery_info['comment'],
+						'delivery_status_id'      => $delivery_info['invoice_status_id'],
+						'delivery_product'        => $delivery_products,
+						'delivery_total'          => $this->model_sale_delivery->getDeliveryTotals($delivery_id)
+					);
+
+					$this->model_sale_delivery->addDelivery($data);
+
+					$query = $this->db->query("SELECT delivery_id FROM `" . DB_PREFIX . "delivery` ORDER BY delivery_id DESC LIMIT 1");
+
+					$new_delivery_id = $query->row['delivery_id'];
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'sale_delivery',
+						'document_id'   => (int)$new_delivery_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+				}
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success_copy');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_delivery_id'])) {
+				$url .= '&filter_delivery_id=' . $this->request->get['filter_delivery_id'];
+			}
+
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_invoice_status_id'])) {
+				$url .= '&filter_invoice_status_id=' . $this->request->get['filter_invoice_status_id'];
+			}
+
+			if (isset($this->request->get['filter_total'])) {
+				$url .= '&filter_total=' . $this->request->get['filter_total'];
+			}
+
+			if (isset($this->request->get['filter_date_added'])) {
+				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			}
+
+			if (isset($this->request->get['filter_date_modified'])) {
+				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->redirect($this->url->link('sale/delivery', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+		}
+
+		$this->getList();
+	}
+
   	private function getList() {
         if (!extension_loaded('openssl')) {
           $this->data['error_warning'] = 'OpenSSL library is not installed. You cannot sign deliveries.';
@@ -573,6 +702,7 @@ class ControllerSaledelivery extends Controller {
       $this->data['print'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['insert'] = $this->url->link('sale/delivery/insert', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['convert'] = $this->url->link('sale/delivery/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
+      $this->data['copy'] = $this->url->link('sale/delivery/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
       $this->data['delete'] = $this->url->link('sale/delivery/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
       $this->data['deliveries'] = array();
@@ -643,6 +773,7 @@ class ControllerSaledelivery extends Controller {
       $this->data['button_delivery'] = $this->language->get('button_delivery');
       $this->data['button_insert'] = $this->language->get('button_insert');
       $this->data['button_convert_draft'] = $this->language->get('button_convert_draft');
+      $this->data['button_copy'] = $this->language->get('button_copy');
       $this->data['button_delete'] = $this->language->get('button_delete');
       $this->data['button_filter'] = $this->language->get('button_filter');
 

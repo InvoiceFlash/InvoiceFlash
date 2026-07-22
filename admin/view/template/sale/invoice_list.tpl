@@ -5,7 +5,8 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_invoice; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirmCopy();" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger" data-toggle="tooltip" title="<?php echo $text_void_tooltip; ?>"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -104,6 +105,14 @@ $('#btn-delete').on('click', function(e) {
 		alert('<?php echo $error_no_selection; ?>');
 	}
 });
+function confirmCopy() {
+	if ($('input[name="selected[]"]:checked').length == 0) {
+		alert('<?php echo $error_no_selection; ?>');
+		return false;
+	}
+
+	return confirm('<?php echo $text_confirm_copy_draft; ?>');
+}
 </script>
 <style>
 .btn-pastel-pink {

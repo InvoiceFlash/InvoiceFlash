@@ -2086,7 +2086,11 @@ class ControllerSaleOrder extends Controller {
 
 		$this->data['logo'] = $this->config->get('config_logo');
 
-		$pdf_template = ($lcReport == '') ? 'sale/order_printPDF.tpl' : 'sale/reports/' . $lcReport;
+		if ($lcReport == 'order_invoice_without_price.tpl') {
+			$pdf_template = 'sale/order_printPDF_without_price.tpl';
+		} else {
+			$pdf_template = 'sale/order_printPDF.tpl';
+		}
 
 		if ($lcFormat=='pdf') {
 			$this->renderPDF($pdf_template, 'pdf', 'order', $order_id);

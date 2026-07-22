@@ -168,5 +168,9 @@ $_['error_no_selection']                      = 'Selecciona al menos una factura
 
 $_['button_invoice'] 						  = 'Imprimir';
 $_['button_delete']                           = 'Anular';
+$_['text_void_tooltip']                       = 'Crea una factura rectificativa con las mismas l&iacute;neas en negativo para anular esta. La original nunca se borra.';
+$_['button_copy']                             = 'Copiar';
+$_['text_success_copy']                       = '&iexcl;Correcto: La factura se ha copiado a un nuevo Borrador!';
+$_['text_confirm_copy_draft']                 = 'Esto crear&aacute; una copia de la(s) factura(s) seleccionada(s) como un nuevo Borrador. &iquest;Desea continuar?';
 
 ?>

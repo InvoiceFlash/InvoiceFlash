@@ -34,10 +34,8 @@ class ControllerAccountingEntry extends Controller {
 		$this->data['column_debit']   = $this->language->get('column_debit');
 		$this->data['column_credit']  = $this->language->get('column_credit');
 
-		$this->data['text_total']       = $this->language->get('text_total');
-		$this->data['text_new_tooltip'] = $this->language->get('text_new_tooltip');
+		$this->data['text_total'] = $this->language->get('text_total');
 
-		$this->data['button_new']  = $this->language->get('button_new');
 		$this->data['button_save'] = $this->language->get('button_save');
 
 		$conta_digits = (int)$this->config->get('config_conta_digits') ?: 10;
