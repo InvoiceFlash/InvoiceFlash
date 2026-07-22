@@ -105,7 +105,6 @@
 							<tr>
 								<th></th>
 								<th><?php echo $column_product; ?></th>
-								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -132,9 +131,8 @@
 										<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][delivery_option][<?php echo $option_row; ?>][type]" value="<?php echo $option['type']; ?>">
 									<?php $option_row++; ?>
 									<?php } ?>
+									<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][model]" value="<?php echo $delivery_product['model']; ?>">
 								</td>
-								<td class="d-none d-sm-table-cell"><?php echo $delivery_product['model']; ?>
-									<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][model]" value="<?php echo $delivery_product['model']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $delivery_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="<?php echo $delivery_product['catalog_price_raw']; ?>" name="delivery_product[<?php echo $product_row; ?>][price]" value="<?php echo $delivery_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $delivery_product['total']; ?>
@@ -145,7 +143,6 @@
 							<?php } ?>
 							<?php } else { ?>
 							<tr>
-								<td class="d-none d-sm-table-cell"></td>
 								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
@@ -155,7 +152,6 @@
 							<?php if ($delivery_totals) { ?>
 							<?php foreach ($delivery_totals as $delivery_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
-								<td class="d-none d-sm-table-cell"></td>
 								<td class="text-right" colspan="4"><?php echo $delivery_total['title']; ?>:
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][delivery_total_id]" value="<?php echo $delivery_total['delivery_total_id']; ?>">
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][code]" value="<?php echo $delivery_total['code']; ?>">
@@ -659,6 +655,10 @@ $('#searchCustomer').click(function(e) {
 });
 
 function csDoSearch() {
+	var btn = $('#cs-search');
+	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
+	$('#cs-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> Buscando...</td></tr>');
+
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
@@ -687,6 +687,14 @@ function csDoSearch() {
 				html += '</tr>';
 			}
 			$('#cs-results').html(html);
+		},
+		error: function() {
+			$('#cs-warning').text('Error al buscar clientes').show();
+			$('#cs-results').html('<tr><td colspan="4" class="text-center">Error al buscar clientes</td></tr>');
+			csCustomers = [];
+		},
+		complete: function() {
+			btn.prop('disabled', false).html('Actualizar');
 		}
 	});
 }
@@ -925,8 +933,8 @@ $(document).on('dblclick', '#os-results tr[data-order-id]', function() {
 							option_row++;
 						}
 					}
+					html += '<input type="hidden" name="delivery_product[' + product_row + '][model]" value="' + p.model + '">';
 					html += '</td>';
-					html += '<td class="d-none d-sm-table-cell">' + p.model + '<input type="hidden" name="delivery_product[' + product_row + '][model]" value="' + p.model + '"></td>';
 					html += '<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product[' + product_row + '][quantity]" value="' + p.quantity + '"></td>';
 					html += '<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="' + p.catalog_price_raw + '" name="delivery_product[' + product_row + '][price]" value="' + p.price_raw + '"></td>';
 					html += '<td class="text-right">' + p.total + '<input type="hidden" name="delivery_product[' + product_row + '][total]" value="' + p.total + '"><input type="hidden" name="delivery_product[' + product_row + '][tax]" value="' + p.tax + '"></td>';
@@ -943,7 +951,6 @@ $(document).on('dblclick', '#os-results tr[data-order-id]', function() {
 				for (var i = 0; i < json.delivery_total.length; i++) {
 					var t = json.delivery_total[i];
 					thtml += '<tr id="total-row' + total_row + '">';
-					thtml += '<td class="d-none d-sm-table-cell"></td>';
 					thtml += '<td class="text-right" colspan="4">';
 					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][delivery_total_id]" value="">';
 					thtml += '<input type="hidden" name="delivery_total[' + total_row + '][code]" value="' + t.code + '">';

@@ -167,6 +167,7 @@ $_['error_paid_out']                          = 'One or more receipts of this in
 $_['error_no_selection']                      = 'Selecciona al menos una factura.';
 
 $_['button_invoice'] 						  = 'Print';
+$_['button_view']                             = 'View';
 $_['button_delete']                           = 'Void';
 $_['text_void_tooltip']                       = 'Creates a reversing invoice with the same lines in negative to cancel this one out. The original is never deleted.';
 $_['button_copy']                             = 'Copy';

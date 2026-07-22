@@ -6,15 +6,19 @@ $_['heading_title']       = 'Importer';
 $_['text_home']           = 'Home';
 $_['text_form']           = 'Import';
 $_['text_success']        = 'Success: %d record(s) imported, %d updated!';
+$_['text_success_saconta'] = 'Success: %d chart of accounts lines, %d sub-accounts (%d new customers) and %d journal entry lines imported!';
 $_['text_example']        = 'Excel file example';
 $_['text_example_help']   = 'The first row must be the header and will be ignored. Columns must follow this exact order:';
+$_['text_saconta_help']   = 'Path, on this same server, to the SaConta exercise folder (must contain ctab6.dbf, ctab61.dbf and ctab8.dbf). This will populate the Chart of Accounts, the Sub-Accounts (also creating customers for the 430 accounts) and the Journal Book.';
 $_['text_type_product']   = 'Products';
 $_['text_type_customer']  = 'Customers';
 $_['text_type_supplier']  = 'Suppliers';
+$_['text_type_saconta']   = 'FLASH SaConta';
 
 // Entry
 $_['entry_type']          = 'Import Type:';
 $_['entry_file']          = 'Excel File:';
+$_['entry_path']          = 'Path ejercicio:';
 
 // Column (products)
 $_['column_code']         = 'Item Code';
@@ -44,4 +48,6 @@ $_['error_file']          = 'Warning: Could not read the uploaded Excel file!';
 $_['error_row']           = 'Row %d: %s';
 $_['error_required']      = 'Item Code and Description are required';
 $_['error_required_customer'] = 'Company and Email are required';
+$_['error_path']          = 'Warning: You must enter a valid, accessible server folder path!';
+$_['error_saconta_file']  = 'Warning: %s was not found in that folder!';
 ?>

@@ -6,6 +6,7 @@ $_['heading_title'] = 'Libro Mayor';
 $_['text_company']              = 'Empresa';
 $_['text_period']               = 'Per&iacute;odo';
 $_['text_accounts']             = 'Cuentas';
+$_['text_account']              = 'Subcuenta';
 $_['text_print_date']           = 'Fecha';
 $_['text_opening_balance']      = 'Saldo anterior';
 $_['text_show_opening_balance'] = 'Mostrar saldos desde el principio del ejercicio';

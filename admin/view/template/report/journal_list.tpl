@@ -10,7 +10,7 @@
 
 	<div class="panel-body">
 		<div id="filter" class="well">
-			<div class="d-flex flex-wrap align-items-center justify-content-between" style="gap:.5rem;">
+			<div class="d-flex flex-wrap align-items-center justify-content-between mb-4" style="gap:.5rem;">
 				<div class="d-flex flex-wrap align-items-center" style="gap:.5rem;">
 					<div class="form-check mb-0">
 						<input type="radio" class="form-check-input" name="filter_mode" id="mode-number" value="number" <?php echo ($filter_mode == 'number') ? 'checked' : ''; ?>>

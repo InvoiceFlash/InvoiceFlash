@@ -486,6 +486,7 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['button_invoice'] = $this->language->get('button_invoice');
+		$this->data['button_view'] = $this->language->get('button_view');
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['text_void_tooltip'] = $this->language->get('text_void_tooltip');

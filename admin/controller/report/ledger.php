@@ -7,8 +7,8 @@ class ControllerReportLedger extends Controller {
 
 		$filter_date_start    = isset($this->request->get['filter_date_start']) ? $this->request->get['filter_date_start'] : date('01-01-Y');
 		$filter_date_end      = isset($this->request->get['filter_date_end']) ? $this->request->get['filter_date_end'] : date('d-m-Y');
-		$filter_account_start = isset($this->request->get['filter_account_start']) ? $this->request->get['filter_account_start'] : '';
-		$filter_account_end   = isset($this->request->get['filter_account_end']) ? $this->request->get['filter_account_end'] : '';
+		$filter_account_start = isset($this->request->get['filter_account_start']) ? $this->request->get['filter_account_start'] : '0000000000';
+		$filter_account_end   = isset($this->request->get['filter_account_end']) ? $this->request->get['filter_account_end'] : '9999999999';
 		$show_opening_balance = !empty($this->request->get['show_opening_balance']);
 		$new_page_per_account = isset($this->request->get['new_page_per_account']) ? !empty($this->request->get['new_page_per_account']) : true;
 
@@ -37,8 +37,11 @@ class ControllerReportLedger extends Controller {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
 		$this->data['text_no_results']           = $this->language->get('text_no_results');
+		$this->data['text_company']              = $this->language->get('text_company');
 		$this->data['text_period']               = $this->language->get('text_period');
 		$this->data['text_accounts']              = $this->language->get('text_accounts');
+		$this->data['text_account']              = $this->language->get('text_account');
+		$this->data['text_print_date']           = $this->language->get('text_print_date');
 		$this->data['text_opening_balance']      = $this->language->get('text_opening_balance');
 		$this->data['text_show_opening_balance'] = $this->language->get('text_show_opening_balance');
 		$this->data['text_new_page_per_account'] = $this->language->get('text_new_page_per_account');
@@ -63,6 +66,11 @@ class ControllerReportLedger extends Controller {
 		$this->data['filter_account_end']   = $filter_account_end;
 		$this->data['show_opening_balance'] = $show_opening_balance;
 		$this->data['new_page_per_account'] = $new_page_per_account;
+
+		$this->data['company_name']   = $this->config->get('config_name');
+		$this->data['period']         = $filter_date_start . ' &mdash; ' . $filter_date_end;
+		$this->data['account_range']  = $filter_account_start . ' &mdash; ' . $filter_account_end;
+		$this->data['print_date']     = date($this->language->get('date_format_short'));
 
 		$this->data['token'] = $this->session->data['token'];
 

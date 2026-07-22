@@ -17,8 +17,8 @@
 			</div>
 			<div class="form-group row">
 				<label class="col-sm-2 col-form-label"><?php echo $text_bank_cc; ?></label>
-				<div clasS="col-sm-10">
-					<input type="text" readonly class="form-control-plaintext" id="bank_cc" value="<?php echo $bank_cc; ?>">
+				<div class="col-sm-3">
+					<input type="text" readonly class="form-control" id="bank_cc" value="<?php echo $bank_cc; ?>">
 				</div>
 			</div>
 		</form>

@@ -7,35 +7,50 @@ class ControllerToolImport extends Controller {
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->user->hasPermission('modify', 'tool/import') && $this->validate()) {
-			$file = $this->request->files['file'];
-			$type = isset($this->request->post['type']) ? $this->request->post['type'] : 'product';
+		$type = isset($this->request->post['type']) ? $this->request->post['type'] : 'product';
 
-			require_once(DIR_SYSTEM . 'library/xlsx.php');
-
-			$xlsx = new Xlsx();
-			$rows = $xlsx->read($file['tmp_name']);
-
-			if ($rows === false) {
-				$this->error['warning'] = $this->language->get('error_file');
-			} else {
+		if ($this->request->server['REQUEST_METHOD'] == 'POST' && $this->user->hasPermission('modify', 'tool/import') && $this->validate($type)) {
+			if ($type == 'saconta') {
 				$this->load->model('tool/import');
 
-				if ($type == 'customer') {
-					$result = $this->model_tool_import->importCustomers($rows);
-				} elseif ($type == 'supplier') {
-					$result = $this->model_tool_import->importSuppliers($rows);
-				} else {
-					$result = $this->model_tool_import->importProducts($rows);
-				}
+				$result = $this->model_tool_import->importSaconta(trim($this->request->post['path']));
 
-				$this->session->data['success'] = sprintf($this->language->get('text_success'), $result['imported'], $result['updated']);
+				$this->session->data['success'] = sprintf($this->language->get('text_success_saconta'), $result['ctab6'], $result['ctab61'], $result['customers'], $result['ctab8']);
 
 				if ($result['errors']) {
 					$this->session->data['import_errors'] = $result['errors'];
 				}
 
 				$this->redirect($this->url->link('tool/import', 'token=' . $this->session->data['token'], 'SSL'));
+			} else {
+				$file = $this->request->files['file'];
+
+				require_once(DIR_SYSTEM . 'library/xlsx.php');
+
+				$xlsx = new Xlsx();
+				$rows = $xlsx->read($file['tmp_name']);
+
+				if ($rows === false) {
+					$this->error['warning'] = $this->language->get('error_file');
+				} else {
+					$this->load->model('tool/import');
+
+					if ($type == 'customer') {
+						$result = $this->model_tool_import->importCustomers($rows);
+					} elseif ($type == 'supplier') {
+						$result = $this->model_tool_import->importSuppliers($rows);
+					} else {
+						$result = $this->model_tool_import->importProducts($rows);
+					}
+
+					$this->session->data['success'] = sprintf($this->language->get('text_success'), $result['imported'], $result['updated']);
+
+					if ($result['errors']) {
+						$this->session->data['import_errors'] = $result['errors'];
+					}
+
+					$this->redirect($this->url->link('tool/import', 'token=' . $this->session->data['token'], 'SSL'));
+				}
 			}
 		}
 
@@ -48,13 +63,16 @@ class ControllerToolImport extends Controller {
 		$this->data['text_form'] = $this->language->get('text_form');
 		$this->data['text_example'] = $this->language->get('text_example');
 		$this->data['text_example_help'] = $this->language->get('text_example_help');
+		$this->data['text_saconta_help'] = $this->language->get('text_saconta_help');
 
 		$this->data['entry_type'] = $this->language->get('entry_type');
 		$this->data['entry_file'] = $this->language->get('entry_file');
+		$this->data['entry_path'] = $this->language->get('entry_path');
 
 		$this->data['text_type_product'] = $this->language->get('text_type_product');
 		$this->data['text_type_customer'] = $this->language->get('text_type_customer');
 		$this->data['text_type_supplier'] = $this->language->get('text_type_supplier');
+		$this->data['text_type_saconta'] = $this->language->get('text_type_saconta');
 
 		$this->data['button_import'] = $this->language->get('button_import');
 
@@ -120,12 +138,18 @@ class ControllerToolImport extends Controller {
 		$this->response->setOutput($this->render());
 	}
 
-	protected function validate() {
+	protected function validate($type) {
 		if (!$this->user->hasPermission('modify', 'tool/import')) {
 			$this->error['warning'] = $this->language->get('error_permission');
 		}
 
-		if (empty($this->request->files['file']['name']) || !is_uploaded_file($this->request->files['file']['tmp_name'])) {
+		if ($type == 'saconta') {
+			$path = isset($this->request->post['path']) ? trim($this->request->post['path']) : '';
+
+			if ($path === '' || !is_dir($path) || !is_readable($path)) {
+				$this->error['warning'] = $this->language->get('error_path');
+			}
+		} elseif (empty($this->request->files['file']['name']) || !is_uploaded_file($this->request->files['file']['tmp_name'])) {
 			$this->error['warning'] = $this->language->get('error_upload');
 		} elseif (strtolower(pathinfo($this->request->files['file']['name'], PATHINFO_EXTENSION)) != 'xlsx') {
 			$this->error['warning'] = $this->language->get('error_extension');

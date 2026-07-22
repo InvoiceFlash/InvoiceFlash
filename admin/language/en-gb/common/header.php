@@ -107,8 +107,8 @@ $_['text_recurring_profile']           = 'Recurring Profiles';
 $_['text_recurring']                   = 'Recurring';
 $_['text_upgrade']           		   = 'Upgrade';
 $_['text_vqmod']                       = 'Add-on Manager';
-$_['text_export']                     = 'Exportador';
-$_['text_import']                     = 'Importador';
+$_['text_export']                     = 'Accounting Exporter';
+$_['text_import']                     = 'Importer';
 
 //add
 $_['text_cron']						   = 'Scheduled tasks';
@@ -129,9 +129,16 @@ $_['text_accounting']                  = 'Accounting';
 $_['text_chart_of_accounts']           = 'Chart of Accounts';
 $_['text_subaccounts']                 = 'Sub-Accounts';
 $_['text_pyg']                         = 'Profit and Loss Account';
+$_['text_mod303']                      = 'Modelo 303';
 $_['text_entry']                       = 'Create Journal Entries';
+$_['text_review']                      = 'Review Entries';
 $_['text_report_journal']              = 'Journal Book';
 $_['text_report_ledger']               = 'General Ledger';
+$_['text_report_trial_balance']        = 'Trial Balance';
+$_['text_report_pyg']                  = 'Profit and Loss Statement';
+$_['text_report_mod303']               = 'Modelo 303';
+$_['text_report_balance_sheet']        = 'Balance Sheet';
+$_['text_report_mod111']               = 'Modelo 111';
 $_['text_web']                		   = 'Web';
 $_['text_marketing']                   = 'Marketing';
 $_['text_report_customer_support']     = 'Customer Support Contract';

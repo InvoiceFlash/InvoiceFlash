@@ -167,6 +167,7 @@ $_['error_paid_out']                          = 'Uno o m&aacute;s recibos de est
 $_['error_no_selection']                      = 'Selecciona al menos una factura.';
 
 $_['button_invoice'] 						  = 'Imprimir';
+$_['button_view']                             = 'Ver';
 $_['button_delete']                           = 'Anular';
 $_['text_void_tooltip']                       = 'Crea una factura rectificativa con las mismas l&iacute;neas en negativo para anular esta. La original nunca se borra.';
 $_['button_copy']                             = 'Copiar';

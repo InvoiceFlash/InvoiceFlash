@@ -6,6 +6,7 @@ $_['heading_title'] = 'General Ledger';
 $_['text_company']              = 'Company';
 $_['text_period']               = 'Period';
 $_['text_accounts']             = 'Accounts';
+$_['text_account']              = 'Account';
 $_['text_print_date']           = 'Date';
 $_['text_opening_balance']      = 'Opening balance';
 $_['text_show_opening_balance'] = 'Show balances from the beginning of the fiscal year';

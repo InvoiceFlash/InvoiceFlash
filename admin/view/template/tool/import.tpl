@@ -23,10 +23,11 @@
 						<option value="product"><?php echo $text_type_product; ?></option>
 						<option value="customer"><?php echo $text_type_customer; ?></option>
 						<option value="supplier"><?php echo $text_type_supplier; ?></option>
+						<option value="saconta"><?php echo $text_type_saconta; ?></option>
 					</select>
 				</div>
 			</div>
-			<div class="form-group row align-items-center">
+			<div class="form-group row align-items-center" id="import-row-file">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_file; ?></label>
 				<div class="col-sm-10">
 					<div class="custom-file">
@@ -35,15 +36,24 @@
 					</div>
 				</div>
 			</div>
+			<div class="form-group row align-items-center" id="import-row-path" style="display:none;">
+				<label class="col-sm-2 col-form-label"><?php echo $entry_path; ?></label>
+				<div class="col-sm-10">
+					<input type="text" name="path" class="form-control" placeholder="F:\proyectos\SaConta\SaConta.1.5.9.6\Servidor\DATO\027">
+					<div class="help-block"><?php echo $text_saconta_help; ?></div>
+				</div>
+			</div>
 			<div class="form-group row">
 				<div class="col-sm-10 offset-sm-2">
 					<button type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> <?php echo $button_import; ?></button>
 				</div>
 			</div>
 		</form>
-		<hr>
-		<h4><?php echo $text_example; ?></h4>
-		<p class="text-muted"><?php echo $text_example_help; ?></p>
+		<hr id="import-examples-divider">
+		<div id="import-examples-heading">
+			<h4><?php echo $text_example; ?></h4>
+			<p class="text-muted"><?php echo $text_example_help; ?></p>
+		</div>
 		<div id="import-example-product" class="table-responsive">
 			<table class="table table-bordered table-striped">
 				<thead>
@@ -134,9 +144,15 @@
 <script>
 $('#import-type').on('change', function() {
 	var type = $(this).val();
-	$('#import-example-product').toggle(type == 'product');
-	$('#import-example-customer').toggle(type == 'customer');
-	$('#import-example-supplier').toggle(type == 'supplier');
+	var isSaconta = (type == 'saconta');
+
+	$('#import-row-file').toggle(!isSaconta);
+	$('#import-row-path').toggle(isSaconta);
+
+	$('#import-examples-divider, #import-examples-heading').toggle(!isSaconta);
+	$('#import-example-product').toggle(!isSaconta && type == 'product');
+	$('#import-example-customer').toggle(!isSaconta && type == 'customer');
+	$('#import-example-supplier').toggle(!isSaconta && type == 'supplier');
 });
 </script>
 <?php echo $footer; ?>

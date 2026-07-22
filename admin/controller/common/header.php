@@ -446,11 +446,29 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Accounting - Modelo 303 configuration
+			if ($this->user->hasPermission('access', 'accounting/mod303')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_mod303'),
+					'href' => $this->url->link('accounting/mod303', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			// Accounting - Create Journal Entries
 			if ($this->user->hasPermission('access', 'accounting/entry')) {
 				$accounting[] = array(
 					'name' => $this->language->get('text_entry'),
 					'href' => $this->url->link('accounting/entry', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			// Accounting - Review Entries
+			if ($this->user->hasPermission('access', 'accounting/review')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_review'),
+					'href' => $this->url->link('accounting/review', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
@@ -626,6 +644,46 @@ class ControllerCommonHeader extends Controller {
 				$r_accounting[] = array(
 					'name' => $this->language->get('text_report_ledger'),
 					'href' => $this->url->link('report/ledger', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'report/trial_balance')) {
+				$r_accounting[] = array(
+					'name' => $this->language->get('text_report_trial_balance'),
+					'href' => $this->url->link('report/trial_balance', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'report/pyg')) {
+				$r_accounting[] = array(
+					'name' => $this->language->get('text_report_pyg'),
+					'href' => $this->url->link('report/pyg', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'report/balance_sheet')) {
+				$r_accounting[] = array(
+					'name' => $this->language->get('text_report_balance_sheet'),
+					'href' => $this->url->link('report/balance_sheet', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'report/mod111')) {
+				$r_accounting[] = array(
+					'name' => $this->language->get('text_report_mod111'),
+					'href' => $this->url->link('report/mod111', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'report/mod303')) {
+				$r_accounting[] = array(
+					'name' => $this->language->get('text_report_mod303'),
+					'href' => $this->url->link('report/mod303', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
