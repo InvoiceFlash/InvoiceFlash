@@ -35,6 +35,7 @@ $_['text_subaccounts'] = 'Subcuentas';
 $_['text_pyg'] = 'Cuenta de P&eacute;rdidas y Ganancias';
 $_['text_entry'] = 'Crear Asientos';
 $_['text_report_journal'] = 'Libro Diario';
+$_['text_report_ledger'] = 'Libro Mayor';
 $_['text_report_sale_order'] = 'Pedidos';
 $_['text_report_sale_tax'] = 'Impuestos';
 $_['text_report_sale_shipping'] = 'Env&iacute;os';

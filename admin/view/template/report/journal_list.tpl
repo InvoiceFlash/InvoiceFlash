@@ -10,44 +10,30 @@
 
 	<div class="panel-body">
 		<div id="filter" class="well">
-			<div class="row g-2 align-items-center">
-				<div class="col-auto">
-					<div class="form-check">
+			<div class="d-flex flex-wrap align-items-center justify-content-between" style="gap:.5rem;">
+				<div class="d-flex flex-wrap align-items-center" style="gap:.5rem;">
+					<div class="form-check mb-0">
 						<input type="radio" class="form-check-input" name="filter_mode" id="mode-number" value="number" <?php echo ($filter_mode == 'number') ? 'checked' : ''; ?>>
 						<label class="form-check-label" for="mode-number"><?php echo $text_by_number; ?></label>
 					</div>
-				</div>
-				<div class="col-auto"><?php echo $entry_from; ?></div>
-				<div class="col-auto">
-					<input type="number" id="filter-number-start" class="form-control" style="width:90px;" value="<?php echo $filter_number_start; ?>" min="1">
-				</div>
-				<div class="col-auto"><?php echo $entry_to; ?></div>
-				<div class="col-auto">
-					<input type="number" id="filter-number-end" class="form-control" style="width:90px;" value="<?php echo $filter_number_end; ?>" min="1">
-				</div>
+					<input type="number" id="filter-number-start" class="form-control" style="width:90px;" value="<?php echo $filter_number_start; ?>" min="1" placeholder="<?php echo $entry_from; ?>">
+					<input type="number" id="filter-number-end" class="form-control" style="width:90px;" value="<?php echo $filter_number_end; ?>" min="1" placeholder="<?php echo $entry_to; ?>">
 
-				<div class="col-auto ms-3">
-					<div class="form-check">
+					<div class="form-check mb-0 ms-3">
 						<input type="radio" class="form-check-input" name="filter_mode" id="mode-date" value="date" <?php echo ($filter_mode != 'number') ? 'checked' : ''; ?>>
 						<label class="form-check-label" for="mode-date"><?php echo $text_by_date; ?></label>
 					</div>
-				</div>
-				<div class="col-auto"><?php echo $entry_from; ?></div>
-				<div class="col-auto">
-					<div class="input-group" style="width:160px;">
-						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>">
+					<div class="input-group" style="width:150px;">
+						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>" placeholder="<?php echo $entry_from; ?>">
 						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
-				</div>
-				<div class="col-auto"><?php echo $entry_to; ?></div>
-				<div class="col-auto">
-					<div class="input-group" style="width:160px;">
-						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>">
+					<div class="input-group" style="width:150px;">
+						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>" placeholder="<?php echo $entry_to; ?>">
 						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 					</div>
 				</div>
 
-				<div class="col ms-auto text-end">
+				<div style="white-space:nowrap;">
 					<button type="button" onclick="printJournal();" class="btn btn-default"><i class="fa fa-print"></i> <?php echo $button_print; ?></button>
 					<button type="button" onclick="exportExcel();" class="btn btn-success ms-1"><i class="fa fa-file-excel"></i> <?php echo $button_export; ?></button>
 					<button type="button" onclick="filter();" class="btn btn-info ms-1"><i class="fa fa-search"></i> <?php echo $button_filter; ?></button>

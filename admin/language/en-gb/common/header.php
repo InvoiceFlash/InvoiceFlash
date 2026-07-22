@@ -131,6 +131,7 @@ $_['text_subaccounts']                 = 'Sub-Accounts';
 $_['text_pyg']                         = 'Profit and Loss Account';
 $_['text_entry']                       = 'Create Journal Entries';
 $_['text_report_journal']              = 'Journal Book';
+$_['text_report_ledger']               = 'General Ledger';
 $_['text_web']                		   = 'Web';
 $_['text_marketing']                   = 'Marketing';
 $_['text_report_customer_support']     = 'Customer Support Contract';

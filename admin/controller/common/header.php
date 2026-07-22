@@ -622,6 +622,14 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			if ($this->user->hasPermission('access', 'report/ledger')) {
+				$r_accounting[] = array(
+					'name' => $this->language->get('text_report_ledger'),
+					'href' => $this->url->link('report/ledger', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($r_accounting) {
 				$reports[] = array(
 					'name' => $this->language->get('text_accounting'),
