@@ -5,7 +5,7 @@ class ModelToolSpecialOperations extends Model {
 	// idioma, impuestos, clases de peso/longitud, formas de pago y envío).
 	private function getPreservedTables() {
 		return array(
-			'setting', 'user', 'user_group', 'api',
+			'setting', 'user', 'user_group', 'api', 'extension',
 			'language', 'currency',
 			'country', 'zone', 'geo_zone', 'zone_to_geo_zone',
 			'return_action', 'return_reason',
@@ -13,7 +13,8 @@ class ModelToolSpecialOperations extends Model {
 			'length_class', 'length_class_description',
 			'weight_class', 'weight_class_description',
 			'payment', 'payment_description',
-			'shipping_methods'
+			'shipping_methods',
+			'customer_group', 'customer_group_description'
 		);
 	}
 

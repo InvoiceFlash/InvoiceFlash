@@ -1798,8 +1798,7 @@ $(function(){
 						html+='</td>';
 						html+='<td>'+deliveryDateHtml+'</td>';
 						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="quote_product['+product_row+'][model]" value="'+product['model']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="'+product['catalog_price_raw']+'" name="quote_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-right"><input type="hidden" name="quote_product['+product_row+'][quantity]" value="'+product['quantity']+'"><input type="text" class="form-control text-right quote-price" data-catalog-price="'+product['catalog_price_raw']+'" name="quote_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="quote_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="quote_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
@@ -1817,7 +1816,7 @@ $(function(){
 					for(i in json['quote_total']){
 						total=json['quote_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="quote_total['+total_row+'][quote_total_id]" value=""><input type="hidden" name="quote_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="quote_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="quote_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="quote_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="quote_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="3"><input type="hidden" name="quote_total['+total_row+'][quote_total_id]" value=""><input type="hidden" name="quote_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="quote_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="quote_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="quote_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="quote_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
 						html+='<td class="text-right">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
@@ -1986,7 +1985,8 @@ $(function(){
 						product=json['draft_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-draft-product\').click();"><i class="fa fa-trash"></i></a></td>';
-						html+='<td>'+product['name']+'<br><input type="hidden" name="draft_product['+product_row+'][draft_product_id]" value=""><input type="hidden" name="draft_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="draft_product['+product_row+'][name]" value="'+product['name']+'">';
+						var draftNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+						html+='<td><input type="text" class="form-control draft-name" name="draft_product['+product_row+'][name]" value="'+draftNameAttr+'"><input type="hidden" name="draft_product['+product_row+'][draft_product_id]" value=""><input type="hidden" name="draft_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="draft_product['+product_row+'][model]" value="'+product['model']+'">';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){
 								option = product['option'][j];
@@ -2003,7 +2003,6 @@ $(function(){
 							}
 						}
 						html+='</td>';
-						html+='<td class="d-none d-sm-table-cell">'+product['model']+'<input type="hidden" name="draft_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="'+product['catalog_price_raw']+'" name="draft_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="draft_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="draft_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';

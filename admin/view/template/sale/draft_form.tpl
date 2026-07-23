@@ -97,8 +97,8 @@
 						<thead>
 							<tr>
 								<th></th>
-								<th><?php echo $column_product; ?></th>
-								<th class="text-right"><?php echo $column_quantity; ?></th>
+								<th style="width:50%;"><?php echo $column_product; ?></th>
+								<th class="text-right" style="width:80px;"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 						</tr>
@@ -110,10 +110,10 @@
 							<?php foreach ($draft_products as $draft_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
 								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-draft-product').click();"><i class="fa fa-trash"></i></a></td>
-								<td><?php echo $draft_product['name']; ?><br>
+								<td>
+									<input type="text" class="form-control draft-name" name="draft_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$draft_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][draft_product_id]" value="<?php echo $draft_product['draft_product_id']; ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $draft_product['product_id']; ?>">
-									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][name]" value="<?php echo $draft_product['name']; ?>">
 									<?php foreach ($draft_product['option'] as $option) { ?>
 										<div class="help"><?php echo $option['name']; ?>: <?php echo $option['value']; ?></div>
 										<input type="hidden" name="draft_product[<?php echo $product_row; ?>][draft_option][<?php echo $option_row; ?>][draft_option_id]" value="<?php echo $option['draft_option_id']; ?>">
@@ -897,7 +897,7 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 	$('#draft-product').val(p.name);
 	$('#pm-product-name').text(p.name);
 	$('#pm-quantity').val(1);
-	$('#price_override').val(p.price || '');
+	$('#price_override').val((p.price !== undefined && p.price !== null) ? p.price : '');
 
 	var html = '', s = $('#text_select').val();
 	if (p.option && p.option.length) {

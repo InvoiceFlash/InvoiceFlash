@@ -26,9 +26,10 @@ class ControllerToolImport extends Controller {
 				$this->load->model('tool/import');
 
 				$options = array(
-					'product'  => !empty($this->request->post['import_product']),
-					'customer' => !empty($this->request->post['import_customer']),
-					'supplier' => !empty($this->request->post['import_supplier'])
+					'product'      => !empty($this->request->post['import_product']),
+					'customer'     => !empty($this->request->post['import_customer']),
+					'supplier'     => !empty($this->request->post['import_supplier']),
+					'company_code' => isset($this->request->post['company_code']) ? trim($this->request->post['company_code']) : ''
 				);
 
 				$result = $this->model_tool_import->importFlashGestion(trim($this->request->post['path']), $options);
@@ -88,6 +89,7 @@ class ControllerToolImport extends Controller {
 		$this->data['entry_file'] = $this->language->get('entry_file');
 		$this->data['entry_path'] = $this->language->get('entry_path');
 		$this->data['entry_related_history_code'] = $this->language->get('entry_related_history_code');
+		$this->data['entry_company_code'] = $this->language->get('entry_company_code');
 
 		$this->data['text_type_product'] = $this->language->get('text_type_product');
 		$this->data['text_type_customer'] = $this->language->get('text_type_customer');

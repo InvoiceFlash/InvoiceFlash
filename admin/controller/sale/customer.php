@@ -1198,7 +1198,7 @@ class ControllerSaleCustomer extends Controller {
 		}
 		
 		if (isset($customer_info)) {
-			if ($customer_info['date_support']!='0000-00-00') {
+			if (!empty($customer_info['date_support']) && $customer_info['date_support']!='0000-00-00') {
 				$this->data['date_support'] = date($this->language->get('datetime_format'), strtotime($customer_info['date_support']));
 			} else {
 				$this->data['date_support'] = '';

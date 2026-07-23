@@ -1,5 +1,8 @@
 <?php
 class ModelToolImport extends Model {
+	private $flashZoneCache = array();
+	private $flashGeneralTaxClassId = null;
+
 	public function importProducts($rows) {
 		$imported = 0;
 		$updated = 0;
@@ -428,11 +431,11 @@ class ModelToolImport extends Model {
 		);
 
 		if (!empty($options['product'])) {
-			$this->importFlashProducts($path, $result);
+			$this->importFlashProducts($path, $result, !empty($options['company_code']) ? $options['company_code'] : '');
 		}
 
 		if (!empty($options['customer'])) {
-			$this->importFlashCustomers($path, $result);
+			$this->importFlashCustomers($path, $result, !empty($options['company_code']) ? $options['company_code'] : '');
 		}
 
 		if (!empty($options['supplier'])) {
@@ -456,14 +459,119 @@ class ModelToolImport extends Model {
 		return false;
 	}
 
-	private function importFlashProducts($path, &$result) {
+	// ttab11 relaciona cliente (T11CCLI, = ttab4.T4CCLI) con el centro/empresa (T11CCEN) al que pertenece.
+	// Un mismo cliente puede aparecer en varios centros, así que se recogen todas las coincidencias.
+	private function getFlashGestionCompanyClients($path, $company_code, &$result) {
+		$file = $this->findFlashDbf($path, array('ttab11.dbf'), $result);
+
+		if (!$file) {
+			return false;
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return false;
+		}
+
+		$clients = array();
+
+		foreach ($dbf->rows() as $row) {
+			// T11CCEN puede venir como campo Numérico (entero, sin ceros a la izquierda) o
+			// Carácter ('006'); se normaliza a entero para comparar sin depender del tipo de campo.
+			$centro = trim((string)$row['T11CCEN']);
+
+			if ($centro !== '' && (int)$centro === (int)$company_code) {
+				$clients[trim($row['T11CCLI'])] = true;
+			}
+		}
+
+		return $clients;
+	}
+
+	// confent tiene una fila por usuario con la empresa/centro (CODEMP/CODCEN) que tiene configurados
+	// y el almacén de entradas (CALMACE) que usa esa empresa.
+	private function getFlashGestionCompanyWarehouses($path, $company_code, &$result) {
+		$file = $this->findFlashDbf($path, array('confent.dbf'), $result);
+
+		if (!$file) {
+			return false;
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return false;
+		}
+
+		$warehouses = array();
+
+		foreach ($dbf->rows() as $row) {
+			// Mismo motivo que en T11CCEN: CODCEN puede venir como Numérico sin ceros a la izquierda.
+			$centro = trim((string)$row['CODCEN']);
+
+			if ($centro !== '' && (int)$centro === (int)$company_code) {
+				$almacen = trim($row['CALMACE']);
+
+				if ($almacen !== '') {
+					$warehouses[$almacen] = true;
+				}
+			}
+		}
+
+		return $warehouses;
+	}
+
+	// ttab32 relaciona artículo (T32CODART, = ttab22.T22CODART) con el almacén (T32CALMAC) en el que tiene stock.
+	private function getFlashGestionWarehouseProducts($path, $warehouses, &$result) {
+		$file = $this->findFlashDbf($path, array('ttab32.dbf'), $result);
+
+		if (!$file) {
+			return false;
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return false;
+		}
+
+		$products = array();
+
+		foreach ($dbf->rows() as $row) {
+			if (isset($warehouses[trim($row['T32CALMAC'])])) {
+				$products[trim($row['T32CODART'])] = true;
+			}
+		}
+
+		return $products;
+	}
+
+	private function importFlashProducts($path, &$result, $company_code = '') {
 		$file = $this->findFlashDbf($path, array('ttab22.dbf'), $result);
 
 		if (!$file) {
 			return;
 		}
 
-		$language_id = (int)$this->config->get('config_language_id');
+		$allowed_products = null;
+
+		if ($company_code !== '') {
+			$warehouses = $this->getFlashGestionCompanyWarehouses($path, $company_code, $result);
+
+			if ($warehouses === false) {
+				return;
+			}
+
+			$allowed_products = $this->getFlashGestionWarehouseProducts($path, $warehouses, $result);
+
+			if ($allowed_products === false) {
+				return;
+			}
+		}
 
 		try {
 			$dbf = new Dbf($file);
@@ -472,10 +580,17 @@ class ModelToolImport extends Model {
 			return;
 		}
 
+		$batch      = array();
+		$batch_size = 20;
+
 		foreach ($dbf->rows() as $row) {
 			$model = trim($row['T22CODART']);
 
 			if ($model === '') {
+				continue;
+			}
+
+			if ($allowed_products !== null && !isset($allowed_products[$model])) {
 				continue;
 			}
 
@@ -491,43 +606,289 @@ class ModelToolImport extends Model {
 				$description = $name;
 			}
 
-			$price = (float)$row['T22PVP'];
-			$status = (!empty($row['LLSINUSO']) || !empty($row['T22INACTIV'])) ? 0 : 1;
+			$batch[] = array(
+				'model'       => $model,
+				'name'        => $name,
+				'description' => $description,
+				'price'       => (float)$row['T22PVP'],
+				'status'      => (!empty($row['LLSINUSO']) || !empty($row['T22INACTIV'])) ? 0 : 1
+			);
 
-			$query = $this->db->query("SELECT product_id FROM `" . DB_PREFIX . "product` WHERE model = '" . $this->db->escape($model) . "'");
-
-			if ($query->num_rows) {
-				$product_id = $query->row['product_id'];
-
-				$this->db->query("UPDATE `" . DB_PREFIX . "product` SET price = '" . (float)$price . "', status = '" . (int)$status . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
-
-				$description_query = $this->db->query("SELECT product_id FROM `" . DB_PREFIX . "product_description` WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . $language_id . "'");
-
-				if ($description_query->num_rows) {
-					$this->db->query("UPDATE `" . DB_PREFIX . "product_description` SET name = '" . $this->db->escape($name) . "', description = '" . $this->db->escape($description) . "' WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . $language_id . "'");
-				} else {
-					$this->db->query("INSERT INTO `" . DB_PREFIX . "product_description` SET product_id = '" . (int)$product_id . "', language_id = '" . $language_id . "', name = '" . $this->db->escape($name) . "', meta_keyword = '', meta_description = '', description = '" . $this->db->escape($description) . "', tag = ''");
-				}
-			} else {
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "product` SET model = '" . $this->db->escape($model) . "', sku = '', upc = '', ean = '', jan = '', isbn = '', mpn = '', location = '', quantity = '0', minimum = '1', subtract = '1', stock_status_id = '0', date_available = '" . date('Y-m-d') . "', manufacturer_id = '0', shipping = '1', price = '" . (float)$price . "', points = '0', weight = '0.00000000', weight_class_id = '0', length = '0.00000000', width = '0.00000000', height = '0.00000000', length_class_id = '0', sort_order = '0', status = '" . (int)$status . "', tax_class_id = '0', date_added = NOW(), date_modified = NOW()");
-
-				$product_id = $this->db->getLastId();
-
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "product_description` SET product_id = '" . (int)$product_id . "', language_id = '" . $language_id . "', name = '" . $this->db->escape($name) . "', meta_keyword = '', meta_description = '', description = '" . $this->db->escape($description) . "', tag = ''");
+			if (count($batch) >= $batch_size) {
+				$this->flushFlashProductBatch($batch, $result);
+				$batch = array();
 			}
+		}
 
-			$result['products']++;
+		if ($batch) {
+			$this->flushFlashProductBatch($batch, $result);
 		}
 
 		$this->cache->delete('product');
 	}
 
-	private function importFlashCustomers($path, &$result) {
+	// Traduce nombre y descripción de cada producto del lote a inglés (en un único lote/petición
+	// a la API de Claude) y da de alta/actualiza el producto con SKU = código de artículo,
+	// clase de impuesto "General" y el nombre/descripción en español (language_id 2) e inglés
+	// (language_id 1, traducido).
+	private function flushFlashProductBatch($batch, &$result) {
+		$texts = array();
+
+		foreach ($batch as $i => $item) {
+			$texts[$i . '_name']        = $item['name'];
+			$texts[$i . '_description'] = $item['description'];
+		}
+
+		$translated = $this->translateTextsToEnglish($texts, $result);
+
+		$tax_class_id = $this->resolveGeneralTaxClassId($result);
+
+		foreach ($batch as $i => $item) {
+			$name_en        = isset($translated[$i . '_name']) ? $translated[$i . '_name'] : $item['name'];
+			$description_en = isset($translated[$i . '_description']) ? $translated[$i . '_description'] : $item['description'];
+
+			$this->upsertFlashProduct($item['model'], $item['price'], $item['status'], $tax_class_id, $item['name'], $item['description'], $name_en, $description_en);
+
+			$result['products']++;
+		}
+	}
+
+	private function upsertFlashProduct($model, $price, $status, $tax_class_id, $name_es, $description_es, $name_en, $description_en) {
+		$query = $this->db->query("SELECT product_id FROM `" . DB_PREFIX . "product` WHERE model = '" . $this->db->escape($model) . "'");
+
+		if ($query->num_rows) {
+			$product_id = $query->row['product_id'];
+
+			$this->db->query("UPDATE `" . DB_PREFIX . "product` SET sku = '" . $this->db->escape($model) . "', price = '" . (float)$price . "', status = '" . (int)$status . "', tax_class_id = '" . (int)$tax_class_id . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
+		} else {
+			$this->db->query("INSERT INTO `" . DB_PREFIX . "product` SET model = '" . $this->db->escape($model) . "', sku = '" . $this->db->escape($model) . "', upc = '', ean = '', jan = '', isbn = '', mpn = '', location = '', quantity = '0', minimum = '1', subtract = '1', stock_status_id = '0', date_available = '" . date('Y-m-d') . "', manufacturer_id = '0', shipping = '1', price = '" . (float)$price . "', points = '0', weight = '0.00000000', weight_class_id = '0', length = '0.00000000', width = '0.00000000', height = '0.00000000', length_class_id = '0', sort_order = '0', status = '" . (int)$status . "', tax_class_id = '" . (int)$tax_class_id . "', date_added = NOW(), date_modified = NOW()");
+
+			$product_id = $this->db->getLastId();
+		}
+
+		$this->upsertProductDescription($product_id, 2, $name_es, $description_es);
+		$this->upsertProductDescription($product_id, 1, $name_en, $description_en);
+	}
+
+	private function upsertProductDescription($product_id, $language_id, $name, $description) {
+		$query = $this->db->query("SELECT product_id FROM `" . DB_PREFIX . "product_description` WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . (int)$language_id . "'");
+
+		if ($query->num_rows) {
+			$this->db->query("UPDATE `" . DB_PREFIX . "product_description` SET name = '" . $this->db->escape($name) . "', description = '" . $this->db->escape($description) . "' WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . (int)$language_id . "'");
+		} else {
+			$this->db->query("INSERT INTO `" . DB_PREFIX . "product_description` SET product_id = '" . (int)$product_id . "', language_id = '" . (int)$language_id . "', name = '" . $this->db->escape($name) . "', meta_keyword = '', meta_description = '', description = '" . $this->db->escape($description) . "', tag = ''");
+		}
+	}
+
+	private function resolveGeneralTaxClassId(&$result) {
+		if ($this->flashGeneralTaxClassId !== null) {
+			return $this->flashGeneralTaxClassId;
+		}
+
+		$query = $this->db->query("SELECT tax_class_id FROM `" . DB_PREFIX . "tax_class` WHERE title = 'General' LIMIT 1");
+
+		if ($query->num_rows) {
+			$this->flashGeneralTaxClassId = (int)$query->row['tax_class_id'];
+		} else {
+			$result['errors'][] = 'No se encontró la clase de impuesto "General"; los productos se han importado sin clase de impuesto.';
+			$this->flashGeneralTaxClassId = 0;
+		}
+
+		return $this->flashGeneralTaxClassId;
+	}
+
+	// Traduce un conjunto de textos (nombre/descripción de producto) de español a inglés en una
+	// única petición a la API de Claude (system > Ajustes > IA > API KEY Claude). Si no hay API
+	// key configurada, o la traducción falla, se devuelve el texto original sin traducir.
+	private function translateTextsToEnglish($texts, &$result) {
+		if (!$texts) {
+			return array();
+		}
+
+		$api_key = $this->config->get('config_claude_api_key');
+
+		if (!$api_key) {
+			return $texts;
+		}
+
+		$translations = $texts;
+		$chunks       = array_chunk($texts, 40, true);
+
+		foreach ($chunks as $chunk) {
+			$keys   = array_keys($chunk);
+			$values = array_values($chunk);
+
+			$payload = array(
+				'model'      => 'claude-opus-4-8',
+				'max_tokens' => 4096,
+				'system'     => 'Traduce cada texto del array JSON de español a inglés. Son nombres y descripciones de productos de un catálogo. Devuelve ÚNICAMENTE un array JSON de strings, en el mismo orden y con la misma longitud que el array recibido, sin explicaciones ni texto adicional ni bloques de código. Si un texto ya está en inglés, o es un código/referencia no traducible, devuélvelo tal cual.',
+				'messages'   => array(
+					array('role' => 'user', 'content' => json_encode($values, JSON_UNESCAPED_UNICODE))
+				)
+			);
+
+			$ch = curl_init('https://api.anthropic.com/v1/messages');
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'Content-Type: application/json',
+				'x-api-key: ' . $api_key,
+				'anthropic-version: 2023-06-01'
+			));
+			curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+			$raw        = curl_exec($ch);
+			$http_code  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$curl_error = curl_error($ch);
+			curl_close($ch);
+
+			if ($raw === false || $http_code !== 200) {
+				$result['errors'][] = 'No se pudo traducir al ingl&eacute;s (' . ($curl_error !== '' ? $curl_error : 'HTTP ' . $http_code) . '); se ha usado el texto original en los dos idiomas.';
+				continue;
+			}
+
+			$resp     = json_decode($raw, true);
+			$text_out = isset($resp['content'][0]['text']) ? trim($resp['content'][0]['text']) : '';
+			$text_out = preg_replace('/^```(?:json)?\s*/', '', $text_out);
+			$text_out = preg_replace('/\s*```$/', '', $text_out);
+
+			$decoded = json_decode($text_out, true);
+
+			if (is_array($decoded) && (count($decoded) === count($values))) {
+				foreach ($keys as $i => $key) {
+					$translations[$key] = (string)$decoded[$i];
+				}
+			} else {
+				$result['errors'][] = 'Respuesta de traducci&oacute;n inv&aacute;lida; se ha usado el texto original en los dos idiomas para parte de los productos.';
+			}
+		}
+
+		return $translations;
+	}
+
+	// ttab29 relaciona el código de código postal de ttab4 (T4CCP, código interno tipo '001410')
+	// con el código postal real (T29CP, p.ej. '01001'), la ciudad (T29POBLA) y la provincia
+	// (T29PROV): T4CCP NO es el código postal en sí, es una clave a buscar en ttab29.
+	private function getFlashGestionLocations($path, &$result) {
+		$file = $this->findFlashDbf($path, array('ttab29.dbf'), $result);
+
+		if (!$file) {
+			return array();
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return array();
+		}
+
+		$locations = array();
+
+		foreach ($dbf->rows() as $row) {
+			$code = trim($row['T29CCP']);
+
+			if ($code !== '') {
+				$locations[$code] = array(
+					'postcode' => trim($row['T29CP']),
+					'city'     => trim($row['T29POBLA']),
+					'province' => trim($row['T29PROV'])
+				);
+			}
+		}
+
+		return $locations;
+	}
+
+	// Compara nombres de provincia/zona ignorando mayúsculas, acentos y entidades HTML
+	// (p.ej. zone.name = '&Aacute;lava' vs ttab29.T29PROV = 'Alava').
+	// No se usa iconv('...//TRANSLIT') porque en este entorno convierte 'Á' en "'A"
+	// (antepone un apóstrofo) en vez de 'A', lo que rompe la comparación.
+	private function normalizeZoneName($name) {
+		$name = html_entity_decode($name, ENT_QUOTES, 'UTF-8');
+
+		$accents = array(
+			'á' => 'a', 'à' => 'a', 'ä' => 'a', 'â' => 'a', 'Á' => 'A', 'À' => 'A', 'Ä' => 'A', 'Â' => 'A',
+			'é' => 'e', 'è' => 'e', 'ë' => 'e', 'ê' => 'e', 'É' => 'E', 'È' => 'E', 'Ë' => 'E', 'Ê' => 'E',
+			'í' => 'i', 'ì' => 'i', 'ï' => 'i', 'î' => 'i', 'Í' => 'I', 'Ì' => 'I', 'Ï' => 'I', 'Î' => 'I',
+			'ó' => 'o', 'ò' => 'o', 'ö' => 'o', 'ô' => 'o', 'Ó' => 'O', 'Ò' => 'O', 'Ö' => 'O', 'Ô' => 'O',
+			'ú' => 'u', 'ù' => 'u', 'ü' => 'u', 'û' => 'u', 'Ú' => 'U', 'Ù' => 'U', 'Ü' => 'U', 'Û' => 'U',
+			'ñ' => 'n', 'Ñ' => 'N', 'ç' => 'c', 'Ç' => 'C'
+		);
+
+		$name = strtr($name, $accents);
+		$name = strtoupper(trim($name));
+
+		// ttab29 usa variantes/nombres alternativos para algunas provincias que no coinciden
+		// literalmente con el nombre de la zona en InvoiceFlash (nombre oficial, capital de
+		// provincia, o nombre en euskera en vez de en castellano).
+		$aliases = array(
+			'A CORUNA'                  => 'LA CORUNA',
+			'CORUNA'                    => 'LA CORUNA',
+			'ORENSE'                    => 'OURENSE',
+			'GRAN CANARIA'              => 'LAS PALMAS',
+			'LAS PALMAS DE GRAN CANARIA' => 'LAS PALMAS',
+			'TENERIFE'                  => 'SANTA CRUZ DE TENERIFE',
+			'S. C. DE TENERIFE'         => 'SANTA CRUZ DE TENERIFE',
+			'STA. CRUZ DE TENERIFE'     => 'SANTA CRUZ DE TENERIFE',
+			'BIZKAIA'                   => 'VIZCAYA',
+			'VIZKAYA'                   => 'VIZCAYA',
+			'GIPUZKOA'                  => 'GUIPUZCOA',
+			'GUIPUZKOA'                 => 'GUIPUZCOA',
+			'ILLES BALEARS'             => 'BALEARES',
+			'IBIZA'                     => 'BALEARES',
+			'MENORCA - BALEARS'         => 'BALEARES',
+			'LOGRONO'                   => 'LA RIOJA'
+		);
+
+		return isset($aliases[$name]) ? $aliases[$name] : $name;
+	}
+
+	private function resolveZoneId($country_id, $province) {
+		$province = trim($province);
+
+		if ($province === '') {
+			return 0;
+		}
+
+		if (!isset($this->flashZoneCache[$country_id])) {
+			$zones = array();
+
+			$query = $this->db->query("SELECT zone_id, name FROM `" . DB_PREFIX . "zone` WHERE country_id = '" . (int)$country_id . "'");
+
+			foreach ($query->rows as $row) {
+				$zones[$this->normalizeZoneName($row['name'])] = (int)$row['zone_id'];
+			}
+
+			$this->flashZoneCache[$country_id] = $zones;
+		}
+
+		$key = $this->normalizeZoneName($province);
+
+		return isset($this->flashZoneCache[$country_id][$key]) ? $this->flashZoneCache[$country_id][$key] : 0;
+	}
+
+	private function importFlashCustomers($path, &$result, $company_code = '') {
 		$file = $this->findFlashDbf($path, array('ttab4.dbf'), $result);
 
 		if (!$file) {
 			return;
 		}
+
+		$allowed_clients = null;
+
+		if ($company_code !== '') {
+			$allowed_clients = $this->getFlashGestionCompanyClients($path, $company_code, $result);
+
+			if ($allowed_clients === false) {
+				return;
+			}
+		}
+
+		$locations = $this->getFlashGestionLocations($path, $result);
 
 		try {
 			$dbf = new Dbf($file);
@@ -537,6 +898,12 @@ class ModelToolImport extends Model {
 		}
 
 		foreach ($dbf->rows() as $row) {
+			$client_code = trim($row['T4CCLI']);
+
+			if ($allowed_clients !== null && !isset($allowed_clients[$client_code])) {
+				continue;
+			}
+
 			$contable_account = trim($row['T4CCONTA']);
 			$company = trim($row['T4NOM']);
 
@@ -559,14 +926,22 @@ class ModelToolImport extends Model {
 			$fax = trim($row['T4FAX']);
 			$web = trim($row['T4WEB']);
 			$address_1 = trim($row['T4DOM']);
-			$postcode = trim($row['T4CCP']);
+			$postcode_code = trim($row['T4CCP']);
+			$location = isset($locations[$postcode_code]) ? $locations[$postcode_code] : array('postcode' => '', 'city' => '', 'province' => '');
+			$postcode = $location['postcode'];
+			$city = $location['city'];
 			$country_id = $this->resolveCountryId('');
+			$zone_id = $this->resolveZoneId($country_id, $location['province']);
 			$status = (!empty($row['LLSINUSO']) || !empty($row['T4INACTIV'])) ? 0 : 1;
+			$date_added = !empty($row['T4FECHALT']) ? "'" . $this->db->escape($row['T4FECHALT']) . "'" : 'NOW()';
 
+			// El código de cliente FLASH (cod_flash) es la clave única real: contable_account
+			// puede venir vacío o compartido entre varios clientes (p. ej. una cuenta genérica),
+			// lo que antes hacía que se sobrescribiera siempre al mismo cliente ya existente.
 			$customer_id = null;
 
-			if ($contable_account !== '') {
-				$query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "fl_customers` WHERE contable_account = '" . $this->db->escape($contable_account) . "'");
+			if ($client_code !== '') {
+				$query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "fl_customers` WHERE cod_flash = '" . (int)$client_code . "'");
 
 				if ($query->num_rows) {
 					$customer_id = $query->row['customer_id'];
@@ -576,16 +951,28 @@ class ModelToolImport extends Model {
 			if ($customer_id) {
 				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', status = '" . (int)$status . "', date_modified = NOW() WHERE customer_id = '" . (int)$customer_id . "'");
 
-				$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+
+				$address_query = $this->db->query("SELECT address_id FROM `" . DB_PREFIX . "address` WHERE customer_id = '" . (int)$customer_id . "' ORDER BY address_id ASC LIMIT 1");
+
+				if ($address_query->num_rows) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "address` SET company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "' WHERE address_id = '" . (int)$address_query->row['address_id'] . "'");
+				} elseif ($address_1 !== '' || $postcode !== '' || $city !== '') {
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'");
+
+					$address_id = $this->db->getLastId();
+
+					$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
 			} else {
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '" . (int)$status . "', date_added = NOW(), date_modified = NOW()");
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '" . (int)$status . "', date_added = " . $date_added . ", date_modified = NOW()");
 
 				$customer_id = $this->db->getLastId();
 
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', cod_flash = '" . (int)$client_code . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'");
 
-				if ($address_1 !== '' || $postcode !== '') {
-					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
+				if ($address_1 !== '' || $postcode !== '' || $city !== '') {
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'");
 
 					$address_id = $this->db->getLastId();
 

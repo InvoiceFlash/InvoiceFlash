@@ -985,27 +985,33 @@
 				<div id="tab-accounting" class="tab-pane">
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period_from ?></label>
-						<div class="col-sm-3">
+						<div class="col-sm-2">
 							<div class="input-group">
-								<input type="text" name="accounting_period_from" value="<?php echo $accounting_period_from ?>" class="form-control date">
+								<input type="text" name="accounting_period_from" value="<?php echo $accounting_period_from ?>" class="form-control date" style="width: 40px;">
 								<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 							</div>
 						</div>
 						<label class="col-form-label col-sm-10 col-md-1"><?php echo $entry_accounting_period_to ?></label>
-						<div class="col-sm-3">
+						<div class="col-sm-2">
 							<div class="input-group">
-								<input type="text" name="accounting_period_to" value="<?php echo $accounting_period_to ?>" class="form-control date">
+								<input type="text" name="accounting_period_to" value="<?php echo $accounting_period_to ?>" class="form-control date" style="width: 40px;">
 								<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
 							</div>
 						</div>
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period_fiscal_year ?></label>
 						<div class="col-sm-1">
-							<input type="text" name="accounting_period_fiscal_year" value="<?php echo $accounting_period_fiscal_year ?>" maxlength="3" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);">
+							<input type="text" name="accounting_period_fiscal_year" value="<?php echo $accounting_period_fiscal_year ?>" maxlength="3" class="form-control" style="width: 60px;" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);">
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?></label>
-						<div class="col-sm-6"><input type="text" name="creditor_id" value="<?php echo $creditor_id ?>" class="form-control"></div>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period_next_fiscal_year ?></label>
+						<div class="col-sm-1">
+							<input type="text" name="accounting_period_next_fiscal_year" value="<?php echo $accounting_period_next_fiscal_year ?>" maxlength="3" class="form-control" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3);">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?> <i class="fa fa-question-circle text-muted" data-toggle="tooltip" title="<?php echo $text_creditor_id_tooltip; ?>"></i></label>
+						<div class="col-sm-3"><input type="text" name="creditor_id" value="<?php echo $creditor_id ?>" class="form-control"></div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
@@ -1022,6 +1028,15 @@
 							<input type="text" name="config_conta_cliente_account" id="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control conta-account" placeholder="430000000" style="width: 160px;">
 							<?php if ($error_conta_cliente_account) { ?>
 								<div class="help-block text-danger"><?php echo $error_conta_cliente_account; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_result_account; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_conta_result_account" id="config_conta_result_account" value="<?php echo $config_conta_result_account; ?>" class="form-control conta-account" placeholder="1290000000" style="width: 160px;">
+							<?php if ($error_conta_result_account) { ?>
+								<div class="help-block text-danger"><?php echo $error_conta_result_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>

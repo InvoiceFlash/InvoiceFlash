@@ -464,6 +464,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Accounting - Regularization Entry
+			if ($this->user->hasPermission('access', 'accounting/regularization')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_regularization'),
+					'href' => $this->url->link('accounting/regularization', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			// Accounting - Modelo 303 configuration
 			if ($this->user->hasPermission('access', 'accounting/mod303')) {
 				$accounting[] = array(

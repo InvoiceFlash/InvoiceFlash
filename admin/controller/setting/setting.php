@@ -206,6 +206,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_accounting_period_from'] = $this->language->get('entry_accounting_period_from');
 		$this->data['entry_accounting_period_to'] = $this->language->get('entry_accounting_period_to');
 		$this->data['entry_accounting_period_fiscal_year'] = $this->language->get('entry_accounting_period_fiscal_year');
+		$this->data['entry_accounting_period_next_fiscal_year'] = $this->language->get('entry_accounting_period_next_fiscal_year');
 		$this->data['entry_iban'] = $this->language->get('entry_iban');
 		$this->data['entry_bic'] = $this->language->get('entry_bic');
 		$this->data['entry_bank_name'] = $this->language->get('entry_bank_name');
@@ -214,8 +215,10 @@ class ControllerSettingSetting extends Controller {
 		$this->data['button_remove'] = $this->language->get('button_remove');
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
+		$this->data['text_creditor_id_tooltip'] = $this->language->get('text_creditor_id_tooltip');
 		$this->data['entry_conta_ventas_account'] = $this->language->get('entry_conta_ventas_account');
 		$this->data['entry_conta_cliente_account'] = $this->language->get('entry_conta_cliente_account');
+		$this->data['entry_conta_result_account'] = $this->language->get('entry_conta_result_account');
 		$this->data['entry_conta_digits'] = $this->language->get('entry_conta_digits');
 		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
@@ -417,6 +420,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_conta_cliente_account'] = '';
 		}
 
+		if (isset($this->error['conta_result_account'])) {
+			$this->data['error_conta_result_account'] = $this->error['conta_result_account'];
+		} else {
+			$this->data['error_conta_result_account'] = '';
+		}
+
 		$this->data['breadcrumbs'] = array();
 
 		$this->data['breadcrumbs'][] = array(
@@ -494,6 +503,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_conta_cliente_account'] = $this->request->post['config_conta_cliente_account'];
 		} else {
 			$this->data['config_conta_cliente_account'] = $this->config->get('config_conta_cliente_account');
+		}
+
+		if (isset($this->request->post['config_conta_result_account'])) {
+			$this->data['config_conta_result_account'] = $this->request->post['config_conta_result_account'];
+		} else {
+			$this->data['config_conta_result_account'] = $this->config->get('config_conta_result_account');
 		}
 
 		if (isset($this->request->post['config_claude_api_key'])) {
@@ -1236,6 +1251,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['accounting_period_fiscal_year'] = $this->config->get('accounting_period_fiscal_year');
 		}
 
+		if (isset($this->request->post['accounting_period_next_fiscal_year'])) {
+			$this->data['accounting_period_next_fiscal_year'] = $this->request->post['accounting_period_next_fiscal_year'];
+		} else {
+			$this->data['accounting_period_next_fiscal_year'] = $this->config->get('accounting_period_next_fiscal_year');
+		}
+
 		if (isset($this->request->post['iban'])) {
 			$this->data['iban'] = str_replace(array("-", " "), "", $this->request->post['iban']);
 		} else {
@@ -1422,6 +1443,10 @@ class ControllerSettingSetting extends Controller {
 
 		if ($this->request->post['config_conta_cliente_account'] && (utf8_strlen($this->request->post['config_conta_cliente_account']) != $conta_digits)) {
 			$this->error['conta_cliente_account'] = sprintf($this->language->get('error_conta_cliente_account'), $conta_digits);
+		}
+
+		if ($this->request->post['config_conta_result_account'] && (utf8_strlen($this->request->post['config_conta_result_account']) != $conta_digits)) {
+			$this->error['conta_result_account'] = sprintf($this->language->get('error_conta_result_account'), $conta_digits);
 		}
 
 		if ($this->error && !isset($this->error['warning'])) {

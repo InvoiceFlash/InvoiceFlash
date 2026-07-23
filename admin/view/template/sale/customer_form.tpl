@@ -277,13 +277,13 @@
 								<div class="tab-pane fade" role="tab-panel" id="tab-info">
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_datecreated; ?></label>
-										<div class="col-sm-6">
+										<div class="col-sm-3">
 											<input type="text" name="date_added" value="<?php echo $date_added; ?>" class="form-control" disabled>
 										</div>
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_date_modified; ?></label>
-										<div class="col-sm-6">
+										<div class="col-sm-3">
 											<input type="text" name="date_modified" value="<?php echo $date_modified; ?>" class="form-control" disabled>
 										</div>
 									</div>

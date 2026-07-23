@@ -16,6 +16,9 @@ $_['entry_description']  = 'Description:';
 $_['entry_country']      = 'Country:';
 $_['entry_zone']         = 'Zone:';
 
+// Button
+$_['button_add_geo_zone'] = 'Add Geo Zone';
+
 // Error
 $_['error_permission']   = 'Warning: You do not have permission to modify geo zones!';
 $_['error_name']         = 'Geo Zone Name must be between 3 and 32 characters!';

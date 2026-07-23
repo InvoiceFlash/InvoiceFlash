@@ -46,12 +46,6 @@
 							<td><?php echo $customer_group; ?></td>
 						</tr>
 						<?php } ?>
-						<?php if ($fax) { ?>
-						<tr>
-							<td><?php echo $text_fax; ?></td>
-							<td><?php echo $fax; ?></td>
-						</tr>
-						<?php } ?>
 						<tr>
 							<td><?php echo $text_total; ?></td>
 							<td><?php if ($credit && $customer) { if (!$credit_total) { ?>

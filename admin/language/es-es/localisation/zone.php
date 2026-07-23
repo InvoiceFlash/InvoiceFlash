@@ -10,7 +10,7 @@ $_['text_edit'] = 'Editar';
 
 // Columna
 $_['column_name'] = 'Nombre de la zona';
-$_['column_code'] = 'Código de la Zona';
+$_['column_code'] = 'C&oacute;digo de la Zona';
 $_['column_country'] = 'Pa&iacute;s';
 $_['column_action'] = 'Acci&oacute;n';
 

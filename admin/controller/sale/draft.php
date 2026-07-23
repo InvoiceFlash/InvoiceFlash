@@ -2166,9 +2166,13 @@ class ControllerSaleDraft extends Controller {
 							? (float)preg_replace('/[^-0-9\.]/', '', $draft_product['price'])
 							: (float)$product_info['price'];
 
+						$use_name = (isset($draft_product['name']) && trim($draft_product['name']) !== '')
+							? $draft_product['name']
+							: $product_info['name'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'],
+							'name'		 => $use_name,
 							'model'		 => $product_info['model'],
 							'quantity' 	 => $draft_product['quantity'],
 							'option'	 => $option_data,

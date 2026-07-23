@@ -62,6 +62,12 @@
 					</div>
 				</div>
 			</div>
+			<div class="form-group row align-items-center" id="import-row-company-code" style="display:none;">
+				<label class="col-sm-2 col-form-label"><?php echo $entry_company_code; ?></label>
+				<div class="col-sm-10">
+					<input type="text" name="company_code" id="company-code" class="form-control" style="width:100px;" maxlength="3" inputmode="numeric" pattern="[0-9]*">
+				</div>
+			</div>
 			<div class="form-group row align-items-center" id="import-row-related-history-code" style="display:none;">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_related_history_code; ?></label>
 				<div class="col-sm-10">
@@ -177,6 +183,7 @@ $('#import-type').on('change', function() {
 	$('#import-row-path').toggle(isPathBased);
 	$('#import-row-related-history-code').toggle(isSaconta);
 	$('#import-row-flash-gestion-options').toggle(isFlashGestion);
+	$('#import-row-company-code').toggle(isFlashGestion);
 	$('#import-path-help-saconta').toggle(isSaconta);
 	$('#import-path-help-flash-gestion').toggle(isFlashGestion);
 
@@ -187,6 +194,10 @@ $('#import-type').on('change', function() {
 });
 
 $('#related-history-code').on('input', function() {
+	$(this).val($(this).val().replace(/[^0-9]/g, '').substring(0, 3));
+});
+
+$('#company-code').on('input', function() {
 	$(this).val($(this).val().replace(/[^0-9]/g, '').substring(0, 3));
 });
 </script>

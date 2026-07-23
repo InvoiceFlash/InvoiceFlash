@@ -11,7 +11,7 @@ $_['text_example']        = 'Ejemplo de fichero Excel';
 $_['text_example_help']   = 'La primera fila debe ser la cabecera y será ignorada. Las columnas deben seguir este orden exacto:';
 $_['text_saconta_help']   = 'Ruta, en este mismo servidor, a la carpeta del ejercicio de SaConta (debe contener ctab6.dbf, ctab61.dbf y ctab8.dbf). Se rellenarán el Plan Contable, las Subcuentas (creando también los clientes de las cuentas 430) y el Libro Diario.';
 $_['text_success_flash_gestion'] = 'Éxito: %d productos, %d clientes y %d proveedores importados!';
-$_['text_flash_gestion_help'] = 'Ruta, en este mismo servidor, a la carpeta de datos de FLASH GESTION (debe contener ttab22.dbf, ttab4.dbf y/o ttab14.dbf según lo marcado). Marca qué quieres importar.';
+$_['text_flash_gestion_help'] = 'Ruta, en este mismo servidor, a la carpeta de datos de FLASH GESTION (debe contener ttab22.dbf, ttab4.dbf y/o ttab14.dbf según lo marcado). Marca qué quieres importar. Si indicas un Código de Empresa, filtra Clientes (ttab11.dbf) y Productos (confent.dbf + ttab32.dbf); Proveedores se importan sin filtrar de momento.';
 $_['text_type_product']   = 'Productos';
 $_['text_type_customer']  = 'Clientes';
 $_['text_type_supplier']  = 'Proveedores';
@@ -23,6 +23,7 @@ $_['entry_type']          = 'Tipo de Importación:';
 $_['entry_file']          = 'Fichero Excel:';
 $_['entry_path']          = 'Path ejercicio:';
 $_['entry_related_history_code'] = 'C&oacute;digo de Hist&oacute;rico Relacionado:';
+$_['entry_company_code']  = 'Código Empresa:';
 
 // Column (productos)
 $_['column_code']         = 'Código Artículo';

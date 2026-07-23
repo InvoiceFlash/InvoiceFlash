@@ -8,6 +8,9 @@ $_['text_list'] = 'Lista de Geo Zonas';
 $_['text_add'] = 'A&ntilde;adir Geo Zona';
 $_['text_edit'] = 'Editar Geo Zona';
 
+// Button
+$_['button_add_geo_zone'] = 'A&ntilde;adir Geo Zona';
+
 // column
 $_['column_name'] = 'Nombre de la geo zona';
 $_['column_description'] = 'Descripci&oacute;n';
