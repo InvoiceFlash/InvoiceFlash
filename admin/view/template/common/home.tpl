@@ -24,7 +24,13 @@
 <div class="row mb-3">
 	<div class="col-sm-12">
 		<div class="panel panel-default" id="search">
-			<div class="panel-heading clearfix"><h5><i class="fa fa-search"></i> <?php echo $text_search; ?></h5></div>
+			<div class="panel-heading clearfix">
+				<h5 class="pull-left"><i class="fa fa-search"></i> <?php echo $text_search; ?></h5>
+				<div class="pull-right">
+					<button type="button" id="btn-view-dashboard" class="btn btn-default btn-sm active" data-toggle="tooltip" title="<?php echo $text_view_dashboard; ?>"><i class="fa fa-chart-bar"></i></button>
+					<button type="button" id="btn-view-claude-chat" class="btn btn-default btn-sm" data-toggle="tooltip" title="<?php echo $text_view_claude_chat; ?>"><i class="fa fa-robot"></i></button>
+				</div>
+			</div>
 			<div class="panel-body">
 			<div class="d-flex flex-column flex-sm-row gap-2">
 				<div class="flex-fill">
@@ -50,6 +56,7 @@
 		</div>
 	</div>
 </div>
+<div id="dashboard-view">
 <?php if ($view['quick_action']) { ?>
 <div class="row mb-3">
 <div class="col-sm-12">
@@ -211,6 +218,29 @@
 </div></div>
 <?php } ?>
 </div>
+</div>
+<div id="claude-chat-view" style="display:none;">
+	<div class="row mb-3">
+		<div class="col-sm-12">
+			<div class="panel panel-default" id="claude-chat">
+				<div class="panel-heading clearfix"><h5><i class="fa fa-robot"></i> <?php echo $text_claude_chat; ?></h5></div>
+				<div class="panel-body">
+					<div id="claude-chat-messages" style="height:400px; overflow-y:auto; background:#faf9f7; border:1px solid #e5e2da; border-radius:6px; padding:15px; margin-bottom:15px;">
+						<div class="claude-chat-message claude-chat-message-bot" style="background:#fff; border:1px solid #e5e2da; border-radius:8px; padding:10px 14px; max-width:80%; margin-bottom:10px;">
+							<?php echo $text_claude_chat_placeholder; ?>
+						</div>
+					</div>
+					<div class="input-group">
+						<input type="text" id="claude-chat-input" class="form-control" placeholder="<?php echo $text_claude_chat_input_placeholder; ?>" disabled="disabled">
+						<div class="input-group-append">
+							<button type="button" class="btn btn-info" id="claude-chat-send" disabled="disabled"><i class="fa fa-paper-plane"></i></button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
 <script src="view/javascript/chart/Chart.bundle.min.js"></script>
 <script>
 $('#tabs-chart a[data-bs-toggle="tab"]').on('shown.bs.tab',function(e){
@@ -274,6 +304,20 @@ $("#button-search-customer").click(function() {
 $('#button-search-product').click(function(){
 	var url = "index.php?route=catalog/product&token="+token+"&filter_name="+$('#search-product').val();
 	$(location).attr('href', url);
+});
+
+$('#btn-view-dashboard').on('click', function() {
+	$('#claude-chat-view').hide();
+	$('#dashboard-view').show();
+	$(this).addClass('active');
+	$('#btn-view-claude-chat').removeClass('active');
+});
+
+$('#btn-view-claude-chat').on('click', function() {
+	$('#dashboard-view').hide();
+	$('#claude-chat-view').show();
+	$(this).addClass('active');
+	$('#btn-view-dashboard').removeClass('active');
 });
 </script>
 <?php echo $footer; ?>

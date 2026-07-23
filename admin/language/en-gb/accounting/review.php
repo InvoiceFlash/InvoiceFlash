@@ -18,7 +18,8 @@ $_['entry_to']     = 'To';
 $_['entry_amount'] = 'Amount';
 
 // Column
-$_['column_entry']       = 'Entry. Date';
+$_['column_entry']       = 'Entry';
+$_['column_date']        = 'Date';
 $_['column_account']     = 'Account';
 $_['column_description'] = 'Description';
 $_['column_concept']     = 'Concept';

@@ -40,6 +40,12 @@ class ControllerCommonHome extends Controller {
 
 		$this->data['button_search'] = $this->language->get('button_search');
 
+		$this->data['text_view_dashboard'] = $this->language->get('text_view_dashboard');
+		$this->data['text_view_claude_chat'] = $this->language->get('text_view_claude_chat');
+		$this->data['text_claude_chat'] = $this->language->get('text_claude_chat');
+		$this->data['text_claude_chat_placeholder'] = $this->language->get('text_claude_chat_placeholder');
+		$this->data['text_claude_chat_input_placeholder'] = $this->language->get('text_claude_chat_input_placeholder');
+
 		// Actions
 		$this->data['text_actions'] = $this->language->get('text_actions');
 		$this->data['text_add_customer'] = $this->language->get('text_add_customer');

@@ -12,6 +12,71 @@ class ControllerAccountingSubaccount extends Controller {
 		$this->getList();
 	}
 
+	public function statement() {
+		$this->language->load('accounting/subaccount');
+		$this->language->load('report/ledger');
+
+		if (!$this->user->hasPermission('access', 'accounting/subaccount') || empty($this->request->get['ctab61_id'])) {
+			$this->response->setOutput('');
+
+			return;
+		}
+
+		$this->load->model('accounting/subaccount');
+		$this->load->model('report/ledger');
+
+		$subaccount_info = $this->model_accounting_subaccount->getSubaccount($this->request->get['ctab61_id']);
+
+		if (!$subaccount_info) {
+			$this->response->setOutput('');
+
+			return;
+		}
+
+		$date_format = $this->language->get('date_format_short');
+
+		$rows = array();
+		$balance = 0;
+		$total_debit = 0;
+		$total_credit = 0;
+
+		foreach ($this->model_report_ledger->getEntries($subaccount_info['code']) as $entry) {
+			$balance      += (float)$entry['debit'] - (float)$entry['credit'];
+			$total_debit  += (float)$entry['debit'];
+			$total_credit += (float)$entry['credit'];
+
+			$rows[] = array(
+				'entry_id'  => $entry['entry_id'],
+				'line_date' => $entry['line_date'] ? date($date_format, strtotime($entry['line_date'])) : '',
+				'concept'   => $entry['concept'],
+				'debit'     => $entry['debit'] > 0 ? $this->currency->format($entry['debit'], $this->config->get('config_currency'), '', true, true) : '',
+				'credit'    => $entry['credit'] > 0 ? $this->currency->format($entry['credit'], $this->config->get('config_currency'), '', true, true) : '',
+				'balance'   => $this->currency->format($balance, $this->config->get('config_currency'), '', true, true)
+			);
+		}
+
+		$this->data['code']  = $subaccount_info['code'];
+		$this->data['title'] = $subaccount_info['title'];
+		$this->data['rows']  = $rows;
+
+		$this->data['total_debit']  = $this->currency->format($total_debit, $this->config->get('config_currency'), '', true, true);
+		$this->data['total_credit'] = $this->currency->format($total_credit, $this->config->get('config_currency'), '', true, true);
+		$this->data['balance']      = $this->currency->format($balance, $this->config->get('config_currency'), '', true, true);
+
+		$this->data['text_no_results'] = $this->language->get('text_no_results');
+		$this->data['text_total']      = $this->language->get('text_total');
+
+		$this->data['column_entry']   = $this->language->get('column_entry');
+		$this->data['column_concept'] = $this->language->get('column_concept');
+		$this->data['column_debit']   = $this->language->get('column_debit');
+		$this->data['column_credit']  = $this->language->get('column_credit');
+		$this->data['column_balance'] = $this->language->get('column_balance');
+
+		$this->template = 'accounting/subaccount_statement.tpl';
+
+		$this->response->setOutput($this->render());
+	}
+
 	public function insert() {
 		$this->language->load('accounting/subaccount');
 
@@ -229,6 +294,13 @@ class ControllerAccountingSubaccount extends Controller {
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['button_statement'] = $this->language->get('button_statement');
+		$this->data['button_close'] = $this->language->get('button_close');
+
+		$this->data['text_statement'] = $this->language->get('text_statement');
+
+		$this->data['error_select_one_account'] = $this->language->get('error_select_one_account');
+		$this->data['error_statement'] = $this->language->get('error_statement');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];

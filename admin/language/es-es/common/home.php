@@ -46,6 +46,11 @@ $_['text_search']                   = 'B&uacute;squeda R&aacute;pida';
 $_['text_search_customer']          = 'Buscar Cliente';
 $_['text_search_product']           = 'Buscar Producto';
 $_['button_search']                 = 'Buscar Ahora';
+$_['text_view_dashboard']           = 'Ver Panel de Control';
+$_['text_view_claude_chat']         = 'Ver Chat con IA';
+$_['text_claude_chat']              = 'Chat con IA';
+$_['text_claude_chat_placeholder']  = 'Este chat todav&iacute;a no est&aacute; conectado. Pr&oacute;ximamente podr&aacute;s hablar aqu&iacute; con el asistente.';
+$_['text_claude_chat_input_placeholder'] = 'Escribe un mensaje...';
 
 // Actions
 $_['text_actions']                  = 'Acciones R&aacute;pidas';

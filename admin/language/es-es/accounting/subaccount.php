@@ -4,6 +4,11 @@ $_['heading_title']     = 'Subcuentas';
 
 // Text
 $_['text_success']      = '&Eacute;xito: &iexcl;Ha modificado las subcuentas!';
+$_['text_statement']    = 'Extracto de la Cuenta';
+
+// Button
+$_['button_statement']  = 'Ver Extracto';
+$_['button_close']      = 'Cerrar';
 
 // Column
 $_['column_code']       = 'C&oacute;digo';
@@ -36,4 +41,6 @@ $_['error_permission']  = 'Advertencia: &iexcl;No tiene permiso para modificar l
 $_['error_code']        = '&iexcl;El c&oacute;digo debe tener entre 1 y 12 caracteres!';
 $_['error_code_exists'] = '&iexcl;Esa subcuenta ya existe!';
 $_['error_title']       = '&iexcl;El t&iacute;tulo debe tener entre 1 y 255 caracteres!';
+$_['error_select_one_account'] = '&iexcl;Selecciona exactamente una cuenta para ver su extracto!';
+$_['error_statement']   = 'Advertencia: &iexcl;No se ha podido cargar el extracto de la cuenta!';
 ?>

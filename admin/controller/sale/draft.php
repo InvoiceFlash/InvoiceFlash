@@ -507,10 +507,13 @@ class ControllerSaleDraft extends Controller {
 		$this->data['column_action'] = $this->language->get('column_action');
 
 		$this->data['button_draft'] = $this->language->get('button_draft');
+		$this->data['button_print'] = $this->language->get('button_print');
+		$this->data['button_view'] = $this->language->get('button_view');
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_convert'] = $this->language->get('button_convert');
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['error_no_selection'] = $this->language->get('error_no_selection');
 
 		$this->data['token'] = $this->session->data['token'];
 		

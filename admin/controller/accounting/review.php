@@ -82,6 +82,7 @@ class ControllerAccountingReview extends Controller {
 		$this->data['text_unbalanced'] = $this->language->get('text_unbalanced');
 
 		$this->data['column_entry']       = $this->language->get('column_entry');
+		$this->data['column_date']        = $this->language->get('column_date');
 		$this->data['column_account']     = $this->language->get('column_account');
 		$this->data['column_description'] = $this->language->get('column_description');
 		$this->data['column_concept']     = $this->language->get('column_concept');

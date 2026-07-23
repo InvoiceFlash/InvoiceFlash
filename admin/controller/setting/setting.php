@@ -221,6 +221,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
 		$this->data['entry_aeat_active'] = $this->language->get('entry_aeat_active');
 		$this->data['entry_aeat_send'] = $this->language->get('entry_aeat_send');
+		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -240,6 +241,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['tab_payroll'] = $this->language->get('tab_payroll');
 		$this->data['tab_accounting'] = $this->language->get('tab_accounting');
 		$this->data['tab_hacienda'] = $this->language->get('tab_hacienda');
+		$this->data['tab_ia'] = $this->language->get('tab_ia');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -492,6 +494,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_conta_cliente_account'] = $this->request->post['config_conta_cliente_account'];
 		} else {
 			$this->data['config_conta_cliente_account'] = $this->config->get('config_conta_cliente_account');
+		}
+
+		if (isset($this->request->post['config_claude_api_key'])) {
+			$this->data['config_claude_api_key'] = $this->request->post['config_claude_api_key'];
+		} else {
+			$this->data['config_claude_api_key'] = $this->config->get('config_claude_api_key');
 		}
 
 		if (isset($this->request->post['config_conta_digits'])) {

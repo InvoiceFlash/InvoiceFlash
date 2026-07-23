@@ -83,6 +83,7 @@
 				<thead>
 					<tr>
 						<td class="left"><?php echo $column_entry; ?></td>
+						<td class="left"><?php echo $column_date; ?></td>
 						<td class="left"><?php echo $column_account; ?></td>
 						<td class="left"><?php echo $column_description; ?></td>
 						<td class="left"><?php echo $column_concept; ?></td>
@@ -94,7 +95,8 @@
 					<?php if ($rows) { ?>
 					<?php foreach ($rows as $row) { ?>
 					<tr>
-						<td class="text-left"><?php echo $row['entry_id'] . ' ' . $row['line_date']; ?></td>
+						<td class="text-left"><?php echo $row['entry_id']; ?></td>
+						<td class="text-left"><?php echo $row['line_date']; ?></td>
 						<td class="text-left"><?php echo $row['account']; ?></td>
 						<td class="text-left"><?php echo $row['description']; ?></td>
 						<td class="text-left"><?php echo $row['concept']; ?></td>
@@ -104,7 +106,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

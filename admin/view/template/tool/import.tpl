@@ -43,6 +43,12 @@
 					<div class="help-block"><?php echo $text_saconta_help; ?></div>
 				</div>
 			</div>
+			<div class="form-group row align-items-center" id="import-row-related-history-code" style="display:none;">
+				<label class="col-sm-2 col-form-label"><?php echo $entry_related_history_code; ?></label>
+				<div class="col-sm-10">
+					<input type="text" name="related_history_code" id="related-history-code" class="form-control" style="width:100px;" maxlength="3" inputmode="numeric" pattern="[0-9]*">
+				</div>
+			</div>
 			<div class="form-group row">
 				<div class="col-sm-10 offset-sm-2">
 					<button type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> <?php echo $button_import; ?></button>
@@ -148,11 +154,16 @@ $('#import-type').on('change', function() {
 
 	$('#import-row-file').toggle(!isSaconta);
 	$('#import-row-path').toggle(isSaconta);
+	$('#import-row-related-history-code').toggle(isSaconta);
 
 	$('#import-examples-divider, #import-examples-heading').toggle(!isSaconta);
 	$('#import-example-product').toggle(!isSaconta && type == 'product');
 	$('#import-example-customer').toggle(!isSaconta && type == 'customer');
 	$('#import-example-supplier').toggle(!isSaconta && type == 'supplier');
+});
+
+$('#related-history-code').on('input', function() {
+	$(this).val($(this).val().replace(/[^0-9]/g, '').substring(0, 3));
 });
 </script>
 <?php echo $footer; ?>

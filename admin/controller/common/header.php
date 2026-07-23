@@ -446,15 +446,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			// Accounting - Modelo 303 configuration
-			if ($this->user->hasPermission('access', 'accounting/mod303')) {
-				$accounting[] = array(
-					'name' => $this->language->get('text_mod303'),
-					'href' => $this->url->link('accounting/mod303', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
 			// Accounting - Create Journal Entries
 			if ($this->user->hasPermission('access', 'accounting/entry')) {
 				$accounting[] = array(
@@ -469,6 +460,15 @@ class ControllerCommonHeader extends Controller {
 				$accounting[] = array(
 					'name' => $this->language->get('text_review'),
 					'href' => $this->url->link('accounting/review', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			// Accounting - Modelo 303 configuration
+			if ($this->user->hasPermission('access', 'accounting/mod303')) {
+				$accounting[] = array(
+					'name' => $this->language->get('text_mod303'),
+					'href' => $this->url->link('accounting/mod303', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}

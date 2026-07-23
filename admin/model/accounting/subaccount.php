@@ -56,15 +56,19 @@ class ModelAccountingSubaccount extends Model {
 	}
 
 	public function getSubaccounts($data = array()) {
-		$sql = "SELECT *, (debit - credit) AS balance FROM " . DB_PREFIX . "ctab61";
+		$sql = "SELECT s.ctab61_id, s.code, s.title, COALESCE(SUM(e.debit), 0) AS debit, COALESCE(SUM(e.credit), 0) AS credit, COALESCE(SUM(e.debit), 0) - COALESCE(SUM(e.credit), 0) AS balance
+			FROM " . DB_PREFIX . "ctab61 s
+			LEFT JOIN " . DB_PREFIX . "ctab8 e ON e.account = s.code";
 
 		if (!empty($data['filter_code'])) {
-			$sql .= " WHERE code LIKE '" . $this->db->escape($data['filter_code']) . "%'";
+			$sql .= " WHERE s.code LIKE '" . $this->db->escape($data['filter_code']) . "%'";
 		}
 
 		if (!empty($data['filter_title'])) {
-			$sql .= (strpos($sql, 'WHERE') !== false ? " AND" : " WHERE") . " title LIKE '%" . $this->db->escape($data['filter_title']) . "%'";
+			$sql .= (strpos($sql, 'WHERE') !== false ? " AND" : " WHERE") . " s.title LIKE '%" . $this->db->escape($data['filter_title']) . "%'";
 		}
+
+		$sql .= " GROUP BY s.ctab61_id, s.code, s.title";
 
 		$sort_data = array(
 			'code',

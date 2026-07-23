@@ -147,6 +147,11 @@ $_['error_warning']         = 'Advertencia: &iexcl;Por favor, revise el formular
 $_['error_permission']      = 'Advertencia: &iexcl;No tiene permiso para modificar clientes!';
 $_['error_permission_email']      = 'Advertencia: &iexcl;No tiene permiso para enviar emails!';
 
+$_['error_document_quote']    = 'Advertencia: &iexcl;No se puede eliminar el cliente %s porque tiene el presupuesto N&ordm; %s asociado!';
+$_['error_document_order']    = 'Advertencia: &iexcl;No se puede eliminar el cliente %s porque tiene el pedido N&ordm; %s asociado!';
+$_['error_document_delivery'] = 'Advertencia: &iexcl;No se puede eliminar el cliente %s porque tiene el albar&aacute;n N&ordm; %s asociado!';
+$_['error_document_invoice']  = 'Advertencia: &iexcl;No se puede eliminar el cliente %s porque tiene la factura N&ordm; %s asociada!';
+
 $_['error_exists']          = 'Advertencia: &iexcl;La direcci&oacute;n de E-Mail ya est&aacute; registrada!';
 
 $_['error_firstname']       = '&iexcl;El Nombre debe tener entre 1 y 32 caracteres!';

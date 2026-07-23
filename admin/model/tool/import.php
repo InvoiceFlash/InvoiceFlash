@@ -196,6 +196,9 @@ class ModelToolImport extends Model {
 	}
 
 	public function importSaconta($path) {
+		@set_time_limit(0);
+		@ini_set('max_execution_time', 0);
+
 		require_once(DIR_SYSTEM . 'library/dbf.php');
 
 		$path = rtrim(str_replace('\\', '/', $path), '/');

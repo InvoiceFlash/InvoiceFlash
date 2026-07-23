@@ -147,6 +147,11 @@ $_['error_warning']         = 'Warning: Please check the form carefully for erro
 $_['error_permission']      = 'Warning: You do not have permission to modify customers!';
 $_['error_permission_email']      = 'Warning: You do not have permission to send emails!';
 
+$_['error_document_quote']    = 'Warning: Customer %s cannot be deleted because quote No. %s is associated with it!';
+$_['error_document_order']    = 'Warning: Customer %s cannot be deleted because order No. %s is associated with it!';
+$_['error_document_delivery'] = 'Warning: Customer %s cannot be deleted because delivery note No. %s is associated with it!';
+$_['error_document_invoice']  = 'Warning: Customer %s cannot be deleted because invoice No. %s is associated with it!';
+
 $_['error_exists']          = 'Warning: E-Mail Address is already registered!';
 
 $_['error_firstname']       = 'First Name must be between 1 and 32 characters!';

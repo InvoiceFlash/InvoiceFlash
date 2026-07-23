@@ -15,7 +15,8 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-accounting" data-bs-toggle="tab"><?php echo $tab_accounting; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-hacienda" data-bs-toggle="tab"><?php echo $tab_hacienda; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-bs-toggle="tab"><?php echo $tab_fraud; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li></ul>
+			<li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-ia" data-bs-toggle="tab"><?php echo $tab_ia; ?></a></li></ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
 				<div id="tab-general" class="tab-pane">
@@ -1009,7 +1010,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
 						<div class="col-sm-6">
-							<input type="text" name="config_conta_ventas_account" id="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control conta-account" placeholder="700000000">
+							<input type="text" name="config_conta_ventas_account" id="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control conta-account" placeholder="700000000" style="width: 160px;">
 							<?php if ($error_conta_ventas_account) { ?>
 								<div class="help-block text-danger"><?php echo $error_conta_ventas_account; ?></div>
 							<?php } ?>
@@ -1018,7 +1019,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_cliente_account; ?></label>
 						<div class="col-sm-6">
-							<input type="text" name="config_conta_cliente_account" id="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control conta-account" placeholder="430000000">
+							<input type="text" name="config_conta_cliente_account" id="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control conta-account" placeholder="430000000" style="width: 160px;">
 							<?php if ($error_conta_cliente_account) { ?>
 								<div class="help-block text-danger"><?php echo $error_conta_cliente_account; ?></div>
 							<?php } ?>
@@ -1245,6 +1246,14 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_google_analytics; ?></label>
 						<div class="col-sm-6">
 							<textarea name="config_google_analytics" class="form-control" rows="3"><?php echo $config_google_analytics; ?></textarea>
+						</div>
+					</div>
+				</div>
+				<div id="tab-ia" class="tab-pane">
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
 						</div>
 					</div>
 				</div>

@@ -1466,10 +1466,23 @@ class ControllerSaleCustomer extends Controller {
 		}
 
 		if (!$this->error) {
+			foreach ($this->request->post['selected'] as $customer_id) {
+				$blocking = $this->model_sale_customer->getBlockingDocument($customer_id);
+
+				if ($blocking) {
+					$customer_info = $this->model_sale_customer->getCustomer($customer_id);
+
+					$this->error['warning'] = sprintf($this->language->get('error_document_' . $blocking['type']), ($customer_info ? $customer_info['company'] : $customer_id), $blocking['document_id']);
+					break;
+				}
+			}
+		}
+
+		if (!$this->error) {
 			return true;
 		} else {
 			return false;
-		}  
+		}
 	}
 
 

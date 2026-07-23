@@ -18,7 +18,8 @@ $_['entry_to']     = 'Hasta';
 $_['entry_amount'] = 'Euros';
 
 // Column
-$_['column_entry']       = 'Asien. Fecha';
+$_['column_entry']       = 'Asiento';
+$_['column_date']        = 'Fecha';
 $_['column_account']     = 'Subcuenta';
 $_['column_description'] = 'Descripci&oacute;n';
 $_['column_concept']     = 'Concepto';

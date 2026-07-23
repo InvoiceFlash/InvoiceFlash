@@ -22,7 +22,7 @@
 <?php foreach ($drafts as $drafts) { ?>
 	<div class="store_logo">
 		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $draft['store_name']; ?>" />
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $drafts['store_name']; ?>" />
 			<span class="title"><?php echo $text_draft; ?></span>
 		</div>
 	</div>

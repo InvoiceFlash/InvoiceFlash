@@ -4,6 +4,11 @@ $_['heading_title']     = 'Sub-Accounts';
 
 // Text
 $_['text_success']      = 'Success: You have modified the sub-accounts!';
+$_['text_statement']    = 'Account Statement';
+
+// Button
+$_['button_statement']  = 'View Statement';
+$_['button_close']      = 'Close';
 
 // Column
 $_['column_code']       = 'Code';
@@ -36,4 +41,6 @@ $_['error_permission']  = 'Warning: You do not have permission to modify the sub
 $_['error_code']        = 'Code must be between 1 and 12 characters!';
 $_['error_code_exists'] = 'This sub-account code already exists!';
 $_['error_title']       = 'Title must be between 1 and 255 characters!';
+$_['error_select_one_account'] = 'Please select exactly one account to view its statement!';
+$_['error_statement']   = 'Warning: Could not load the account statement!';
 ?>

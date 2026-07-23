@@ -37,7 +37,7 @@
 								<a href="#tab-various" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_various; ?></a>
 								<a href="#tab-info" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_info; ?></a>
 								<?php $address_row=1; ?>
-								<?php foreach ($addresses as $address) { ?>
+								<?php foreach ($addresses as $nav_address) { ?>
 									<a href="#tab-address-<?php echo $address_row; ?>" id="address-<?php echo $address_row; ?>" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><span class="text-danger" onclick="$('#tab-general .nav-tabs a:first').trigger('click');$('#address-<?php echo $address_row; ?>').remove();$('#tab-address-<?php echo $address_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $tab_address . ' ' . $address_row; ?></a>
 									<?php $address_row++; ?>
 								<?php } ?>

@@ -19,6 +19,7 @@ $_['text_type_saconta']   = 'FLASH SaConta';
 $_['entry_type']          = 'Tipo de Importación:';
 $_['entry_file']          = 'Fichero Excel:';
 $_['entry_path']          = 'Path ejercicio:';
+$_['entry_related_history_code'] = 'C&oacute;digo de Hist&oacute;rico Relacionado:';
 
 // Column (productos)
 $_['column_code']         = 'Código Artículo';

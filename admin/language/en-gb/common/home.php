@@ -46,6 +46,11 @@ $_['text_search']                   = 'Quick Search';
 $_['text_search_customer']          = 'Search Customer';
 $_['text_search_product']           = 'Search Product';
 $_['button_search']                 = 'Search Now';
+$_['text_view_dashboard']           = 'View Dashboard';
+$_['text_view_claude_chat']         = 'View AI Chat';
+$_['text_claude_chat']              = 'AI Chat';
+$_['text_claude_chat_placeholder']  = 'This chat is not connected yet. You will soon be able to talk to the assistant here.';
+$_['text_claude_chat_input_placeholder'] = 'Type a message...';
 
 // Actions
 $_['text_actions']                  = 'Quick Actions';

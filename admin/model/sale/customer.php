@@ -109,6 +109,35 @@ class ModelSaleCustomer extends Model {
 
 
 
+	public function getBlockingDocument($customer_id) {
+
+		$query = $this->db->query("SELECT quote_id AS document_id FROM " . DB_PREFIX . "quote WHERE customer_id = '" . (int)$customer_id . "' ORDER BY quote_id ASC LIMIT 1");
+
+		if ($query->num_rows) {
+			return array('type' => 'quote', 'document_id' => $query->row['document_id']);
+		}
+
+		$query = $this->db->query("SELECT order_id AS document_id FROM `" . DB_PREFIX . "order` WHERE customer_id = '" . (int)$customer_id . "' ORDER BY order_id ASC LIMIT 1");
+
+		if ($query->num_rows) {
+			return array('type' => 'order', 'document_id' => $query->row['document_id']);
+		}
+
+		$query = $this->db->query("SELECT delivery_id AS document_id FROM " . DB_PREFIX . "delivery WHERE customer_id = '" . (int)$customer_id . "' ORDER BY delivery_id ASC LIMIT 1");
+
+		if ($query->num_rows) {
+			return array('type' => 'delivery', 'document_id' => $query->row['document_id']);
+		}
+
+		$query = $this->db->query("SELECT invoice_id AS document_id FROM " . DB_PREFIX . "invoice WHERE customer_id = '" . (int)$customer_id . "' ORDER BY invoice_id ASC LIMIT 1");
+
+		if ($query->num_rows) {
+			return array('type' => 'invoice', 'document_id' => $query->row['document_id']);
+		}
+
+		return false;
+	}
+
 	public function deleteCustomer($customer_id) {
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer WHERE customer_id = '" . (int)$customer_id . "'");

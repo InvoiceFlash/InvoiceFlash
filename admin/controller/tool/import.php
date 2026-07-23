@@ -68,6 +68,7 @@ class ControllerToolImport extends Controller {
 		$this->data['entry_type'] = $this->language->get('entry_type');
 		$this->data['entry_file'] = $this->language->get('entry_file');
 		$this->data['entry_path'] = $this->language->get('entry_path');
+		$this->data['entry_related_history_code'] = $this->language->get('entry_related_history_code');
 
 		$this->data['text_type_product'] = $this->language->get('text_type_product');
 		$this->data['text_type_customer'] = $this->language->get('text_type_customer');
