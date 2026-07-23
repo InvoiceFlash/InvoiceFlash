@@ -226,7 +226,12 @@ class ModelToolImport extends Model {
 			return;
 		}
 
-		$dbf = new Dbf($file);
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
 
 		foreach ($dbf->rows() as $row) {
 			$code = trim($row['T6CCTA']);
@@ -258,7 +263,12 @@ class ModelToolImport extends Model {
 			return;
 		}
 
-		$dbf = new Dbf($file);
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
 
 		foreach ($dbf->rows() as $row) {
 			$code = trim($row['T61CCTA']);
@@ -360,7 +370,12 @@ class ModelToolImport extends Model {
 			return;
 		}
 
-		$dbf = new Dbf($file);
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
 
 		$username = $this->user->getUserName();
 		$values = array();
@@ -398,6 +413,250 @@ class ModelToolImport extends Model {
 
 	private function flushSacontaEntries($values) {
 		$this->db->query("INSERT INTO " . DB_PREFIX . "ctab8 (entry_id, line_date, account, concept, debit, credit, user_id, username, date_added, date_modified) VALUES " . implode(',', $values));
+	}
+
+	public function importFlashGestion($path, $options) {
+		require_once(DIR_SYSTEM . 'library/dbf.php');
+
+		$path = rtrim(str_replace('\\', '/', $path), '/');
+
+		$result = array(
+			'products'  => 0,
+			'customers' => 0,
+			'suppliers' => 0,
+			'errors'    => array()
+		);
+
+		if (!empty($options['product'])) {
+			$this->importFlashProducts($path, $result);
+		}
+
+		if (!empty($options['customer'])) {
+			$this->importFlashCustomers($path, $result);
+		}
+
+		if (!empty($options['supplier'])) {
+			$this->importFlashSuppliers($path, $result);
+		}
+
+		return $result;
+	}
+
+	private function findFlashDbf($path, $names, &$result) {
+		foreach ($names as $name) {
+			foreach (array($name, strtoupper($name), strtolower($name)) as $candidate) {
+				if (is_readable($path . '/' . $candidate)) {
+					return $path . '/' . $candidate;
+				}
+			}
+		}
+
+		$result['errors'][] = sprintf($this->language->get('error_saconta_file'), $names[0]);
+
+		return false;
+	}
+
+	private function importFlashProducts($path, &$result) {
+		$file = $this->findFlashDbf($path, array('ttab22.dbf'), $result);
+
+		if (!$file) {
+			return;
+		}
+
+		$language_id = (int)$this->config->get('config_language_id');
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
+
+		foreach ($dbf->rows() as $row) {
+			$model = trim($row['T22CODART']);
+
+			if ($model === '') {
+				continue;
+			}
+
+			$name = trim($row['T22NART']);
+
+			if ($name === '') {
+				continue;
+			}
+
+			$description = trim($row['T22NARTEXT']);
+
+			if ($description === '') {
+				$description = $name;
+			}
+
+			$price = (float)$row['T22PVP'];
+			$status = (!empty($row['LLSINUSO']) || !empty($row['T22INACTIV'])) ? 0 : 1;
+
+			$query = $this->db->query("SELECT product_id FROM `" . DB_PREFIX . "product` WHERE model = '" . $this->db->escape($model) . "'");
+
+			if ($query->num_rows) {
+				$product_id = $query->row['product_id'];
+
+				$this->db->query("UPDATE `" . DB_PREFIX . "product` SET price = '" . (float)$price . "', status = '" . (int)$status . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
+
+				$description_query = $this->db->query("SELECT product_id FROM `" . DB_PREFIX . "product_description` WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . $language_id . "'");
+
+				if ($description_query->num_rows) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "product_description` SET name = '" . $this->db->escape($name) . "', description = '" . $this->db->escape($description) . "' WHERE product_id = '" . (int)$product_id . "' AND language_id = '" . $language_id . "'");
+				} else {
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "product_description` SET product_id = '" . (int)$product_id . "', language_id = '" . $language_id . "', name = '" . $this->db->escape($name) . "', meta_keyword = '', meta_description = '', description = '" . $this->db->escape($description) . "', tag = ''");
+				}
+			} else {
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "product` SET model = '" . $this->db->escape($model) . "', sku = '', upc = '', ean = '', jan = '', isbn = '', mpn = '', location = '', quantity = '0', minimum = '1', subtract = '1', stock_status_id = '0', date_available = '" . date('Y-m-d') . "', manufacturer_id = '0', shipping = '1', price = '" . (float)$price . "', points = '0', weight = '0.00000000', weight_class_id = '0', length = '0.00000000', width = '0.00000000', height = '0.00000000', length_class_id = '0', sort_order = '0', status = '" . (int)$status . "', tax_class_id = '0', date_added = NOW(), date_modified = NOW()");
+
+				$product_id = $this->db->getLastId();
+
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "product_description` SET product_id = '" . (int)$product_id . "', language_id = '" . $language_id . "', name = '" . $this->db->escape($name) . "', meta_keyword = '', meta_description = '', description = '" . $this->db->escape($description) . "', tag = ''");
+			}
+
+			$result['products']++;
+		}
+
+		$this->cache->delete('product');
+	}
+
+	private function importFlashCustomers($path, &$result) {
+		$file = $this->findFlashDbf($path, array('ttab4.dbf'), $result);
+
+		if (!$file) {
+			return;
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
+
+		foreach ($dbf->rows() as $row) {
+			$contable_account = trim($row['T4CCONTA']);
+			$company = trim($row['T4NOM']);
+
+			if ($company === '') {
+				$company = trim($row['T4NOM2']);
+			}
+
+			if ($company === '') {
+				continue;
+			}
+
+			$nif = trim($row['T4CIF']);
+			$email = trim($row['T4CORREO']);
+			$telephone = trim($row['T4TEL1']);
+
+			if ($telephone === '') {
+				$telephone = trim($row['T4TEL2']);
+			}
+
+			$fax = trim($row['T4FAX']);
+			$web = trim($row['T4WEB']);
+			$address_1 = trim($row['T4DOM']);
+			$postcode = trim($row['T4CCP']);
+			$country_id = $this->resolveCountryId('');
+			$status = (!empty($row['LLSINUSO']) || !empty($row['T4INACTIV'])) ? 0 : 1;
+
+			$customer_id = null;
+
+			if ($contable_account !== '') {
+				$query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "fl_customers` WHERE contable_account = '" . $this->db->escape($contable_account) . "'");
+
+				if ($query->num_rows) {
+					$customer_id = $query->row['customer_id'];
+				}
+			}
+
+			if ($customer_id) {
+				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', status = '" . (int)$status . "', date_modified = NOW() WHERE customer_id = '" . (int)$customer_id . "'");
+
+				$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+			} else {
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '" . (int)$status . "', date_added = NOW(), date_modified = NOW()");
+
+				$customer_id = $this->db->getLastId();
+
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
+
+				if ($address_1 !== '' || $postcode !== '') {
+					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
+
+					$address_id = $this->db->getLastId();
+
+					$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				}
+			}
+
+			$result['customers']++;
+		}
+	}
+
+	private function importFlashSuppliers($path, &$result) {
+		$file = $this->findFlashDbf($path, array('ttab14.dbf'), $result);
+
+		if (!$file) {
+			return;
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
+
+		foreach ($dbf->rows() as $row) {
+			$company = trim($row['T14RAZSOCI']);
+
+			if ($company === '') {
+				$company = trim($row['T14NPROV']);
+			}
+
+			if ($company === '') {
+				continue;
+			}
+
+			$tax_id = trim($row['T14CIF']);
+			$email = trim($row['T14CORREO']);
+			$telephone = trim($row['T14TEL1']);
+
+			if ($telephone === '') {
+				$telephone = trim($row['T14TEL2']);
+			}
+
+			$fax = trim($row['T14FAX']);
+			$web = trim($row['T14WEB']);
+			$address_1 = trim($row['T14DOM']);
+			$postcode = trim($row['T14CCP']);
+			$country_id = $this->resolveCountryId('');
+			$status = (!empty($row['LLSINUSO']) || !empty($row['NINACTIV'])) ? 0 : 1;
+
+			$supplier_id = null;
+
+			if ($tax_id !== '') {
+				$query = $this->db->query("SELECT supplier_id FROM `" . DB_PREFIX . "supplier` WHERE tax_id = '" . $this->db->escape($tax_id) . "'");
+			} else {
+				$query = $this->db->query("SELECT supplier_id FROM `" . DB_PREFIX . "supplier` WHERE company = '" . $this->db->escape($company) . "'");
+			}
+
+			if ($query->num_rows) {
+				$supplier_id = $query->row['supplier_id'];
+			}
+
+			if ($supplier_id) {
+				$this->db->query("UPDATE `" . DB_PREFIX . "supplier` SET company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($tax_id) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', web = '" . $this->db->escape($web) . "', address_1 = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "', status = '" . (int)$status . "', date_modified = NOW() WHERE supplier_id = '" . (int)$supplier_id . "'");
+			} else {
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "supplier` SET company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($tax_id) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', web = '" . $this->db->escape($web) . "', address_1 = '" . $this->db->escape($address_1) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "', status = '" . (int)$status . "', date_added = NOW(), date_modified = NOW()");
+			}
+
+			$result['suppliers']++;
+		}
 	}
 
 	private function resolveCountryId($country) {

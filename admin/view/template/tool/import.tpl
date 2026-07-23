@@ -24,6 +24,7 @@
 						<option value="customer"><?php echo $text_type_customer; ?></option>
 						<option value="supplier"><?php echo $text_type_supplier; ?></option>
 						<option value="saconta"><?php echo $text_type_saconta; ?></option>
+						<option value="flash_gestion"><?php echo $text_type_flash_gestion; ?></option>
 					</select>
 				</div>
 			</div>
@@ -40,7 +41,25 @@
 				<label class="col-sm-2 col-form-label"><?php echo $entry_path; ?></label>
 				<div class="col-sm-10">
 					<input type="text" name="path" class="form-control" placeholder="F:\proyectos\SaConta\SaConta.1.5.9.6\Servidor\DATO\027">
-					<div class="help-block"><?php echo $text_saconta_help; ?></div>
+					<div class="help-block" id="import-path-help-saconta"><?php echo $text_saconta_help; ?></div>
+					<div class="help-block" id="import-path-help-flash-gestion" style="display:none;"><?php echo $text_flash_gestion_help; ?></div>
+				</div>
+			</div>
+			<div class="form-group row align-items-center" id="import-row-flash-gestion-options" style="display:none;">
+				<label class="col-sm-2 col-form-label"></label>
+				<div class="col-sm-10">
+					<div class="form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" name="import_product" id="import-product" value="1">
+						<label class="form-check-label" for="import-product"><?php echo $text_type_product; ?></label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" name="import_customer" id="import-customer" value="1">
+						<label class="form-check-label" for="import-customer"><?php echo $text_type_customer; ?></label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input type="checkbox" class="form-check-input" name="import_supplier" id="import-supplier" value="1">
+						<label class="form-check-label" for="import-supplier"><?php echo $text_type_supplier; ?></label>
+					</div>
 				</div>
 			</div>
 			<div class="form-group row align-items-center" id="import-row-related-history-code" style="display:none;">
@@ -151,15 +170,20 @@
 $('#import-type').on('change', function() {
 	var type = $(this).val();
 	var isSaconta = (type == 'saconta');
+	var isFlashGestion = (type == 'flash_gestion');
+	var isPathBased = (isSaconta || isFlashGestion);
 
-	$('#import-row-file').toggle(!isSaconta);
-	$('#import-row-path').toggle(isSaconta);
+	$('#import-row-file').toggle(!isPathBased);
+	$('#import-row-path').toggle(isPathBased);
 	$('#import-row-related-history-code').toggle(isSaconta);
+	$('#import-row-flash-gestion-options').toggle(isFlashGestion);
+	$('#import-path-help-saconta').toggle(isSaconta);
+	$('#import-path-help-flash-gestion').toggle(isFlashGestion);
 
-	$('#import-examples-divider, #import-examples-heading').toggle(!isSaconta);
-	$('#import-example-product').toggle(!isSaconta && type == 'product');
-	$('#import-example-customer').toggle(!isSaconta && type == 'customer');
-	$('#import-example-supplier').toggle(!isSaconta && type == 'supplier');
+	$('#import-examples-divider, #import-examples-heading').toggle(!isPathBased);
+	$('#import-example-product').toggle(!isPathBased && type == 'product');
+	$('#import-example-customer').toggle(!isPathBased && type == 'customer');
+	$('#import-example-supplier').toggle(!isPathBased && type == 'supplier');
 });
 
 $('#related-history-code').on('input', function() {

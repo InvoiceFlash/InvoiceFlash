@@ -10,10 +10,13 @@ $_['text_success_saconta'] = 'Success: %d chart of accounts lines, %d sub-accoun
 $_['text_example']        = 'Excel file example';
 $_['text_example_help']   = 'The first row must be the header and will be ignored. Columns must follow this exact order:';
 $_['text_saconta_help']   = 'Path, on this same server, to the SaConta exercise folder (must contain ctab6.dbf, ctab61.dbf and ctab8.dbf). This will populate the Chart of Accounts, the Sub-Accounts (also creating customers for the 430 accounts) and the Journal Book.';
+$_['text_success_flash_gestion'] = 'Success: %d products, %d customers and %d suppliers imported!';
+$_['text_flash_gestion_help'] = 'Path, on this same server, to the FLASH GESTION data folder (must contain ttab22.dbf, ttab4.dbf and/or ttab14.dbf depending on what you select). Choose what to import.';
 $_['text_type_product']   = 'Products';
 $_['text_type_customer']  = 'Customers';
 $_['text_type_supplier']  = 'Suppliers';
 $_['text_type_saconta']   = 'FLASH SaConta';
+$_['text_type_flash_gestion'] = 'FLASH GESTION';
 
 // Entry
 $_['entry_type']          = 'Import Type:';
@@ -51,4 +54,5 @@ $_['error_required']      = 'Item Code and Description are required';
 $_['error_required_customer'] = 'Company and Email are required';
 $_['error_path']          = 'Warning: You must enter a valid, accessible server folder path!';
 $_['error_saconta_file']  = 'Warning: %s was not found in that folder!';
+$_['error_nothing_selected'] = 'Warning: You must select at least one option to import (Products, Customers or Suppliers)!';
 ?>

@@ -10,10 +10,13 @@ $_['text_success_saconta'] = 'Éxito: %d cuentas del plan contable, %d subcuenta
 $_['text_example']        = 'Ejemplo de fichero Excel';
 $_['text_example_help']   = 'La primera fila debe ser la cabecera y será ignorada. Las columnas deben seguir este orden exacto:';
 $_['text_saconta_help']   = 'Ruta, en este mismo servidor, a la carpeta del ejercicio de SaConta (debe contener ctab6.dbf, ctab61.dbf y ctab8.dbf). Se rellenarán el Plan Contable, las Subcuentas (creando también los clientes de las cuentas 430) y el Libro Diario.';
+$_['text_success_flash_gestion'] = 'Éxito: %d productos, %d clientes y %d proveedores importados!';
+$_['text_flash_gestion_help'] = 'Ruta, en este mismo servidor, a la carpeta de datos de FLASH GESTION (debe contener ttab22.dbf, ttab4.dbf y/o ttab14.dbf según lo marcado). Marca qué quieres importar.';
 $_['text_type_product']   = 'Productos';
 $_['text_type_customer']  = 'Clientes';
 $_['text_type_supplier']  = 'Proveedores';
 $_['text_type_saconta']   = 'FLASH SaConta';
+$_['text_type_flash_gestion'] = 'FLASH GESTION';
 
 // Entry
 $_['entry_type']          = 'Tipo de Importación:';
@@ -51,4 +54,5 @@ $_['error_required']      = 'Código de Artículo y Descripción son obligatorio
 $_['error_required_customer'] = 'Empresa y Email son obligatorios';
 $_['error_path']          = 'Aviso: Debe indicar una ruta de carpeta válida y accesible en el servidor!';
 $_['error_saconta_file']  = 'Aviso: No se encontró %s en esa carpeta!';
+$_['error_nothing_selected'] = 'Aviso: Debe marcar al menos una opción a importar (Productos, Clientes o Proveedores)!';
 ?>

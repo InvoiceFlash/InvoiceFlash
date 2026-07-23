@@ -22,6 +22,24 @@ class ControllerToolImport extends Controller {
 				}
 
 				$this->redirect($this->url->link('tool/import', 'token=' . $this->session->data['token'], 'SSL'));
+			} elseif ($type == 'flash_gestion') {
+				$this->load->model('tool/import');
+
+				$options = array(
+					'product'  => !empty($this->request->post['import_product']),
+					'customer' => !empty($this->request->post['import_customer']),
+					'supplier' => !empty($this->request->post['import_supplier'])
+				);
+
+				$result = $this->model_tool_import->importFlashGestion(trim($this->request->post['path']), $options);
+
+				$this->session->data['success'] = sprintf($this->language->get('text_success_flash_gestion'), $result['products'], $result['customers'], $result['suppliers']);
+
+				if ($result['errors']) {
+					$this->session->data['import_errors'] = $result['errors'];
+				}
+
+				$this->redirect($this->url->link('tool/import', 'token=' . $this->session->data['token'], 'SSL'));
 			} else {
 				$file = $this->request->files['file'];
 
@@ -64,6 +82,7 @@ class ControllerToolImport extends Controller {
 		$this->data['text_example'] = $this->language->get('text_example');
 		$this->data['text_example_help'] = $this->language->get('text_example_help');
 		$this->data['text_saconta_help'] = $this->language->get('text_saconta_help');
+		$this->data['text_flash_gestion_help'] = $this->language->get('text_flash_gestion_help');
 
 		$this->data['entry_type'] = $this->language->get('entry_type');
 		$this->data['entry_file'] = $this->language->get('entry_file');
@@ -74,6 +93,7 @@ class ControllerToolImport extends Controller {
 		$this->data['text_type_customer'] = $this->language->get('text_type_customer');
 		$this->data['text_type_supplier'] = $this->language->get('text_type_supplier');
 		$this->data['text_type_saconta'] = $this->language->get('text_type_saconta');
+		$this->data['text_type_flash_gestion'] = $this->language->get('text_type_flash_gestion');
 
 		$this->data['button_import'] = $this->language->get('button_import');
 
@@ -149,6 +169,14 @@ class ControllerToolImport extends Controller {
 
 			if ($path === '' || !is_dir($path) || !is_readable($path)) {
 				$this->error['warning'] = $this->language->get('error_path');
+			}
+		} elseif ($type == 'flash_gestion') {
+			$path = isset($this->request->post['path']) ? trim($this->request->post['path']) : '';
+
+			if ($path === '' || !is_dir($path) || !is_readable($path)) {
+				$this->error['warning'] = $this->language->get('error_path');
+			} elseif (empty($this->request->post['import_product']) && empty($this->request->post['import_customer']) && empty($this->request->post['import_supplier'])) {
+				$this->error['warning'] = $this->language->get('error_nothing_selected');
 			}
 		} elseif (empty($this->request->files['file']['name']) || !is_uploaded_file($this->request->files['file']['tmp_name'])) {
 			$this->error['warning'] = $this->language->get('error_upload');

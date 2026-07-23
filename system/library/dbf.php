@@ -16,7 +16,11 @@ class Dbf {
 			throw new Exception('File not readable: ' . $path);
 		}
 
-		$this->handle = fopen($path, 'rb');
+		$this->handle = @fopen($path, 'rb');
+
+		if (!$this->handle) {
+			throw new Exception('File could not be opened (locked?): ' . $path);
+		}
 
 		$header = fread($this->handle, 32);
 		$unpacked = unpack('Cversion/Cyear/Cmonth/Cday/Vrecords/vheaderlen/vrecordlen', $header);
