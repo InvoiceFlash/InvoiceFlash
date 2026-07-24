@@ -358,7 +358,7 @@ class ControllerLocalisationTaxRate extends Controller {
 		if (isset($this->request->post['rate'])) {
 			$this->data['rate'] = $this->request->post['rate'];
 		} elseif (!empty($tax_rate_info)) {
-			$this->data['rate'] = $tax_rate_info['rate'];
+			$this->data['rate'] = number_format((float)$tax_rate_info['rate'], 2, '.', '');
 		} else {
 			$this->data['rate'] = '';
 		}

@@ -16,7 +16,7 @@
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_rate; ?></label>
 				<div class="col-sm-6">
-					<input type="text" name="rate" value="<?php echo $rate; ?>" class="form-control">
+					<input type="text" name="rate" id="input-rate" value="<?php echo $rate; ?>" class="form-control" inputmode="decimal">
 					<?php if ($error_rate) { ?>
 						<div class="help-block error"><?php echo $error_rate; ?></div>
 					<?php } ?>
@@ -82,4 +82,10 @@
 		</form>
 	</div>
 </div>
+<script>
+$('#input-rate').on('blur', function() {
+	var value = parseFloat($(this).val().replace(',', '.'));
+	$(this).val(isNaN(value) ? '' : value.toFixed(2));
+});
+</script>
 <?php echo $footer; ?>

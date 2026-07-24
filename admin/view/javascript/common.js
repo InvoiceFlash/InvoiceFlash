@@ -1986,7 +1986,8 @@ $(function(){
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-draft-product\').click();"><i class="fa fa-trash"></i></a></td>';
 						var draftNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-						html+='<td><input type="text" class="form-control draft-name" name="draft_product['+product_row+'][name]" value="'+draftNameAttr+'"><input type="hidden" name="draft_product['+product_row+'][draft_product_id]" value=""><input type="hidden" name="draft_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="draft_product['+product_row+'][model]" value="'+product['model']+'">';
+						var draftCatalogNameAttr=(product['catalog_name']||product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+						html+='<td><input type="text" class="form-control draft-name" data-catalog-name="'+draftCatalogNameAttr+'" name="draft_product['+product_row+'][name]" value="'+draftNameAttr+'"><input type="hidden" name="draft_product['+product_row+'][draft_product_id]" value=""><input type="hidden" name="draft_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="draft_product['+product_row+'][model]" value="'+product['model']+'">';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){
 								option = product['option'][j];
@@ -2005,6 +2006,7 @@ $(function(){
 						html+='</td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="'+product['catalog_price_raw']+'" name="draft_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product['+product_row+'][discount]" value=""></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="draft_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="draft_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
@@ -2013,6 +2015,11 @@ $(function(){
 					if (typeof draftMarkPriceChanged === 'function') {
 						$('#product .draft-price').each(function() {
 							draftMarkPriceChanged(this);
+						});
+					}
+					if (typeof draftMarkNameChanged === 'function') {
+						$('#product .draft-name').each(function() {
+							draftMarkNameChanged(this);
 						});
 					}
 				}

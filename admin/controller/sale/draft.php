@@ -483,7 +483,7 @@ class ControllerSaleDraft extends Controller {
 				'draft_id'      => $result['draft_id'],
 				'company'       => $result['company'],
 				'simplified'    => $result['simplified'],
-				'total'         => $this->currency->format($result['total'], '', '', true, true),
+				'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value'], true, true),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['draft_id'], $this->request->post['selected']),
@@ -696,6 +696,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_base'] = $this->language->get('column_base');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -1215,13 +1216,14 @@ class ControllerSaleDraft extends Controller {
 				'draft_product_id'  => $draft_product['draft_product_id'],
 				'product_id'        => $draft_product['product_id'],
 				'name'              => $draft_product['name'],
+				'catalog_name'      => $product_info ? $product_info['name'] : $draft_product['name'],
 				'model'             => $draft_product['model'],
 				'option'            => $draft_option,
 				'quantity'          => $draft_product['quantity'],
 				'price'			    => $this->currency->format($draft_product['price'], $draft_info['currency_code'], $draft_info['currency_value']),
 				'price_raw'         => number_format((float)$draft_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$draft_product['price'], 2, '.', ''),
-				'total'             => $this->currency->format($draft_product['total'], $draft_info['currency_code'], $draft_info['currency_value']),
+				'total'             => $this->currency->format($draft_product['total'], $draft_info['currency_code'], $draft_info['currency_value'], true, true),
 				'tax'               => $draft_product['tax']
 			);
 		}
@@ -1739,6 +1741,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['text_draft_no'] = $this->language->get('text_draft_no');
 		$this->data['text_draft_date'] = $this->language->get('text_draft_date');
 		$this->data['text_date_added'] = $this->language->get('text_date_added');
+		$this->data['text_date'] = $this->language->get('text_date');
 		$this->data['text_telephone'] = $this->language->get('text_telephone');
 		$this->data['text_fax'] = $this->language->get('text_fax');
 		$this->data['text_email'] = $this->language->get('text_email');
@@ -1758,6 +1761,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_base'] = $this->language->get('column_base');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_comment'] = $this->language->get('column_comment');
 
 		$this->load->model('sale/draft');
@@ -2110,6 +2114,12 @@ class ControllerSaleDraft extends Controller {
 
 		if ($this->user->hasPermission('modify', 'sale/draft')) {
 
+			// El importe de un borrador siempre se guarda en la moneda por defecto de la tienda
+			// (ver ModelSaleDraft::addDraft()) - se fuerza aquí para que el símbolo mostrado no
+			// dependa de la moneda activa en la sesión/cookie del navegador (p. ej. tras navegar
+			// por la tienda con otra moneda seleccionada).
+			$this->currency->set($this->config->get('config_currency'));
+
 			// Reset everything
 			unset($this->session->data['cart']);
 			unset($this->session->data['shipping_method']);
@@ -2178,6 +2188,7 @@ class ControllerSaleDraft extends Controller {
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
 							'name'		 => $use_name,
+							'catalog_name' => $product_info['name'],
 							'model'		 => $product_info['model'],
 							'quantity' 	 => $draft_product['quantity'],
 							'option'	 => $option_data,
@@ -2223,6 +2234,7 @@ class ControllerSaleDraft extends Controller {
 						$this->session->data['cart'][] = array(
 							'product_id' 	=> $this->request->post['product_id'],
 							'name'		 	=> $product_info['name'],
+							'catalog_name' 	=> $product_info['name'],
 							'model'		 	=> $product_info['model'],
 							'quantity' 	 	=> $quantity,
 							'option' 	 	=> $option,
@@ -2269,6 +2281,7 @@ class ControllerSaleDraft extends Controller {
 				$json['draft_product'][] = array(
 					'product_id' 	    => $product['product_id'],
 					'name'       	    => $product['name'],
+					'catalog_name'      => isset($product['catalog_name']) ? $product['catalog_name'] : $product['name'],
 					'model'      	    => $product['model'],
 					'quantity'   	    => $product['quantity'],
 					'option'   		    => $option,
@@ -2276,12 +2289,12 @@ class ControllerSaleDraft extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	    => $product['tax_class_id'],
-					'total'      	    => $this->currency->format($product['total'])
+					'total'      	    => $this->currency->format($product['total'], '', '', true, true)
 				);
 			}
 
 			// Totals
-			$json['draft_total'] = array();					
+			$json['draft_total'] = array();
 			$total = 0;
 			$taxes = $this->getTaxes($products);
 

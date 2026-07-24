@@ -209,6 +209,14 @@ include(DIR_TEMPLATE . 'sale/print_modal.tpl');
 function draftSetPrintFormat(format) {
 	var base = <?php echo json_encode(html_entity_decode($print, ENT_QUOTES, 'UTF-8')); ?>;
 	$('#formPrint').attr('action', format ? (base + '&format=' + format) : base);
+
+	if (format === 'pdf') {
+		$('#PrintModal .modal-title').text('PDF Select');
+		$('#PrintModal #send').html('<i class="fa fa-file-pdf"></i> PDF').removeClass('btn-success').addClass('btn-default');
+	} else {
+		$('#PrintModal .modal-title').text('View Select');
+		$('#PrintModal #send').html('<i class="fa fa-eye"></i> View').removeClass('btn-success').addClass('btn-default');
+	}
 }
 $('#send').on('click',function(e){
 	var to = $('#to').val();

@@ -37,11 +37,11 @@
 				<?php echo $drafts['store_email']; ?><br>
 				<?php echo $drafts['store_url']; ?></td>
 			<td>
-				<b><?php echo $text_date_added; ?></b> <?php echo $drafts['date_added']; ?><br>
+				<b><?php echo $text_draft_id; ?></b> <?php echo $drafts['draft_prefix'] . $drafts['draft_id']; ?><br>
+				<b><?php echo $text_date; ?></b> <?php echo $drafts['date_added']; ?><br>
 				<?php if ($drafts['draft_no']) { ?>
 					<b><?php echo $text_draft_no; ?></b> <?php echo $drafts['draft_no']; ?><br>
 				<?php } ?>
-				<b><?php echo $text_draft_id; ?></b> <?php echo $drafts['draft_prefix'] . $drafts['draft_id']; ?><br>
 				<b><?php echo $text_payment_method; ?></b> <?php echo $drafts['payment_method']; ?><br>
 				<?php if ($drafts['shipping_method']) { ?>
 				<b><?php echo $text_shipping_method; ?></b> <?php echo $drafts['shipping_method']; ?><br>
@@ -73,9 +73,9 @@
 	<table class="table table-bordered">
 		<tr>
 			<th><?php echo $column_product; ?></th>
-			<th><?php echo $column_model; ?></th>
 			<th class="text-right"><?php echo $column_quantity; ?></th>
 			<th class="text-right"><?php echo $column_price; ?></th>
+			<th class="text-right"><?php echo $column_discount; ?></th>
 			<th class="text-right"><?php echo $column_base; ?></th>
 		</tr>
 		<?php foreach ($drafts['product'] as $product) { ?>
@@ -85,9 +85,9 @@
 				<br>
 				&nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
 				<?php } ?></td>
-			<td><?php echo $product['model']; ?></td>
 			<td class="text-right"><?php echo $product['quantity']; ?></td>
 			<td class="text-right"><?php echo $product['price']; ?></td>
+			<td class="text-right">0</td>
 			<td class="text-right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>

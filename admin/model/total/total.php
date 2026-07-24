@@ -6,7 +6,7 @@ class ModelTotalTotal extends Model {
 		$total_data[] = array(
 			'code'       => 'total',
 			'title'      => $this->language->get('text_total2'),
-			'text'       => $this->currency->format(max(0, $total)),
+			'text'       => $this->currency->format(max(0, $total), '', '', true, true),
 			'value'      => max(0, $total),
 			'sort_order' => $this->config->get('total_sort_order')
 		);

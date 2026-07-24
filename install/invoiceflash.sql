@@ -3168,7 +3168,7 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (119, 0, 'config', 'config_layout_id', '4', 0),
 (120, 0, 'config', 'config_country_id', '222', 0),
 (121, 0, 'config', 'config_zone_id', '3563', 0),
-(122, 0, 'config', 'config_language', 'en', 0),
+(122, 0, 'config', 'config_language', 'es', 0),
 (123, 0, 'config', 'config_admin_language', 'en', 0),
 (124, 0, 'config', 'config_order_edit', '100', 0),
 (125, 0, 'config', 'config_voucher_min', '1', 0),

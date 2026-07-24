@@ -100,6 +100,7 @@
 								<th style="width:50%;"><?php echo $column_product; ?></th>
 								<th class="text-right" style="width:80px;"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_discount; ?></th>
 								<th class="text-right"><?php echo $column_base; ?></th>
 						</tr>
 						</thead>
@@ -111,7 +112,7 @@
 							<tr id="product-row<?php echo $product_row; ?>">
 								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-draft-product').click();"><i class="fa fa-trash"></i></a></td>
 								<td>
-									<input type="text" class="form-control draft-name" name="draft_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$draft_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
+									<input type="text" class="form-control draft-name" data-catalog-name="<?php echo htmlspecialchars((string)$draft_product['catalog_name'], ENT_QUOTES, 'UTF-8'); ?>" name="draft_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$draft_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][draft_product_id]" value="<?php echo $draft_product['draft_product_id']; ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $draft_product['product_id']; ?>">
 									<?php foreach ($draft_product['option'] as $option) { ?>
@@ -128,6 +129,7 @@
 								</td>
 								<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $draft_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="<?php echo $draft_product['catalog_price_raw']; ?>" name="draft_product[<?php echo $product_row; ?>][price]" value="<?php echo $draft_product['price_raw']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product[<?php echo $product_row; ?>][discount]" value=""></td>
 								<td class="text-right"><?php echo $draft_product['total']; ?>
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][total]" value="<?php echo $draft_product['total']; ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][tax]" value="<?php echo $draft_product['tax']; ?>"></td>
@@ -137,7 +139,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -147,7 +149,7 @@
 							<?php foreach ($draft_totals as $draft_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="3"><?php echo $draft_total['title']; ?>:
+								<td class="text-right" colspan="4"><?php echo $draft_total['title']; ?>:
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][draft_total_id]" value="<?php echo $draft_total['draft_total_id']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][code]" value="<?php echo $draft_total['code']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][title]" value="<?php echo $draft_total['title']; ?>">
@@ -268,10 +270,6 @@
 									<label class="control-label"><?php echo $entry_description; ?></label>
 									<input type="text" id="ps-name" class="form-control" placeholder="<?php echo $entry_description; ?>">
 								</div>
-								<div class="col-12 col-sm-3">
-									<label class="control-label"><?php echo $column_model; ?></label>
-									<input type="text" id="ps-model" class="form-control" placeholder="<?php echo $column_model; ?>">
-								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
 									<button type="button" id="ps-search" class="btn btn-primary"><?php echo $button_update; ?></button>
 								</div>
@@ -283,13 +281,12 @@
 										<tr>
 											<th>SKU</th>
 											<th><?php echo $entry_description; ?></th>
-											<th><?php echo $column_model; ?></th>
 											<th class="text-right"><?php echo $column_price; ?></th>
 											<th class="text-right">Stock</th>
 										</tr>
 									</thead>
 									<tbody id="ps-results">
-										<tr><td colspan="5" class="text-center"><?php echo $text_use_filters_products; ?></td></tr>
+										<tr><td colspan="4" class="text-center"><?php echo $text_use_filters_products; ?></td></tr>
 									</tbody>
 								</table>
 							</div>
@@ -855,24 +852,24 @@ function psDoSearch() {
 	var btn = $('#ps-search');
 	var searching = $('#text_searching').val();
 	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> ' + searching);
-	$('#ps-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
+	$('#ps-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
-		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val(), filter_model: $('#ps-model').val() },
+		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val() },
 		dataType: 'json',
 		success: function(json) {
 			if (json.warning) {
 				$('#ps-warning').text(json.warning).show();
-				$('#ps-results').html('<tr><td colspan="5" class="text-center">' + json.warning + '</td></tr>');
+				$('#ps-results').html('<tr><td colspan="4" class="text-center">' + json.warning + '</td></tr>');
 				psProducts = [];
 				return;
 			}
 			$('#ps-warning').hide();
 			psProducts = json;
 			if (!json.length) {
-				$('#ps-results').html('<tr><td colspan="5" class="text-center">' + $('#text_no_products_found').val() + '</td></tr>');
+				$('#ps-results').html('<tr><td colspan="4" class="text-center">' + $('#text_no_products_found').val() + '</td></tr>');
 				return;
 			}
 			var html = '';
@@ -880,7 +877,6 @@ function psDoSearch() {
 				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
 				html += '<td>' + (json[i].sku || '') + '</td>';
 				html += '<td>' + json[i].name + '</td>';
-				html += '<td>' + (json[i].model || '') + '</td>';
 				html += '<td class="text-right">' + json[i].price_formatted + '</td>';
 				html += '<td class="text-right">' + json[i].quantity + '</td>';
 				html += '</tr>';
@@ -889,7 +885,7 @@ function psDoSearch() {
 		},
 		error: function() {
 			$('#ps-warning').text($('#error_search_products').val()).show();
-			$('#ps-results').html('<tr><td colspan="5" class="text-center">' + $('#error_search_products').val() + '</td></tr>');
+			$('#ps-results').html('<tr><td colspan="4" class="text-center">' + $('#error_search_products').val() + '</td></tr>');
 			psProducts = [];
 		},
 		complete: function() {
@@ -900,7 +896,7 @@ function psDoSearch() {
 
 $('#ps-search').click(psDoSearch);
 
-$('#ps-sku, #ps-name, #ps-model').on('keypress', function(e) {
+$('#ps-sku, #ps-name').on('keypress', function(e) {
 	if (e.which == 13) psDoSearch();
 });
 
@@ -955,9 +951,13 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
 });
 
+$('#ProductSearchModal').on('shown.bs.modal', function() {
+	$('#ps-name').focus();
+});
+
 $('#ProductSearchModal').on('hidden.bs.modal', function() {
-	$('#ps-sku, #ps-name, #ps-model').val('');
-	$('#ps-results').html('<tr><td colspan="5" class="text-center">' + $('#text_use_filters_products').val() + '</td></tr>');
+	$('#ps-sku, #ps-name').val('');
+	$('#ps-results').html('<tr><td colspan="4" class="text-center">' + $('#text_use_filters_products').val() + '</td></tr>');
 	$('#ps-warning').hide();
 	psProducts = [];
 });
@@ -970,8 +970,20 @@ function draftMarkPriceChanged(input) {
 	$input.toggleClass('draft-price-changed', current.toFixed(2) !== original.toFixed(2));
 }
 
+function draftMarkNameChanged(input) {
+	var $input = $(input);
+	var current = $input.val().trim();
+	var original = ($input.data('catalog-name') || '').toString().trim();
+
+	$input.toggleClass('draft-name-changed', current !== original);
+}
+
 $(document).on('input', '.draft-price', function() {
 	draftMarkPriceChanged(this);
+});
+
+$(document).on('input', '.draft-name', function() {
+	draftMarkNameChanged(this);
 });
 
 $(document).on('change', '.draft-qty, .draft-price', function() {
@@ -982,9 +994,14 @@ $(document).on('change', '.draft-qty, .draft-price', function() {
 $('.draft-price').each(function() {
 	draftMarkPriceChanged(this);
 });
+
+$('.draft-name').each(function() {
+	draftMarkNameChanged(this);
+});
 </script>
 <style>
-.draft-price-changed {
+.draft-price-changed,
+.draft-name-changed {
 	color: #b30000;
 	font-weight: bold;
 	border-color: #b30000;
