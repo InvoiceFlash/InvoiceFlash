@@ -700,6 +700,7 @@ class ControllerSaledelivery extends Controller {
 
       $this->data['invoice'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['print'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['printPDF'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
       $this->data['insert'] = $this->url->link('sale/delivery/insert', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['convert'] = $this->url->link('sale/delivery/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
       $this->data['copy'] = $this->url->link('sale/delivery/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -958,13 +959,15 @@ class ControllerSaledelivery extends Controller {
 		$this->data['entry_shipping'] = $this->language->get('entry_shipping');
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
+		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
+		$this->data['column_sku'] = $this->language->get('column_sku');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_total'] = $this->language->get('column_total');
-			
+
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_product'] = $this->language->get('button_add_product');
@@ -1443,6 +1446,7 @@ class ControllerSaledelivery extends Controller {
 				'product_id'       => $delivery_product['product_id'],
 				'name'             => $delivery_product['name'],
 				'model'            => $delivery_product['model'],
+				'sku'              => $product_info ? $product_info['sku'] : '',
 				'option'           => $delivery_option,
 				'quantity'         => $delivery_product['quantity'],
 				'price'            => $this->currency->format($delivery_product['price']),
@@ -1455,12 +1459,25 @@ class ControllerSaledelivery extends Controller {
 		
 		if (isset($this->request->post['delivery_total'])) {
       		$this->data['delivery_totals'] = $this->request->post['delivery_total'];
-    	} elseif (isset($this->request->get['delivery_id'])) { 
+    	} elseif (isset($this->request->get['delivery_id'])) {
 			$this->data['delivery_totals'] = $this->model_sale_delivery->getdeliveryTotals($this->request->get['delivery_id']);
 		} else {
       		$this->data['delivery_totals'] = array();
-		}	
-		
+		}
+
+		if (isset($this->request->post['global_discount'])) {
+			$this->data['global_discount'] = $this->request->post['global_discount'];
+		} else {
+			$this->data['global_discount'] = '';
+
+			foreach ($this->data['delivery_totals'] as $delivery_total) {
+				if ($delivery_total['code'] == 'discount') {
+					$this->data['global_discount'] = number_format(abs((float)$delivery_total['value']), 2, '.', '');
+					break;
+				}
+			}
+		}
+
 		$this->load->model('localisation/payment');
 		$this->load->model('localisation/shipping');
 
@@ -2342,6 +2359,7 @@ class ControllerSaledelivery extends Controller {
 							'product_id' => $product_info['product_id'],
 							'name'		 => $product_info['name'],
 							'model'		 => $product_info['model'],
+							'sku'		 => $product_info['sku'],
 							'quantity' 	 => $delivery_product['quantity'],
 							'option'	 => $option_data,
 							'price'		 => $use_price,
@@ -2383,6 +2401,7 @@ class ControllerSaledelivery extends Controller {
 							'product_id' 	=> $this->request->post['product_id'],
 							'name'		 	=> $product_info['name'],
 							'model'		 	=> $product_info['model'],
+							'sku'		 	=> $product_info['sku'],
 							'quantity' 	 	=> $quantity,
 							'option' 	 	=> $option,
 							'price'		 	=> $product_info['price'],
@@ -2428,6 +2447,7 @@ class ControllerSaledelivery extends Controller {
 					'product_id' 	=> $product['product_id'],
 					'name'       	=> $product['name'],
 					'model'      	=> $product['model'],
+					'sku'      		=> isset($product['sku']) ? $product['sku'] : '',
 					'quantity'   	=> $product['quantity'],
 					'option'   		=> $option,
 					'price'      	=> $this->currency->format($product['price']),
@@ -2686,6 +2706,7 @@ class ControllerSaledelivery extends Controller {
 							'product_id' => $product['product_id'],
 							'name'       => $product['name'],
 							'model'      => $product['model'],
+							'sku'        => $product_info ? $product_info['sku'] : '',
 							'quantity'   => $product['quantity'],
 							'price'      => $this->currency->format($product['price']),
 							'price_raw'         => number_format((float)$product['price'], 2, '.', ''),

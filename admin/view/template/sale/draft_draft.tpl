@@ -28,8 +28,9 @@
 	</div>
 	<table class="table table-bordered">
 		<tr>
-			<td width="50%"><?php echo $drafts['store_name']; ?><br>
+			<td width="50%"><b><?php echo $drafts['store_name']; ?></b><br>
 				<?php echo $drafts['store_address']; ?><br>
+				<b><?php echo $text_nif; ?></b> <?php echo $drafts['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $drafts['store_telephone']; ?><br>
 				<?php if ($drafts['store_fax']) { ?>
 				<?php echo $text_fax; ?> <?php echo $drafts['store_fax']; ?><br>

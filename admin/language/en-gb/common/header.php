@@ -10,7 +10,6 @@ $_['text_backup']                      = 'Backup / Restore';
 $_['text_banner']                      = 'Banners';
 $_['text_catalog']                     = 'Files';
 $_['text_category']                    = 'Categories';
-$_['text_confirm']			           = 'Delete/Uninstall cannot be undone! Are you sure you want to do this?';
 $_['text_select_warning']	           = 'Please select an item first!';
 $_['text_country']                     = 'Countries';
 $_['text_coupon']                      = 'Coupons';

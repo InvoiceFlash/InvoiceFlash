@@ -946,7 +946,7 @@ class ModelSaleCustomer extends Model {
 	
 	public function getEmailsByCustomerId($customer_id) {
 
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "fl_mails` WHERE bleido != 2 AND customer_id=" . (int)$customer_id . " ORDER BY date_added DESC");
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "mails` WHERE bleido != 2 AND customer_id=" . (int)$customer_id . " ORDER BY date_added DESC");
 
 		return $query->rows;
 	}

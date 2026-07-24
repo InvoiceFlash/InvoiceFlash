@@ -173,6 +173,7 @@ $_['entry_notify']                            = 'Notify Customer:';
 $_['entry_comment']                           = 'Comment:';
 $_['entry_shipping']                          = 'Shipping Method:';
 $_['entry_payment']                           = 'Payment Method:';
+$_['entry_global_discount']                   = 'Global Discount:';
 $_['entry_coupon']                            = 'Coupon:';
 $_['entry_reward']                            = 'Reward:';
 

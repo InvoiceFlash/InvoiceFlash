@@ -4,7 +4,8 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_delivery; ?></span></button>
+			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitDeliveries(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_delivery; ?></span></button>
+			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitDeliveries(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirm(text_confirm);" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
 			<button type="button" onclick="convertToDraft();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_draft; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
@@ -101,11 +102,12 @@
 	</div>
 </div>
 <script>
-function validate() {
+function submitDeliveries(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione un albarán para imprimir');
+		alert('Seleccione un albarán para ver');
 	} else {
 		var form = document.getElementById('form');
+		form.setAttribute('action', url);
 		form.setAttribute('target', '_blank');
 		document.form.submit();
 	}

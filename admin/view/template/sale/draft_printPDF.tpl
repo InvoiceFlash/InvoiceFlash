@@ -98,7 +98,6 @@ th {
 	<table class="table table-bordered">
 		<tr>
 			<th><?php echo $column_product; ?></th>
-			<th><?php echo $column_model; ?></th>
 			<th class="center"><?php echo $column_quantity; ?></th>
 			<th class="right"><?php echo $column_price; ?></th>
 			<th class="right"><?php echo $column_base; ?></th>
@@ -110,7 +109,6 @@ th {
 				<br>
 				&nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
 				<?php } ?></td>
-			<td><?php echo $product['model']; ?></td>
 			<td class="center"><?php echo $product['quantity']; ?></td>
 			<td class="right"><?php echo $product['price']; ?></td>
 			<td class="right"><?php echo $product['total']; ?></td>
@@ -118,7 +116,7 @@ th {
 		<?php } ?>
 		<?php foreach ($drafts['total'] as $total) { ?>
 		<tr>
-			<td class="right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="right" colspan="3"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>

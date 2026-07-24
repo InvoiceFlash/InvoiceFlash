@@ -29,14 +29,14 @@ class ModelCatalogMail extends Model {
 	
 	public function getTotalmails_in($data = array()) {
 	
-      	$query = $this->db->query("SELECT count(*) as total FROM " . DB_PREFIX . "fl_mails WHERE type= 'E' or type= 'R'");
+      	$query = $this->db->query("SELECT count(*) as total FROM " . DB_PREFIX . "mails WHERE type= 'E' or type= 'R'");
 
       	return $query->row['total'] ;
 	}
 	
 	public function getmails_in($data = array()) {
 	
-		$sql = "SELECT mails.*, c.company FROM " . DB_PREFIX . "fl_mails AS mails  
+		$sql = "SELECT mails.*, c.company FROM " . DB_PREFIX . "mails AS mails  
 					LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = mails.customer_id 
 					WHERE type= 'R' AND bleido <> 2";
 
@@ -78,7 +78,7 @@ class ModelCatalogMail extends Model {
 	
 	public function getTotalmails_out($data = array()) {
 	
-      	$query = $this->db->query("SELECT count(*) as total FROM " . DB_PREFIX . "fl_mails WHERE type= 'E'");
+      	$query = $this->db->query("SELECT count(*) as total FROM " . DB_PREFIX . "mails WHERE type= 'E'");
 				
       	return $query->row['total'] ;
 	}
@@ -102,7 +102,7 @@ class ModelCatalogMail extends Model {
 		$sql .= " ELSE `client`
 			END AS company
 			, m.title, m.message, m.date_added 
-			FROM " . DB_PREFIX . "fl_mails AS m 
+			FROM " . DB_PREFIX . "mails AS m 
 			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id";
 			
 		if ($ut->checkTableExists('c_supplier')) {	
@@ -189,7 +189,7 @@ class ModelCatalogMail extends Model {
 			}
 
 			//Search if stored that mail
-			$sql = "SELECT count(*) as mail FROM " . DB_PREFIX . "fl_mails where code='" .$message_id. "'"; 
+			$sql = "SELECT count(*) as mail FROM " . DB_PREFIX . "mails where code='" .$message_id. "'"; 
 			
 			$query = $this->db->query($sql);
 	
@@ -211,7 +211,7 @@ class ModelCatalogMail extends Model {
 					$customer_id = 0;
 				}
 				
-				$sql = "INSERT INTO " . DB_PREFIX . "fl_mails (client, code, title, message, date_added, type, customer_id) 
+				$sql = "INSERT INTO " . DB_PREFIX . "mails (client, code, title, message, date_added, type, customer_id) 
 						values('". $this->db->escape($fromaddress) . "',
 							 '" . $this->db->escape($message_id) . "',
 							 '" . $this->db->escape(trim($subject)) . "',
@@ -231,23 +231,23 @@ class ModelCatalogMail extends Model {
 	}
 	
 	public function deleteMails($mail_id) {
-		$this->db->query("UPDATE " . DB_PREFIX . "fl_mails SET bleido = 2 WHERE mail_id = " . (int)$mail_id);
-		$this->db->query("DELETE FROM " . DB_PREFIX . "fl_mail_files WHERE mail_id = " . (int)$mail_id);
+		$this->db->query("UPDATE " . DB_PREFIX . "mails SET bleido = 2 WHERE mail_id = " . (int)$mail_id);
+		$this->db->query("DELETE FROM " . DB_PREFIX . "mail_files WHERE mail_id = " . (int)$mail_id);
 	}
 	
 	public function deleteMails_out($mail_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "fl_mails WHERE mail_id = " . (int)$mail_id);
-		$this->db->query("DELETE FROM " . DB_PREFIX . "fl_mail_files WHERE mail_id = " . (int)$mail_id);
+		$this->db->query("DELETE FROM " . DB_PREFIX . "mails WHERE mail_id = " . (int)$mail_id);
+		$this->db->query("DELETE FROM " . DB_PREFIX . "mail_files WHERE mail_id = " . (int)$mail_id);
 	}
 	
 	public function getMail($mail_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_mails where mail_id = " . $mail_id);
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "mails where mail_id = " . $mail_id);
 		
 		return $query->row ;
 	}
 
 	public function addMailSended($data) {
-		$sql = "INSERT INTO `" . DB_PREFIX . "fl_mails` SET nusuario = " . (int)$this->user->getId() . ", date_added = now(), title = '" . $this->db->escape($data['subject']) . "', message = '" . $this->db->escape($data['text']) . "', type = 'E', code = '" . $this->db->escape($data['code']) . "', client = '" . $this->db->escape($data['to']) . "', bleido = 1, tag_id = 0, ";
+		$sql = "INSERT INTO `" . DB_PREFIX . "mails` SET nusuario = " . (int)$this->user->getId() . ", date_added = now(), title = '" . $this->db->escape($data['subject']) . "', message = '" . $this->db->escape($data['text']) . "', type = 'E', code = '" . $this->db->escape($data['code']) . "', client = '" . $this->db->escape($data['to']) . "', bleido = 1, tag_id = 0, ";
 
 		if (isset($data['customer_id']) && $data['customer_id']!=0) {
 			$sql .= "customer_id = " . (int)$data['customer_id'] . ", supplier_id = 0, potential_id = 0";

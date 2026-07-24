@@ -4,6 +4,7 @@ $_['heading_title']                           = 'Drafts';
 
 // Text
 $_['text_success']                            = 'Success: You have modified drafts!';
+$_['text_success_copy']                       = 'Success: The selected drafts have been copied!';
 $_['text_success_convert']                    = 'Success: The selected drafts have been converted to invoices!';
 $_['text_draft_id']                         = 'Draft ID:';
 $_['text_draft_no']                         = 'Draft No.:';
@@ -15,6 +16,7 @@ $_['text_customer']                           = 'Customer:';
 $_['text_customer_group']                     = 'Customer Group:';
 $_['text_email']                              = 'E-Mail:';
 $_['text_telephone']                          = 'Telephone:';
+$_['text_nif']                                = 'Tax ID:';
 $_['text_fax']                                = 'Fax:';
 $_['text_shipping_method']                    = 'Shipping Method:';
 $_['text_payment_method']                     = 'Payment Method:';
@@ -125,6 +127,7 @@ $_['entry_theme']                             = 'Gift Certificate Theme:';
 $_['entry_message']                           = 'Message:';
 $_['entry_amount']                            = 'Amount:';
 $_['entry_simplified']                        = 'Document Type:';
+$_['entry_global_discount']                   = 'Global Discount:';
 $_['entry_notify']                            = 'Notify Customer:';
 $_['entry_comment']                           = 'Comment:';
 $_['entry_shipping']                          = 'Shipping Method:';

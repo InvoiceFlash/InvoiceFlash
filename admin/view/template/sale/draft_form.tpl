@@ -45,7 +45,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="form-group col-sm-4">
+						<div class="form-group col-sm-3">
 							<label class="control-label col-sm-4"><?php echo $entry_shipping; ?></label>
 							<div class="control-field col-sm-8">
 								<select id="shipping" name="shipping" class="form-control">
@@ -61,7 +61,7 @@
 								<?php } ?>
 							</div>
 						</div>
-						<div class="form-group col-sm-4">
+						<div class="form-group col-sm-3">
 							<label class="control-label col-sm-4"><?php echo $entry_payment; ?></label>
 							<div class="control-field col-sm-8">
 								<select id="payment" name="payment" class="form-control">
@@ -77,11 +77,17 @@
 								<?php } ?>
 							</div>
 						</div>
-						<div class="form-group col-sm-4">
+						<div class="form-group col-sm-3">
 							<label class="control-label col-sm-4"><?php echo $entry_simplified; ?></label>
 							<div class="control-field col-sm-8 d-flex align-items-center" style="min-height:38px; gap:15px;">
 								<label class="radio-inline m-0 p-0" style="padding-left:20px;"><input type="radio" name="simplified" value="0" <?php echo (!$simplified) ? 'checked=""' : ''; ?>> <?php echo $text_normal; ?></label>
 								<label class="radio-inline m-0 p-0" style="padding-left:20px;"><input type="radio" name="simplified" value="1" <?php echo ($simplified) ? 'checked=""' : ''; ?>> <?php echo $text_simplified; ?></label>
+							</div>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="control-label col-sm-4"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field col-sm-8">
+								<input type="text" name="global_discount" id="global_discount" value="" class="form-control text-right">
 							</div>
 						</div>
 					</div>

@@ -4,6 +4,7 @@ $_['heading_title']                           = 'Borradores';
 
 // Text
 $_['text_success']                            = '&Eacute;xito: &iexcl;Ha modificado los borradores!';
+$_['text_success_copy']                       = '&Eacute;xito: &iexcl;Los borradores seleccionados se han duplicado!';
 $_['text_success_convert']                    = '&Eacute;xito: &iexcl;Los borradores seleccionados se han convertido en facturas!';
 $_['text_draft_id']                         = 'ID de Borrador:';
 $_['text_draft_no']                         = 'N&ordm; de Borrador:';
@@ -15,6 +16,7 @@ $_['text_customer']                           = 'Cliente:';
 $_['text_customer_group']                     = 'Grupo de Clientes:';
 $_['text_email']                              = 'E-Mail:';
 $_['text_telephone']                          = 'Tel&eacute;fono:';
+$_['text_nif']                                = 'NIF:';
 $_['text_fax']                                = 'Fax:';
 $_['text_shipping_method']                    = 'M&eacute;todo de Env&iacute;o:';
 $_['text_payment_method']                     = 'Forma de Pago:';
@@ -125,6 +127,7 @@ $_['entry_theme']                             = 'Tema del Vale Regalo:';
 $_['entry_message']                           = 'Mensaje:';
 $_['entry_amount']                            = 'Importe:';
 $_['entry_simplified']                        = 'Tipo de Documento:';
+$_['entry_global_discount']                   = 'Descuento Global:';
 $_['entry_notify']                            = 'Notificar al Cliente:';
 $_['entry_comment']                           = 'Comentario:';
 $_['entry_shipping']                          = 'M&eacute;todo de Env&iacute;o:';

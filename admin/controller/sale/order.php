@@ -887,6 +887,7 @@ class ControllerSaleOrder extends Controller {
 		$this->data['entry_amount'] = $this->language->get('entry_amount');
 		$this->data['entry_shipping'] = $this->language->get('entry_shipping');
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
+		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
 
 		$this->data['column_product'] = $this->language->get('column_product');
@@ -1394,12 +1395,26 @@ class ControllerSaleOrder extends Controller {
 		
 		if (isset($this->request->post['order_total'])) {
       		$this->data['order_totals'] = $this->request->post['order_total'];
-    	} elseif (isset($this->request->get['order_id'])) { 
+    	} elseif (isset($this->request->get['order_id'])) {
 			$this->data['order_totals'] = $this->model_sale_order->getOrderTotals($this->request->get['order_id']);
 		} else {
       		$this->data['order_totals'] = array();
-		}	
-		
+		}
+
+		if (isset($this->request->post['global_discount'])) {
+			$this->data['global_discount'] = $this->request->post['global_discount'];
+		} else {
+			$this->data['global_discount'] = '';
+
+			foreach ($this->data['order_totals'] as $order_total) {
+				if ($order_total['code'] == 'discount') {
+					$this->data['global_discount'] = number_format(abs((float)$order_total['value']), 2, '.', '');
+					break;
+				}
+			}
+		}
+
+
 		$this->load->model('localisation/payment');
 		$this->load->model('localisation/shipping');
 

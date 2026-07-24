@@ -97,6 +97,12 @@
 								<?php } ?>
 							</div>
 						</div>
+						<div class="form-group col-sm-4">
+							<label class="control-label col-sm-4"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field col-sm-8">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal">
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -836,6 +842,19 @@ $(document).on('change', '.order-qty, .order-price', function() {
 
 $('.order-price').each(function() {
 	orderMarkPriceChanged(this);
+});
+
+$('#global_discount').on('input', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
+});
+
+$('#global_discount').on('change', function() {
+	$('#button-order-product').click();
 });
 </script>
 <style>

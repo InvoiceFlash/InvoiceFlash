@@ -58,7 +58,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="form-group col-sm-4">
+						<div class="form-group col-sm-3">
 							<label class="control-label col-sm-4"><?php echo $entry_shipping; ?></label>
 							<div class="control-field col-sm-8">
 								<select id="shipping" name="shipping" class="form-control">
@@ -74,7 +74,7 @@
 								<?php } ?>
 							</div>
 						</div>
-						<div class="form-group col-sm-4">
+						<div class="form-group col-sm-3">
 							<label class="control-label col-sm-4"><?php echo $entry_payment; ?></label>
 							<div class="control-field col-sm-8">
 								<select id="payment" name="payment" class="form-control">
@@ -90,12 +90,18 @@
 								<?php } ?>
 							</div>
 						</div>
-						<div class="form-group col-sm-4">
+						<div class="form-group col-sm-3">
 							<div class="control-field d-flex align-items-center" style="min-height:38px;">
 								<div class="form-check">
 									<input type="checkbox" class="form-check-input" id="print_extended_description" name="print_extended_description" value="1" <?php echo $print_extended_description ? 'checked' : ''; ?>>
 									<label class="form-check-label" for="print_extended_description"><?php echo $entry_print_extended_description; ?></label>
 								</div>
+							</div>
+						</div>
+						<div class="form-group col-sm-3">
+							<label class="control-label col-sm-4"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field col-sm-8">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal">
 							</div>
 						</div>
 					</div>
@@ -113,8 +119,10 @@
 								<th></th>
 								<th><?php echo $column_product; ?></th>
 								<th><?php echo $column_delivery_date; ?></th>
+								<th><?php echo $column_sku; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_total; ?></th>
 						</tr>
 						</thead>
 						<?php $product_row = 0; ?>
@@ -141,17 +149,16 @@
 										<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quote_option][<?php echo $option_row; ?>][type]" value="<?php echo $option['type']; ?>">
 									<?php $option_row++; ?>
 									<?php } ?>
-									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][model]" value="<?php echo $quote_product['model']; ?>">
 								</td>
 								<td>
 									<?php foreach ($quote_product['option'] as $option) { ?>
 										<div><?php echo $option['value']; ?></div>
 									<?php } ?>
 								</td>
-								<td class="text-right">
-									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $quote_product['quantity']; ?>">
-									<input type="text" class="form-control text-right quote-price" data-catalog-price="<?php echo $quote_product['catalog_price_raw']; ?>" name="quote_product[<?php echo $product_row; ?>][price]" value="<?php echo $quote_product['price_raw']; ?>">
-								</td>
+								<td><?php echo $quote_product['model']; ?>
+									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][model]" value="<?php echo $quote_product['model']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $quote_product['quantity']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="<?php echo $quote_product['catalog_price_raw']; ?>" name="quote_product[<?php echo $product_row; ?>][price]" value="<?php echo $quote_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $quote_product['total']; ?>
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][total]" value="<?php echo $quote_product['total']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][tax]" value="<?php echo $quote_product['tax']; ?>"></td>
@@ -161,7 +168,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -171,7 +178,7 @@
 							<?php foreach ($quote_totals as $quote_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="3"><?php echo $quote_total['title']; ?>:
+								<td class="text-right" colspan="5"><?php echo $quote_total['title']; ?>:
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][quote_total_id]" value="<?php echo $quote_total['quote_total_id']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][code]" value="<?php echo $quote_total['code']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][title]" value="<?php echo $quote_total['title']; ?>">
@@ -246,10 +253,6 @@
 								<div class="col-12 col-sm">
 									<label class="control-label">Descripción</label>
 									<input type="text" id="ps-name" class="form-control" placeholder="Descripción">
-								</div>
-								<div class="col-12 col-sm-3">
-									<label class="control-label">Modelo</label>
-									<input type="text" id="ps-model" class="form-control" placeholder="Modelo">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
 									<button type="button" id="ps-search" class="btn btn-primary">Actualizar</button>
@@ -745,7 +748,7 @@ function qpDoSearch() {
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
-		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val(), filter_model: $('#ps-model').val() },
+		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val() },
 		dataType: 'json',
 		success: function(json) {
 			if (json.warning) {
@@ -785,7 +788,7 @@ function qpDoSearch() {
 
 $('#ps-search').click(qpDoSearch);
 
-$('#ps-sku, #ps-name, #ps-model').on('keypress', function(e) {
+$('#ps-sku, #ps-name').on('keypress', function(e) {
 	if (e.which == 13) qpDoSearch();
 });
 
@@ -838,8 +841,12 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductModal')).show();
 });
 
+$('#ProductSearchModal').on('shown.bs.modal', function() {
+	$('#ps-name').focus();
+});
+
 $('#ProductSearchModal').on('hidden.bs.modal', function() {
-	$('#ps-sku, #ps-name, #ps-model').val('');
+	$('#ps-sku, #ps-name').val('');
 	$('#ps-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>');
 	$('#ps-warning').hide();
 	qpProducts = [];
@@ -924,6 +931,19 @@ function quoteSaveDescription() {
 
 	bootstrap.Modal.getInstance(document.getElementById('ProductDescriptionModal')).hide();
 }
+
+$('#global_discount').on('input', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
+});
+
+$('#global_discount').on('change', function() {
+	$('#button-quote-product').click();
+});
 </script>
 <style>
 .quote-price-changed {

@@ -91,6 +91,12 @@
 								<?php } ?>
 							</div>
 						</div>
+						<div class="form-group col-sm-4">
+							<label class="control-label col-sm-4"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field col-sm-8">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal">
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -105,6 +111,7 @@
 							<tr>
 								<th></th>
 								<th><?php echo $column_product; ?></th>
+								<th class="text-right"><?php echo $column_sku; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
@@ -133,6 +140,7 @@
 									<?php } ?>
 									<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][model]" value="<?php echo $delivery_product['model']; ?>">
 								</td>
+								<td class="text-right"><?php echo $delivery_product['sku']; ?></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $delivery_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="<?php echo $delivery_product['catalog_price_raw']; ?>" name="delivery_product[<?php echo $product_row; ?>][price]" value="<?php echo $delivery_product['price_raw']; ?>"></td>
 								<td class="text-right"><?php echo $delivery_product['total']; ?>
@@ -143,7 +151,7 @@
 							<?php } ?>
 							<?php } else { ?>
 							<tr>
-								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -152,7 +160,7 @@
 							<?php if ($delivery_totals) { ?>
 							<?php foreach ($delivery_totals as $delivery_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
-								<td class="text-right" colspan="4"><?php echo $delivery_total['title']; ?>:
+								<td class="text-right" colspan="5"><?php echo $delivery_total['title']; ?>:
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][delivery_total_id]" value="<?php echo $delivery_total['delivery_total_id']; ?>">
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][code]" value="<?php echo $delivery_total['code']; ?>">
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][title]" value="<?php echo $delivery_total['title']; ?>">

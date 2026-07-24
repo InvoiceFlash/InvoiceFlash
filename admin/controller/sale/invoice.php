@@ -669,6 +669,7 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['entry_shipping'] = $this->language->get('entry_shipping');
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
+		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
@@ -1179,12 +1180,25 @@ class ControllerSaleInvoice extends Controller {
 		
 		if (isset($this->request->post['invoice_total'])) {
       		$this->data['invoice_totals'] = $this->request->post['invoice_total'];
-    	} elseif (isset($this->request->get['invoice_id'])) { 
+    	} elseif (isset($this->request->get['invoice_id'])) {
 			$this->data['invoice_totals'] = $this->model_sale_invoice->getInvoiceTotals($this->request->get['invoice_id']);
 		} else {
       		$this->data['invoice_totals'] = array();
-		}	
-		
+		}
+
+		if (isset($this->request->post['global_discount'])) {
+			$this->data['global_discount'] = $this->request->post['global_discount'];
+		} else {
+			$this->data['global_discount'] = '';
+
+			foreach ($this->data['invoice_totals'] as $invoice_total) {
+				if ($invoice_total['code'] == 'discount') {
+					$this->data['global_discount'] = number_format(abs((float)$invoice_total['value']), 2, '.', '');
+					break;
+				}
+			}
+		}
+
 		$this->load->model('localisation/payment');
 		$this->load->model('localisation/shipping');
 

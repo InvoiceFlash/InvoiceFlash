@@ -853,6 +853,7 @@ class ControllerSaleQuote extends Controller {
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
 		$this->data['entry_print_extended_description'] = $this->language->get('entry_print_extended_description');
+		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
 
 		if (isset($this->request->post['print_extended_description'])) {
 			$this->data['print_extended_description'] = 1;
@@ -866,6 +867,7 @@ class ControllerSaleQuote extends Controller {
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
+		$this->data['column_sku'] = $this->language->get('column_sku');
 		$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
@@ -1364,12 +1366,26 @@ class ControllerSaleQuote extends Controller {
 		
 		if (isset($this->request->post['quote_total'])) {
       		$this->data['quote_totals'] = $this->request->post['quote_total'];
-    	} elseif (isset($this->request->get['quote_id'])) { 
+    	} elseif (isset($this->request->get['quote_id'])) {
 			$this->data['quote_totals'] = $this->model_sale_quote->getQuoteTotals($this->request->get['quote_id']);
 		} else {
       		$this->data['quote_totals'] = array();
-		}	
-		
+		}
+
+		if (isset($this->request->post['global_discount'])) {
+			$this->data['global_discount'] = $this->request->post['global_discount'];
+		} else {
+			$this->data['global_discount'] = '';
+
+			foreach ($this->data['quote_totals'] as $quote_total) {
+				if ($quote_total['code'] == 'discount') {
+					$this->data['global_discount'] = number_format(abs((float)$quote_total['value']), 2, '.', '');
+					break;
+				}
+			}
+		}
+
+
 		$this->load->model('localisation/payment');
 		$this->load->model('localisation/shipping');
 

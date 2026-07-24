@@ -103,6 +103,7 @@ $_['column_weight'] = 'Peso del producto';
 // Entry
 $_['entry_shipping'] = 'M&eacute;todo de Env&iacute;o';
 $_['entry_payment'] = 'Forma de Pago';
+$_['entry_global_discount'] = 'Descuento Global:';
 $_['entry_store'] = 'tienda';
 $_['entry_customer'] = 'Cliente';
 $_['entry_customer_group'] = 'Grupo de Clientes';

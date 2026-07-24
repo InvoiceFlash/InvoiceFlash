@@ -226,6 +226,119 @@ class ControllerSaleDraft extends Controller {
     	$this->getList();
   	}
 
+  	public function copy() {
+		$this->load->language('sale/draft');
+
+		$this->load->model('sale/draft');
+		$this->load->model('tool/user_logs');
+
+		if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			foreach ($this->request->post['selected'] as $draft_id) {
+				$draft_info = $this->model_sale_draft->getDraft($draft_id);
+
+				if ($draft_info) {
+					$draft_products = array();
+
+					foreach ($this->model_sale_draft->getDraftProducts($draft_id) as $draft_product) {
+						$draft_products[] = array(
+							'draft_product_id' => 0,
+							'product_id'       => $draft_product['product_id'],
+							'name'              => $draft_product['name'],
+							'model'             => $draft_product['model'],
+							'draft_option'      => $this->model_sale_draft->getDraftOptions($draft_id, $draft_product['draft_product_id']),
+							'quantity'          => $draft_product['quantity'],
+							'price'             => $draft_product['price'],
+							'total'             => $draft_product['total'],
+							'tax'               => $draft_product['tax']
+						);
+					}
+
+					$data = array(
+						'user_id'                 => $this->user->getId(),
+						'store_id'                => $draft_info['store_id'],
+						'customer_id'             => $draft_info['customer_id'],
+						'customer_group_id'       => $draft_info['customer_group_id'],
+						'email'                   => $draft_info['email'],
+						'telephone'               => $draft_info['telephone'],
+						'payment_company'         => $draft_info['payment_company'],
+						'payment_address_1'       => $draft_info['payment_address_1'],
+						'payment_address_2'       => $draft_info['payment_address_2'],
+						'payment_city'            => $draft_info['payment_city'],
+						'payment_postcode'        => $draft_info['payment_postcode'],
+						'payment_country_id'      => $draft_info['payment_country_id'],
+						'payment_zone_id'         => $draft_info['payment_zone_id'],
+						'payment_method'          => $draft_info['payment_method'],
+						'payment_code'            => $draft_info['payment_code'],
+						'shipping_company'        => $draft_info['shipping_company'],
+						'shipping_address_1'      => $draft_info['shipping_address_1'],
+						'shipping_address_2'      => $draft_info['shipping_address_2'],
+						'shipping_city'           => $draft_info['shipping_city'],
+						'shipping_postcode'       => $draft_info['shipping_postcode'],
+						'shipping_country_id'     => $draft_info['shipping_country_id'],
+						'shipping_zone_id'        => $draft_info['shipping_zone_id'],
+						'shipping_method'         => $draft_info['shipping_method'],
+						'shipping_code'           => $draft_info['shipping_code'],
+						'comment'                 => $draft_info['comment'],
+						'simplified'              => $draft_info['simplified'],
+						'draft_product'           => $draft_products,
+						'draft_total'             => $this->model_sale_draft->getDraftTotals($draft_id)
+					);
+
+					$new_draft_id = $this->model_sale_draft->addDraft($data);
+
+					$this->model_tool_user_logs->addLog(array(
+						'user_id'       => $this->user->getId(),
+						'username'      => $this->user->getUserName(),
+						'action'        => 'create',
+						'document_type' => 'sale_draft',
+						'document_id'   => (int)$new_draft_id,
+						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+					));
+				}
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success_copy');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_draft_id'])) {
+				$url .= '&filter_draft_id=' . $this->request->get['filter_draft_id'];
+			}
+
+			if (isset($this->request->get['filter_company'])) {
+				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_total'])) {
+				$url .= '&filter_total=' . $this->request->get['filter_total'];
+			}
+
+			if (isset($this->request->get['filter_date_added'])) {
+				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
+			}
+
+			if (isset($this->request->get['filter_date_modified'])) {
+				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->redirect($this->url->link('sale/draft', 'token=' . $this->session->data['token'] . $url, 'SSL'));
+		}
+
+		$this->getList();
+  	}
+
   	public function convert() {
 		$this->load->language('sale/draft');
 
@@ -427,6 +540,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['print'] = $this->url->link('sale/draft/draft', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['insert'] = $this->url->link('sale/draft/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('sale/draft/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['copy'] = $this->url->link('sale/draft/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['convert'] = $this->url->link('sale/draft/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		// add print selection
@@ -511,6 +625,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['button_view'] = $this->language->get('button_view');
 		$this->data['button_insert'] = $this->language->get('button_insert');
 		$this->data['button_delete'] = $this->language->get('button_delete');
+		$this->data['button_copy'] = $this->language->get('button_copy');
 		$this->data['button_convert'] = $this->language->get('button_convert');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 		$this->data['error_no_selection'] = $this->language->get('error_no_selection');
@@ -656,6 +771,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
 		$this->data['entry_fax'] = $this->language->get('entry_fax');
 		$this->data['entry_simplified'] = $this->language->get('entry_simplified');
+		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
 		$this->data['text_normal'] = $this->language->get('text_normal');
 		$this->data['text_simplified'] = $this->language->get('text_simplified');
 		$this->data['entry_comment'] = $this->language->get('entry_comment');
@@ -1796,11 +1912,30 @@ class ControllerSaleDraft extends Controller {
 		}
         // End add
 	
+		$this->load->model('sale/customer');
+
 		foreach ($drafts as $draft_id) {
 			$draft_info = $this->model_sale_draft->getDraft($draft_id);
 
 			if ($draft_info) {
-				
+
+				// El borrador no guarda el NIF del cliente en el momento de crearlo/editarlo
+				// (draft.payment_tax_id nunca se rellena) - se toma en vivo de la ficha del
+				// cliente en el momento de imprimir/ver el borrador.
+				$customer_tax_id = '';
+
+				if ($draft_info['customer_id']) {
+					$customer_info = $this->model_sale_customer->getCustomer($draft_info['customer_id']);
+
+					if ($customer_info) {
+						$customer_tax_id = $customer_info['nif'];
+					}
+				}
+
+				if (!$customer_tax_id) {
+					$customer_tax_id = $draft_info['payment_tax_id'];
+				}
+
 				$store_info = $this->model_setting_setting->getSetting('config', $draft_info['store_id']);
 				
 				if ($store_info) {
@@ -1828,7 +1963,7 @@ class ControllerSaleDraft extends Controller {
 				if ($draft_info['shipping_address_format']) {
 					$format = $draft_info['shipping_address_format'];
 				} else {
-					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '<b>{company}</b>' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city} ({zone}) {country}';
 				}
 
 				$find = array(
@@ -1858,7 +1993,11 @@ class ControllerSaleDraft extends Controller {
 				if ($draft_info['payment_address_format']) {
 					$format = $draft_info['payment_address_format'];
 				} else {
-					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '<b>{company}</b>' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city} ({zone}) {country}';
+
+					if ($customer_tax_id) {
+						$format .= "\n" . '<b>' . $this->language->get('text_tax_id') . '</b> {tax_id}';
+					}
 				}
 
 				$find = array(
@@ -1869,7 +2008,8 @@ class ControllerSaleDraft extends Controller {
 					'{postcode}',
 					'{zone}',
 					'{zone_code}',
-					'{country}'
+					'{country}',
+					'{tax_id}'
 				);
 
 				$replace = array(
@@ -1880,7 +2020,8 @@ class ControllerSaleDraft extends Controller {
 					'postcode'  => $draft_info['payment_postcode'],
 					'zone'      => $draft_info['payment_zone'],
 					'zone_code' => $draft_info['payment_zone_code'],
-					'country'   => $draft_info['payment_country']
+					'country'   => $draft_info['payment_country'],
+					'tax_id'    => $customer_tax_id
 				);
 
 				$payment_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
@@ -1913,8 +2054,8 @@ class ControllerSaleDraft extends Controller {
 						'option'   => $option_data,
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
-						'price'    => $this->currency->format($product['price']),
-						'total'    => $this->currency->format($product['total'])
+						'price'    => $this->currency->format($product['price'], $draft_info['currency_code'], $draft_info['currency_value'], true, true),
+						'total'    => $this->currency->format($product['total'], $draft_info['currency_code'], $draft_info['currency_value'], true, true)
 					);
 				}
 				
