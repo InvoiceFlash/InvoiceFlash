@@ -4,9 +4,9 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Imprimir</span></button>
+			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-eye"></i><span class="hidden-xs"> Ver</span></button>
+			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('pdf');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
@@ -142,7 +142,7 @@
 								<th><?php echo $column_product; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
+								<th class="text-right"><?php echo $column_base; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -206,6 +206,10 @@ include(DIR_TEMPLATE . 'sale/email_modal.tpl');
 include(DIR_TEMPLATE . 'sale/print_modal.tpl');
 ?>
 <script>
+function draftSetPrintFormat(format) {
+	var base = <?php echo json_encode(html_entity_decode($print, ENT_QUOTES, 'UTF-8')); ?>;
+	$('#formPrint').attr('action', format ? (base + '&format=' + format) : base);
+}
 $('#send').on('click',function(e){
 	var to = $('#to').val();
 	var subject = $('#subject').val();

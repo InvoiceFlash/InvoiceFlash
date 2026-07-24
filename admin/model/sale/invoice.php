@@ -845,7 +845,7 @@ class ModelSaleInvoice extends Model {
 		$customer_id = $qry_invoice->row['customer_id'];
 
 		// Datos del cliente de la factura: bank_cc
-		$qry_customer = $this->db->query("SELECT bank_cc FROM `" . DB_PREFIX . "fl_customers` WHERE customer_id = $customer_id");
+		$qry_customer = $this->db->query("SELECT bank_cc FROM `" . DB_PREFIX . "customer` WHERE customer_id = $customer_id");
 		$bank_cc = $qry_customer->row['bank_cc'];
 
 		// Buscar los datos del metodo de pago para la creación de los recibos

@@ -107,23 +107,13 @@ class ModelToolImport extends Model {
 			if ($query->num_rows) {
 				$customer_id = $query->row['customer_id'];
 
-				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', telephone = '" . $this->db->escape($telephone) . "', date_modified = NOW() WHERE customer_id = '" . (int)$customer_id . "'");
-
-				$fl_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "fl_customers` WHERE customer_id = '" . (int)$customer_id . "'");
-
-				if ($fl_query->num_rows) {
-					$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
-				} else {
-					$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '" . (int)$country_id . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
-				}
+				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', telephone = '" . $this->db->escape($telephone) . "', date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 				$updated++;
 			} else {
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', customer_group_id = '1', status = '1', date_added = NOW(), date_modified = NOW()");
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', customer_group_id = '1', status = '1', date_added = NOW(), date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', country_id = '" . (int)$country_id . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
 
 				$customer_id = $this->db->getLastId();
-
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', country_id = '" . (int)$country_id . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "'");
 
 				if ($address_1 !== '' || $city !== '' || $postcode !== '') {
 					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
@@ -336,23 +326,19 @@ class ModelToolImport extends Model {
 		$country_id = $this->resolveCountryId($country);
 		$address_1  = trim($street_type . ' ' . $street . ' ' . $number);
 
-		$query = $this->db->query("SELECT customer_id FROM " . DB_PREFIX . "fl_customers WHERE contable_account = '" . $this->db->escape($code) . "'");
+		$query = $this->db->query("SELECT customer_id FROM " . DB_PREFIX . "customer WHERE contable_account = '" . $this->db->escape($code) . "'");
 
 		if ($query->num_rows) {
 			$customer_id = $query->row['customer_id'];
 
-			$this->db->query("UPDATE " . DB_PREFIX . "customer SET company = '" . $this->db->escape($title) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($phone) . "', fax = '" . $this->db->escape($fax) . "', date_modified = NOW() WHERE customer_id = '" . (int)$customer_id . "'");
-
-			$this->db->query("UPDATE " . DB_PREFIX . "fl_customers SET nif = '" . $this->db->escape($cif) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "customer SET company = '" . $this->db->escape($title) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($phone) . "', fax = '" . $this->db->escape($fax) . "', date_modified = NOW(), nif = '" . $this->db->escape($cif) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 			return;
 		}
 
-		$this->db->query("INSERT INTO " . DB_PREFIX . "customer SET company = '" . $this->db->escape($title) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($phone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '1', date_added = NOW(), date_modified = NOW()");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "customer SET company = '" . $this->db->escape($title) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($phone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '1', date_added = NOW(), date_modified = NOW(), nif = '" . $this->db->escape($cif) . "', contable_account = '" . $this->db->escape($code) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
 
 		$customer_id = $this->db->getLastId();
-
-		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_customers SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($cif) . "', contable_account = '" . $this->db->escape($code) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
 
 		if ($address_1 !== '' || $city !== '' || $postcode !== '') {
 			$this->db->query("INSERT INTO " . DB_PREFIX . "address SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($title) . "', tax_id = '" . $this->db->escape($cif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', country_id = '" . (int)$country_id . "'");
@@ -941,7 +927,7 @@ class ModelToolImport extends Model {
 			$customer_id = null;
 
 			if ($client_code !== '') {
-				$query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "fl_customers` WHERE cod_flash = '" . (int)$client_code . "'");
+				$query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "customer` WHERE cod_flash = '" . (int)$client_code . "'");
 
 				if ($query->num_rows) {
 					$customer_id = $query->row['customer_id'];
@@ -949,9 +935,7 @@ class ModelToolImport extends Model {
 			}
 
 			if ($customer_id) {
-				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', status = '" . (int)$status . "', date_modified = NOW() WHERE customer_id = '" . (int)$customer_id . "'");
-
-				$this->db->query("UPDATE `" . DB_PREFIX . "fl_customers` SET nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', status = '" . (int)$status . "', date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
 
 				$address_query = $this->db->query("SELECT address_id FROM `" . DB_PREFIX . "address` WHERE customer_id = '" . (int)$customer_id . "' ORDER BY address_id ASC LIMIT 1");
 
@@ -965,11 +949,9 @@ class ModelToolImport extends Model {
 					$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
 				}
 			} else {
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '" . (int)$status . "', date_added = " . $date_added . ", date_modified = NOW()");
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '" . (int)$status . "', date_added = " . $date_added . ", date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', cod_flash = '" . (int)$client_code . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'");
 
 				$customer_id = $this->db->getLastId();
-
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "fl_customers` SET customer_id = '" . (int)$customer_id . "', nif = '" . $this->db->escape($nif) . "', cod_flash = '" . (int)$client_code . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'");
 
 				if ($address_1 !== '' || $postcode !== '' || $city !== '') {
 					$this->db->query("INSERT INTO `" . DB_PREFIX . "address` SET customer_id = '" . (int)$customer_id . "', company = '" . $this->db->escape($company) . "', tax_id = '" . $this->db->escape($nif) . "', address_1 = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'");

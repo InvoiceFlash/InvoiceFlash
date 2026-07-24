@@ -1742,6 +1742,22 @@ class ControllerCatalogProduct extends Controller {
 					}
 				}
 
+				$tax_rate = '';
+
+				if ($result['tax_class_id']) {
+					$rates = array();
+
+					foreach ($this->model_catalog_product->getProductRates($result['price'], $result['tax_class_id']) as $tax_rate_info) {
+						if ($tax_rate_info['type'] == 'P') {
+							$rates[] = $tax_rate_info['rate'];
+						}
+					}
+
+					if ($rates) {
+						$tax_rate = implode('+', $rates);
+					}
+				}
+
 				$json[] = array(
 					'product_id'      => $result['product_id'],
 					'sku'             => $result['sku'],
@@ -1751,6 +1767,7 @@ class ControllerCatalogProduct extends Controller {
 					'price_formatted' => $this->currency->format($result['price'], $this->config->get('config_currency')),
 					'quantity'        => (int)$result['quantity'],
 					'tax_class_id'    => $result['tax_class_id'],
+					'tax_rate'        => $tax_rate,
 					'option'          => $option_data,
 				);
 		}

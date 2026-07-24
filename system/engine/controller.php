@@ -149,6 +149,14 @@ abstract class Controller {
 		// output the HTML content
 		$pdf->writeHTML($this->render(), true, false, true, false, '');
 
+		// TCPDF sometimes appends a spurious blank page when the content
+		// ends right at the bottom margin - drop it if nothing was ever
+		// drawn on it (cursor never advanced past the top margin).
+		if ($pdf->getNumPages() > 1 && $pdf->GetY() <= (PDF_MARGIN_TOP + 5)) {
+			$pdf->deletePage($pdf->getNumPages());
+			$pdf->lastPage();
+		}
+
 		if ($watermark) {
 			$page_width = $pdf->getPageWidth();
 			$page_height = $pdf->getPageHeight();

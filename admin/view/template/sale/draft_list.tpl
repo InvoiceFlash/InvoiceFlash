@@ -4,8 +4,8 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button type="button" data-url="<?php echo $print; ?>" onclick="submitDrafts(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
-			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_print; ?></span></button>
+			<button type="button" onclick="draftOpenPrintModal('');" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
+			<button type="button" onclick="draftOpenPrintModal('pdf');" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> <?php echo $button_print; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
@@ -79,24 +79,18 @@
 </div>
 <?php include DIR_TEMPLATE . 'sale/print_modal.tpl'; ?>
 <script>
-function submitDrafts(url) {
+function draftOpenPrintModal(format) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
 		alert('<?php echo $error_no_selection; ?>');
 	} else {
-		var form = document.getElementById('form');
-		form.setAttribute('action', url);
-		form.setAttribute('target', '_blank');
-		document.form.submit();
-	}
-}
-function validate() {
-	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione un borrador para imprimir');
-	} else {
+		$('#formPrint>input[name="selected[]"]').remove();
 		$('input[type="checkbox"]:checked').each(function(){
 			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');
 		});
-		
+
+		var base = <?php echo json_encode(html_entity_decode($print, ENT_QUOTES, 'UTF-8')); ?>;
+		$('#formPrint').attr('action', format ? (base + '&format=' + format) : base);
+
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('PrintModal')).toggle();
 	}
 }

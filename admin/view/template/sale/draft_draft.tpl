@@ -76,7 +76,7 @@
 			<th><?php echo $column_model; ?></th>
 			<th class="text-right"><?php echo $column_quantity; ?></th>
 			<th class="text-right"><?php echo $column_price; ?></th>
-			<th class="text-right"><?php echo $column_total; ?></th>
+			<th class="text-right"><?php echo $column_base; ?></th>
 		</tr>
 		<?php foreach ($drafts['product'] as $product) { ?>
 		<tr>
@@ -112,6 +112,3 @@
 </div>
 </body>
 </html>
-<script type="text/javascript"><!--
-window.print()
-//--></script>

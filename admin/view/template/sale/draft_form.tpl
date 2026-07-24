@@ -100,7 +100,7 @@
 								<th style="width:50%;"><?php echo $column_product; ?></th>
 								<th class="text-right" style="width:80px;"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
+								<th class="text-right"><?php echo $column_base; ?></th>
 						</tr>
 						</thead>
 						<?php $product_row = 0; ?>
@@ -321,6 +321,18 @@
 									<label class="control-label col-sm-4"><?php echo $entry_price; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="price_override" id="price_override" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_discount; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" name="discount" id="pm-discount" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_tax_rate; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" id="pm-tax-rate" value="" class="form-control" readonly>
 									</div>
 								</div>
 							</div>
@@ -620,6 +632,8 @@ $('#ProductModal').on('hidden.bs.modal', function () {
 	$(this).find('#product_id').val(0);
 	$(this).find('#price_override').val('');
 	$(this).find('#pm-quantity').val(1);
+	$(this).find('#pm-discount').val('');
+	$(this).find('#pm-tax-rate').val('');
 	$(this).find('#option').html('');
 });
 
@@ -898,6 +912,8 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 	$('#pm-product-name').text(p.name);
 	$('#pm-quantity').val(1);
 	$('#price_override').val((p.price !== undefined && p.price !== null) ? p.price : '');
+	$('#pm-discount').val('');
+	$('#pm-tax-rate').val((p.tax_rate !== undefined && p.tax_rate !== null) ? p.tax_rate : '');
 
 	var html = '', s = $('#text_select').val();
 	if (p.option && p.option.length) {

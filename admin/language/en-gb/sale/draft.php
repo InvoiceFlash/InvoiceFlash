@@ -82,6 +82,7 @@ $_['column_simplified']                       = 'Type';
 $_['column_date_added']                       = 'Date Added';
 $_['column_date_modified']                    = 'Date Modified';
 $_['column_total']                            = 'Total';
+$_['column_base']                             = 'Amount';
 $_['column_product']                          = 'Product';
 $_['column_model']                            = 'Model';
 $_['column_quantity']                         = 'Quantity';
@@ -129,7 +130,9 @@ $_['entry_payment']                           = 'Payment Method:';
 $_['entry_coupon']                            = 'Coupon:';
 $_['entry_voucher']                           = 'Voucher:';
 $_['entry_name_ext']          				  = 'Description:';
-$_['entry_price']             				  = 'New Price:';
+$_['entry_price']             				  = 'Price:';
+$_['entry_discount']          				  = 'Discount:';
+$_['entry_tax_rate']          				  = 'Tax %:';
 $_['error_required']    = '%s required!';
 
 //add
@@ -158,7 +161,7 @@ $_['text_search_product_title']               = 'Search Product';
 $_['text_use_filters_products']               = 'Use the filters to search products';
 $_['text_press_update_customers']             = 'Click Update to list customers';
 $_['button_update']                           = 'Update';
-$_['button_print']                            = 'Print';
+$_['button_print']                            = 'PDF';
 $_['button_view']                             = 'View';
 $_['error_no_selection']                      = 'Select at least one draft.';
 $_['text_searching']                          = 'Searching...';

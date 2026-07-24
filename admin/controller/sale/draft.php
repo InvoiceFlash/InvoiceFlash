@@ -676,6 +676,8 @@ class ControllerSaleDraft extends Controller {
 		//add
 		$this->data['entry_name_ext'] = $this->language->get('entry_name_ext');
 		$this->data['entry_price'] = $this->language->get('entry_price');
+		$this->data['entry_discount'] = $this->language->get('entry_discount');
+		$this->data['entry_tax_rate'] = $this->language->get('entry_tax_rate');
 		// end
 		$this->data['entry_to_name'] = $this->language->get('entry_to_name');
 		$this->data['entry_to_email'] = $this->language->get('entry_to_email');
@@ -693,7 +695,8 @@ class ControllerSaleDraft extends Controller {
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_total'] = $this->language->get('column_total');
-			
+		$this->data['column_base'] = $this->language->get('column_base');
+
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_product'] = $this->language->get('button_add_product');
@@ -1412,6 +1415,7 @@ class ControllerSaleDraft extends Controller {
 			$this->data['column_quantity'] = $this->language->get('column_quantity');
 			$this->data['column_price'] = $this->language->get('column_price');
 			$this->data['column_total'] = $this->language->get('column_total');
+			$this->data['column_base'] = $this->language->get('column_base');
 			$this->data['column_download'] = $this->language->get('column_download');
 			$this->data['column_filename'] = $this->language->get('column_filename');
 			$this->data['column_remaining'] = $this->language->get('column_remaining');
@@ -1753,6 +1757,7 @@ class ControllerSaleDraft extends Controller {
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
 		$this->data['column_total'] = $this->language->get('column_total');
+		$this->data['column_base'] = $this->language->get('column_base');
 		$this->data['column_comment'] = $this->language->get('column_comment');
 
 		$this->load->model('sale/draft');

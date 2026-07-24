@@ -101,7 +101,7 @@ th {
 			<th><?php echo $column_model; ?></th>
 			<th class="center"><?php echo $column_quantity; ?></th>
 			<th class="right"><?php echo $column_price; ?></th>
-			<th class="right"><?php echo $column_total; ?></th>
+			<th class="right"><?php echo $column_base; ?></th>
 		</tr>
 		<?php foreach ($drafts['product'] as $product) { ?>
 		<tr>

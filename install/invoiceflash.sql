@@ -1076,6 +1076,26 @@ CREATE TABLE `if_customer` (
   `token` varchar(255) NOT NULL,
   `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `date_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `nif` varchar(15) DEFAULT NULL,
+  `cod_flash` int(11) DEFAULT NULL,
+  `end_supp` date DEFAULT NULL,
+  `cod_payment` int(11) DEFAULT NULL,
+  `bank_cc` varchar(30) DEFAULT NULL,
+  `contable_account` decimal(10,0) DEFAULT NULL,
+  `bic` char(13) DEFAULT NULL,
+  `efaccafi` char(15) DEFAULT NULL,
+  `efaccapa` char(15) DEFAULT NULL,
+  `efaccare` char(15) DEFAULT NULL,
+  `cwww` char(50) DEFAULT NULL,
+  `crazonsoci` char(60) DEFAULT NULL,
+  `digital_invoice` tinyint(1) DEFAULT '0',
+  `nusuultmod` int(11) DEFAULT NULL,
+  `address` varchar(128) DEFAULT NULL,
+  `city` varchar(128) DEFAULT NULL,
+  `postcode` varchar(10) DEFAULT NULL,
+  `country_id` int(11) DEFAULT '0',
+  `zone_id` int(11) DEFAULT '0',
+  `customer_representative_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`customer_id`),
   KEY `email` (`email`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -3133,7 +3153,7 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (104, 0, 'free_checkout', 'free_checkout_order_status_id', '1', 0),
 (105, 0, 'config', 'config_weight_class_id', '1', 0),
 (106, 0, 'config', 'config_currency_auto', '1', 0),
-(107, 0, 'config', 'config_currency', 'USD', 0),
+(107, 0, 'config', 'config_currency', 'EUR', 0),
 (108, 0, 'slideshow', 'slideshow_module', 'a:1:{i:0;a:8:{s:9:"banner_id";s:1:"7";s:5:"width";s:3:"980";s:6:"height";s:3:"280";s:11:"resize_type";s:7:"default";s:9:"layout_id";s:1:"1";s:8:"position";s:11:"content_top";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"1";}}', 1),
 (109, 0, 'banner', 'banner_module', 'a:1:{i:0;a:8:{s:9:"banner_id";s:1:"6";s:5:"width";s:3:"182";s:6:"height";s:3:"182";s:11:"resize_type";s:7:"default";s:9:"layout_id";s:1:"3";s:8:"position";s:11:"column_left";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"3";}}', 1),
 (110, 0, 'config', 'config_name', 'Your Store', 0),
@@ -8206,32 +8226,6 @@ CREATE TABLE `if_supplier_contracts` (
   KEY `nproveedor` (`supplier_id`),
   KEY `narticulo` (`narticulo`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-DROP TABLE IF EXISTS `if_customers`;
-CREATE TABLE `if_customers` (
-  `customer_id` int(11) NOT NULL,
-  `nif` varchar(15) DEFAULT NULL,
-  `cod_flash` int(11) DEFAULT NULL,
-  `end_supp` date DEFAULT NULL,
-  `cod_payment` int(11) DEFAULT NULL,
-  `bank_cc` varchar(30) DEFAULT NULL,
-  `contable_account` decimal(10,0) DEFAULT NULL,
-  `bic` char(13) DEFAULT NULL,
-  `efaccafi` char(15) DEFAULT NULL,
-  `efaccapa` char(15) DEFAULT NULL,
-  `efaccare` char(15) DEFAULT NULL,
-  `cwww` char(50) DEFAULT NULL,
-  `crazonsoci` char(60) DEFAULT NULL,
-  `digital_invoice` tinyint(1) DEFAULT 0,
-  `nusuultmod` int(11) DEFAULT NULL,
-  `address` varchar(128) DEFAULT NULL,
-  `city` varchar(128) DEFAULT NULL,
-  `postcode` varchar(10) DEFAULT NULL,
-  `country_id` int(11) DEFAULT 0,
-  `zone_id` int(11) DEFAULT 0,
-  `customer_representative_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`customer_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_shipping_methods`;
 CREATE TABLE `if_shipping_methods` (

@@ -82,6 +82,7 @@ $_['column_simplified']                       = 'Tipo';
 $_['column_date_added']                       = 'Fecha de Alta';
 $_['column_date_modified']                    = 'Fecha de Modificaci&oacute;n';
 $_['column_total']                            = 'Total';
+$_['column_base']                             = 'Importe';
 $_['column_product']                          = 'Producto';
 $_['column_model']                            = 'Modelo';
 $_['column_quantity']                         = 'Cantidad';
@@ -129,7 +130,9 @@ $_['entry_payment']                           = 'Forma de Pago:';
 $_['entry_coupon']                            = 'Cup&oacute;n:';
 $_['entry_voucher']                           = 'Vale:';
 $_['entry_name_ext']          				  = 'Descripci&oacute;n:';
-$_['entry_price']             				  = 'Nuevo Precio:';
+$_['entry_price']             				  = 'Precio:';
+$_['entry_discount']          				  = 'Descuento:';
+$_['entry_tax_rate']          				  = '% IVA:';
 $_['error_required']    = '&iexcl;%s obligatorio!';
 
 //add
@@ -158,7 +161,7 @@ $_['text_search_product_title']               = 'Buscar Producto';
 $_['text_use_filters_products']               = 'Use los filtros para buscar productos';
 $_['text_press_update_customers']             = 'Pulsa Actualizar para listar los clientes';
 $_['button_update']                           = 'Actualizar';
-$_['button_print']                            = 'Imprimir';
+$_['button_print']                            = 'PDF';
 $_['button_view']                             = 'Ver';
 $_['error_no_selection']                      = 'Selecciona al menos un borrador.';
 $_['text_searching']                          = 'Buscando...';
