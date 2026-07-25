@@ -141,11 +141,16 @@
 							<?php if ($invoice_products) { ?>
 							<?php foreach ($invoice_products as $invoice_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
-								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-invoice-product').click();"><i class="fa fa-trash"></i></a></td>
-								<td><?php echo $invoice_product['name']; ?><br>
+								<td class="text-center"><?php if (!$invoice_id) { ?><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-invoice-product').click();"><i class="fa fa-trash"></i></a><?php } ?></td>
+								<td>
+									<?php if ($invoice_id) { ?>
+									<input type="text" class="form-control" name="invoice_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$invoice_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
+									<?php } else { ?>
+									<?php echo $invoice_product['name']; ?><br>
+									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][name]" value="<?php echo $invoice_product['name']; ?>">
+									<?php } ?>
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][invoice_product_id]" value="<?php echo $invoice_product['invoice_product_id']; ?>">
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $invoice_product['product_id']; ?>">
-									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][name]" value="<?php echo $invoice_product['name']; ?>">
 									<?php foreach ($invoice_product['option'] as $option) { ?>
 										<div class="help"><?php echo $option['name']; ?>: <?php echo $option['value']; ?></div>
 										<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][invoice_option][<?php echo $option_row; ?>][invoice_option_id]" value="<?php echo $option['invoice_option_id']; ?>">
@@ -555,6 +560,7 @@
 <input type="hidden" id="button_upload" value="<?php echo $button_upload; ?>">
 <input type="hidden" id="store_url" value="<?php echo $store_url; ?>">
 <input type="hidden" id="button_remove" value="<?php echo $button_remove; ?>">
+<input type="hidden" id="invoice_is_update" value="<?php echo $invoice_id ? '1' : ''; ?>">
 <input type="hidden" id="text_no_results" value="<?php echo $text_no_results; ?>">
 <script>
 function validateForm(){

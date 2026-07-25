@@ -1314,16 +1314,19 @@
 		$('#bank-row-empty').remove();
 
 		var checked = $('#bank-rows input[type="radio"]').length ? '' : ' checked=""';
+		var currentRow = bankRowIndex;
 
-		var html = '<tr id="bank-row' + bankRowIndex + '">' +
-			'<td><input type="text" name="banks[' + bankRowIndex + '][name]" class="form-control"></td>' +
-			'<td><input type="text" name="banks[' + bankRowIndex + '][iban]" maxlength="34" class="form-control"></td>' +
-			'<td><input type="text" name="banks[' + bankRowIndex + '][bic]" maxlength="11" class="form-control"></td>' +
-			'<td class="text-center"><input type="radio" name="bank_default" value="' + bankRowIndex + '"' + checked + '></td>' +
+		var html = '<tr id="bank-row' + currentRow + '">' +
+			'<td><input type="text" id="bank-name-' + currentRow + '" name="banks[' + currentRow + '][name]" class="form-control"></td>' +
+			'<td><input type="text" name="banks[' + currentRow + '][iban]" maxlength="34" class="form-control"></td>' +
+			'<td><input type="text" name="banks[' + currentRow + '][bic]" maxlength="11" class="form-control"></td>' +
+			'<td class="text-center"><input type="radio" name="bank_default" value="' + currentRow + '"' + checked + '></td>' +
 			'<td class="text-center"><a class="label label-danger" onclick="$(this).closest(\'tr\').remove();"><i class="fa fa-trash"></i></a></td>' +
 			'</tr>';
 
 		$('#bank-rows').append(html);
+
+		$('#bank-name-' + currentRow).focus();
 
 		bankRowIndex++;
 	});

@@ -960,12 +960,15 @@ class ControllerSaledelivery extends Controller {
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
 		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
+		$this->data['entry_discount'] = $this->language->get('entry_discount');
+		$this->data['entry_tax_rate'] = $this->language->get('entry_tax_rate');
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
 		$this->data['column_sku'] = $this->language->get('column_sku');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
 
 		$this->data['button_save'] = $this->language->get('button_save');
@@ -1733,7 +1736,9 @@ class ControllerSaledelivery extends Controller {
 			} else {
 				$this->data['credit'] = 0;
 			}
-			
+
+			$this->data['credit_total'] = 0;
+
 			$this->load->model('sale/customer');
 
 			$this->load->model('localisation/delivery_status');

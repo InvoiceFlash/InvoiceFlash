@@ -114,6 +114,7 @@
 								<th class="text-right"><?php echo $column_sku; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_discount; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 						</tr>
 						</thead>
@@ -143,6 +144,7 @@
 								<td class="text-right"><?php echo $delivery_product['sku']; ?></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $delivery_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="<?php echo $delivery_product['catalog_price_raw']; ?>" name="delivery_product[<?php echo $product_row; ?>][price]" value="<?php echo $delivery_product['price_raw']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right delivery-discount" name="delivery_product[<?php echo $product_row; ?>][discount]" value=""></td>
 								<td class="text-right"><?php echo $delivery_product['total']; ?>
 									<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][total]" value="<?php echo $delivery_product['total']; ?>">
 									<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][tax]" value="<?php echo $delivery_product['tax']; ?>"></td>
@@ -151,7 +153,7 @@
 							<?php } ?>
 							<?php } else { ?>
 							<tr>
-								<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -160,7 +162,7 @@
 							<?php if ($delivery_totals) { ?>
 							<?php foreach ($delivery_totals as $delivery_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
-								<td class="text-right" colspan="5"><?php echo $delivery_total['title']; ?>:
+								<td class="text-right" colspan="6"><?php echo $delivery_total['title']; ?>:
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][delivery_total_id]" value="<?php echo $delivery_total['delivery_total_id']; ?>">
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][code]" value="<?php echo $delivery_total['code']; ?>">
 									<input type="hidden" name="delivery_total[<?php echo $total_row; ?>][title]" value="<?php echo $delivery_total['title']; ?>">
@@ -238,10 +240,6 @@
 									<label class="control-label">Descripción</label>
 									<input type="text" id="ps-name" class="form-control" placeholder="Descripción">
 								</div>
-								<div class="col-12 col-sm-3">
-									<label class="control-label">Modelo</label>
-									<input type="text" id="ps-model" class="form-control" placeholder="Modelo">
-								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
 									<button type="button" id="ps-search" class="btn btn-primary">Actualizar</button>
 								</div>
@@ -290,6 +288,18 @@
 									<label class="control-label col-sm-4"><?php echo $entry_quantity; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="quantity" id="pm-quantity" value="1" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_discount; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" name="discount" id="pm-discount" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_tax_rate; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" id="pm-tax-rate" value="" class="form-control" readonly>
 									</div>
 								</div>
 							</div>
@@ -747,6 +757,8 @@ $('#CustomerSearchModal').on('hidden.bs.modal', function() {
 $('#ProductModal').on('hidden.bs.modal', function () {
     $(this).find("#delivery-product").val('').end();
     $(this).find("#product_id").val('');
+	$(this).find("#pm-discount").val('');
+	$(this).find("#pm-tax-rate").val('');
 	$(this).find("#option").html('');
 });
 $('#addProduct').click(function(e){
@@ -756,6 +768,10 @@ $('#addProduct').click(function(e){
 	} else {
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('ProductSearchModal')).show();
 	}
+});
+
+$('#ProductSearchModal').on('shown.bs.modal', function() {
+	$('#ps-name').focus();
 });
 
 var dpProducts = [];
@@ -768,7 +784,7 @@ function dpDoSearch() {
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
 		type: 'post',
-		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val(), filter_model: $('#ps-model').val() },
+		data: { filter_sku: $('#ps-sku').val(), filter_name: $('#ps-name').val() },
 		dataType: 'json',
 		success: function(json) {
 			if (json.warning) {
@@ -800,7 +816,7 @@ function dpDoSearch() {
 
 $('#ps-search').click(dpDoSearch);
 
-$('#ps-sku, #ps-name, #ps-model').on('keypress', function(e) {
+$('#ps-sku, #ps-name').on('keypress', function(e) {
 	if (e.which == 13) dpDoSearch();
 });
 
@@ -810,6 +826,8 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 	$('#product_id').val(p.product_id);
 	$('#delivery-product').val(p.name);
 	$('#pm-quantity').val(1);
+	$('#pm-discount').val('');
+	$('#pm-tax-rate').val((p.tax_rate !== undefined && p.tax_rate !== null) ? p.tax_rate : '');
 
 	var html = '', s = $('#text_select').val();
 	if (p.option && p.option.length) {
@@ -852,7 +870,7 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 });
 
 $('#ProductSearchModal').on('hidden.bs.modal', function() {
-	$('#ps-sku, #ps-name, #ps-model').val('');
+	$('#ps-sku, #ps-name').val('');
 	$('#ps-results').html('<tr><td colspan="5" class="text-center">Use los filtros para buscar productos</td></tr>');
 	$('#ps-warning').hide();
 	dpProducts = [];

@@ -1670,7 +1670,9 @@ class ControllerSaleDraft extends Controller {
 			} else {
 				$this->data['credit'] = 0;
 			}
-			
+
+			$this->data['credit_total'] = 0;
+
 			$this->load->model('sale/customer');
 
 			$this->data['simplified'] = $draft_info['simplified'];

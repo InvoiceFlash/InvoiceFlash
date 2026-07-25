@@ -89,6 +89,7 @@ $_['column_sku']                              = 'SKU';
 $_['column_delivery_date']                    = 'Delivery Date';
 $_['column_quantity']                         = 'Quantity';
 $_['column_price']                            = 'Unit Price';
+$_['column_discount']                         = 'Discount';
 $_['column_filename']                         = 'Filename';
 $_['column_remaining']                        = 'Remaining Downloads';
 $_['column_comment']                          = 'Comment';
@@ -135,6 +136,8 @@ $_['entry_coupon']                            = 'Coupon:';
 $_['entry_voucher']                           = 'Voucher:';
 $_['entry_name_ext']          				  = 'Descripcion:';
 $_['entry_price']             				  = 'Nuevo Precio:';
+$_['entry_discount']          				  = 'Discount:';
+$_['entry_tax_rate']          				  = 'Tax %:';
 
 //add
 $_['tab_quote']             				  = 'Quote';

@@ -120,6 +120,7 @@
 								<th><?php echo $column_delivery_date; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_discount; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 						</tr>
 						</thead>
@@ -152,6 +153,7 @@
 								</td>
 								<td class="text-right"><input type="text" class="form-control text-right order-qty" name="order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right order-price" data-catalog-price="<?php echo $order_product['catalog_price_raw']; ?>" name="order_product[<?php echo $product_row; ?>][price]" value="<?php echo $order_product['price_raw']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right order-discount" name="order_product[<?php echo $product_row; ?>][discount]" value=""></td>
 								<td class="text-right"><?php echo $order_product['total']; ?>
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][total]" value="<?php echo $order_product['total']; ?>">
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][tax]" value="<?php echo $order_product['tax']; ?>"></td>
@@ -161,7 +163,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -171,7 +173,7 @@
 							<?php foreach ($order_totals as $order_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="4"><?php echo $order_total['title']; ?>:
+								<td class="text-right" colspan="5"><?php echo $order_total['title']; ?>:
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][order_total_id]" value="<?php echo $order_total['order_total_id']; ?>">
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][code]" value="<?php echo $order_total['code']; ?>">
 									<input type="hidden" name="order_total[<?php echo $total_row; ?>][title]" value="<?php echo $order_total['title']; ?>">
@@ -305,6 +307,18 @@
 									<label class="control-label col-sm-4">Precio:</label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="price_override" id="price_override" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_discount; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" name="discount" id="pm-discount" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_tax_rate; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" id="pm-tax-rate" value="" class="form-control" readonly>
 									</div>
 								</div>
 							</div>
@@ -592,6 +606,8 @@ $('#ProductModal').on('hidden.bs.modal', function () {
     $(this).find('#product_id').val(0);
     $(this).find('#pm-quantity').val(1);
     $(this).find('#price_override').val('');
+    $(this).find('#pm-discount').val('');
+    $(this).find('#pm-tax-rate').val('');
     $(this).find('#pm-product-name').text('Artículo');
     $(this).find('#option').html('');
 });
@@ -764,6 +780,8 @@ $('#ps-tbody').on('dblclick', 'tr[data-idx]', function() {
     $('#pm-product-name').text(p.name);
     $('#pm-quantity').val(1);
     $('#price_override').val(p.price);
+    $('#pm-discount').val('');
+    $('#pm-tax-rate').val((p.tax_rate !== undefined && p.tax_rate !== null) ? p.tax_rate : '');
 
     // Fecha de hoy en formato DD-MM-YYYY (el que usa el datetimepicker del sistema)
     var psToday = (function() {

@@ -1470,7 +1470,9 @@ class ControllerSaleInvoice extends Controller {
 			} else {
 				$this->data['credit'] = 0;
 			}
-			
+
+			$this->data['credit_total'] = 0;
+
 			$this->load->model('sale/customer');
 
 			$this->load->model('localisation/invoice_status');
@@ -2606,11 +2608,15 @@ class ControllerSaleInvoice extends Controller {
 						}
 					}
 
-					if ($product_info) {	
+					if ($product_info) {
+						$use_name = (isset($invoice_product['name']) && trim($invoice_product['name']) !== '')
+							? $invoice_product['name']
+							: $product_info['name'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'], 
-							'model'		 => $product_info['model'], 
+							'name'		 => $use_name,
+							'model'		 => $product_info['model'],
 							'quantity' 	 => $invoice_product['quantity'], 
 							'option'	 => $option_data,
 							'price'		 => $product_info['price'], 

@@ -252,6 +252,7 @@ class ControllerSaleQuote extends Controller {
 					}
 
 					$data = array(
+						'user_id'                 => $this->user->getId(),
 						'store_id'                => $quote_info['store_id'],
 						'customer_id'             => $quote_info['customer_id'],
 						'customer_group_id'       => $quote_info['customer_group_id'],
@@ -854,6 +855,8 @@ class ControllerSaleQuote extends Controller {
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
 		$this->data['entry_print_extended_description'] = $this->language->get('entry_print_extended_description');
 		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
+		$this->data['entry_discount'] = $this->language->get('entry_discount');
+		$this->data['entry_tax_rate'] = $this->language->get('entry_tax_rate');
 
 		if (isset($this->request->post['print_extended_description'])) {
 			$this->data['print_extended_description'] = 1;
@@ -871,6 +874,7 @@ class ControllerSaleQuote extends Controller {
 		$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
 
 		$this->data['button_save'] = $this->language->get('button_save');
@@ -1644,7 +1648,9 @@ class ControllerSaleQuote extends Controller {
 			} else {
 				$this->data['credit'] = 0;
 			}
-			
+
+			$this->data['credit_total'] = 0;
+
 			$this->load->model('sale/customer');
 
 			$this->load->model('localisation/invoice_status');

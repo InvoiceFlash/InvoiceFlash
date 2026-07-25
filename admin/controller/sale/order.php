@@ -679,7 +679,7 @@ class ControllerSaleOrder extends Controller {
 				'order_id'      => $result['order_id'],
 				'company'       => $result['company'],
 				'status'        => $result['status'],
-				'total'         => $this->currency->format($result['total']),
+				'total'         => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value'], true, true),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['order_id'], $this->request->post['selected']),
@@ -888,6 +888,8 @@ class ControllerSaleOrder extends Controller {
 		$this->data['entry_shipping'] = $this->language->get('entry_shipping');
 		$this->data['entry_payment'] = $this->language->get('entry_payment');
 		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
+		$this->data['entry_discount'] = $this->language->get('entry_discount');
+		$this->data['entry_tax_rate'] = $this->language->get('entry_tax_rate');
 		$this->data['entry_coupon'] = $this->language->get('entry_coupon');
 
 		$this->data['column_product'] = $this->language->get('column_product');
@@ -895,6 +897,7 @@ class ControllerSaleOrder extends Controller {
 		$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
 
 		$this->data['button_save'] = $this->language->get('button_save');
@@ -1385,10 +1388,10 @@ class ControllerSaleOrder extends Controller {
 				'model'            => $order_product['model'],
 				'option'           => $order_option,
 				'quantity'         => $order_product['quantity'],
-				'price'			   => $this->currency->format($order_product['price'], $order_info['currency_code'], $order_info['currency_value']),
+				'price'			   => $this->currency->format($order_product['price'], $order_info['currency_code'], $order_info['currency_value'], true, true),
 				'price_raw'         => number_format((float)$order_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$order_product['price'], 2, '.', ''),
-				'total'            => $this->currency->format($order_product['total'], $order_info['currency_code'], $order_info['currency_value']),
+				'total'            => $this->currency->format($order_product['total'], $order_info['currency_code'], $order_info['currency_value'], true, true),
 				'tax'              => $order_product['tax']
 			);
 		}
@@ -1488,6 +1491,7 @@ class ControllerSaleOrder extends Controller {
 			$this->data['text_telephone'] = $this->language->get('text_telephone');
 			$this->data['text_fax'] = $this->language->get('text_fax');
 			$this->data['text_created_by'] = $this->language->get('text_created_by');
+			$this->data['text_from_quote'] = $this->language->get('text_from_quote');
 
 			$this->data['text_total'] = $this->language->get('text_total');
 			$this->data['text_order_status'] = $this->language->get('text_order_status');
@@ -1681,6 +1685,17 @@ class ControllerSaleOrder extends Controller {
 			$this->data['telephone'] = $order_info['telephone'];
 			$this->data['fax'] = $order_info['fax'];
 			$this->data['created_by'] = $order_info['created_by'];
+
+			$quote_query = $this->db->query("SELECT quote_id FROM `" . DB_PREFIX . "quote` WHERE invoice_no = '" . (int)$order_id . "'");
+
+			if ($quote_query->num_rows) {
+				$this->data['from_quote_id'] = $quote_query->row['quote_id'];
+				$this->data['from_quote_href'] = $this->url->link('sale/quote/info', 'token=' . $this->session->data['token'] . '&quote_id=' . $quote_query->row['quote_id'], 'SSL');
+			} else {
+				$this->data['from_quote_id'] = '';
+				$this->data['from_quote_href'] = '';
+			}
+
 			$this->data['company'] = $order_info['company'];
 			$this->data['date_added'] = $order_info['date_added'];
 			$this->data['date_modified'] = $order_info['date_modified'];
@@ -1694,7 +1709,9 @@ class ControllerSaleOrder extends Controller {
 			} else {
 				$this->data['credit'] = 0;
 			}
-			
+
+			$this->data['credit_total'] = 0;
+
 			$this->load->model('sale/customer');
 
 			$this->load->model('localisation/order_status');
@@ -1752,8 +1769,8 @@ class ControllerSaleOrder extends Controller {
 					'model'    		   => $product['model'],
 					'option'   		   => $option_data,
 					'quantity'		   => $product['quantity'],
-					'price'    		   => $this->currency->format($product['price']),
-					'total'    		   => $this->currency->format($product['total']),
+					'price'    		   => $this->currency->format($product['price'], '', '', true, true),
+					'total'    		   => $this->currency->format($product['total'], '', '', true, true),
 					'href'     		   => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
 				);
 			}
@@ -2062,8 +2079,8 @@ class ControllerSaleOrder extends Controller {
 						'option'   => $option_data,
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
-						'price'    => $this->currency->format($product['price']),
-						'total'    => $this->currency->format($product['total'])
+						'price'    => $this->currency->format($product['price'], $order_info['currency_code'], $order_info['currency_value'], true, true),
+						'total'    => $this->currency->format($product['total'], $order_info['currency_code'], $order_info['currency_value'], true, true)
 					);
 				}
 				
@@ -2329,11 +2346,11 @@ class ControllerSaleOrder extends Controller {
 					'model'      	=> $product['model'],
 					'quantity'   	=> $product['quantity'],
 					'option'   		=> $option,
-					'price'      	=> $this->currency->format($product['price']),
+					'price'      	=> $this->currency->format($product['price'], '', '', true, true),
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	=> $product['tax_class_id'],
-					'total'      	=> $this->currency->format($product['total'])
+					'total'      	=> $this->currency->format($product['total'], '', '', true, true)
 				);
 			}
 

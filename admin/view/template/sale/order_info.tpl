@@ -88,6 +88,12 @@
 							<td><?php echo $text_date_added; ?></td>
 							<td><?php echo $date_added; ?></td>
 						</tr>
+						<?php if ($from_quote_id) { ?>
+						<tr>
+							<td><?php echo $text_from_quote; ?></td>
+							<td><a href="<?php echo $from_quote_href; ?>">Nº <?php echo $from_quote_id; ?></a></td>
+						</tr>
+						<?php } ?>
 						<?php if ($created_by) { ?>
 						<tr>
 							<td><?php echo $text_created_by; ?></td>

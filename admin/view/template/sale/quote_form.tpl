@@ -122,6 +122,7 @@
 								<th><?php echo $column_sku; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_discount; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 						</tr>
 						</thead>
@@ -159,6 +160,7 @@
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][model]" value="<?php echo $quote_product['model']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $quote_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="<?php echo $quote_product['catalog_price_raw']; ?>" name="quote_product[<?php echo $product_row; ?>][price]" value="<?php echo $quote_product['price_raw']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right quote-discount" name="quote_product[<?php echo $product_row; ?>][discount]" value=""></td>
 								<td class="text-right"><?php echo $quote_product['total']; ?>
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][total]" value="<?php echo $quote_product['total']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][tax]" value="<?php echo $quote_product['tax']; ?>"></td>
@@ -168,7 +170,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -178,7 +180,7 @@
 							<?php foreach ($quote_totals as $quote_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="5"><?php echo $quote_total['title']; ?>:
+								<td class="text-right" colspan="6"><?php echo $quote_total['title']; ?>:
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][quote_total_id]" value="<?php echo $quote_total['quote_total_id']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][code]" value="<?php echo $quote_total['code']; ?>">
 									<input type="hidden" name="quote_total[<?php echo $total_row; ?>][title]" value="<?php echo $quote_total['title']; ?>">
@@ -303,6 +305,18 @@
 									<label class="control-label col-sm-4"><?php echo $entry_price; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="price_override" id="price_override" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_discount; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" name="discount" id="pm-discount" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_tax_rate; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" id="pm-tax-rate" value="" class="form-control" readonly>
 									</div>
 								</div>
 							</div>
@@ -631,6 +645,8 @@ $('#ProductModal').on('hidden.bs.modal', function () {
 	$(this).find('#product_id').val(0);
 	$(this).find('#price_override').val('');
 	$(this).find('#pm-quantity').val(1);
+	$(this).find('#pm-discount').val('');
+	$(this).find('#pm-tax-rate').val('');
 	$(this).find('#option').html('');
 });
 
@@ -800,6 +816,8 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 	$('#pm-product-name').text(p.name);
 	$('#pm-quantity').val(1);
 	$('#price_override').val(p.price || '');
+	$('#pm-discount').val('');
+	$('#pm-tax-rate').val((p.tax_rate !== undefined && p.tax_rate !== null) ? p.tax_rate : '');
 
 	var html = '', s = $('#text_select').val();
 	if (p.option && p.option.length) {
@@ -943,6 +961,15 @@ $('#global_discount').on('input', function() {
 
 $('#global_discount').on('change', function() {
 	$('#button-quote-product').click();
+});
+
+$(document).on('input', '.quote-discount', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
 });
 </script>
 <style>
