@@ -14,6 +14,7 @@ $_['text_remove_ban_ip']    = 'Remove Ban IP';
 
 
 // Tabs
+$_['tab_receipts']          = 'Receipts';
 $_['tab_email']             = 'Emails';
 $_['tab_products']          = 'Products';
 $_['tab_quotes']            = 'Quotes';
@@ -127,11 +128,14 @@ $_['entry_contable_account'] = 'Accounting Account:';
 $_['entry_web']            = 'Web:';
 $_['button_web']            = 'Go to web';
 $_['error_web']            = 'Error: Enter a valid url!';
+$_['entry_vat_regime']      = 'VAT Regime:';
+$_['text_vat_regime_general'] = 'General';
+$_['text_vat_regime_comunitario'] = 'Intra-community';
+$_['text_vat_regime_internacional'] = 'International';
 
 $_['text_datecreated']      = 'Created:' ;
 $_['text_date_modified']    = 'Last modified:' ;
 $_['text_last_modified_by'] = 'Last modified by:' ;
-$_['text_date_support']     = 'Date Support:' ;
 $_['text_bank']     		= 'Bank Account:';
 $_['text_bic']   		    = 'BIC:';
 $_['text_fiscal']			= 'Fiscal:';

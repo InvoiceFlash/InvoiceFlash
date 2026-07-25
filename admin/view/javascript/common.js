@@ -739,40 +739,22 @@ $(function(){
 		a.load(a.data('href'));	
 	}
 	
-	var a=$('#transaction');
-	$(document).on('click','#transaction .pagination a',function(e){
-		e.preventDefault();
-		$('#transaction').on('load',(this.href));
-	});
-	// a.load(a.data('href'));
-	$('#transaction').on('load',(this.href));
-	
-	$('#tab-transaction input,#tab-reward input').on('keypress',function(e){
-		if (e.keyCode==13){               
+	if ($("#receipts").length > 0) {
+		var r=$('#receipts');
+		r.load(r.data('href'));
+		$(document).on('click','#receipts .pagination a',function(e){
+			e.preventDefault();
+			r.load($(this).attr('href'));
+		});
+	}
+
+	$('#tab-reward input').on('keypress',function(e){
+		if (e.keyCode==13){
 			e.preventDefault();
 			$(this).closest('.tab-pane').find('button[type="button"]').click();
 		}
 	});
-	$(document).on('click','#button-transaction',function(e){
-		var a=$(this),b=a.data('target');
-		$.ajax({
-			url:'index.php?route=sale/'+b+'/transaction&token='+token+'&'+b+'_id='+a.data('id'),
-			type:'post',
-			dataType:'html',
-			data:'description='+encodeURIComponent($('#tab-transaction input[name="description"]').val())+'&amount='+encodeURIComponent($('#tab-transaction input[name="amount"]').val()),
-			beforeSend:function(){
-				a.button('loading').append($('<i>',{class:'icon-loading'}));
-			},
-			complete:function(){
-				a.button('reset');
-			},
-			success:function(html){
-				$('#transaction').html(html);
-				$('#tab-transaction input[name="amount"],#tab-transaction input[name="description"]').val('');
-			}
-		});
-	});
-	
+
 	$(document).on('click', 'a[data-toggle=\'image\']', function(e) {
 		var $element = $(this);
 		var existing = bootstrap.Popover.getInstance(this); // element has bs popover?
@@ -1273,7 +1255,8 @@ $(function(){
 						product=json['order_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
 						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-order-product\').click();"><i class="fa fa-trash"></i></a></td>';
-						html+='<td>'+product['name']+'<input type="hidden" name="order_product['+product_row+'][order_product_id]" value=""><input type="hidden" name="order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="order_product['+product_row+'][name]" value="'+product['name']+'">';
+						var orderNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+						html+='<td><input type="text" class="form-control order-name" name="order_product['+product_row+'][name]" value="'+orderNameAttr+'"><input type="hidden" name="order_product['+product_row+'][order_product_id]" value=""><input type="hidden" name="order_product['+product_row+'][product_id]" value="'+product['product_id']+'">';
 						var deliveryDateHtml='';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){
@@ -1808,7 +1791,7 @@ $(function(){
 						html+='<td>'+product['model']+'<input type="hidden" name="quote_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="'+product['catalog_price_raw']+'" name="quote_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right quote-discount" name="quote_product['+product_row+'][discount]" value=""></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right quote-discount" name="quote_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="quote_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="quote_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
@@ -2016,7 +1999,7 @@ $(function(){
 						html+='</td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="'+product['catalog_price_raw']+'" name="draft_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product['+product_row+'][discount]" value=""></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="draft_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="draft_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;

@@ -7,6 +7,8 @@ $_['text_success']                            = 'Success: You have modified rece
 $_['text_paid']                               = 'Paid';
 $_['text_pending']                            = 'Pending';
 $_['text_bank_cc']                            = 'Bank Account:';
+$_['text_bank_client']                        = 'Client';
+$_['text_bank_company']                       = 'Our bank';
 
 //Column
 $_['column_receipt_id']                       = 'Receipt ID';

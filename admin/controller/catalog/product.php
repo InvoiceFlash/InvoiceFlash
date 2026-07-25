@@ -1749,7 +1749,7 @@ class ControllerCatalogProduct extends Controller {
 
 					foreach ($this->model_catalog_product->getProductRates($result['price'], $result['tax_class_id']) as $tax_rate_info) {
 						if ($tax_rate_info['type'] == 'P') {
-							$rates[] = $tax_rate_info['rate'];
+							$rates[] = number_format((float)$tax_rate_info['rate'], 2, '.', '');
 						}
 					}
 

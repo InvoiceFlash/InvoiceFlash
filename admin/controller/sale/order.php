@@ -666,15 +666,17 @@ class ControllerSaleOrder extends Controller {
 				'color' => 'info'
 			);
 			
+			$has_delivery = $this->model_sale_order->checkDelivery($result['order_id']);
+
 			// Si no se ha generado el delivery, se puede editar el order
-			if (!$this->model_sale_order->checkDelivery($result['order_id'])) {
+			if (!$has_delivery) {
 				$action[] = array(
 					'href' => $this->url->link('sale/order/update', 'token=' . $this->session->data['token'] . '&order_id=' . $result['order_id'] . $url, 'SSL'),
 					'icon' => 'fas fa-edit',
 					'color' => 'default'
 				);
 			}
-			
+
 			$this->data['orders'][] = array(
 				'order_id'      => $result['order_id'],
 				'company'       => $result['company'],
@@ -683,6 +685,7 @@ class ControllerSaleOrder extends Controller {
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['order_id'], $this->request->post['selected']),
+				'has_delivery'  => $has_delivery,
 				'action'        => $action
 			);
 		}
@@ -2250,9 +2253,13 @@ class ControllerSaleOrder extends Controller {
 							? (float)preg_replace('/[^-0-9\.]/', '', $order_product['price'])
 							: (float)$product_info['price'];
 
+						$use_name = (isset($order_product['name']) && trim($order_product['name']) !== '')
+							? $order_product['name']
+							: $product_info['name'];
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
-							'name'		 => $product_info['name'],
+							'name'		 => $use_name,
 							'model'		 => $product_info['model'],
 							'quantity' 	 => $order_product['quantity'],
 							'option'	 => $option_data,

@@ -2339,7 +2339,8 @@ class ControllerSaleDraft extends Controller {
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
 							'total'		 => ($use_price*$draft_product['quantity']),
-							'shipping'	 => $product_info['shipping']
+							'shipping'	 => $product_info['shipping'],
+							'discount'   => isset($draft_product['discount']) ? $draft_product['discount'] : ''
 						);
 					}
 				}
@@ -2385,7 +2386,8 @@ class ControllerSaleDraft extends Controller {
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'	=> $product_info['tax_class_id'],
 							'total'		 	=> ($use_price * $quantity),
-							'shipping'	 	=> $product_info['shipping']
+							'shipping'	 	=> $product_info['shipping'],
+							'discount'		=> isset($this->request->post['discount']) ? $this->request->post['discount'] : ''
 						);
 
 					}
@@ -2432,7 +2434,8 @@ class ControllerSaleDraft extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	    => $product['tax_class_id'],
-					'total'      	    => $this->currency->format($product['total'], '', '', true, true)
+					'total'      	    => $this->currency->format($product['total'], '', '', true, true),
+					'discount'          => isset($product['discount']) ? $product['discount'] : ''
 				);
 			}
 

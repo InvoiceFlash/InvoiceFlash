@@ -1089,6 +1089,7 @@ CREATE TABLE `if_customer` (
   `cwww` char(50) DEFAULT NULL,
   `crazonsoci` char(60) DEFAULT NULL,
   `digital_invoice` tinyint(1) DEFAULT '0',
+  `vat_regime` varchar(20) NOT NULL DEFAULT 'general',
   `nusuultmod` int(11) DEFAULT NULL,
   `address` varchar(128) DEFAULT NULL,
   `city` varchar(128) DEFAULT NULL,
@@ -8149,6 +8150,7 @@ CREATE TABLE `if_mails` (
 DROP TABLE IF EXISTS `if_customer_contacts`;
 CREATE TABLE `if_customer_contacts` (
   `customer_contacts_id` int(11)NOT NULL AUTO_INCREMENT,
+  `cod_flash` varchar(20) DEFAULT NULL,
   `customer_id` int(10) unsigned DEFAULT NULL,
   `cname` varchar(50) DEFAULT NULL,
   `cpuesto` varchar(50) DEFAULT NULL,

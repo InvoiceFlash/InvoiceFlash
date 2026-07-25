@@ -34,7 +34,7 @@ class ControllerToolImport extends Controller {
 
 				$result = $this->model_tool_import->importFlashGestion(trim($this->request->post['path']), $options);
 
-				$this->session->data['success'] = sprintf($this->language->get('text_success_flash_gestion'), $result['products'], $result['customers'], $result['suppliers']);
+				$this->session->data['success'] = sprintf($this->language->get('text_success_flash_gestion'), $result['products'], $result['customers'], $result['contacts'], $result['suppliers']);
 
 				if ($result['errors']) {
 					$this->session->data['import_errors'] = $result['errors'];

@@ -64,7 +64,7 @@
 					</tr>
 					<?php if ($orders) { ?>
 					<?php foreach ($orders as $order) { ?>
-					<tr>
+					<tr<?php echo ($order['has_delivery']) ? ' class="table-warning"' : ''; ?>>
 						<td class="rowlink-skip text-center"><?php if ($order['selected']) { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $order['order_id']; ?>" checked="">
 							<?php } else { ?>

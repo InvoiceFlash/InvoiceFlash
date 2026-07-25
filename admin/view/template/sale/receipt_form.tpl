@@ -17,8 +17,18 @@
 			</div>
 			<div class="form-group row">
 				<label class="col-sm-2 col-form-label"><?php echo $text_bank_cc; ?></label>
-				<div class="col-sm-3">
-					<input type="text" readonly class="form-control" id="bank_cc" value="<?php echo $bank_cc; ?>">
+				<div class="col-sm-4">
+					<select name="bank_cc" id="bank_cc" class="form-control">
+						<option value="">&ndash;</option>
+						<?php $bank_cc_matched = false; ?>
+						<?php foreach ($bank_options as $bank_option) { ?>
+							<?php if ($bank_option['value'] == $bank_cc) { $bank_cc_matched = true; } ?>
+							<option value="<?php echo htmlspecialchars($bank_option['value'], ENT_QUOTES, 'UTF-8'); ?>" <?php echo ($bank_option['value'] == $bank_cc) ? 'selected' : ''; ?>><?php echo htmlspecialchars($bank_option['label'], ENT_QUOTES, 'UTF-8'); ?></option>
+						<?php } ?>
+						<?php if (!$bank_cc_matched && $bank_cc) { ?>
+							<option value="<?php echo htmlspecialchars($bank_cc, ENT_QUOTES, 'UTF-8'); ?>" selected><?php echo htmlspecialchars($bank_cc, ENT_QUOTES, 'UTF-8'); ?></option>
+						<?php } ?>
+					</select>
 				</div>
 			</div>
 		</form>

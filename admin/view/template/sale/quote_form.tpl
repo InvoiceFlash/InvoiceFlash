@@ -971,6 +971,15 @@ $(document).on('input', '.quote-discount', function() {
 	}
 	$(this).val(value);
 });
+
+$('#pm-discount').on('input', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
+});
 </script>
 <style>
 .quote-price-changed {

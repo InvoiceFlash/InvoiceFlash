@@ -14,6 +14,7 @@ $_['text_remove_ban_ip']    = 'Eliminar IP Bloqueada';
 
 
 // Tabs
+$_['tab_receipts']          = 'Recibos';
 $_['tab_email']             = 'Emails';
 $_['tab_products']          = 'Productos';
 $_['tab_quotes']            = 'Presupuestos';
@@ -127,11 +128,14 @@ $_['entry_contable_account'] = 'Cuenta Contable:';
 $_['entry_web']            = 'Web:';
 $_['button_web']            = 'Ir a la web';
 $_['error_web']            = 'Error: &iexcl;Introduzca una URL v&aacute;lida!';
+$_['entry_vat_regime']      = 'R&eacute;gimen de IVA:';
+$_['text_vat_regime_general'] = 'General';
+$_['text_vat_regime_comunitario'] = 'Comunitario';
+$_['text_vat_regime_internacional'] = 'Internacional';
 
 $_['text_datecreated']      = 'Creado:' ;
 $_['text_date_modified']    = '&Uacute;ltima modificaci&oacute;n:' ;
 $_['text_last_modified_by'] = 'Modificado por &uacute;ltima vez por:' ;
-$_['text_date_support']     = 'Fecha de Soporte:' ;
 $_['text_bank']     		= 'Cuenta Bancaria:';
 $_['text_bic']   		    = 'BIC:';
 $_['text_fiscal']			= 'Fiscal:';

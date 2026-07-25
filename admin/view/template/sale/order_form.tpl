@@ -131,10 +131,10 @@
 							<?php foreach ($order_products as $order_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
 								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-order-product').click();"><i class="fa fa-trash"></i></a></td>
-								<td><?php echo $order_product['name']; ?>
+								<td>
+									<input type="text" class="form-control order-name" name="order_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$order_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_product_id]" value="<?php echo $order_product['order_product_id']; ?>">
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][product_id]" value="<?php echo $order_product['product_id']; ?>">
-									<input type="hidden" name="order_product[<?php echo $product_row; ?>][name]" value="<?php echo $order_product['name']; ?>">
 									<?php foreach ($order_product['option'] as $option) { ?>
 										<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][order_option_id]" value="<?php echo $option['order_option_id']; ?>">
 										<input type="hidden" name="order_product[<?php echo $product_row; ?>][order_option][<?php echo $option_row; ?>][product_option_id]" value="<?php echo $option['product_option_id']; ?>">
@@ -250,10 +250,6 @@
 									<label class="d-block mb-1">Descripción</label>
 									<input type="text" id="ps-name" class="form-control" placeholder="Descripción...">
 								</div>
-								<div class="col-12 col-sm-3 mb-2">
-									<label class="d-block mb-1">Modelo</label>
-									<input type="text" id="ps-model" class="form-control" placeholder="Modelo...">
-								</div>
 								<div class="col-12 col-sm-auto mb-2 d-flex align-items-end">
 									<button class="btn btn-primary w-100" id="ps-search" type="button">
 										<i class="fa fa-search"></i> Actualizar
@@ -266,13 +262,12 @@
 										<tr>
 											<th>Código</th>
 											<th>Descripción</th>
-											<th>Modelo</th>
 											<th class="text-right">Precio</th>
 											<th class="text-right">Stock</th>
 										</tr>
 									</thead>
 									<tbody id="ps-tbody">
-										<tr><td colspan="5" class="text-center text-muted py-3">Introduzca criterios y pulse <strong>Actualizar</strong></td></tr>
+										<tr><td colspan="4" class="text-center text-muted py-3">Introduzca criterios y pulse <strong>Actualizar</strong></td></tr>
 									</tbody>
 								</table>
 							</div>
@@ -628,6 +623,10 @@ $('#searchCustomer').click(function(e) {
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('CustomerSearchModal')).show();
 });
 
+$('#CustomerSearchModal').on('shown.bs.modal', function() {
+	$('#cs-company').focus();
+});
+
 function csDoSearch() {
 	var btn = $('#cs-search');
 	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
@@ -721,7 +720,6 @@ function psEsc(s) {
 $('#ps-search').on('click', function() {
     var sku   = $.trim($('#ps-sku').val());
     var name  = $.trim($('#ps-name').val());
-    var model = $.trim($('#ps-model').val());
 
     var btn = $(this);
     btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> Buscando...');
@@ -729,26 +727,24 @@ $('#ps-search').on('click', function() {
     $.ajax({
         url: 'index.php?route=catalog/product/searchProducts&token=' + token +
              '&filter_sku='   + encodeURIComponent(sku) +
-             '&filter_name='  + encodeURIComponent(name) +
-             '&filter_model=' + encodeURIComponent(model),
+             '&filter_name='  + encodeURIComponent(name),
         dataType: 'json',
         success: function(json) {
             btn.prop('disabled', false).html('<i class="fa fa-search"></i> Actualizar');
             if (json && json.warning) {
                 psProducts = [];
-                $('#ps-tbody').html('<tr><td colspan="5" class="text-center text-warning py-3"><i class="fa fa-exclamation-triangle"></i> ' + json.warning + '</td></tr>');
+                $('#ps-tbody').html('<tr><td colspan="4" class="text-center text-warning py-3"><i class="fa fa-exclamation-triangle"></i> ' + json.warning + '</td></tr>');
                 return;
             }
             psProducts = json || [];
             var html = '';
             if (psProducts.length === 0) {
-                html = '<tr><td colspan="5" class="text-center text-muted py-3">No se encontraron artículos</td></tr>';
+                html = '<tr><td colspan="4" class="text-center text-muted py-3">No se encontraron artículos</td></tr>';
             } else {
                 $.each(psProducts, function(i, p) {
                     html += '<tr style="cursor:pointer" data-idx="' + i + '">';
                     html += '<td>' + psEsc(p.sku)  + '</td>';
                     html += '<td>' + psEsc(p.name) + '</td>';
-                    html += '<td>' + psEsc(p.model)+ '</td>';
                     html += '<td class="text-right">' + psEsc(p.price_formatted) + '</td>';
                     html += '<td class="text-right">' + p.quantity + '</td>';
                     html += '</tr>';
@@ -764,8 +760,12 @@ $('#ps-search').on('click', function() {
 });
 
 // Enter en los campos de filtro lanza la búsqueda
-$('#ps-sku,#ps-name,#ps-model').on('keypress', function(e) {
+$('#ps-sku,#ps-name').on('keypress', function(e) {
     if (e.which === 13) { $('#ps-search').trigger('click'); }
+});
+
+$('#ProductSearchModal').on('shown.bs.modal', function() {
+    $('#ps-name').focus();
 });
 
 // Doble clic en fila de resultado

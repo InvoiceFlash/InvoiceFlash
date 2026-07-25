@@ -668,18 +668,19 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['entry_country'] = $this->language->get('entry_country');
 		$this->data['entry_default'] = $this->language->get('entry_default');
 		$this->data['entry_comment'] = $this->language->get('entry_comment');
-		$this->data['entry_description'] = $this->language->get('entry_description');
-		$this->data['entry_amount'] = $this->language->get('entry_amount');
 		$this->data['entry_points'] = $this->language->get('entry_points');
 		$this->data['entry_nif'] = $this->language->get('entry_nif');
 		$this->data['entry_contable_account'] = $this->language->get('entry_contable_account');
 		$this->data['entry_digital_invoice'] = $this->language->get('entry_digital_invoice');
 		$this->data['entry_web'] = $this->language->get('entry_web');
+		$this->data['entry_vat_regime'] = $this->language->get('entry_vat_regime');
+		$this->data['text_vat_regime_general'] = $this->language->get('text_vat_regime_general');
+		$this->data['text_vat_regime_comunitario'] = $this->language->get('text_vat_regime_comunitario');
+		$this->data['text_vat_regime_internacional'] = $this->language->get('text_vat_regime_internacional');
 
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
 		$this->data['text_last_modified_by'] = $this->language->get('text_last_modified_by');
-		$this->data['text_date_support'] = $this->language->get('text_date_support');
 		$this->data['text_bank_cc'] = $this->language->get('text_bank');
 		$this->data['text_bic'] = $this->language->get('text_bic');
 		$this->data['text_fiscal'] = $this->language->get('text_fiscal');
@@ -693,7 +694,6 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_address'] = $this->language->get('button_add_address');
 		$this->data['button_add_history'] = $this->language->get('button_add_history');
-		$this->data['button_add_transaction'] = $this->language->get('button_add_transaction');
 		$this->data['button_add_reward'] = $this->language->get('button_add_reward');
 		$this->data['button_remove'] = $this->language->get('button_remove');
 		$this->data['button_email'] = $this->language->get('button_email');
@@ -705,7 +705,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['tab_notes'] = $this->language->get('tab_notes');
 		$this->data['tab_address'] = $this->language->get('tab_address');
 		$this->data['tab_history'] = $this->language->get('tab_history');
-		$this->data['tab_transaction'] = $this->language->get('tab_transaction');
+		$this->data['tab_receipts'] = $this->language->get('tab_receipts');
 		$this->data['tab_reward'] = $this->language->get('tab_reward');
 		$this->data['tab_ip'] = $this->language->get('tab_ip');
 		$this->data['tab_email'] = $this->language->get('tab_email');
@@ -1196,17 +1196,7 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['last_modified_by'] = '';
 		}
-		
-		if (isset($customer_info)) {
-			if (!empty($customer_info['date_support']) && $customer_info['date_support']!='0000-00-00') {
-				$this->data['date_support'] = date($this->language->get('datetime_format'), strtotime($customer_info['date_support']));
-			} else {
-				$this->data['date_support'] = '';
-			}
-		} else {
-      		$this->data['date_support'] = '';
-		}
-		
+
 		if (isset($this->request->post['newsletter'])) {
 			$this->data['newsletter'] = $this->request->post['newsletter'];
 		} elseif (!empty($customer_info)) {
@@ -1272,7 +1262,15 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['digital_invoice'] = 0;
 		}
-		
+
+		if (isset($this->request->post['vat_regime'])) {
+			$this->data['vat_regime'] = $this->request->post['vat_regime'];
+		} elseif (!empty($customer_info) && !empty($customer_info['vat_regime'])) {
+			$this->data['vat_regime'] = $customer_info['vat_regime'];
+		} else {
+			$this->data['vat_regime'] = 'general';
+		}
+
 		$this->load->model('sale/customer_group');
 
 		$this->data['customer_groups'] = $this->model_sale_customer_group->getCustomerGroups();
@@ -1610,66 +1608,60 @@ class ControllerSaleCustomer extends Controller {
 		$this->response->setOutput($this->render());
 	}
 
-	public function transaction() {
-		$log = new Log('transactions.log'); $log->write($this->request->post);
-
+	public function receipts() {
 		$this->language->load('sale/customer');
+		$this->language->load('sale/receipt');
 
-		$this->load->model('sale/customer');
-
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->user->hasPermission('modify', 'sale/customer')) { 
-			$this->model_sale_customer->addTransaction($this->request->get['customer_id'], $this->request->post['description'], $this->request->post['amount']);
-			$this->data['success'] = $this->language->get('text_success');
-		} else {
-			$this->data['success'] = '';
-		}
-
-		if (($this->request->server['REQUEST_METHOD'] == 'POST') && !$this->user->hasPermission('modify', 'sale/customer')) {
-			$this->data['error_warning'] = $this->language->get('error_permission');
-		} else {
-			$this->data['error_warning'] = '';
-		}		
+		$this->load->model('sale/receipt');
 
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
-		$this->data['text_balance'] = $this->language->get('text_balance');
+		$this->data['text_paid'] = $this->language->get('text_paid');
+		$this->data['text_pending'] = $this->language->get('text_pending');
 
-		$this->data['column_date_added'] = $this->language->get('column_date_added');
-		$this->data['column_description'] = $this->language->get('column_description');
-		$this->data['column_amount'] = $this->language->get('column_amount');
+		$this->data['column_invoice_id'] = $this->language->get('column_invoice_id');
+		$this->data['column_status'] = $this->language->get('column_status');
+		$this->data['column_total'] = $this->language->get('column_total');
+		$this->data['column_date_due'] = $this->language->get('column_date_due');
 
 		if (isset($this->request->get['page'])) {
 			$page = $this->request->get['page'];
 		} else {
 			$page = 1;
-		}  
+		}
 
-		$this->data['transactions'] = array();
+		$data = array(
+			'filter_customer_id' => $this->request->get['customer_id'],
+			'sort'               => 'r.date_due',
+			'order'              => 'DESC',
+			'start'              => ($page - 1) * 10,
+			'limit'              => 10
+		);
 
-		$results = $this->model_sale_customer->getTransactions($this->request->get['customer_id'], ($page - 1) * 10, 10);
+		$this->data['receipts'] = array();
+
+		$results = $this->model_sale_receipt->getReceipts($data);
 
 		foreach ($results as $result) {
-
-			$this->data['transactions'][] = array(
-				'amount'      => $this->currency->format($result['amount'], $this->config->get('config_currency')),
-				'description' => $result['description'],
-				'date_added'  => date($this->language->get('date_format_short'), strtotime($result['date_added']))
+			$this->data['receipts'][] = array(
+				'invoice_id' => $result['invoice_id'],
+				'paid'       => $result['paid'],
+				'total'      => $this->currency->format($result['amount'], $result['currency_code'], $result['currency_value'], true, true),
+				'date_due'   => date($this->language->get('date_format_short'), strtotime($result['date_due']))
 			);
 		}
 
-		$this->data['balance'] = $this->currency->format($this->model_sale_customer->getTransactionTotal($this->request->get['customer_id']), $this->config->get('config_currency'));
-
-		$transaction_total = $this->model_sale_customer->getTotalTransactions($this->request->get['customer_id']);
+		$receipt_total = $this->model_sale_receipt->getTotalReceipts($data);
 
 		$pagination = new Pagination();
-		$pagination->total = $transaction_total;
+		$pagination->total = $receipt_total;
 		$pagination->page = $page;
-		$pagination->limit = 10; 
+		$pagination->limit = 10;
 		$pagination->text = $this->language->get('text_pagination');
-		$pagination->url = $this->url->link('sale/customer/transaction', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&page={page}', 'SSL');
+		$pagination->url = $this->url->link('sale/customer/receipts', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&page={page}', 'SSL');
 
 		$this->data['pagination'] = $pagination->render();
 
-		$this->template = 'sale/customer_transaction.tpl';		
+		$this->template = 'sale/customer_receipts.tpl';
 
 		$this->response->setOutput($this->render());
 	}

@@ -412,6 +412,7 @@ class ModelToolImport extends Model {
 		$result = array(
 			'products'  => 0,
 			'customers' => 0,
+			'contacts'  => 0,
 			'suppliers' => 0,
 			'errors'    => array()
 		);
@@ -422,6 +423,7 @@ class ModelToolImport extends Model {
 
 		if (!empty($options['customer'])) {
 			$this->importFlashCustomers($path, $result, !empty($options['company_code']) ? $options['company_code'] : '');
+			$this->importFlashContacts($path, $result, !empty($options['company_code']) ? $options['company_code'] : '');
 		}
 
 		if (!empty($options['supplier'])) {
@@ -789,6 +791,58 @@ class ModelToolImport extends Model {
 		return $locations;
 	}
 
+	// ttab31 relaciona el código de cliente (T31CCLI, = ttab4.T4CCLI) con su(s) cuenta(s)
+	// bancaria(s). Un cliente puede tener varias filas (histórico de cuentas), pero siempre
+	// hay como mucho una marcada T31ACTIVO=1 (comprobado sobre datos reales: 324/324 clientes
+	// con cuenta tienen exactamente 0 o 1 fila activa, nunca más) - es la que hay que usar.
+	// El IBAN español no viene en un solo campo: hay que componerlo a partir de T31CIBAN
+	// (país + dígitos de control, 4 car.) + T31CENTBCO (entidad, 4) + T31CAGBCO (oficina, 4)
+	// + T31CDC (dígitos de control de la CCC, 2) + T31CCUENBA (nº de cuenta, 10) = 24 car.
+	// Si la concatenación no da exactamente 24 caracteres (cuenta vacía, o datos de prueba/
+	// corruptos vistos en el propio SaConta, p.ej. '111111111111111111111111111111111') se
+	// descarta en vez de guardar basura en customer.bank_cc.
+	private function getFlashGestionBankAccounts($path, &$result) {
+		$file = $this->findFlashDbf($path, array('ttab31.dbf'), $result);
+
+		if (!$file) {
+			return array();
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return array();
+		}
+
+		$accounts = array();
+
+		foreach ($dbf->rows() as $row) {
+			if ((string)$row['T31ACTIVO'] !== '1') {
+				continue;
+			}
+
+			$client_code = trim($row['T31CCLI']);
+
+			if ($client_code === '') {
+				continue;
+			}
+
+			$iban = trim($row['T31CIBAN']) . trim($row['T31CENTBCO']) . trim($row['T31CAGBCO']) . trim($row['T31CDC']) . trim($row['T31CCUENBA']);
+
+			if (strlen($iban) !== 24) {
+				continue;
+			}
+
+			$accounts[$client_code] = array(
+				'iban' => $iban,
+				'bic'  => trim($row['T31SWIFT'])
+			);
+		}
+
+		return $accounts;
+	}
+
 	// Compara nombres de provincia/zona ignorando mayúsculas, acentos y entidades HTML
 	// (p.ej. zone.name = '&Aacute;lava' vs ttab29.T29PROV = 'Alava').
 	// No se usa iconv('...//TRANSLIT') porque en este entorno convierte 'Á' en "'A"
@@ -875,6 +929,7 @@ class ModelToolImport extends Model {
 		}
 
 		$locations = $this->getFlashGestionLocations($path, $result);
+		$bank_accounts = $this->getFlashGestionBankAccounts($path, $result);
 
 		try {
 			$dbf = new Dbf($file);
@@ -889,6 +944,8 @@ class ModelToolImport extends Model {
 			if ($allowed_clients !== null && !isset($allowed_clients[$client_code])) {
 				continue;
 			}
+
+			$bank_account = isset($bank_accounts[$client_code]) ? $bank_accounts[$client_code] : null;
 
 			$contable_account = trim($row['T4CCONTA']);
 			$company = trim($row['T4NOM']);
@@ -935,7 +992,17 @@ class ModelToolImport extends Model {
 			}
 
 			if ($customer_id) {
-				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', status = '" . (int)$status . "', date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
+				$bank_sql = '';
+
+				if ($bank_account !== null) {
+					$bank_sql = ", bank_cc = '" . $this->db->escape($bank_account['iban']) . "'";
+
+					if ($bank_account['bic'] !== '') {
+						$bank_sql .= ", bic = '" . $this->db->escape($bank_account['bic']) . "'";
+					}
+				}
+
+				$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', status = '" . (int)$status . "', date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'" . $bank_sql . " WHERE customer_id = '" . (int)$customer_id . "'");
 
 				$address_query = $this->db->query("SELECT address_id FROM `" . DB_PREFIX . "address` WHERE customer_id = '" . (int)$customer_id . "' ORDER BY address_id ASC LIMIT 1");
 
@@ -949,7 +1016,17 @@ class ModelToolImport extends Model {
 					$this->db->query("UPDATE `" . DB_PREFIX . "customer` SET address_id = '" . (int)$address_id . "' WHERE customer_id = '" . (int)$customer_id . "'");
 				}
 			} else {
-				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '" . (int)$status . "', date_added = " . $date_added . ", date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', cod_flash = '" . (int)$client_code . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'");
+				$bank_sql = '';
+
+				if ($bank_account !== null) {
+					$bank_sql = ", bank_cc = '" . $this->db->escape($bank_account['iban']) . "'";
+
+					if ($bank_account['bic'] !== '') {
+						$bank_sql .= ", bic = '" . $this->db->escape($bank_account['bic']) . "'";
+					}
+				}
+
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer` SET company = '" . $this->db->escape($company) . "', approved = '1', email = '" . $this->db->escape($email) . "', telephone = '" . $this->db->escape($telephone) . "', fax = '" . $this->db->escape($fax) . "', customer_group_id = '1', status = '" . (int)$status . "', date_added = " . $date_added . ", date_modified = NOW(), nif = '" . $this->db->escape($nif) . "', cod_flash = '" . (int)$client_code . "', contable_account = '" . $this->db->escape($contable_account) . "', cwww = '" . $this->db->escape($web) . "', address = '" . $this->db->escape($address_1) . "', city = '" . $this->db->escape($city) . "', postcode = '" . $this->db->escape($postcode) . "', zone_id = '" . (int)$zone_id . "', country_id = '" . (int)$country_id . "'" . $bank_sql . "");
 
 				$customer_id = $this->db->getLastId();
 
@@ -963,6 +1040,90 @@ class ModelToolImport extends Model {
 			}
 
 			$result['customers']++;
+		}
+	}
+
+	// ttab4c tiene una fila por contacto de cliente (T4CCCLI = ttab4.T4CCLI); T4CCLINART es el ID
+	// único de la fila en FLASH, se guarda en customer_contacts.cod_flash para poder reimportar sin
+	// duplicar (actualiza el contacto ya importado en vez de crear uno nuevo cada vez).
+	private function importFlashContacts($path, &$result, $company_code = '') {
+		$file = $this->findFlashDbf($path, array('ttab4c.dbf'), $result);
+
+		if (!$file) {
+			return;
+		}
+
+		$allowed_clients = null;
+
+		if ($company_code !== '') {
+			$allowed_clients = $this->getFlashGestionCompanyClients($path, $company_code, $result);
+
+			if ($allowed_clients === false) {
+				return;
+			}
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
+
+		foreach ($dbf->rows() as $row) {
+			$client_code = trim($row['T4CCCLI']);
+
+			if ($allowed_clients !== null && !isset($allowed_clients[$client_code])) {
+				continue;
+			}
+
+			if (!empty($row['T4CSINUSO'])) {
+				continue;
+			}
+
+			$name = trim($row['T4CCNOMBRE']);
+
+			if ($name === '') {
+				continue;
+			}
+
+			$customer_id = 0;
+
+			if ($client_code !== '') {
+				$customer_query = $this->db->query("SELECT customer_id FROM `" . DB_PREFIX . "customer` WHERE cod_flash = '" . (int)$client_code . "'");
+
+				if ($customer_query->num_rows) {
+					$customer_id = $customer_query->row['customer_id'];
+				}
+			}
+
+			if (!$customer_id) {
+				continue;
+			}
+
+			$contact_code = trim($row['T4CCLINART']);
+			$puesto = trim($row['T4CCARGO']);
+			$email = trim($row['T4CCEMAIL']);
+			$telef1 = trim($row['T4CCTELEF']);
+			$telef2 = trim($row['T4CCTELMOV']);
+
+			$contact_id = null;
+
+			if ($contact_code !== '') {
+				$contact_query = $this->db->query("SELECT customer_contacts_id FROM `" . DB_PREFIX . "customer_contacts` WHERE cod_flash = '" . $this->db->escape($contact_code) . "'");
+
+				if ($contact_query->num_rows) {
+					$contact_id = $contact_query->row['customer_contacts_id'];
+				}
+			}
+
+			if ($contact_id) {
+				$this->db->query("UPDATE `" . DB_PREFIX . "customer_contacts` SET customer_id = '" . (int)$customer_id . "', cname = '" . $this->db->escape($name) . "', cpuesto = '" . $this->db->escape($puesto) . "', cemail = '" . $this->db->escape($email) . "', ctelef1 = '" . $this->db->escape($telef1) . "', ctelef2 = '" . $this->db->escape($telef2) . "', tultmod = NOW(), caplultmod = 'flash' WHERE customer_contacts_id = " . (int)$contact_id);
+			} else {
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "customer_contacts` SET customer_id = '" . (int)$customer_id . "', cod_flash = '" . $this->db->escape($contact_code) . "', cname = '" . $this->db->escape($name) . "', cpuesto = '" . $this->db->escape($puesto) . "', cemail = '" . $this->db->escape($email) . "', ctelef1 = '" . $this->db->escape($telef1) . "', ctelef2 = '" . $this->db->escape($telef2) . "', date_added = NOW(), caplalta = 'flash', tultmod = NOW(), caplultmod = 'flash'");
+			}
+
+			$result['contacts']++;
 		}
 	}
 

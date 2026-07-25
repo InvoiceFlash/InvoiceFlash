@@ -2298,7 +2298,8 @@ class ControllerSaleQuote extends Controller {
 							'tax_class_id'=> $product_info['tax_class_id'],
 							'total'		 => ($use_price*$quote_product['quantity']),
 							'shipping'	 => $product_info['shipping'],
-							'extended_description' => isset($quote_product['extended_description']) ? $quote_product['extended_description'] : ''
+							'extended_description' => isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '',
+							'discount'   => isset($quote_product['discount']) ? $quote_product['discount'] : ''
 						);
 					}
 				}
@@ -2342,7 +2343,8 @@ class ControllerSaleQuote extends Controller {
 							'price'		 	=> $use_price,
 							'tax_class_id'	=> $product_info['tax_class_id'],
 							'total'		 	=> ($use_price * $quantity),
-							'shipping'	 	=> $product_info['shipping']
+							'shipping'	 	=> $product_info['shipping'],
+							'discount'		=> isset($this->request->post['discount']) ? $this->request->post['discount'] : ''
 						);
 
 					}
@@ -2389,7 +2391,8 @@ class ControllerSaleQuote extends Controller {
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	    => $product['tax_class_id'],
 					'total'      	    => $this->currency->format($product['total']),
-					'extended_description' => isset($product['extended_description']) ? $product['extended_description'] : ''
+					'extended_description' => isset($product['extended_description']) ? $product['extended_description'] : '',
+					'discount'          => isset($product['discount']) ? $product['discount'] : ''
 				);
 			}
 

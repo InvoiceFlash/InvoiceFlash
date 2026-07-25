@@ -491,7 +491,9 @@ class ControllerSaleReceipt extends Controller {
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		
 		$this->data['text_bank_cc'] = $this->language->get('text_bank_cc');
-		
+		$this->data['text_bank_client'] = $this->language->get('text_bank_client');
+		$this->data['text_bank_company'] = $this->language->get('text_bank_company');
+
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 
@@ -575,10 +577,42 @@ class ControllerSaleReceipt extends Controller {
 			$this->data['status_id'] = 0;
 		}
 
-		if (!empty($receipt_info)) {
+		if (isset($this->request->post['bank_cc'])) {
+			$this->data['bank_cc'] = $this->request->post['bank_cc'];
+		} elseif (!empty($receipt_info)) {
 			$this->data['bank_cc'] = $receipt_info['bank_cc'];
 		} else {
 			$this->data['bank_cc'] = '';
+		}
+
+		$this->load->model('sale/customer');
+
+		$customer_info = array();
+
+		if (!empty($receipt_info['customer_id'])) {
+			$customer_info = $this->model_sale_customer->getCustomer($receipt_info['customer_id']);
+		}
+
+		$this->data['bank_options'] = array();
+
+		if (!empty($customer_info['bank_cc'])) {
+			$this->data['bank_options'][] = array(
+				'value' => $customer_info['bank_cc'],
+				'label' => $this->language->get('text_bank_client') . ': ' . (!empty($customer_info['company']) ? $customer_info['company'] . ' - ' : '') . $customer_info['bank_cc']
+			);
+		}
+
+		$banks = $this->config->get('banks');
+
+		if ($banks) {
+			foreach ($banks as $bank) {
+				if (!empty($bank['iban'])) {
+					$this->data['bank_options'][] = array(
+						'value' => $bank['iban'],
+						'label' => $this->language->get('text_bank_company') . ': ' . (!empty($bank['name']) ? $bank['name'] . ' - ' : '') . $bank['iban']
+					);
+				}
+			}
 		}
 
 		$this->data['statuses'] = array();

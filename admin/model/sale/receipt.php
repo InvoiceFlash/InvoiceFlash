@@ -38,8 +38,8 @@ class ModelSaleReceipt extends Model {
 
 	public function getTotalReceipts($data = array()) {
 		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "receipt AS r ";
-		
-		if (isset($data['filter_customer'])) {
+
+		if (isset($data['filter_customer']) || isset($data['filter_customer_id'])) {
 			$sql .= " LEFT JOIN " . DB_PREFIX . "invoice AS i ON i.invoice_id = r.invoice_id";
 		}
 
@@ -59,6 +59,10 @@ class ModelSaleReceipt extends Model {
 
 		if (isset($data['filter_customer'])) {
 			$sql .= " AND CONCAT(i.firstname, ' ', i.lastname) LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";
+		}
+
+		if (isset($data['filter_customer_id'])) {
+			$sql .= " AND i.customer_id = " . (int)$data['filter_customer_id'];
 		}
 
 		if (isset($data['filter_status'])) {
@@ -106,6 +110,10 @@ class ModelSaleReceipt extends Model {
 
 		if (isset($data['filter_customer'])) {
 			$sql .= " AND i.company LIKE '%" . $this->db->escape($data['filter_customer']) . "%'";
+		}
+
+		if (isset($data['filter_customer_id'])) {
+			$sql .= " AND i.customer_id = " . (int)$data['filter_customer_id'];
 		}
 
 		if (isset($data['filter_status'])) {
@@ -176,14 +184,15 @@ class ModelSaleReceipt extends Model {
 		} else {
 			$paid=1;
 		}
-		
 
-		$this->db->query("UPDATE " . DB_PREFIX . "receipt SET paid = " . (int)$paid . ", date_modified = now() WHERE receipt_id = " . (int)$receipt_id);
+		$bank_cc = isset($data['bank_cc']) ? str_replace(' ', '', $data['bank_cc']) : '';
+
+		$this->db->query("UPDATE " . DB_PREFIX . "receipt SET paid = " . (int)$paid . ", bank_cc = '" . $this->db->escape($bank_cc) . "', date_modified = now() WHERE receipt_id = " . (int)$receipt_id);
 
 	}
 
 	public function getReceipt($receipt_id)	{
-		$query = $this->db->query("SELECT IF(paid = '1', 2,1) AS status_id, bank_cc FROM " . DB_PREFIX . "receipt WHERE receipt_id = " . (int)$receipt_id);
+		$query = $this->db->query("SELECT IF(r.paid = '1', 2,1) AS status_id, r.bank_cc, i.customer_id FROM " . DB_PREFIX . "receipt r LEFT JOIN " . DB_PREFIX . "invoice i ON i.invoice_id = r.invoice_id WHERE r.receipt_id = " . (int)$receipt_id);
 
 		return $query->row;
 	}

@@ -3,19 +3,15 @@
 class ModelSaleCustomer extends Model {
 
 	public function addCustomer($data) {
-		$date = strtotime($data['date_support']);
-		$date_support = ($date ? date('Y-m-d', $date) : null);
-
-		$sql = "INSERT INTO " . DB_PREFIX . "customer SET 
-			company = '" . $this->db->escape($data['company']) . "', 
+		$sql = "INSERT INTO " . DB_PREFIX . "customer SET
+			company = '" . $this->db->escape($data['company']) . "',
 			approved = '1',
-			email = '" . $this->db->escape($data['email']) . "', 
+			email = '" . $this->db->escape($data['email']) . "',
 			telephone = '" . $this->db->escape($data['telephone']) . "',
 			customer_group_id = '" . (int)($data['customer_group_id'] ?? 0) . "',
 			`status` = '" . (int)$data['status'] . "',
-			date_added = NOW(), 
-			date_modified = NOW(), 
-			date_support = '" . $date_support . "'";
+			date_added = NOW(),
+			date_modified = NOW()";
 		
 		$this->db->query($sql);
 
@@ -23,8 +19,9 @@ class ModelSaleCustomer extends Model {
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
 		$nif = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $data['nif']));
+		$vat_regime = in_array($data['vat_regime'] ?? '', array('general', 'comunitario', 'internacional')) ? $data['vat_regime'] : 'general';
 
-		$this->db->query("UPDATE " . DB_PREFIX . "customer SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi = '" . $this->db->escape($data['efaccafi']) . "', efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape(isset($data['contable_account']) ? $data['contable_account'] : '') . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', customer_representative_id = " . (empty($data['customer_representative_id']) ? 'NULL' : (int)$data['customer_representative_id']) . ", nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
+		$this->db->query("UPDATE " . DB_PREFIX . "customer SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi = '" . $this->db->escape($data['efaccafi']) . "', efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape(isset($data['contable_account']) ? $data['contable_account'] : '') . "', vat_regime = '" . $this->db->escape($vat_regime) . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', customer_representative_id = " . (empty($data['customer_representative_id']) ? 'NULL' : (int)$data['customer_representative_id']) . ", nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
 
 		if (isset($data['customer_address'])) {
 
@@ -51,17 +48,15 @@ class ModelSaleCustomer extends Model {
 
 
 	public function editCustomer($customer_id, $data) {
-		$date = strtotime($data['date_support']);
-		$date_support = ($date ? date('Y-m-d', $date) : null);
-
-		$this->db->query("UPDATE " . DB_PREFIX . "customer SET 
-			company = '" . $this->db->escape($data['company']) . "', 
-			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)($data['customer_group_id'] ?? 0) . "', status = '" . (int)$data['status'] . "', date_modified = NOW(), date_support = '" . $date_support . "' WHERE customer_id = '" . (int)$customer_id . "'");
+		$this->db->query("UPDATE " . DB_PREFIX . "customer SET
+			company = '" . $this->db->escape($data['company']) . "',
+			notes = '', email = '" . $this->db->escape($data['email']) . "', telephone = '" . $this->db->escape($data['telephone']) . "', newsletter = '" . (int)$data['newsletter'] . "', customer_group_id = '" . (int)($data['customer_group_id'] ?? 0) . "', status = '" . (int)$data['status'] . "', date_modified = NOW() WHERE customer_id = '" . (int)$customer_id . "'");
 
 		$bank_cc = str_replace(" ", "", $data['bank_cc']);
 		$nif = strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $data['nif']));
+		$vat_regime = in_array($data['vat_regime'] ?? '', array('general', 'comunitario', 'internacional')) ? $data['vat_regime'] : 'general';
 
-		$this->db->query("UPDATE " . DB_PREFIX . "customer SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi = '" . $this->db->escape($data['efaccafi']) . "', efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape(isset($data['contable_account']) ? $data['contable_account'] : '') . "', digital_invoice = '" . (int)$data['digital_invoice'] . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', customer_representative_id = " . (empty($data['customer_representative_id']) ? 'NULL' : (int)$data['customer_representative_id']) . ", nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
+		$this->db->query("UPDATE " . DB_PREFIX . "customer SET bank_cc = '" . $this->db->escape($bank_cc) . "', bic = '" . $this->db->escape($data['bic']) . "', efaccafi = '" . $this->db->escape($data['efaccafi']) . "', efaccare = '" . $this->db->escape($data['efaccare']) . "', efaccapa = '" . $this->db->escape($data['efaccapa']) . "', nif = '" . $this->db->escape($nif) . "', contable_account = '" . $this->db->escape(isset($data['contable_account']) ? $data['contable_account'] : '') . "', digital_invoice = '" . (int)$data['digital_invoice'] . "', vat_regime = '" . $this->db->escape($vat_regime) . "', cwww = '" . $this->db->escape($data['web']) . "', address = '" . $this->db->escape($data['address']) . "', city = '" . $this->db->escape($data['city']) . "', postcode = '" . $this->db->escape($data['postcode']) . "', country_id = '" . (int)$data['country_id'] . "', zone_id = '" . (int)$data['zone_id'] . "', customer_representative_id = " . (empty($data['customer_representative_id']) ? 'NULL' : (int)$data['customer_representative_id']) . ", nusuultmod = '" . (int)$this->user->getID() . "' WHERE customer_id = " . (int)$customer_id);
 
 		// if ($data['password']) {
 
@@ -156,7 +151,7 @@ class ModelSaleCustomer extends Model {
 
 	public function getCustomer($customer_id) {
 
-		$query = $this->db->query("SELECT c.company, c.email, c.nif, c.telephone, c.cwww, c.newsletter, c.customer_group_id, c.status, c.date_support, c.bank_cc, c.bic, c.efaccafi, c.efaccapa, c.efaccare, c.contable_account, c.digital_invoice, c.address, c.city, c.postcode, c.country_id, c.zone_id, c.customer_representative_id, c.date_added, c.date_modified, c.notes, c.address_id, c.store_id, u.username AS last_modified_by FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "user u ON u.user_id = c.nusuultmod WHERE c.customer_id = '" . (int)$customer_id . "'");
+		$query = $this->db->query("SELECT c.company, c.email, c.nif, c.telephone, c.cwww, c.newsletter, c.customer_group_id, c.status, c.bank_cc, c.bic, c.efaccafi, c.efaccapa, c.efaccare, c.contable_account, c.digital_invoice, c.vat_regime, c.address, c.city, c.postcode, c.country_id, c.zone_id, c.customer_representative_id, c.date_added, c.date_modified, c.notes, c.address_id, c.store_id, u.username AS last_modified_by FROM " . DB_PREFIX . "customer c LEFT JOIN " . DB_PREFIX . "user u ON u.user_id = c.nusuultmod WHERE c.customer_id = '" . (int)$customer_id . "'");
 
 		return $query->row;
 

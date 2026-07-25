@@ -23,7 +23,7 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-delivery" data-bs-toggle="tab"><?php echo $tab_delivery; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-bs-toggle="tab"><?php echo $tab_invoice; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-transaction" data-bs-toggle="tab"><?php echo $tab_transaction; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-bs-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
@@ -219,13 +219,6 @@
 								</div>
 								<div class="tab-pane fade" role="tab-panel" id="tab-various">
 									<div class="form-group row">
-										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_date_support; ?></label>	
-										<div class="input-group col-sm-9 col-md-6">
-											<input type="text" name="date_support" value="<?php echo $date_support; ?>" class="form-control date">
-											<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
-										</div>
-									</div>
-									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_bank_cc; ?></label>
 										<div class="col-sm-6 input-group">
 											<input type="text" name="bank_cc" id="bank_cc" value="<?php echo $bank_cc; ?>" class="form-control" >
@@ -236,8 +229,8 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_bic; ?></label>
 										<div class="col-sm-6">
-											<input type="text" name="bic" value="<?php echo $bic; ?>" class="form-control" >
-										</div>										
+											<input type="text" name="bic" value="<?php echo $bic; ?>" class="form-control" style="width:20%;">
+										</div>
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_fiscal ?></label>
@@ -271,6 +264,16 @@
 												<input type="checkbox" <?php echo ($digital_invoice) ? 'checked' : ''; ?>>
 												<span class="flip-indecator" data-toggle-on="<?php echo $text_yes ?>" data-toggle-off="<?php echo $text_no ?>"></span>
 											</label>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_vat_regime; ?></label>
+										<div class="col-sm-6">
+											<select name="vat_regime" class="form-control" style="width:20%;">
+												<option value="general" <?php echo ($vat_regime == 'general') ? 'selected' : ''; ?>><?php echo $text_vat_regime_general; ?></option>
+												<option value="comunitario" <?php echo ($vat_regime == 'comunitario') ? 'selected' : ''; ?>><?php echo $text_vat_regime_comunitario; ?></option>
+												<option value="internacional" <?php echo ($vat_regime == 'internacional') ? 'selected' : ''; ?>><?php echo $text_vat_regime_internacional; ?></option>
+											</select>
 										</div>
 									</div>
 								</div>
@@ -647,25 +650,8 @@
 			              </tfoot>
 			            </table>
 					</div>
-					<div class="tab-pane" id="tab-transaction">
-						<div id="transaction" data-href="index.php?route=sale/customer/transaction&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>"></div>
-						<div class="form-group row">
-							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_description; ?></label>
-							<div class="col-sm-6">
-								<input type="text" name="description" class="form-control">
-							</div>
-						</div>
-						<div class="form-group row">
-							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_amount; ?></label>
-							<div class="col-sm-6">
-								<input type="text" name="amount" class="form-control">
-							</div>
-						</div>
-						<div class="form-group row">
-							<div class="col-sm-10 col-sm-offset-2">
-								<button type="button" id="button-transaction" data-action="customer" data-target="sale" data-id="<?php echo $customer_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_transaction; ?></button>
-							</div>
-						</div>
+					<div class="tab-pane" id="tab-receipts">
+						<div id="receipts" data-href="index.php?route=sale/customer/receipts&token=<?php echo $token; ?>&customer_id=<?php echo $customer_id; ?>"></div>
 					</div>
 				<div class="tab-pane" id="tab-ip">
 					<table class="table table-bordered table-striped table-hover">
