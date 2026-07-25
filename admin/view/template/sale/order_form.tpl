@@ -153,7 +153,7 @@
 								</td>
 								<td class="text-right"><input type="text" class="form-control text-right order-qty" name="order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $order_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right order-price" data-catalog-price="<?php echo $order_product['catalog_price_raw']; ?>" name="order_product[<?php echo $product_row; ?>][price]" value="<?php echo $order_product['price_raw']; ?>"></td>
-								<td class="text-right"><input type="text" class="form-control text-right order-discount" name="order_product[<?php echo $product_row; ?>][discount]" value=""></td>
+								<td class="text-right"><input type="text" class="form-control text-right order-discount" name="order_product[<?php echo $product_row; ?>][discount]" value="<?php echo $order_product['discount_raw']; ?>"></td>
 								<td class="text-right"><?php echo $order_product['total']; ?>
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][total]" value="<?php echo $order_product['total']; ?>">
 									<input type="hidden" name="order_product[<?php echo $product_row; ?>][tax]" value="<?php echo $order_product['tax']; ?>"></td>
@@ -853,9 +853,27 @@ $(document).on('input', '.order-price', function() {
 	orderMarkPriceChanged(this);
 });
 
-$(document).on('change', '.order-qty, .order-price', function() {
+$(document).on('change', '.order-qty, .order-price, .order-discount', function() {
 	orderMarkPriceChanged(this);
 	$('#button-order-product').click();
+});
+
+$(document).on('input', '.order-discount', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
+});
+
+$('#pm-discount').on('input', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
 });
 
 $('.order-price').each(function() {

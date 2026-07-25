@@ -7,7 +7,7 @@
 			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></button>
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-print"></i><span class="hidden-xs"> Imprimir</span></button>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-eye"></i><span class="hidden-xs"> View</span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
@@ -17,7 +17,7 @@
 				<?php if ($shipping_method) { ?>
 				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-bs-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li>
 			</ul>
 			<div class="tab-content mt-2">
 				<div id="tab-invoice" class="tab-pane active">
@@ -155,6 +155,7 @@
 								<th><?php echo $column_product; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_discount; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 							</tr>
 						</thead>
@@ -171,12 +172,13 @@
 									<?php } ?></td>
 								<td class="text-right"><?php echo $product['quantity']; ?></td>
 								<td class="text-right"><?php echo $product['price']; ?></td>
+								<td class="text-right"><?php echo $product['discount']; ?></td>
 								<td class="text-right"><?php echo $product['total']; ?></td>
 							</tr>
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
-									<td colspan="2" class="text-right"><?php echo $total['title']; ?>:</td>
+									<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>
 									<td class="text-right"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
@@ -222,6 +224,9 @@
 							</div>
 						</div>
 					</div>
+				</div>
+				<div class="tab-pane" id="tab-receipts">
+					<div id="receipts" data-href="index.php?route=sale/invoice/receipts&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>"></div>
 				</div>
 			</div>
 		</div>

@@ -137,13 +137,14 @@ class ModelSaleInvoice extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['total']));
+				$discount = isset($invoice_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$invoice_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET 
-				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "', 
-				invoice_id = '" . (int)$invoice_id . "', 
-				product_id = '" . (int)$invoice_product['product_id'] . "', 
-				name = '" . $this->db->escape($invoice_product['name']) . "', 
-				model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $invoice_product['tax'] . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET
+				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "',
+				invoice_id = '" . (int)$invoice_id . "',
+				product_id = '" . (int)$invoice_product['product_id'] . "',
+				name = '" . $this->db->escape($invoice_product['name']) . "',
+				model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $invoice_product['tax'] . "'");
 				
 				//name_ext = '" . $this->db->escape($invoice_product['name_ext']) . "', 
 				
@@ -272,13 +273,14 @@ class ModelSaleInvoice extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['total']));
+				$discount = isset($invoice_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$invoice_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET 
-				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "', 
-				invoice_id = '" . (int)$invoice_id . "', 
-				product_id = '" . (int)$invoice_product['product_id'] . "', 
-				name = '" . $this->db->escape($invoice_product['name']) . "', 
-				model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $invoice_product['tax'] . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET
+				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "',
+				invoice_id = '" . (int)$invoice_id . "',
+				product_id = '" . (int)$invoice_product['product_id'] . "',
+				name = '" . $this->db->escape($invoice_product['name']) . "',
+				model = '" . $this->db->escape($invoice_product['model']) . "', quantity = '" . (int)$invoice_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $invoice_product['tax'] . "'");
 				
 				$invoice_product_id = $this->db->getLastId();
 	
@@ -399,6 +401,7 @@ class ModelSaleInvoice extends Model {
 				model = '" . $this->db->escape($invoice_product['model']) . "',
 				quantity = '" . (int)(-$invoice_product['quantity']) . "',
 				price = '" . (float)$invoice_product['price'] . "',
+				discount = '" . (float)(-$invoice_product['discount']) . "',
 				total = '" . (float)(-$invoice_product['total']) . "',
 				tax = '" . (float)(-$invoice_product['tax']) . "',
 				reward = '" . (int)$invoice_product['reward'] . "'");

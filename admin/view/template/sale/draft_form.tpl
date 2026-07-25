@@ -135,7 +135,7 @@
 								</td>
 								<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $draft_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="<?php echo $draft_product['catalog_price_raw']; ?>" name="draft_product[<?php echo $product_row; ?>][price]" value="<?php echo $draft_product['price_raw']; ?>"></td>
-								<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product[<?php echo $product_row; ?>][discount]" value=""></td>
+								<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product[<?php echo $product_row; ?>][discount]" value="<?php echo $draft_product['discount_raw']; ?>"></td>
 								<td class="text-right"><?php echo $draft_product['total']; ?>
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][total]" value="<?php echo $draft_product['total']; ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][tax]" value="<?php echo $draft_product['tax']; ?>"></td>
@@ -811,6 +811,7 @@ $(document).on('dblclick', '#os-results tr[data-order-id]', function() {
 					html += '<input type="hidden" name="draft_product[' + i + '][product_id]" value="' + p.product_id + '">';
 					html += '<input type="hidden" name="draft_product[' + i + '][quantity]" value="' + p.quantity + '">';
 					html += '<input type="hidden" name="draft_product[' + i + '][price]" value="' + p.price + '">';
+					html += '<input type="hidden" name="draft_product[' + i + '][discount]" value="' + (p.discount || '') + '">';
 					if (p.option && p.option.length) {
 						for (var j = 0; j < p.option.length; j++) {
 							var opt = p.option[j];
@@ -992,7 +993,7 @@ $(document).on('input', '.draft-name', function() {
 	draftMarkNameChanged(this);
 });
 
-$(document).on('change', '.draft-qty, .draft-price', function() {
+$(document).on('change', '.draft-qty, .draft-price, .draft-discount', function() {
 	draftMarkPriceChanged(this);
 	$('#button-draft-product').click();
 });

@@ -2,6 +2,9 @@
 // Heading
 $_['heading_title']                           = 'Invoices';
 
+// Tabs
+$_['tab_receipts']                            = 'Receipts';
+
 // Text
 $_['text_success']                            = 'Success: You have modified invoices!';
 $_['text_invoice_id']                         = 'Invoice ID:';
@@ -82,6 +85,7 @@ $_['column_product']                          = 'Product';
 $_['column_model']                            = 'Model';
 $_['column_quantity']                         = 'Quantity';
 $_['column_price']                            = 'Unit Price';
+$_['column_discount']                         = 'Discount';
 $_['column_filename']                         = 'Filename';
 $_['column_remaining']                        = 'Remaining Downloads';
 $_['column_comment']                          = 'Comment';

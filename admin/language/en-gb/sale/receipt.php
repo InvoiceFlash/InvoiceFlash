@@ -26,6 +26,7 @@ $_['entry_status']							  = 'Status:';
 
 //Buttons
 $_['button_remittances']                      = 'Generate Remittance';
+$_['button_export']                           = 'Export';
 $_['button_save']							  = 'Save';
 $_['button_cancel']							  = 'Cancel';
 

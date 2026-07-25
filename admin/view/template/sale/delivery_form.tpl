@@ -144,7 +144,7 @@
 								<td class="text-right"><?php echo $delivery_product['sku']; ?></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $delivery_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="<?php echo $delivery_product['catalog_price_raw']; ?>" name="delivery_product[<?php echo $product_row; ?>][price]" value="<?php echo $delivery_product['price_raw']; ?>"></td>
-								<td class="text-right"><input type="text" class="form-control text-right delivery-discount" name="delivery_product[<?php echo $product_row; ?>][discount]" value=""></td>
+								<td class="text-right"><input type="text" class="form-control text-right delivery-discount" name="delivery_product[<?php echo $product_row; ?>][discount]" value="<?php echo $delivery_product['discount_raw']; ?>"></td>
 								<td class="text-right"><?php echo $delivery_product['total']; ?>
 									<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][total]" value="<?php echo $delivery_product['total']; ?>">
 									<input type="hidden" name="delivery_product[<?php echo $product_row; ?>][tax]" value="<?php echo $delivery_product['tax']; ?>"></td>
@@ -963,6 +963,7 @@ $(document).on('dblclick', '#os-results tr[data-order-id]', function() {
 					html += '</td>';
 					html += '<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product[' + product_row + '][quantity]" value="' + p.quantity + '"></td>';
 					html += '<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="' + p.catalog_price_raw + '" name="delivery_product[' + product_row + '][price]" value="' + p.price_raw + '"></td>';
+					html += '<td class="text-right"><input type="text" class="form-control text-right delivery-discount" name="delivery_product[' + product_row + '][discount]" value="' + (p.discount || '') + '"></td>';
 					html += '<td class="text-right">' + p.total + '<input type="hidden" name="delivery_product[' + product_row + '][total]" value="' + p.total + '"><input type="hidden" name="delivery_product[' + product_row + '][tax]" value="' + p.tax + '"></td>';
 					html += '</tr>';
 					product_row++;
@@ -1015,9 +1016,27 @@ $(document).on('input', '.delivery-price', function() {
 	deliveryMarkPriceChanged(this);
 });
 
-$(document).on('change', '.delivery-qty, .delivery-price', function() {
+$(document).on('change', '.delivery-qty, .delivery-price, .delivery-discount', function() {
 	deliveryMarkPriceChanged(this);
 	$('#button-delivery-product').click();
+});
+
+$(document).on('input', '.delivery-discount', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
+});
+
+$('#pm-discount').on('input', function() {
+	var value = $(this).val().replace(/[^0-9.]/g, '');
+	var parts = value.split('.');
+	if (parts.length > 2) {
+		value = parts[0] + '.' + parts.slice(1).join('');
+	}
+	$(this).val(value);
 });
 
 $('.delivery-price').each(function() {

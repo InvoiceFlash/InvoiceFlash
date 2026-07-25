@@ -1278,7 +1278,7 @@ $(function(){
 						html+='<td>'+deliveryDateHtml+'</td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right order-qty" name="order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right order-price" data-catalog-price="'+product['catalog_price_raw']+'" name="order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right order-discount" name="order_product['+product_row+'][discount]" value=""></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right order-discount" name="order_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;		
@@ -1587,6 +1587,7 @@ $(function(){
 						html+='</td>';
 						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="invoice_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="invoice_product['+product_row+'][price]" value="'+product['price']+'"></td>';
+						html+='<td class="text-right">'+(product['discount']||'')+'<input type="hidden" name="invoice_product['+product_row+'][discount]" value="'+(product['discount']||'')+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="invoice_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="invoice_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;		
@@ -2218,7 +2219,7 @@ $(function(){
 						html+='<td class="text-right">'+(product['sku']||'')+'</td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="'+product['catalog_price_raw']+'" name="delivery_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right delivery-discount" name="delivery_product['+product_row+'][discount]" value=""></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right delivery-discount" name="delivery_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="delivery_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="delivery_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;

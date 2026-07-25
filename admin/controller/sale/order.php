@@ -245,6 +245,7 @@ class ControllerSaleOrder extends Controller {
 							'delivery_option' 		=> $order_option,
 							'quantity'			 	=> $product['quantity'],
 							'price'				 	=> $product['price'],
+							'discount'				=> $product['discount'],
 							'total'				 	=> $product['total'],
 							'tax' 					=> $product['tax'],
 							'reward	'				=> $product['reward']
@@ -393,6 +394,7 @@ class ControllerSaleOrder extends Controller {
 							'order_option'     => $this->model_sale_order->getOrderOptions($order_id, $order_product['order_product_id']),
 							'quantity'         => $order_product['quantity'],
 							'price'            => $order_product['price'],
+							'discount'         => $order_product['discount'],
 							'total'            => $order_product['total'],
 							'tax'              => $order_product['tax'],
 							'reward'           => $order_product['reward']
@@ -1395,7 +1397,8 @@ class ControllerSaleOrder extends Controller {
 				'price_raw'         => number_format((float)$order_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$order_product['price'], 2, '.', ''),
 				'total'            => $this->currency->format($order_product['total'], $order_info['currency_code'], $order_info['currency_value'], true, true),
-				'tax'              => $order_product['tax']
+				'tax'              => $order_product['tax'],
+				'discount_raw'     => (!empty($order_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $order_product['discount']), 2, '.', '') : ''
 			);
 		}
 		
@@ -2257,6 +2260,8 @@ class ControllerSaleOrder extends Controller {
 							? $order_product['name']
 							: $product_info['name'];
 
+						$discount = isset($order_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $order_product['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
 							'name'		 => $use_name,
@@ -2266,8 +2271,9 @@ class ControllerSaleOrder extends Controller {
 							'price'		 => $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($use_price*$order_product['quantity']),
-							'shipping'	 => $product_info['shipping']
+							'total'		 => ($use_price*$order_product['quantity']) - $discount,
+							'shipping'	 => $product_info['shipping'],
+							'discount'   => $discount
 						);
 					}
 				}
@@ -2302,6 +2308,8 @@ class ControllerSaleOrder extends Controller {
 							? (float)$this->request->post['price_override']
 							: (float)$product_info['price'];
 
+						$discount = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' 	=> $this->request->post['product_id'],
 							'name'		 	=> $product_info['name'],
@@ -2310,8 +2318,9 @@ class ControllerSaleOrder extends Controller {
 							'option' 	 	=> $option,
 							'price'		 	=> $use_price,
 							'tax_class_id'	=> $product_info['tax_class_id'],
-							'total'		 	=> ($use_price * $quantity),
-							'shipping'	 	=> $product_info['shipping']
+							'total'		 	=> ($use_price * $quantity) - $discount,
+							'shipping'	 	=> $product_info['shipping'],
+							'discount'		=> $discount
 						);
 
 					}
@@ -2357,7 +2366,8 @@ class ControllerSaleOrder extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	=> $product['tax_class_id'],
-					'total'      	=> $this->currency->format($product['total'], '', '', true, true)
+					'total'      	=> $this->currency->format($product['total'], '', '', true, true),
+					'discount'      => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
 
@@ -2459,6 +2469,7 @@ class ControllerSaleOrder extends Controller {
 					'delivery_option' 		=> $order_option,
 					'quantity'			 	=> $product['quantity'],
 					'price'				 	=> $product['price'],
+					'discount'				=> $product['discount'],
 					'total'				 	=> $product['total'],
 					'tax' 					=> $product['tax'],
 					'reward	'				=> $product['reward']

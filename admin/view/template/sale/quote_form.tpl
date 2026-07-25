@@ -160,7 +160,7 @@
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][model]" value="<?php echo $quote_product['model']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $quote_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="<?php echo $quote_product['catalog_price_raw']; ?>" name="quote_product[<?php echo $product_row; ?>][price]" value="<?php echo $quote_product['price_raw']; ?>"></td>
-								<td class="text-right"><input type="text" class="form-control text-right quote-discount" name="quote_product[<?php echo $product_row; ?>][discount]" value=""></td>
+								<td class="text-right"><input type="text" class="form-control text-right quote-discount" name="quote_product[<?php echo $product_row; ?>][discount]" value="<?php echo $quote_product['discount_raw']; ?>"></td>
 								<td class="text-right"><?php echo $quote_product['total']; ?>
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][total]" value="<?php echo $quote_product['total']; ?>">
 									<input type="hidden" name="quote_product[<?php echo $product_row; ?>][tax]" value="<?php echo $quote_product['tax']; ?>"></td>
@@ -890,7 +890,7 @@ $(document).on('input', '.quote-price', function() {
 	quoteMarkPriceChanged(this);
 });
 
-$(document).on('change', '.quote-qty, .quote-price', function() {
+$(document).on('change', '.quote-qty, .quote-price, .quote-discount', function() {
 	quoteMarkPriceChanged(this);
 	$('#button-quote-product').click();
 });

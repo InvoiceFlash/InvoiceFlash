@@ -3,12 +3,9 @@
 <div class="panel panel-default">
 	<?php $fa = 'undo'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
 	<div class="panel-body">
-		<ul class="nav nav-tabs">
-			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
-		</ul>
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
-			<div class="tab-conten mt-2">
-				<div class="tab-pane" id="tab-general">
+			<div class="mt-2">
+				<div>
 					<legend><?php echo $text_order_info; ?></legend>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_order_id; ?></label>

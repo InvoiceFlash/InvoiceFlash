@@ -2,6 +2,9 @@
 // Heading
 $_['heading_title']                           = 'Facturas';
 
+// Tabs
+$_['tab_receipts']                            = 'Recibos';
+
 // Text
 $_['text_success']                            = '&Eacute;xito: &iexcl;Ha modificado las facturas!';
 $_['text_invoice_id']                         = 'ID de Factura:';
@@ -82,6 +85,7 @@ $_['column_product']                          = 'Producto';
 $_['column_model']                            = 'Modelo';
 $_['column_quantity']                         = 'Cantidad';
 $_['column_price']                            = 'Precio Unitario';
+$_['column_discount']                         = 'Descuento';
 $_['column_filename']                         = 'Nombre de Archivo';
 $_['column_remaining']                        = 'Descargas Restantes';
 $_['column_comment']                          = 'Comentario';

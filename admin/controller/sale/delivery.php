@@ -223,6 +223,7 @@ class ControllerSaledelivery extends Controller {
 				'model'            => $delivery_product['model'],
 				'quantity'         => $delivery_product['quantity'],
 				'price'            => $delivery_product['price'],
+				'discount'         => $delivery_product['discount'],
 				'total'            => $delivery_product['total'],
 				'tax'              => $delivery_product['tax'],
 				'draft_option'     => $this->model_sale_delivery->getDeliveryOptions($delivery_id, $delivery_product['delivery_product_id'])
@@ -474,8 +475,9 @@ class ControllerSaledelivery extends Controller {
 							'name'                => $delivery_product['name'],
 							'model'               => $delivery_product['model'],
 							'delivery_option'     => $this->model_sale_delivery->getDeliveryOptions($delivery_id, $delivery_product['delivery_product_id']),
-							'quantity'            => $delivery_product['quantity'],
+						'quantity'            => $delivery_product['quantity'],
 							'price'               => $delivery_product['price'],
+							'discount'            => $delivery_product['discount'],
 							'total'               => $delivery_product['total'],
 							'tax'                 => $delivery_product['tax']
 						);
@@ -1456,7 +1458,8 @@ class ControllerSaledelivery extends Controller {
 				'price_raw'         => number_format((float)$delivery_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$delivery_product['price'], 2, '.', ''),
 				'total'            => $this->currency->format($delivery_product['total']),
-				'tax'              => $delivery_product['tax']
+				'tax'              => $delivery_product['tax'],
+				'discount_raw'     => (!empty($delivery_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $delivery_product['discount']), 2, '.', '') : ''
 			);
 		}
 		
@@ -2360,6 +2363,8 @@ class ControllerSaledelivery extends Controller {
 							? (float)preg_replace('/[^-0-9\.]/', '', $delivery_product['price'])
 							: (float)$product_info['price'];
 
+						$discount = isset($delivery_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $delivery_product['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
 							'name'		 => $product_info['name'],
@@ -2370,8 +2375,9 @@ class ControllerSaledelivery extends Controller {
 							'price'		 => $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($use_price*$delivery_product['quantity']),
-							'shipping'	 => $product_info['shipping']
+							'total'		 => ($use_price*$delivery_product['quantity']) - $discount,
+							'shipping'	 => $product_info['shipping'],
+							'discount'   => $discount
 						);
 					}
 				}
@@ -2402,6 +2408,8 @@ class ControllerSaledelivery extends Controller {
 					}
 
 					if (!isset($json['error']['product']['option'])) {
+						$discount = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' 	=> $this->request->post['product_id'],
 							'name'		 	=> $product_info['name'],
@@ -2411,8 +2419,9 @@ class ControllerSaledelivery extends Controller {
 							'option' 	 	=> $option,
 							'price'		 	=> $product_info['price'],
 							'tax_class_id'	=> $product_info['tax_class_id'],
-							'total'		 	=> ($product_info['price']*$quantity),
-							'shipping'	 	=> $product_info['shipping']
+							'total'		 	=> ($product_info['price']*$quantity) - $discount,
+							'shipping'	 	=> $product_info['shipping'],
+							'discount'		=> $discount
 						);
 
 					}
@@ -2459,7 +2468,8 @@ class ControllerSaledelivery extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	=> $product['tax_class_id'],
-					'total'      	=> $this->currency->format($product['total'])
+					'total'      	=> $this->currency->format($product['total']),
+					'discount'      => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
 
@@ -2561,6 +2571,7 @@ class ControllerSaledelivery extends Controller {
 					'invoice_option'     => $delivery_option,
 					'quantity'         => $delivery_product['quantity'],
 					'price'            => $delivery_product['price'],
+					'discount'         => $delivery_product['discount'],
 					'total'            => $delivery_product['total'],
 					'tax'              => $delivery_product['tax'],
 					'reward'           => $delivery_product['reward']
@@ -2716,6 +2727,7 @@ class ControllerSaledelivery extends Controller {
 							'price'      => $this->currency->format($product['price']),
 							'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 							'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$product['price'], 2, '.', ''),
+							'discount'   => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : '',
 							'total'      => $this->currency->format($product['total']),
 							'tax'        => isset($product['tax']) ? $product['tax'] : 0,
 							'option'     => $option_data,

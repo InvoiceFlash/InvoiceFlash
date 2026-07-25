@@ -133,12 +133,13 @@ class ModelSaleOrder extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$order_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$order_product['total']));
+				$discount = isset($order_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$order_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "order_product SET 
-				order_id = '" . (int)$order_id . "', 
-				product_id = '" . (int)$order_product['product_id'] . "', 
-				name = '" . $this->db->escape($order_product['name']) . "', 
-				model = '" . $this->db->escape($order_product['model']) . "', quantity = '" . (int)$order_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $order_product['tax'] . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "order_product SET
+				order_id = '" . (int)$order_id . "',
+				product_id = '" . (int)$order_product['product_id'] . "',
+				name = '" . $this->db->escape($order_product['name']) . "',
+				model = '" . $this->db->escape($order_product['model']) . "', quantity = '" . (int)$order_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $order_product['tax'] . "'");
 				
 				//name_ext = '" . $this->db->escape($order_product['name_ext']) . "', 
 				
@@ -263,14 +264,15 @@ class ModelSaleOrder extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$order_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$order_product['total']));
+				$discount = isset($order_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$order_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "order_product SET 
-				order_product_id = '" . (int)$order_product['order_product_id'] . "', 
-				order_id = '" . (int)$order_id . "', 
-				product_id = '" . (int)$order_product['product_id'] . "', 
-				name = '" . $this->db->escape($order_product['name']) . "', 
-				model = '" . $this->db->escape($order_product['model']) . "', quantity = '" . (int)$order_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $order_product['tax'] . "'");
-				
+				$this->db->query("INSERT INTO " . DB_PREFIX . "order_product SET
+				order_product_id = '" . (int)$order_product['order_product_id'] . "',
+				order_id = '" . (int)$order_id . "',
+				product_id = '" . (int)$order_product['product_id'] . "',
+				name = '" . $this->db->escape($order_product['name']) . "',
+				model = '" . $this->db->escape($order_product['model']) . "', quantity = '" . (int)$order_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $order_product['tax'] . "'");
+
 				$order_product_id = $this->db->getLastId();
 	
 				if (isset($order_product['order_option'])) {

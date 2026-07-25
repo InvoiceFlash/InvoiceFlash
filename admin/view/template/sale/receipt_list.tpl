@@ -5,6 +5,7 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-shopping-cart"></i> <?php echo $heading_title ?></div>
 		<div class="pull-right">
 			<button onclick="validateGenerate();" class="btn btn-success btn-spacer"><i class="fas fa-money-check-alt"></i> <span class="d-none d-sm-inline-block"><?php echo $button_remittances ?></span></button>
+			<button type="button" onclick="exportExcel();" class="btn btn-success"><i class="fa fa-file-excel"></i> <span class="d-none d-sm-inline-block"><?php echo $button_export ?></span></button>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -138,6 +139,59 @@ function filter() {
 		url += '&filter_date_modified=' + encodeURIComponent(filter_date_modified);
 	}
 				
+	location = url;
+}
+function exportExcel() {
+	url = 'index.php?route=sale/receipt/export&token=<?php echo $token; ?>';
+
+	var filter_remittance_id = $('input[name=\'filter_remittance_id\']').attr('value');
+
+	if (filter_remittance_id) {
+		url += '&filter_remittance_id=' + encodeURIComponent(filter_remittance_id);
+	}
+
+	var filter_receipt_id = $('input[name=\'filter_receipt_id\']').attr('value');
+
+	if (filter_receipt_id) {
+		url += '&filter_receipt_id=' + encodeURIComponent(filter_receipt_id);
+	}
+
+	var filter_invoice_id = $('input[name=\'filter_invoice_id\']').attr('value');
+
+	if (filter_invoice_id) {
+		url += '&filter_invoice_id=' + encodeURIComponent(filter_invoice_id);
+	}
+
+	var filter_customer = $('input[name=\'filter_customer\']').attr('value');
+
+	if (filter_customer) {
+		url += '&filter_customer=' + encodeURIComponent(filter_customer);
+	}
+
+	var filter_status = $('select[name=\'filter_status\']').attr('value');
+
+	if (filter_status != '*') {
+		url += '&filter_status=' + encodeURIComponent(filter_status);
+	}
+
+	var filter_total = $('input[name=\'filter_total\']').attr('value');
+
+	if (filter_total) {
+		url += '&filter_total=' + encodeURIComponent(filter_total);
+	}
+
+	var filter_date_due = $('input[name=\'filter_date_due\']').attr('value');
+
+	if (filter_date_due) {
+		url += '&filter_date_due=' + encodeURIComponent(filter_date_due);
+	}
+
+	var filter_date_modified = $('input[name=\'filter_date_modified\']').attr('value');
+
+	if (filter_date_modified) {
+		url += '&filter_date_modified=' + encodeURIComponent(filter_date_modified);
+	}
+
 	location = url;
 }
 //--></script>

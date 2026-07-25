@@ -134,13 +134,14 @@ class ModelSaleQuote extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['total']));
+				$discount = isset($quote_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$quote_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET 
-				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "', 
-				quote_id = '" . (int)$quote_id . "', 
-				product_id = '" . (int)$quote_product['product_id'] . "', 
-				name = '" . $this->db->escape($quote_product['name']) . "', 
-				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "', extended_description = '" . $this->db->escape(isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '') . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET
+				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "',
+				quote_id = '" . (int)$quote_id . "',
+				product_id = '" . (int)$quote_product['product_id'] . "',
+				name = '" . $this->db->escape($quote_product['name']) . "',
+				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "', extended_description = '" . $this->db->escape(isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '') . "'");
 				
 				$quote_product_id = $this->db->getLastId();
 	
@@ -264,13 +265,14 @@ class ModelSaleQuote extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['total']));
+				$discount = isset($quote_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$quote_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET 
-				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "', 
-				quote_id = '" . (int)$quote_id . "', 
-				product_id = '" . (int)$quote_product['product_id'] . "', 
-				name = '" . $this->db->escape($quote_product['name']) . "', 
-				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "', extended_description = '" . $this->db->escape(isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '') . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET
+				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "',
+				quote_id = '" . (int)$quote_id . "',
+				product_id = '" . (int)$quote_product['product_id'] . "',
+				name = '" . $this->db->escape($quote_product['name']) . "',
+				model = '" . $this->db->escape($quote_product['model']) . "', quantity = '" . (int)$quote_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $quote_product['tax'] . "', extended_description = '" . $this->db->escape(isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '') . "'");
 			
 				$quote_product_id = $this->db->getLastId();
 	

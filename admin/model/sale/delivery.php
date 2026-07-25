@@ -132,12 +132,13 @@ class ModelSaleDelivery extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$delivery_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$delivery_product['total']));
+				$discount = isset($delivery_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$delivery_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "delivery_product SET 
-				delivery_id = '" . (int)$delivery_id . "', 
-				product_id = '" . (int)$delivery_product['product_id'] . "', 
-				name = '" . $this->db->escape($delivery_product['name']) . "', 
-				model = '" . $this->db->escape($delivery_product['model']) . "', quantity = '" . (int)$delivery_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $delivery_product['tax'] . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "delivery_product SET
+				delivery_id = '" . (int)$delivery_id . "',
+				product_id = '" . (int)$delivery_product['product_id'] . "',
+				name = '" . $this->db->escape($delivery_product['name']) . "',
+				model = '" . $this->db->escape($delivery_product['model']) . "', quantity = '" . (int)$delivery_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $delivery_product['tax'] . "'");
 				
 				$delivery_product_id = $this->db->getLastId();
 	
@@ -255,13 +256,14 @@ class ModelSaleDelivery extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$delivery_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$delivery_product['total']));
+				$discount = isset($delivery_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$delivery_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "delivery_product SET 
-				delivery_product_id = '" . (int)$delivery_product['delivery_product_id'] . "', 
-				delivery_id = '" . (int)$delivery_id . "', 
-				product_id = '" . (int)$delivery_product['product_id'] . "', 
-				name = '" . $this->db->escape($delivery_product['name']) . "', 
-				model = '" . $this->db->escape($delivery_product['model']) . "', quantity = '" . (int)$delivery_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $delivery_product['tax'] . "'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "delivery_product SET
+				delivery_product_id = '" . (int)$delivery_product['delivery_product_id'] . "',
+				delivery_id = '" . (int)$delivery_id . "',
+				product_id = '" . (int)$delivery_product['product_id'] . "',
+				name = '" . $this->db->escape($delivery_product['name']) . "',
+				model = '" . $this->db->escape($delivery_product['model']) . "', quantity = '" . (int)$delivery_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $delivery_product['tax'] . "'");
 			
 				$delivery_product_id = $this->db->getLastId();
 	

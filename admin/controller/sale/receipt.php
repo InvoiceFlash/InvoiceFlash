@@ -267,6 +267,7 @@ class ControllerSaleReceipt extends Controller {
 
 		$this->data['button_remittances'] = $this->language->get('button_remittances');
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['button_export'] = $this->language->get('button_export');
 
 		$this->data['token'] = $this->session->data['token'];
 		
@@ -423,7 +424,59 @@ class ControllerSaleReceipt extends Controller {
 
 		$this->response->setOutput($this->render());
   	}
-		
+
+	public function export() {
+		$this->language->load('sale/receipt');
+
+		if (!$this->user->hasPermission('access', 'sale/customer')) {
+			die('Permission denied');
+		}
+
+		$this->load->model('sale/receipt');
+
+		$data = array(
+			'filter_receipt_id'       => isset($this->request->get['filter_receipt_id']) ? $this->request->get['filter_receipt_id'] : null,
+			'filter_remittance_id'    => isset($this->request->get['filter_remittance_id']) ? $this->request->get['filter_remittance_id'] : null,
+			'filter_invoice_id'       => isset($this->request->get['filter_invoice_id']) ? $this->request->get['filter_invoice_id'] : null,
+			'filter_customer'         => isset($this->request->get['filter_customer']) ? $this->request->get['filter_customer'] : null,
+			'filter_status'           => isset($this->request->get['filter_status']) ? $this->request->get['filter_status'] : null,
+			'filter_total'            => isset($this->request->get['filter_total']) ? $this->request->get['filter_total'] : null,
+			'filter_date_due'         => isset($this->request->get['filter_date_due']) ? $this->request->get['filter_date_due'] : null,
+			'filter_date_modified'    => isset($this->request->get['filter_date_modified']) ? $this->request->get['filter_date_modified'] : null,
+			'sort'                    => isset($this->request->get['sort']) ? $this->request->get['sort'] : 'r.date_due',
+			'order'                   => isset($this->request->get['order']) ? $this->request->get['order'] : 'ASC'
+		);
+
+		$results = $this->model_sale_receipt->getReceipts($data);
+
+		$date_format = $this->language->get('date_format_short');
+
+		$csv  = "\xEF\xBB\xBF"; // UTF-8 BOM para Excel
+		$csv .= '"' . $this->language->get('column_receipt_id') . '";"' . $this->language->get('column_remittance_id') . '";"' . $this->language->get('column_invoice_id') . '";"' . $this->language->get('column_customer') . '";"' . $this->language->get('column_status') . '";"' . $this->language->get('column_total') . '";"' . $this->language->get('column_date_due') . '";"' . $this->language->get('column_date_modified') . '"' . "\n";
+
+		foreach ($results as $result) {
+			$status = $result['paid'] ? $this->language->get('text_paid') : $this->language->get('text_pending');
+
+			$csv .= '"' . (int)$result['receipt_id'] . '";';
+			$csv .= '"' . ($result['remittance_id'] ? (int)$result['remittance_id'] : '') . '";';
+			$csv .= '"' . (int)$result['invoice_id'] . '";';
+			$csv .= '"' . str_replace('"', '""', (string)$result['customer']) . '";';
+			$csv .= '"' . $status . '";';
+			$csv .= '"' . number_format((float)$result['amount'], 2, ',', '.') . '";';
+			$csv .= '"' . date($date_format, strtotime($result['date_due'])) . '";';
+			$csv .= '"' . date($date_format, strtotime($result['date_modified'])) . '"' . "\n";
+		}
+
+		ob_start();
+		ob_end_clean();
+		header('Content-Type: text/csv; charset=UTF-8');
+		header('Content-Disposition: attachment; filename="recibos_' . date('Y-m-d') . '.csv"');
+		header('Pragma: no-cache');
+		header('Expires: 0');
+		echo $csv;
+		exit;
+	}
+
   	public function generate() {
 
 		$this->load->language('sale/receipt');

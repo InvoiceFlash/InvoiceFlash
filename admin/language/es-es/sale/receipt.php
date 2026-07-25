@@ -26,6 +26,7 @@ $_['entry_status']							  = 'Estado:';
 
 //Buttons
 $_['button_remittances']                      = 'Generar Remesa';
+$_['button_export']                           = 'Export';
 $_['button_save']							  = 'Guardar';
 $_['button_cancel']							  = 'Cancelar';
 

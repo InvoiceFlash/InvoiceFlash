@@ -46,15 +46,15 @@ class ModelSaleReceipt extends Model {
 		$sql .= " WHERE 1 = 1";
 
 		if (isset($data['filter_receipt_id'])) {
-			$sql .= " AND receipt_id = " . (int)$data['filter_receipt_id'];
+			$sql .= " AND r.receipt_id = " . (int)$data['filter_receipt_id'];
 		}
 
 		if (isset($data['filter_remittance_id'])) {
-			$sql .= " AND remittance_id = " . (int)$data['filter_remittance_id'];
+			$sql .= " AND r.remittance_id = " . (int)$data['filter_remittance_id'];
 		}
 
 		if (isset($data['filter_invoice_id'])) {
-			$sql .= " AND invoice_id = " . (int)$data['filter_invoice_id'];
+			$sql .= " AND r.invoice_id = " . (int)$data['filter_invoice_id'];
 		}
 
 		if (isset($data['filter_customer'])) {
@@ -69,22 +69,22 @@ class ModelSaleReceipt extends Model {
 			$sql .= " AND ";
 
 			if ($data['filter_status']==1) {
-				$sql .= 'paid = 1';
+				$sql .= 'r.paid = 1';
 			} else {
-				$sql .= 'paid = 0';
+				$sql .= 'r.paid = 0';
 			}
 		}
 
 		if (isset($data['filter_total'])) {
-			$sql .= " AND amount = " . (float)$data['filter_total'];
+			$sql .= " AND r.amount = " . (float)$data['filter_total'];
 		}
 
 		if (isset($data['filter_date_due'])) {
-			$sql .= " AND date_due = " . $this->db->escape($data['filter_date_due']);
+			$sql .= " AND r.date_due = " . $this->db->escape($data['filter_date_due']);
 		}
 
 		if (isset($data['filter_date_modified'])) {
-			$sql .= " AND date_modified = " . $this->db->escape($data['filter_date_modified']);
+			$sql .= " AND r.date_modified = " . $this->db->escape($data['filter_date_modified']);
 		}
 
 		$query = $this->db->query($sql);
@@ -97,15 +97,15 @@ class ModelSaleReceipt extends Model {
 		$sql = "SELECT r.*, c.company AS customer FROM " . DB_PREFIX . "receipt AS r LEFT JOIN " . DB_PREFIX . "invoice AS i ON i.invoice_id = r.invoice_id LEFT JOIN " . DB_PREFIX . "customer AS c ON c.customer_id = i.customer_id WHERE 1 = 1";
 		
 		if (isset($data['filter_receipt_id'])) {
-			$sql .= " AND receipt_id = " . (int)$data['filter_receipt_id'];
+			$sql .= " AND r.receipt_id = " . (int)$data['filter_receipt_id'];
 		}
 
 		if (isset($data['filter_remittance_id'])) {
-			$sql .= " AND remittance_id = " . (int)$data['filter_remittance_id'];
+			$sql .= " AND r.remittance_id = " . (int)$data['filter_remittance_id'];
 		}
 
 		if (isset($data['filter_invoice_id'])) {
-			$sql .= " AND invoice_id = " . (int)$data['filter_invoice_id'];
+			$sql .= " AND r.invoice_id = " . (int)$data['filter_invoice_id'];
 		}
 
 		if (isset($data['filter_customer'])) {
@@ -120,22 +120,22 @@ class ModelSaleReceipt extends Model {
 			$sql .= " AND ";
 
 			if ($data['filter_status']==1) {
-				$sql .= "paid = 1";
+				$sql .= "r.paid = 1";
 			} else {
-				$sql .= "paid = 0";
+				$sql .= "r.paid = 0";
 			}
 		}
 
 		if (isset($data['filter_total'])) {
-			$sql .= " AND amount = " . (float)$data['filter_total'];
+			$sql .= " AND r.amount = " . (float)$data['filter_total'];
 		}
 
 		if (isset($data['filter_date_due'])) {
-			$sql .= " AND date_due = " . $this->db->escape($data['filter_date_due']);
+			$sql .= " AND r.date_due = " . $this->db->escape($data['filter_date_due']);
 		}
 
 		if (isset($data['filter_date_modified'])) {
-			$sql .= " AND date_modified = " . $this->db->escape($data['filter_date_modified']);
+			$sql .= " AND r.date_modified = " . $this->db->escape($data['filter_date_modified']);
 		}
 
 		$sort_data = array(

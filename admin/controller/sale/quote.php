@@ -245,6 +245,7 @@ class ControllerSaleQuote extends Controller {
 							'order_option'     => $this->model_sale_quote->getQuoteOptions($quote_id, $quote_product['quote_product_id']),
 							'quantity'         => $quote_product['quantity'],
 							'price'            => $quote_product['price'],
+							'discount'         => $quote_product['discount'],
 							'total'            => $quote_product['total'],
 							'tax'              => $quote_product['tax'],
 							'reward'           => $quote_product['reward']
@@ -376,8 +377,9 @@ class ControllerSaleQuote extends Controller {
 							'name'                => $quote_product['name'],
 							'model'               => $quote_product['model'],
 							'quote_option'        => $this->model_sale_quote->getQuoteOptions($quote_id, $quote_product['quote_product_id']),
-							'quantity'            => $quote_product['quantity'],
+						'quantity'            => $quote_product['quantity'],
 							'price'               => $quote_product['price'],
+							'discount'            => $quote_product['discount'],
 							'total'               => $quote_product['total'],
 							'tax'                 => $quote_product['tax'],
 							'extended_description' => $quote_product['extended_description']
@@ -1364,7 +1366,8 @@ class ControllerSaleQuote extends Controller {
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$quote_product['price'], 2, '.', ''),
 				'total'            => $this->currency->format($quote_product['total']),
 				'tax'              => $quote_product['tax'],
-				'extended_description' => isset($quote_product['extended_description']) ? $quote_product['extended_description'] : ''
+				'extended_description' => isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '',
+				'discount_raw'     => (!empty($quote_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $quote_product['discount']), 2, '.', '') : ''
 			);
 		}
 		
@@ -2287,6 +2290,8 @@ class ControllerSaleQuote extends Controller {
 							? $quote_product['name']
 							: $product_info['name'];
 
+						$discount = isset($quote_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $quote_product['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
 							'name'		 => $use_name,
@@ -2296,10 +2301,10 @@ class ControllerSaleQuote extends Controller {
 							'price'		 => $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($use_price*$quote_product['quantity']),
+							'total'		 => ($use_price*$quote_product['quantity']) - $discount,
 							'shipping'	 => $product_info['shipping'],
 							'extended_description' => isset($quote_product['extended_description']) ? $quote_product['extended_description'] : '',
-							'discount'   => isset($quote_product['discount']) ? $quote_product['discount'] : ''
+							'discount'   => $discount
 						);
 					}
 				}
@@ -2334,6 +2339,8 @@ class ControllerSaleQuote extends Controller {
 							? (float)$this->request->post['price_override']
 							: (float)$product_info['price'];
 
+						$discount = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' 	=> $this->request->post['product_id'],
 							'name'		 	=> $product_info['name'],
@@ -2342,9 +2349,9 @@ class ControllerSaleQuote extends Controller {
 							'option' 	 	=> $option,
 							'price'		 	=> $use_price,
 							'tax_class_id'	=> $product_info['tax_class_id'],
-							'total'		 	=> ($use_price * $quantity),
+							'total'		 	=> ($use_price * $quantity) - $discount,
 							'shipping'	 	=> $product_info['shipping'],
-							'discount'		=> isset($this->request->post['discount']) ? $this->request->post['discount'] : ''
+							'discount'		=> $discount
 						);
 
 					}
@@ -2392,7 +2399,7 @@ class ControllerSaleQuote extends Controller {
 					'tax_class_id'	    => $product['tax_class_id'],
 					'total'      	    => $this->currency->format($product['total']),
 					'extended_description' => isset($product['extended_description']) ? $product['extended_description'] : '',
-					'discount'          => isset($product['discount']) ? $product['discount'] : ''
+					'discount'          => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
 
@@ -2494,6 +2501,7 @@ class ControllerSaleQuote extends Controller {
 					'order_option'     => $quote_option,
 					'quantity'         => $quote_product['quantity'],
 					'price'            => $quote_product['price'],
+					'discount'         => $quote_product['discount'],
 					'total'            => $quote_product['total'],
 					'tax'              => $quote_product['tax'],
 					'reward'           => $quote_product['reward']

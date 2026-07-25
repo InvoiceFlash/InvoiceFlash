@@ -248,6 +248,7 @@ class ControllerSaleDraft extends Controller {
 							'draft_option'      => $this->model_sale_draft->getDraftOptions($draft_id, $draft_product['draft_product_id']),
 							'quantity'          => $draft_product['quantity'],
 							'price'             => $draft_product['price'],
+							'discount'          => $draft_product['discount'],
 							'total'             => $draft_product['total'],
 							'tax'               => $draft_product['tax']
 						);
@@ -364,6 +365,7 @@ class ControllerSaleDraft extends Controller {
 							'model'               => $draft_product['model'],
 							'quantity'            => $draft_product['quantity'],
 							'price'               => $draft_product['price'],
+							'discount'            => $draft_product['discount'],
 							'total'               => $draft_product['total'],
 							'tax'                 => $draft_product['tax'],
 							'invoice_option'      => $this->model_sale_draft->getDraftOptions($draft_id, $draft_product['draft_product_id'])
@@ -1340,7 +1342,8 @@ class ControllerSaleDraft extends Controller {
 				'price_raw'         => number_format((float)$draft_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$draft_product['price'], 2, '.', ''),
 				'total'             => $this->currency->format($draft_product['total'], $draft_info['currency_code'], $draft_info['currency_value'], true, true),
-				'tax'               => $draft_product['tax']
+				'tax'               => $draft_product['tax'],
+				'discount_raw'      => (!empty($draft_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $draft_product['discount']), 2, '.', '') : ''
 			);
 		}
 		
@@ -2234,6 +2237,7 @@ class ControllerSaleDraft extends Controller {
 							'product_id' => $product['product_id'],
 							'quantity'   => $product['quantity'],
 							'price'      => $product['price'],
+							'discount'   => $product['discount'],
 							'option'     => $option_data,
 						);
 					}
@@ -2328,6 +2332,8 @@ class ControllerSaleDraft extends Controller {
 							? $draft_product['name']
 							: $product_info['name'];
 
+						$discount = isset($draft_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $draft_product['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
 							'name'		 => $use_name,
@@ -2338,9 +2344,9 @@ class ControllerSaleDraft extends Controller {
 							'price'		 => $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($use_price*$draft_product['quantity']),
+							'total'		 => ($use_price*$draft_product['quantity']) - $discount,
 							'shipping'	 => $product_info['shipping'],
-							'discount'   => isset($draft_product['discount']) ? $draft_product['discount'] : ''
+							'discount'   => $discount
 						);
 					}
 				}
@@ -2375,6 +2381,8 @@ class ControllerSaleDraft extends Controller {
 							? (float)$this->request->post['price_override']
 							: (float)$product_info['price'];
 
+						$discount = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' 	=> $this->request->post['product_id'],
 							'name'		 	=> $product_info['name'],
@@ -2385,9 +2393,9 @@ class ControllerSaleDraft extends Controller {
 							'price'		 	=> $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'	=> $product_info['tax_class_id'],
-							'total'		 	=> ($use_price * $quantity),
+							'total'		 	=> ($use_price * $quantity) - $discount,
 							'shipping'	 	=> $product_info['shipping'],
-							'discount'		=> isset($this->request->post['discount']) ? $this->request->post['discount'] : ''
+							'discount'		=> $discount
 						);
 
 					}
@@ -2435,7 +2443,7 @@ class ControllerSaleDraft extends Controller {
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	    => $product['tax_class_id'],
 					'total'      	    => $this->currency->format($product['total'], '', '', true, true),
-					'discount'          => isset($product['discount']) ? $product['discount'] : ''
+					'discount'          => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
 

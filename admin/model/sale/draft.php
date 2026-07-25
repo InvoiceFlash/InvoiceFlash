@@ -131,15 +131,16 @@ class ModelSaleDraft extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['total']));
+				$discount = isset($draft_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$draft_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "draft_product SET 
-				draft_product_id = '" . (int)$draft_product['draft_product_id'] . "', 
-				draft_id = '" . (int)$draft_id . "', 
-				product_id = '" . (int)$draft_product['product_id'] . "', 
-				name = '" . $this->db->escape($draft_product['name']) . "', 
-				model = '" . $this->db->escape($draft_product['model']) . "', quantity = '" . (int)$draft_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $draft_product['tax'] . "'");
-				
-				//name_ext = '" . $this->db->escape($draft_product['name_ext']) . "', 
+				$this->db->query("INSERT INTO " . DB_PREFIX . "draft_product SET
+				draft_product_id = '" . (int)$draft_product['draft_product_id'] . "',
+				draft_id = '" . (int)$draft_id . "',
+				product_id = '" . (int)$draft_product['product_id'] . "',
+				name = '" . $this->db->escape($draft_product['name']) . "',
+				model = '" . $this->db->escape($draft_product['model']) . "', quantity = '" . (int)$draft_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $draft_product['tax'] . "'");
+
+				//name_ext = '" . $this->db->escape($draft_product['name_ext']) . "',
 				
 				$draft_product_id = $this->db->getLastId();
 	
@@ -261,14 +262,15 @@ class ModelSaleDraft extends Model {
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['price']));
 				$total = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['total']));
+				$discount = isset($draft_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$draft_product['discount'])) : 0;
 
-				$this->db->query("INSERT INTO " . DB_PREFIX . "draft_product SET 
-				draft_product_id = '" . (int)$draft_product['draft_product_id'] . "', 
-				draft_id = '" . (int)$draft_id . "', 
-				product_id = '" . (int)$draft_product['product_id'] . "', 
-				name = '" . $this->db->escape($draft_product['name']) . "', 
-				model = '" . $this->db->escape($draft_product['model']) . "', quantity = '" . (int)$draft_product['quantity'] . "', price = '" . $price . "', total = '" . $total . "', tax = '" . $draft_product['tax'] . "'");
-				
+				$this->db->query("INSERT INTO " . DB_PREFIX . "draft_product SET
+				draft_product_id = '" . (int)$draft_product['draft_product_id'] . "',
+				draft_id = '" . (int)$draft_id . "',
+				product_id = '" . (int)$draft_product['product_id'] . "',
+				name = '" . $this->db->escape($draft_product['name']) . "',
+				model = '" . $this->db->escape($draft_product['model']) . "', quantity = '" . (int)$draft_product['quantity'] . "', price = '" . $price . "', discount = '" . $discount . "', total = '" . $total . "', tax = '" . $draft_product['tax'] . "'");
+
 				$draft_product_id = $this->db->getLastId();
 	
 				if (isset($draft_product['draft_option'])) {

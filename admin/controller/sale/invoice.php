@@ -238,6 +238,7 @@ class ControllerSaleInvoice extends Controller {
 							'model'            => $invoice_product['model'],
 							'quantity'         => $invoice_product['quantity'],
 							'price'            => $invoice_product['price'],
+							'discount'         => $invoice_product['discount'],
 							'total'            => $invoice_product['total'],
 							'tax'              => $invoice_product['tax'],
 							'draft_option'     => $this->model_sale_invoice->getInvoiceOptions($invoice_id, $invoice_product['invoice_product_id'])
@@ -675,8 +676,9 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['column_model'] = $this->language->get('column_model');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
-			
+
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_product'] = $this->language->get('button_add_product');
@@ -1174,7 +1176,9 @@ class ControllerSaleInvoice extends Controller {
 				'quantity'         => $invoice_product['quantity'],
 				'price'			   => $this->currency->format($invoice_product['price'], $invoice_info['currency_code'], $invoice_info['currency_value']),
 				'total'            => $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value']),
-				'tax'              => $invoice_product['tax']
+				'tax'              => $invoice_product['tax'],
+				'discount'         => (!empty($invoice_product['discount'])) ? $this->currency->format($invoice_product['discount'], $invoice_info['currency_code'], $invoice_info['currency_value']) : '',
+				'discount_raw'     => (!empty($invoice_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']), 2, '.', '') : ''
 			);
 		}
 		
@@ -1331,6 +1335,7 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['column_model'] = $this->language->get('column_model');
 			$this->data['column_quantity'] = $this->language->get('column_quantity');
 			$this->data['column_price'] = $this->language->get('column_price');
+			$this->data['column_discount'] = $this->language->get('column_discount');
 			$this->data['column_total'] = $this->language->get('column_total');
 			$this->data['column_download'] = $this->language->get('column_download');
 			$this->data['column_filename'] = $this->language->get('column_filename');
@@ -1351,6 +1356,7 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['tab_invoice_history'] = $this->language->get('tab_invoice_history');
 			$this->data['tab_fraud'] = $this->language->get('tab_fraud');
 			$this->data['tab_history'] = $this->language->get('tab_history');
+			$this->data['tab_receipts'] = $this->language->get('tab_receipts');
 		
 			$this->data['token'] = $this->session->data['token'];
 
@@ -1530,6 +1536,7 @@ class ControllerSaleInvoice extends Controller {
 					'option'   		   => $option_data,
 					'quantity'		   => $product['quantity'],
 					'price'    		   => $this->currency->format($product['price']),
+					'discount'         => (!empty($product['discount'])) ? $this->currency->format($product['discount']) : '',
 					'total'    		   => $this->currency->format($product['total']),
 					'href'     		   => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
 				);
@@ -1640,10 +1647,68 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['pagination'] = $pagination->render();
 		
 		$this->template = 'sale/invoice_history.tpl';
-		
+
 		$this->response->setOutput($this->render());
   	}
-			
+
+	public function receipts() {
+		$this->language->load('sale/invoice');
+		$this->language->load('sale/receipt');
+
+		$this->load->model('sale/receipt');
+
+		$this->data['text_no_results'] = $this->language->get('text_no_results');
+		$this->data['text_paid'] = $this->language->get('text_paid');
+		$this->data['text_pending'] = $this->language->get('text_pending');
+
+		$this->data['column_remittance_id'] = $this->language->get('column_remittance_id');
+		$this->data['column_status'] = $this->language->get('column_status');
+		$this->data['column_total'] = $this->language->get('column_total');
+		$this->data['column_date_due'] = $this->language->get('column_date_due');
+
+		if (isset($this->request->get['page'])) {
+			$page = $this->request->get['page'];
+		} else {
+			$page = 1;
+		}
+
+		$data = array(
+			'filter_invoice_id' => $this->request->get['invoice_id'],
+			'sort'              => 'r.date_due',
+			'order'             => 'ASC',
+			'start'             => ($page - 1) * 10,
+			'limit'             => 10
+		);
+
+		$this->data['receipts'] = array();
+
+		$results = $this->model_sale_receipt->getReceipts($data);
+
+		foreach ($results as $result) {
+			$this->data['receipts'][] = array(
+				'remittance_id' => ($result['remittance_id'] == 0) ? '' : $result['remittance_id'],
+				'paid'          => $result['paid'],
+				'total'         => $this->currency->format($result['amount'], $result['currency_code'], $result['currency_value'], true, true),
+				'date_due'      => date($this->language->get('date_format_short'), strtotime($result['date_due']))
+			);
+		}
+
+		$receipt_total = $this->model_sale_receipt->getTotalReceipts($data);
+
+		$pagination = new Pagination();
+		$pagination->total = $receipt_total;
+		$pagination->page = $page;
+		$pagination->limit = 10;
+		$pagination->text = $this->language->get('text_pagination');
+		$pagination->url = $this->url->link('sale/invoice/receipts', 'token=' . $this->session->data['token'] . '&invoice_id=' . $this->request->get['invoice_id'] . '&page={page}', 'SSL');
+
+		$this->data['pagination'] = $pagination->render();
+
+		$this->template = 'sale/invoice_receipts.tpl';
+
+		$this->response->setOutput($this->render());
+	}
+
   	public function invoice() {
 		
 		if (isset($this->request->get['format'])) {
@@ -2613,16 +2678,19 @@ class ControllerSaleInvoice extends Controller {
 							? $invoice_product['name']
 							: $product_info['name'];
 
+						$discount = isset($invoice_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']) : 0;
+
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
 							'name'		 => $use_name,
 							'model'		 => $product_info['model'],
-							'quantity' 	 => $invoice_product['quantity'], 
+							'quantity' 	 => $invoice_product['quantity'],
 							'option'	 => $option_data,
-							'price'		 => $product_info['price'], 
+							'price'		 => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($product_info['price']*$invoice_product['quantity']),
-							'shipping'	 => $product_info['shipping']
+							'total'		 => ($product_info['price']*$invoice_product['quantity']) - $discount,
+							'shipping'	 => $product_info['shipping'],
+							'discount'   => $discount
 						);
 					}
 				}
@@ -2707,9 +2775,10 @@ class ControllerSaleInvoice extends Controller {
 					'model'      	=> $product['model'], 
 					'quantity'   	=> $product['quantity'],
 					'option'   		=> $option,
-					'price'      	=> $this->currency->format($product['price']),	
-					'tax_class_id'	=> $product['tax_class_id'], 
-					'total'      	=> $this->currency->format($product['total'])
+					'price'      	=> $this->currency->format($product['price']),
+					'tax_class_id'	=> $product['tax_class_id'],
+					'total'      	=> $this->currency->format($product['total']),
+					'discount'      => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
 
