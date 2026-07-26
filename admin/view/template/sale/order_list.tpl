@@ -7,7 +7,7 @@
 			<button type="button" data-url="<?php echo $print; ?>" onclick="submitOrders(this.dataset.url);" class="btn btn-default btn-spacer"><i class="far fa-eye"></i><span class="hidden-xs"> View</span></button>
 			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="openPrintModal(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirm(text_confirm);" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_delivery; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_delivery; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
@@ -64,7 +64,7 @@
 					</tr>
 					<?php if ($orders) { ?>
 					<?php foreach ($orders as $order) { ?>
-					<tr<?php echo ($order['has_delivery']) ? ' class="table-warning"' : ''; ?>>
+					<tr<?php echo ($order['has_delivery']) ? ' style="background-color:#fff9c4;"' : ''; ?>>
 						<td class="rowlink-skip text-center"><?php if ($order['selected']) { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $order['order_id']; ?>" checked="">
 							<?php } else { ?>
@@ -124,5 +124,24 @@ $(document).ready(function(){
         $('#formPrint>input[name="selected[]"]').remove();
     });
 });
+
+var configOpenNextConvert = <?php echo $config_open_next_convert ? 'true' : 'false'; ?>;
+
+function confirmConvert() {
+	if (!confirm(text_confirm)) {
+		return false;
+	}
+
+	if (configOpenNextConvert && $('input[name="selected[]"]:checked').length === 1) {
+		window.open('', 'openNextTab');
+	}
+
+	return true;
+}
 </script>
+<?php if ($open_next_url) { ?>
+<script>
+window.open('<?php echo $open_next_url; ?>', 'openNextTab');
+</script>
+<?php } ?>
 <?php echo $footer; ?>

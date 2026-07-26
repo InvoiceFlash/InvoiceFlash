@@ -18,7 +18,7 @@
 	text-align: right;
 }
 .title {
-	font-size: 32px;
+	font-size: 22.4px;
 	text-transform: uppercase;
 	padding-left: 20px;
 	text-align: right;
@@ -42,12 +42,9 @@ th {
 <body style="padding-top:0;">
 <div class="container">
 <?php foreach ($quotes as $quotes) { ?>
-	<div class="store_logo">
-		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $quotes['store_name']; ?>" /><br>
-			<span class="title"><?php echo $text_quote; ?></span>
-		</div>
-	</div>
+	<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $quotes['store_name']; ?>" width="242" /><br>
+	<span class="title"><?php echo $text_quote; ?></span>
+	<br>
 	<table class="table table-bordered">
 		<tr>
 			<td width="50%"><strong><?php echo $quotes['store_name']; ?></strong><br>

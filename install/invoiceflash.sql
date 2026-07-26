@@ -2235,20 +2235,10 @@ CREATE TABLE `if_order_status` (
 --
 
 INSERT INTO `if_order_status` (`order_status_id`, `language_id`, `name`) VALUES
-(2, 1, 'Processing'),
-(3, 1, 'Shipped'),
-(7, 1, 'Canceled'),
-(5, 1, 'Complete'),
-(8, 1, 'Denied'),
-(9, 1, 'Canceled Reversal'),
-(10, 1, 'Failed'),
-(11, 1, 'Refunded'),
-(12, 1, 'Reversed'),
-(13, 1, 'Chargeback'),
 (1, 1, 'Pending'),
-(16, 1, 'Voided'),
-(15, 1, 'Processed'),
-(14, 1, 'Expired');
+(2, 1, 'Sent'),
+(1, 2, 'Pendiente'),
+(2, 2, 'Enviado');
 
 -- --------------------------------------------------------
 

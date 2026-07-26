@@ -240,6 +240,7 @@ $_['entry_title'] = 'T&iacute;tulo:';
 $_['entry_vat_id'] = 'CIF/NIF:';
 $_['entry_catalog_limit'] = '<a data-toggle="tooltip" title="Determina cu&aacute;ntos art&iacute;culos del cat&aacute;logo se muestran por p&aacute;gina (productos, categor&iacute;as, etc.)"><i class="fas fa-question-circle"></i></a> Art&iacute;culos por P&aacute;gina por Defecto (Cat&aacute;logo):';
 $_['entry_admin_limit'] = '<a data-toggle="tooltip" title="Determina cu&aacute;ntos elementos de administraci&oacute;n se muestran por p&aacute;gina (pedidos, clientes, etc.)"><i class="fas fa-question-circle"></i></a> Art&iacute;culos por P&aacute;gina por Defecto (Admin):';
+$_['entry_open_next_convert'] = 'Open Next on convert:';
 $_['entry_download'] = 'Permitir Descargas:';
 $_['entry_vat'] = '<a data-toggle="tooltip" title="Validar el n&uacute;mero de IVA con el servicio http://ec.europa.eu."><i class="fas fa-question-circle"></i></a> Validar N&uacute;mero de IVA:';
 $_['entry_quote_prefix'] = '<a data-toggle="tooltip" title="Encabezado usado para construir el ID del Presupuesto (ej. QUO-2026). El n&uacute;mero secuencial se a&ntilde;ade autom&aacute;ticamente."><i class="fas fa-question-circle"></i></a> Prefijo de Presupuesto:';

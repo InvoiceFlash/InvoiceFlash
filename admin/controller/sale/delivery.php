@@ -329,6 +329,8 @@ class ControllerSaledelivery extends Controller {
 
 			$new_status = $this->model_localisation_delivery_status->getDeliveryStatus(2);
 			$converted = array();
+			$new_draft_id = 0;
+			$draft_count = 0;
 
 			if ($group) {
 				$data = null;
@@ -377,7 +379,10 @@ class ControllerSaledelivery extends Controller {
 
 				$query = $this->db->query("SELECT draft_id FROM `" . DB_PREFIX . "draft` ORDER BY draft_id DESC LIMIT 1");
 
-				$this->logDraftCreated($query->row['draft_id']);
+				$new_draft_id = $query->row['draft_id'];
+				$draft_count = 1;
+
+				$this->logDraftCreated($new_draft_id);
 
 				foreach ($deliveries as $delivery_id => $delivery_info) {
 					$converted[] = $this->markDeliveryConverted($delivery_id, $new_status);
@@ -393,20 +398,30 @@ class ControllerSaledelivery extends Controller {
 
 					$query = $this->db->query("SELECT draft_id FROM `" . DB_PREFIX . "draft` ORDER BY draft_id DESC LIMIT 1");
 
-					$this->logDraftCreated($query->row['draft_id']);
+					$new_draft_id = $query->row['draft_id'];
+					$draft_count++;
+
+					$this->logDraftCreated($new_draft_id);
 
 					$converted[] = $this->markDeliveryConverted($delivery_id, $new_status);
 				}
 			}
 
+			$open_next = ($this->config->get('config_open_next_convert') && $draft_count == 1) ? $this->url->link('sale/draft/info', 'token=' . $this->session->data['token'] . '&draft_id=' . $new_draft_id, 'SSL') : '';
+
 			if ($is_ajax) {
 				$this->response->addHeader('Content-Type: application/json');
 				$this->response->setOutput(json_encode(array(
 					'success'   => $this->language->get('text_success_convert'),
-					'converted' => $converted
+					'converted' => $converted,
+					'redirect'  => $open_next
 				)));
 
 				return;
+			}
+
+			if ($open_next) {
+				$this->redirect($open_next);
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success_convert');
@@ -800,6 +815,8 @@ class ControllerSaledelivery extends Controller {
       } else {
           $this->data['success'] = '';
       }
+
+      $this->data['config_open_next_convert'] = $this->config->get('config_open_next_convert') ? true : false;
 
       $url = '';
 

@@ -123,6 +123,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_weight_class'] = $this->language->get('entry_weight_class');
 		$this->data['entry_catalog_limit'] = $this->language->get('entry_catalog_limit');
 		$this->data['entry_admin_limit'] = $this->language->get('entry_admin_limit');
+		$this->data['entry_open_next_convert'] = $this->language->get('entry_open_next_convert');
 		$this->data['entry_product_count'] = $this->language->get('entry_product_count');
 		$this->data['entry_review'] = $this->language->get('entry_review');
 		$this->data['entry_download'] = $this->language->get('entry_download');
@@ -651,6 +652,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_admin_limit'] = $this->request->post['config_admin_limit'];
 		} else {
 			$this->data['config_admin_limit'] = $this->config->get('config_admin_limit');
+		}
+
+		if (isset($this->request->post['config_open_next_convert'])) {
+			$this->data['config_open_next_convert'] = $this->request->post['config_open_next_convert'];
+		} else {
+			$this->data['config_open_next_convert'] = $this->config->get('config_open_next_convert');
 		}
 
 		if (isset($this->request->post['config_product_count'])) {

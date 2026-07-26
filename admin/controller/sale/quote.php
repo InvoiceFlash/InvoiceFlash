@@ -229,6 +229,9 @@ class ControllerSaleQuote extends Controller {
 		$this->load->model('tool/user_logs');
 
     	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			$new_order_id = 0;
+			$converted_count = 0;
+
 			foreach ($this->request->post['selected'] as $quote_id) {
 				$quote_info = $this->model_sale_quote->getQuote($quote_id);
 
@@ -297,6 +300,7 @@ class ControllerSaleQuote extends Controller {
 					$query = $this->db->query("SELECT order_id FROM `" . DB_PREFIX . "order` ORDER BY order_id DESC LIMIT 1");
 
 					$new_order_id = $query->row['order_id'];
+					$converted_count++;
 
 					$this->db->query("UPDATE " . DB_PREFIX . "quote SET invoice_no = " . (int)$new_order_id . " WHERE quote_id = " . (int)$quote_id);
 
@@ -312,6 +316,10 @@ class ControllerSaleQuote extends Controller {
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success_convert');
+
+			if ($this->config->get('config_open_next_convert') && $converted_count == 1) {
+				$this->session->data['open_next_url'] = $this->url->link('sale/order/info', 'token=' . $this->session->data['token'] . '&order_id=' . $new_order_id, 'SSL');
+			}
 
 			$url = '';
 
@@ -694,6 +702,16 @@ class ControllerSaleQuote extends Controller {
       } else {
           $this->data['success'] = '';
       }
+
+      if (isset($this->session->data['open_next_url'])) {
+          $this->data['open_next_url'] = $this->session->data['open_next_url'];
+
+          unset($this->session->data['open_next_url']);
+      } else {
+          $this->data['open_next_url'] = '';
+      }
+
+      $this->data['config_open_next_convert'] = $this->config->get('config_open_next_convert') ? true : false;
 
       $url = '';
 

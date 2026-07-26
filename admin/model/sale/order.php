@@ -113,9 +113,9 @@ class ModelSaleOrder extends Model {
 			 `shipping_address_format` = '" . $this->db->escape($shipping_address_format) . "', 
 			 `shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 			 `shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
-			 `comment` = '" . $this->db->escape($data['comment']) . "', 
-			 `order_status_id` = '" . (int)$data['order_status_id'] . "', 
-			 `language_id` = '" . (int)$this->config->get('config_language_id') . "', 
+			 `comment` = '" . $this->db->escape($data['comment']) . "',
+			 `order_status_id` = '" . (!empty($data['order_status_id']) ? (int)$data['order_status_id'] : 1) . "',
+			 `language_id` = '" . (int)$this->config->get('config_language_id') . "',
 			 `currency_id` = '" . (int)$currency_id . "', 
 			 `currency_code` = '" . $this->db->escape($currency_code) . "', 
 			 `currency_value` = '" . (float)$currency_value . "',  
@@ -179,8 +179,18 @@ class ModelSaleOrder extends Model {
 
 	public function editOrder($order_id, $data) {
 		$this->load->model('localisation/country');
-		
+
 		$this->load->model('localisation/zone');
+
+		// order_form.tpl no incluye order_status_id (el estado se cambia solo desde la pestaña
+		// History, ver addOrderHistory()) - si no viene en $data, conservar el estado actual en
+		// vez de resetearlo a 0 en cada guardado de los datos generales del pedido.
+		if (isset($data['order_status_id']) && $data['order_status_id'] !== '') {
+			$order_status_id = (int)$data['order_status_id'];
+		} else {
+			$current_order = $this->db->query("SELECT order_status_id FROM `" . DB_PREFIX . "order` WHERE order_id = '" . (int)$order_id . "'")->row;
+			$order_status_id = $current_order ? (int)$current_order['order_status_id'] : 1;
+		}
 
 		$country_info = $this->model_localisation_country->getCountry($data['shipping_country_id']);
 		
@@ -250,9 +260,9 @@ class ModelSaleOrder extends Model {
 		`shipping_address_format` = '" . $this->db->escape($shipping_address_format) . "', 
 		`shipping_method` = '" . $this->db->escape($data['shipping_method']) . "', 
 		`shipping_code` = '" . $this->db->escape($data['shipping_code']) . "', 
-		`comment` = '" . $this->db->escape($data['comment']) . "', 
-		`order_status_id` = '" . (int)$data['order_status_id'] . "', 
-		`language_id` = '" . (int)$this->config->get('config_language_id') . "', 
+		`comment` = '" . $this->db->escape($data['comment']) . "',
+		`order_status_id` = '" . $order_status_id . "',
+		`language_id` = '" . (int)$this->config->get('config_language_id') . "',
 		`date_modified` = now() WHERE `order_id` = '" . (int)$order_id . "'");
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "order_product WHERE order_id = '" . (int)$order_id . "'"); 

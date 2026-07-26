@@ -348,6 +348,9 @@ class ControllerSaleDraft extends Controller {
 		$this->load->model('tool/user_logs');
 
     	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			$new_invoice_id = 0;
+			$converted_count = 0;
+
 			foreach ($this->request->post['selected'] as $draft_id) {
 				$draft_info = $this->model_sale_draft->getDraft($draft_id);
 
@@ -375,6 +378,7 @@ class ControllerSaleDraft extends Controller {
 					$data['invoice_total'] = $this->model_sale_draft->getDraftTotals($draft_id);
 
 					$new_invoice_id = $this->model_sale_invoice->addInvoice($data);
+					$converted_count++;
 
 					$this->model_tool_user_logs->addLog(array(
 						'user_id'       => $this->user->getId(),
@@ -390,6 +394,10 @@ class ControllerSaleDraft extends Controller {
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success_convert');
+
+			if ($this->config->get('config_open_next_convert') && $converted_count == 1) {
+				$this->session->data['open_next_url'] = $this->url->link('sale/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $new_invoice_id, 'SSL');
+			}
 
 			$url = '';
 
@@ -647,6 +655,16 @@ class ControllerSaleDraft extends Controller {
 		} else {
 			$this->data['success'] = '';
 		}
+
+		if (isset($this->session->data['open_next_url'])) {
+			$this->data['open_next_url'] = $this->session->data['open_next_url'];
+
+			unset($this->session->data['open_next_url']);
+		} else {
+			$this->data['open_next_url'] = '';
+		}
+
+		$this->data['config_open_next_convert'] = $this->config->get('config_open_next_convert') ? true : false;
 
 		$url = '';
 
@@ -1349,12 +1367,25 @@ class ControllerSaleDraft extends Controller {
 		
 		if (isset($this->request->post['draft_total'])) {
       		$this->data['draft_totals'] = $this->request->post['draft_total'];
-    	} elseif (isset($this->request->get['draft_id'])) { 
+    	} elseif (isset($this->request->get['draft_id'])) {
 			$this->data['draft_totals'] = $this->model_sale_draft->getDraftTotals($this->request->get['draft_id']);
 		} else {
       		$this->data['draft_totals'] = array();
-		}	
-		
+		}
+
+		if (isset($this->request->post['global_discount'])) {
+			$this->data['global_discount'] = $this->request->post['global_discount'];
+		} else {
+			$this->data['global_discount'] = '';
+
+			foreach ($this->data['draft_totals'] as $draft_total) {
+				if ($draft_total['code'] == 'discount') {
+					$this->data['global_discount'] = number_format(abs((float)$draft_total['value']), 2, '.', '');
+					break;
+				}
+			}
+		}
+
 		$this->load->model('localisation/payment');
 		$this->load->model('localisation/shipping');
 

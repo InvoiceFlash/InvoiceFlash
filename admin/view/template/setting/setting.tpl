@@ -261,6 +261,20 @@
 										<?php } ?>
 									</div>
 								</div>
+								<div class="form-group row">
+									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_open_next_convert; ?></label>
+									<div class="col-sm-6">
+										<select name="config_open_next_convert" class="form-control" style="width: auto;">
+											<?php if ($config_open_next_convert) { ?>
+											<option value="0"><?php echo $text_no; ?></option>
+											<option value="1" selected=""><?php echo $text_yes; ?></option>
+											<?php } else { ?>
+											<option value="0" selected=""><?php echo $text_no; ?></option>
+											<option value="1"><?php echo $text_yes; ?></option>
+											<?php } ?>
+										</select>
+									</div>
+								</div>
 							</div>
 							<div id="tab-product" class="tab-pane">
 								<div class="form-group row">

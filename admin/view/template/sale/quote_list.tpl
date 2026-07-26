@@ -7,7 +7,7 @@
 			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
 			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_order; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_order; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
@@ -86,5 +86,24 @@ function submitQuotes(url) {
 		document.form.submit();
 	}
 }
+
+var configOpenNextConvert = <?php echo $config_open_next_convert ? 'true' : 'false'; ?>;
+
+function confirmConvert() {
+	if (!confirm(text_confirm)) {
+		return false;
+	}
+
+	if (configOpenNextConvert && $('input[name="selected[]"]:checked').length === 1) {
+		window.open('', 'openNextTab');
+	}
+
+	return true;
+}
 </script>
+<?php if ($open_next_url) { ?>
+<script>
+window.open('<?php echo $open_next_url; ?>', 'openNextTab');
+</script>
+<?php } ?>
 <?php echo $footer; ?>

@@ -44,6 +44,7 @@ $_['entry_length_class']           = 'Length Class:';
 $_['entry_weight_class']           = 'Weight Class:';
 $_['entry_catalog_limit'] 	       = '<a data-toggle="tooltip" title="Determines how many catalog items are shown per page (products, categories, etc)"><i class="fas fa-question-circle"></i></a> Default Items Per Page (Catalog):';
 $_['entry_admin_limit']   	       = '<a data-toggle="tooltip" title="Determines how many admin items are shown per page (orders, customers, etc)"><i class="fas fa-question-circle"></i></a> Default Items Per Page (Admin):';
+$_['entry_open_next_convert']         = 'Open Next on convert:';
 $_['entry_product_count']          = '<a data-toggle="tooltip" title="Show the number of products inside the subcategories in the storefront header category menu. Be warned, this will cause an extreme performance hit for stores with a lot of subcategories!"><i class="fas fa-question-circle"></i></a> Category Product Count';
 $_['entry_review']       	       = '<a data-toggle="tooltip" title="Enable/Disable new review entry and display of existing reviews"><i class="fas fa-question-circle"></i></a> Allow Reviews:';
 $_['entry_download']               = 'Allow Downloads:';

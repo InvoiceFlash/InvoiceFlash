@@ -87,7 +87,7 @@
 						<div class="form-group col-sm-3">
 							<label class="control-label col-sm-4"><?php echo $entry_global_discount; ?></label>
 							<div class="control-field col-sm-8">
-								<input type="text" name="global_discount" id="global_discount" value="" class="form-control text-right">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right">
 							</div>
 						</div>
 					</div>

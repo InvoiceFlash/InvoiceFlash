@@ -102,6 +102,9 @@
 	</div>
 </div>
 <script>
+var configOpenNextConvert = <?php echo $config_open_next_convert ? 'true' : 'false'; ?>;
+var preOpenedTab = null;
+
 function submitDeliveries(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
 		alert('Seleccione un albarán para ver');
@@ -145,6 +148,10 @@ function convertToDraft() {
 		return;
 	}
 
+	if (configOpenNextConvert) {
+		preOpenedTab = window.open('', '_blank');
+	}
+
 	doConvert(0);
 }
 
@@ -171,6 +178,18 @@ function doConvert(group) {
 				});
 			}
 
+			if (json['redirect']) {
+				if (preOpenedTab) {
+					preOpenedTab.location = json['redirect'];
+				} else {
+					window.open(json['redirect'], '_blank');
+				}
+			} else if (preOpenedTab) {
+				preOpenedTab.close();
+			}
+
+			preOpenedTab = null;
+
 			if (json['success']) {
 				alertMessage('success', json['success']);
 			}
@@ -191,6 +210,11 @@ $('#btn-convert-single').on('click', function() {
 
 $('#btn-convert-merge').on('click', function() {
 	bootstrap.Modal.getInstance(document.getElementById('ConvertGroupModal')).hide();
+
+	if (configOpenNextConvert) {
+		preOpenedTab = window.open('', '_blank');
+	}
+
 	doConvert(1);
 });
 </script>
