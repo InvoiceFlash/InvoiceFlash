@@ -96,7 +96,7 @@
 <script>
 function submitOrders(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione un pedido para ver');
+		alert('<?php echo $error_no_selection; ?>');
 	} else {
 		var form = document.getElementById('form');
 		form.setAttribute('action', url);
@@ -106,7 +106,7 @@ function submitOrders(url) {
 }
 function openPrintModal(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione un pedido para imprimir');
+		alert('<?php echo $error_no_selection; ?>');
 	} else {
 		$('#formPrint input[name="selected[]"]').remove();
 

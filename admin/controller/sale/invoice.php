@@ -1357,6 +1357,13 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['tab_fraud'] = $this->language->get('tab_fraud');
 			$this->data['tab_history'] = $this->language->get('tab_history');
 			$this->data['tab_receipts'] = $this->language->get('tab_receipts');
+			$this->data['tab_aeat'] = $this->language->get('tab_aeat');
+
+			$this->data['text_aeat_sent_date'] = $this->language->get('text_aeat_sent_date');
+			$this->data['text_aeat_response_date'] = $this->language->get('text_aeat_response_date');
+			$this->data['text_aeat_status'] = $this->language->get('text_aeat_status');
+			$this->data['text_aeat_notice'] = $this->language->get('text_aeat_notice');
+			$this->data['text_aeat_csv'] = $this->language->get('text_aeat_csv');
 		
 			$this->data['token'] = $this->session->data['token'];
 
@@ -1411,6 +1418,7 @@ class ControllerSaleInvoice extends Controller {
 
 			$this->data['printPDF'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=pdf', 'SSL');
 			$this->data['facturae'] = $this->url->link('sale/invoice/facturae', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
+			$this->data['send_aeat'] = html_entity_decode($this->url->link('sale/invoice/sendAeat', 'token=' . $this->session->data['token'], 'SSL'), ENT_QUOTES, 'UTF-8');
 			$this->data['invoice'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=view', 'SSL');
 			$this->data['sendEmail'] = $this->url->link('sale/invoice/email', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -1492,6 +1500,13 @@ class ControllerSaleInvoice extends Controller {
 			}
 			
 			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($invoice_info['date_added']));
+
+			$this->data['aeat_sent_date'] = $invoice_info['aeat_sent_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_sent_date'])) : '';
+			$this->data['aeat_response_date'] = $invoice_info['aeat_response_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_response_date'])) : '';
+			$this->data['aeat_status'] = $invoice_info['aeat_status'];
+			$this->data['aeat_notice'] = $invoice_info['aeat_notice'] ? nl2br($invoice_info['aeat_notice']) : '';
+			$this->data['aeat_csv'] = $invoice_info['aeat_csv'];
+
 			$this->data['payment_company'] = $invoice_info['payment_company'];
 			$this->data['payment_company_id'] = $invoice_info['payment_company_id'];
 			$this->data['payment_tax_id'] = $invoice_info['payment_tax_id'];
@@ -1953,7 +1968,7 @@ class ControllerSaleInvoice extends Controller {
 					require_once(DIR_SYSTEM . 'external/tcpdf/tcpdf_barcodes_2d.php');
 
 					$verifactu = new Verifactu($store_nif, $invoice_info['store_name'], array());
-					$verifactu->setProduction(defined('VERIFACTU_PRODUCTION') ? VERIFACTU_PRODUCTION : false);
+					$verifactu->setProduction($this->config->get('config_aeat_send') == 'production');
 
 					$qr_url = $verifactu->getQrUrl($store_nif, $qr_numserie, $invoice_info['date_added'], number_format((float)$invoice_info['total'], 2, '.', ''), $qr_verifiable);
 
@@ -2006,10 +2021,26 @@ class ControllerSaleInvoice extends Controller {
 
 		$this->data['logo'] = $this->config->get('config_logo');
 
+		$this->load->model('tools/report_designer');
+
+		if (isset($this->request->get['preview_report_format_id'])) {
+			$custom_html = $this->model_tools_report_designer->getPreviewHtml((int)$this->request->get['preview_report_format_id'], 'invoice', $this->data);
+		} else {
+			$custom_html = $this->model_tools_report_designer->getRenderableCustomHtml('invoice', $this->data);
+		}
+
 		if ($lcFormat=='pdf') {
-			$this->renderPDF('sale/invoice_printPDF.tpl', 'pdf', 'invoice', $invoice_id);
+			if ($custom_html !== false) {
+				$this->renderPDFFromHtml($custom_html, 'pdf', 'invoice', $invoice_id);
+			} else {
+				$this->renderPDF('sale/invoice_printPDF.tpl', 'pdf', 'invoice', $invoice_id);
+			}
 		} elseif ($lcFormat=='email') {
-			$this->renderPDF('sale/invoice_printPDF.tpl', 'email', 'invoice', $invoice_id);
+			if ($custom_html !== false) {
+				$this->renderPDFFromHtml($custom_html, 'email', 'invoice', $invoice_id);
+			} else {
+				$this->renderPDF('sale/invoice_printPDF.tpl', 'email', 'invoice', $invoice_id);
+			}
 
 			$json = array();
 
@@ -2250,6 +2281,251 @@ class ControllerSaleInvoice extends Controller {
 		$this->response->setOutput($xml);
 	}
 
+	// Submits the invoice to the AEAT VERI*FACTU web service (Real Decreto 1007/2023) and
+	// records the outcome on the invoice's own row (aeat_* columns, shown on the AEAT tab).
+	public function sendAeat() {
+		$this->load->language('sale/invoice');
+
+		$json = array();
+
+		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
+			$json['error'] = $this->language->get('error_permission');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		if (!$this->config->get('config_aeat_active')) {
+			$json['error'] = $this->language->get('error_aeat_inactive');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		if (!$this->config->get('config_vat_id') && !$this->config->get('config_nif')) {
+			$json['error'] = $this->language->get('error_aeat_vat_id');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		if (!$this->config->get('certificado') || !$this->config->get('clave')) {
+			$json['error'] = $this->language->get('error_aeat_certificate');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		require_once(DIR_SYSTEM . 'library/verifactu.php');
+
+		$invoice_id = isset($this->request->post['invoice_id']) ? (int)$this->request->post['invoice_id'] : 0;
+
+		$this->load->model('sale/invoice');
+
+		$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
+
+		if (!$invoice_info) {
+			$json['error'] = $this->language->get('error_aeat_not_found');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$this->load->model('localisation/country');
+		$this->load->model('localisation/zone');
+		$this->load->model('localisation/tax_rate');
+
+		list($seller, $buyer) = $this->getFacturaeParties($invoice_info);
+
+		$error = $this->getFacturaePartiesError($seller, $buyer);
+
+		if (!$error && strlen($seller['nif']) != 9) {
+			$error = $this->language->get('error_aeat_seller_nif');
+		}
+
+		if (!$error && strlen($buyer['nif']) != 9) {
+			$error = $this->language->get('error_aeat_buyer_nif');
+		}
+
+		if ($error) {
+			$json['error'] = $error;
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		// Tax breakdown: same derivation as facturae() (taxable base from the tax amount and
+		// rate, so it stays correct even when an invoice mixes several VAT rates).
+		$totals = $this->model_sale_invoice->getInvoiceTotals($invoice_id);
+
+		$tax_rate_lookup = array();
+
+		foreach ($this->model_localisation_tax_rate->getTaxRates() as $tax_rate) {
+			$tax_rate_lookup[$tax_rate['name']] = $tax_rate;
+		}
+
+		$sub_total = 0;
+		$tax_total = 0;
+		$taxes = array();
+
+		foreach ($totals as $total) {
+			if ($total['code'] == 'sub_total') {
+				$sub_total = (float)$total['value'];
+			}
+
+			if ($total['code'] == 'tax') {
+				$rate = 0;
+
+				if (isset($tax_rate_lookup[$total['title']]) && $tax_rate_lookup[$total['title']]['type'] == 'P') {
+					$rate = (float)$tax_rate_lookup[$total['title']]['rate'];
+				}
+
+				$amount = (float)$total['value'];
+
+				$taxes[] = array(
+					'rate'   => $rate,
+					'base'   => $rate > 0 ? round($amount / ($rate / 100), 2) : $sub_total,
+					'amount' => $amount
+				);
+
+				$tax_total += $amount;
+			}
+		}
+
+		if (!$taxes) {
+			$taxes[] = array(
+				'rate'   => 0,
+				'base'   => $sub_total,
+				'amount' => 0
+			);
+		}
+
+		$breakdown = array();
+
+		foreach ($taxes as $tax) {
+			$breakdown[] = array(
+				'tax_type'       => Verifactu::TAX_TYPE_IVA,
+				'regime_type'    => Verifactu::REGIME_GENERAL,
+				'operation_type' => Verifactu::OPERATION_SUBJECT,
+				'base_amount'    => number_format($tax['base'], 2, '.', ''),
+				'tax_rate'       => $tax['rate'] > 0 ? number_format($tax['rate'], 2, '.', '') : null,
+				'tax_amount'     => number_format($tax['amount'], 2, '.', '')
+			);
+		}
+
+		// Description of the operation (required by AEAT): the invoiced product/service names.
+		$products = $this->model_sale_invoice->getInvoiceProducts($invoice_id);
+
+		$product_names = array();
+
+		foreach ($products as $product) {
+			$product_names[] = $product['name'];
+		}
+
+		$description = $product_names ? implode(', ', $product_names) : $this->language->get('text_aeat_default_description');
+		$description = utf8_substr($description, 0, 500);
+
+		$invoice_number = $invoice_info['invoice_prefix'] . ($invoice_info['invoice_no'] ? $invoice_info['invoice_no'] : $invoice_info['invoice_id']);
+
+		// Chaining: VERI*FACTU requires every record to reference the hash of the previous one
+		// issued by the same taxpayer (store). aeat_hash is only set on invoices that were
+		// actually submitted (see below), so this always points at the last real link in the chain.
+		$previous = null;
+
+		$previous_query = $this->db->query("SELECT invoice_prefix, invoice_no, invoice_id, date_added, aeat_hash FROM `" . DB_PREFIX . "invoice` WHERE store_id = '" . (int)$invoice_info['store_id'] . "' AND aeat_hash IS NOT NULL AND invoice_id != '" . (int)$invoice_id . "' ORDER BY invoice_id DESC LIMIT 1");
+
+		if ($previous_query->num_rows) {
+			$previous = array(
+				'issuer_id'      => $seller['nif'],
+				'invoice_number' => $previous_query->row['invoice_prefix'] . ($previous_query->row['invoice_no'] ? $previous_query->row['invoice_no'] : $previous_query->row['invoice_id']),
+				'issue_date'     => $previous_query->row['date_added'],
+				'hash'           => $previous_query->row['aeat_hash']
+			);
+		}
+
+		// Self-developed system: this deployment is both the software's developer and the
+		// taxpayer using it, which RD 1007/2023 allows for non-commercialised systems.
+		$system = array(
+			'vendor_nif'              => $seller['nif'],
+			'vendor_name'             => $seller['name'],
+			'name'                    => 'InvoiceFlash',
+			'id'                      => '01',
+			'version'                 => defined('VERSION') ? VERSION : '1.0',
+			'installation_number'     => '1',
+			'only_verifactu'          => true,
+			'supports_multi_taxpayer' => false,
+			'has_multi_taxpayer'      => false
+		);
+
+		$verifactu = new Verifactu($seller['nif'], $seller['name'], $system);
+		$verifactu->setCertificate(DIR_DOWNLOAD . $this->config->get('certificado'), $this->config->get('clave'));
+		$verifactu->setProduction($this->config->get('config_aeat_send') == 'production');
+
+		try {
+			$record = $verifactu->createRegistrationRecord(array(
+				'invoice_number'   => $invoice_number,
+				'issue_date'       => $invoice_info['date_added'],
+				'description'      => $description,
+				'recipients'       => array(array('name' => $buyer['name'], 'nif' => $buyer['nif'])),
+				'breakdown'        => $breakdown,
+				'total_tax_amount' => number_format($tax_total, 2, '.', ''),
+				'total_amount'     => number_format((float)$invoice_info['total'], 2, '.', ''),
+				'previous'         => $previous
+			));
+		} catch (VerifactuException $e) {
+			$json['error'] = $e->getMessage();
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$sent_date = date('Y-m-d H:i:s');
+
+		try {
+			$result = $verifactu->send(array($record));
+		} catch (VerifactuException $e) {
+			// The record itself was validated and hashed successfully - keep it in the local
+			// chain (so the next invoice still links to it) even though the HTTP call failed.
+			$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET
+				aeat_sent_date = '" . $this->db->escape($sent_date) . "',
+				aeat_status = '" . $this->db->escape($this->language->get('text_aeat_status_error')) . "',
+				aeat_notice = '" . $this->db->escape($e->getMessage()) . "',
+				aeat_hash = '" . $this->db->escape($record['hash']) . "'
+				WHERE invoice_id = '" . (int)$invoice_id . "'");
+
+			$json['error'] = $e->getMessage();
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$response_date = date('Y-m-d H:i:s');
+
+		$notice_parts = array();
+
+		if ($result['error']) {
+			$notice_parts[] = $result['error'];
+		}
+
+		foreach ($result['items'] as $item) {
+			if ($item['error_description']) {
+				$notice_parts[] = ($item['error_code'] ? $item['error_code'] . ': ' : '') . $item['error_description'];
+			}
+		}
+
+		$notice = implode("\n", $notice_parts);
+		$status = $result['status'] ? $result['status'] : $this->language->get('text_aeat_status_error');
+
+		$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET
+			aeat_sent_date = '" . $this->db->escape($sent_date) . "',
+			aeat_response_date = '" . $this->db->escape($response_date) . "',
+			aeat_status = '" . $this->db->escape($status) . "',
+			aeat_notice = '" . $this->db->escape($notice) . "',
+			aeat_csv = '" . $this->db->escape((string)$result['csv']) . "',
+			aeat_hash = '" . $this->db->escape($record['hash']) . "'
+			WHERE invoice_id = '" . (int)$invoice_id . "'");
+
+		if ($result['success']) {
+			$json['success'] = $this->language->get('text_success_aeat');
+		} else {
+			$json['error'] = $notice ? $notice : $this->language->get('error_aeat_generic');
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
 	protected function buildFacturaeXml($data) {
 		$doc = new DOMDocument('1.0', 'UTF-8');
 		$doc->formatOutput = true;
@@ -2438,7 +2714,19 @@ class ControllerSaleInvoice extends Controller {
 				$administrativeCentre->appendChild($doc->createElement('CentreCode', $centre['code']));
 				$administrativeCentre->appendChild($doc->createElement('RoleTypeCode', $centre['role']));
 				$administrativeCentre->appendChild($doc->createElement('Name'));
-				$this->appendFacturaeAddress($doc, $administrativeCentre, $party, $isSpain);
+
+				// Each administrative centre (Emisor/Receptor/Pagador) has its own address on
+				// the customer's fiscal record; fall back to the buyer's general address only
+				// when the user hasn't filled in that centre's own fields.
+				$centre_party = array(
+					'address'  => !empty($centre['address'])  ? $centre['address']  : $party['address'],
+					'postcode' => !empty($centre['postcode']) ? $centre['postcode'] : $party['postcode'],
+					'town'     => !empty($centre['town'])     ? $centre['town']     : $party['town'],
+					'province' => !empty($centre['province']) ? $centre['province'] : $party['province'],
+					'country'  => $party['country']
+				);
+
+				$this->appendFacturaeAddress($doc, $administrativeCentre, $centre_party, $isSpain);
 				$administrativeCentre->appendChild($doc->createElement('LogicalOperationalPoint'));
 			}
 		}
@@ -2553,15 +2841,36 @@ class ControllerSaleInvoice extends Controller {
 
 		if ($customer_info) {
 			if (!empty($customer_info['efaccafi'])) {
-				$buyer_dir3[] = array('code' => $customer_info['efaccafi'], 'role' => '01');
+				$buyer_dir3[] = array(
+					'code'     => $customer_info['efaccafi'],
+					'role'     => '01',
+					'address'  => $customer_info['efaccafi_address'],
+					'postcode' => $customer_info['efaccafi_postcode'],
+					'town'     => $customer_info['efaccafi_city'],
+					'province' => $customer_info['efaccafi_province']
+				);
 			}
 
 			if (!empty($customer_info['efaccare'])) {
-				$buyer_dir3[] = array('code' => $customer_info['efaccare'], 'role' => '02');
+				$buyer_dir3[] = array(
+					'code'     => $customer_info['efaccare'],
+					'role'     => '02',
+					'address'  => $customer_info['efaccare_address'],
+					'postcode' => $customer_info['efaccare_postcode'],
+					'town'     => $customer_info['efaccare_city'],
+					'province' => $customer_info['efaccare_province']
+				);
 			}
 
 			if (!empty($customer_info['efaccapa'])) {
-				$buyer_dir3[] = array('code' => $customer_info['efaccapa'], 'role' => '03');
+				$buyer_dir3[] = array(
+					'code'     => $customer_info['efaccapa'],
+					'role'     => '03',
+					'address'  => $customer_info['efaccapa_address'],
+					'postcode' => $customer_info['efaccapa_postcode'],
+					'town'     => $customer_info['efaccapa_city'],
+					'province' => $customer_info['efaccapa_province']
+				);
 			}
 		}
 

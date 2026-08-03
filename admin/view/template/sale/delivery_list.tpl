@@ -107,7 +107,7 @@ var preOpenedTab = null;
 
 function submitDeliveries(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione un albarán para ver');
+		alert('<?php echo $error_no_selection; ?>');
 	} else {
 		var form = document.getElementById('form');
 		form.setAttribute('action', url);
@@ -120,7 +120,7 @@ function convertToDraft() {
 	var $checked = $('input[name="selected[]"]:checked');
 
 	if (!$checked.length) {
-		alert('Seleccione un albarán para convertir');
+		alert('<?php echo $error_no_selection; ?>');
 		return;
 	}
 

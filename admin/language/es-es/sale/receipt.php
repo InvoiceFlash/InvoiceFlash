@@ -32,4 +32,5 @@ $_['button_cancel']							  = 'Cancelar';
 
 // Errors
 $_['error_permission']						  = 'Advertencia: No tiene permiso para modificar recibos';
+$_['error_no_selection']					  = 'Selecciona al menos un recibo.';
 ?>

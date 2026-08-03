@@ -36,6 +36,7 @@ $_['entry_layout']                 = 'Default Layout:';
 $_['entry_template']               = 'Template:';
 $_['entry_country']                = 'Country:';
 $_['entry_zone']                   = 'Region / State:';
+$_['entry_postcode']               = 'CP:';
 $_['entry_language']               = 'Language:';
 $_['entry_admin_language']         = 'Administration Language:';
 $_['entry_currency']               = '<a data-toggle="tooltip" title="Change the default currency. Clear your browser cache to see the change and reset your existing cookie."><i class="fas fa-question-circle"></i></a> Currency:';

@@ -114,7 +114,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_layout'] = $this->language->get('entry_layout');
 		$this->data['entry_template'] = $this->language->get('entry_template');
 		$this->data['entry_country'] = $this->language->get('entry_country');
-		$this->data['entry_zone'] = $this->language->get('entry_zone');		
+		$this->data['entry_zone'] = $this->language->get('entry_zone');
+		$this->data['entry_postcode'] = $this->language->get('entry_postcode');		
 		$this->data['entry_language'] = $this->language->get('entry_language');
 		$this->data['entry_admin_language'] = $this->language->get('entry_admin_language');
 		$this->data['entry_currency'] = $this->language->get('entry_currency');
@@ -588,7 +589,13 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_zone_id'] = $this->request->post['config_zone_id'];
 		} else {
 			$this->data['config_zone_id'] = $this->config->get('config_zone_id');
-		}		
+		}
+
+		if (isset($this->request->post['config_postcode'])) {
+			$this->data['config_postcode'] = $this->request->post['config_postcode'];
+		} else {
+			$this->data['config_postcode'] = $this->config->get('config_postcode');
+		}
 
 		if (isset($this->request->post['config_language'])) {
 			$this->data['config_language'] = $this->request->post['config_language'];

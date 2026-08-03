@@ -91,7 +91,7 @@ class ModelSaleInvoice extends Model {
 			 `customer_group_id` = '" . (int)$data['customer_group_id'] . "', 
 			 `email` = '" . $this->db->escape($data['email']) . "', 
 			 `telephone` = '" . $this->db->escape($data['telephone']) . "', 
-			 `fax` = '" . $this->db->escape($data['fax']) . "', 
+			 `fax` = '" . $this->db->escape(isset($data['fax']) ? $data['fax'] : '') . "',
 			 `payment_company` = '" . $this->db->escape($data['payment_company']) . "', 
 			 `payment_address_1` = '" . $this->db->escape($data['payment_address_1']) . "', 
 			 `payment_address_2` = '" . $this->db->escape($data['payment_address_2']) . "', 
@@ -566,7 +566,13 @@ class ModelSaleInvoice extends Model {
 				'currency_code'           => $invoice_query->row['currency_code'],
 				'currency_value'          => $invoice_query->row['currency_value'],					
 				'date_added'              => $invoice_query->row['date_added'],
-				'date_modified'           => $invoice_query->row['date_modified']
+				'date_modified'           => $invoice_query->row['date_modified'],
+				'aeat_sent_date'          => $invoice_query->row['aeat_sent_date'],
+				'aeat_response_date'      => $invoice_query->row['aeat_response_date'],
+				'aeat_status'             => $invoice_query->row['aeat_status'],
+				'aeat_notice'             => $invoice_query->row['aeat_notice'],
+				'aeat_csv'                => $invoice_query->row['aeat_csv'],
+				'aeat_hash'               => $invoice_query->row['aeat_hash']
 			);
 		} else {
 			return false;

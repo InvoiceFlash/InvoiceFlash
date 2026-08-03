@@ -268,6 +268,7 @@ class ControllerSaleReceipt extends Controller {
 		$this->data['button_remittances'] = $this->language->get('button_remittances');
 		$this->data['button_filter'] = $this->language->get('button_filter');
 		$this->data['button_export'] = $this->language->get('button_export');
+		$this->data['error_no_selection'] = $this->language->get('error_no_selection');
 
 		$this->data['token'] = $this->session->data['token'];
 		

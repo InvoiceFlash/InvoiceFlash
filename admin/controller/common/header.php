@@ -797,6 +797,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Report Designer
+			if ($this->user->hasPermission('access', 'tools/report_designer')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_report_designer'),
+					'href' => $this->url->link('tools/report_designer', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			// User Logs
 			$tools[] = array(
 				'name'     => $this->language->get('text_user_logs'),

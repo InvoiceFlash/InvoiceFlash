@@ -146,6 +146,12 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_postcode" value="<?php echo $config_postcode; ?>" class="form-control" style="width:20%;">
+						</div>
+					</div>
+					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_language; ?></label>
 						<div class="col-sm-6">
 							<select name="config_language" class="form-control">

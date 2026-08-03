@@ -686,6 +686,10 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['text_fiscal'] = $this->language->get('text_fiscal');
 		$this->data['text_receptor'] = $this->language->get('text_receptor');
 		$this->data['text_paid'] = $this->language->get('text_paid');
+		$this->data['text_role_address'] = $this->language->get('text_role_address');
+		$this->data['text_role_city'] = $this->language->get('text_role_city');
+		$this->data['text_role_province'] = $this->language->get('text_role_province');
+		$this->data['text_role_postcode'] = $this->language->get('text_role_postcode');
 		$this->data['text_disabled'] = $this->language->get('text_disabled');
 		$this->data['text_disabled'] = $this->language->get('text_disabled');
 		$this->data['text_enabled'] = $this->language->get('text_enabled');
@@ -1228,7 +1232,39 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['efaccafi'] = '';
 		}
-				
+
+		if (isset($this->request->post['efaccafi_address'])) {
+			$this->data['efaccafi_address'] = $this->request->post['efaccafi_address'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccafi_address'] = $customer_info['efaccafi_address'];
+		} else {
+			$this->data['efaccafi_address'] = '';
+		}
+
+		if (isset($this->request->post['efaccafi_city'])) {
+			$this->data['efaccafi_city'] = $this->request->post['efaccafi_city'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccafi_city'] = $customer_info['efaccafi_city'];
+		} else {
+			$this->data['efaccafi_city'] = '';
+		}
+
+		if (isset($this->request->post['efaccafi_province'])) {
+			$this->data['efaccafi_province'] = $this->request->post['efaccafi_province'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccafi_province'] = $customer_info['efaccafi_province'];
+		} else {
+			$this->data['efaccafi_province'] = '';
+		}
+
+		if (isset($this->request->post['efaccafi_postcode'])) {
+			$this->data['efaccafi_postcode'] = $this->request->post['efaccafi_postcode'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccafi_postcode'] = $customer_info['efaccafi_postcode'];
+		} else {
+			$this->data['efaccafi_postcode'] = '';
+		}
+
 		if (isset($this->request->post['efaccare'])) {
 			$this->data['efaccare'] = $this->request->post['efaccare'];
 		} elseif (!empty($customer_info)) {
@@ -1236,13 +1272,77 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$this->data['efaccare'] = '';
 		}
-				
+
+		if (isset($this->request->post['efaccare_address'])) {
+			$this->data['efaccare_address'] = $this->request->post['efaccare_address'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccare_address'] = $customer_info['efaccare_address'];
+		} else {
+			$this->data['efaccare_address'] = '';
+		}
+
+		if (isset($this->request->post['efaccare_city'])) {
+			$this->data['efaccare_city'] = $this->request->post['efaccare_city'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccare_city'] = $customer_info['efaccare_city'];
+		} else {
+			$this->data['efaccare_city'] = '';
+		}
+
+		if (isset($this->request->post['efaccare_province'])) {
+			$this->data['efaccare_province'] = $this->request->post['efaccare_province'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccare_province'] = $customer_info['efaccare_province'];
+		} else {
+			$this->data['efaccare_province'] = '';
+		}
+
+		if (isset($this->request->post['efaccare_postcode'])) {
+			$this->data['efaccare_postcode'] = $this->request->post['efaccare_postcode'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccare_postcode'] = $customer_info['efaccare_postcode'];
+		} else {
+			$this->data['efaccare_postcode'] = '';
+		}
+
 		if (isset($this->request->post['efaccapa'])) {
 			$this->data['efaccapa'] = $this->request->post['efaccapa'];
 		} elseif (!empty($customer_info)) {
 			$this->data['efaccapa'] = $customer_info['efaccapa'];
 		} else {
 			$this->data['efaccapa'] = '';
+		}
+
+		if (isset($this->request->post['efaccapa_address'])) {
+			$this->data['efaccapa_address'] = $this->request->post['efaccapa_address'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccapa_address'] = $customer_info['efaccapa_address'];
+		} else {
+			$this->data['efaccapa_address'] = '';
+		}
+
+		if (isset($this->request->post['efaccapa_city'])) {
+			$this->data['efaccapa_city'] = $this->request->post['efaccapa_city'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccapa_city'] = $customer_info['efaccapa_city'];
+		} else {
+			$this->data['efaccapa_city'] = '';
+		}
+
+		if (isset($this->request->post['efaccapa_province'])) {
+			$this->data['efaccapa_province'] = $this->request->post['efaccapa_province'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccapa_province'] = $customer_info['efaccapa_province'];
+		} else {
+			$this->data['efaccapa_province'] = '';
+		}
+
+		if (isset($this->request->post['efaccapa_postcode'])) {
+			$this->data['efaccapa_postcode'] = $this->request->post['efaccapa_postcode'];
+		} elseif (!empty($customer_info)) {
+			$this->data['efaccapa_postcode'] = $customer_info['efaccapa_postcode'];
+		} else {
+			$this->data['efaccapa_postcode'] = '';
 		}
 
 		if (isset($this->request->post['contable_account'])) {

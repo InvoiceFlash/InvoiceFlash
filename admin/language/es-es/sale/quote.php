@@ -163,6 +163,7 @@ $_['error_upload']                            = '&iexcl;Debe subir un archivo!';
 $_['error_filename']                          = '&iexcl;El nombre de archivo debe tener entre 3 y 128 caracteres!';
 $_['error_filetype']                          = '&iexcl;Tipo de archivo no v&aacute;lido!';
 $_['error_action']                            = 'Advertencia: &iexcl;No se pudo completar esta acci&oacute;n!';
+$_['error_no_selection']                      = 'Selecciona un presupuesto.';
 $_['error_required']    = '&iexcl;%s obligatorio!';
 
 $_['button_quote'] 						  = 'Imprimir Presupuesto';

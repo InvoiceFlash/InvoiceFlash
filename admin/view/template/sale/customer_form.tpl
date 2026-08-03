@@ -234,20 +234,44 @@
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_fiscal ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="efaccafi" value="<?php echo $efaccafi ?>" class="form-control">
+										<div class="col-sm-6 d-flex align-items-center" style="gap:.35rem;">
+											<input type="text" name="efaccafi" value="<?php echo $efaccafi ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_address; ?></span>
+											<input type="text" name="efaccafi_address" value="<?php echo $efaccafi_address ?>" class="form-control" style="width:20%;">
+											<span class="text-nowrap"><?php echo $text_role_city; ?></span>
+											<input type="text" name="efaccafi_city" value="<?php echo $efaccafi_city ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_province; ?></span>
+											<input type="text" name="efaccafi_province" value="<?php echo $efaccafi_province ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_postcode; ?></span>
+											<input type="text" name="efaccafi_postcode" value="<?php echo $efaccafi_postcode ?>" class="form-control" style="width:15%;">
 										</div>
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_receptor ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="efaccare" value="<?php echo $efaccare ?>" class="form-control">
+										<div class="col-sm-6 d-flex align-items-center" style="gap:.35rem;">
+											<input type="text" name="efaccare" value="<?php echo $efaccare ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_address; ?></span>
+											<input type="text" name="efaccare_address" value="<?php echo $efaccare_address ?>" class="form-control" style="width:20%;">
+											<span class="text-nowrap"><?php echo $text_role_city; ?></span>
+											<input type="text" name="efaccare_city" value="<?php echo $efaccare_city ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_province; ?></span>
+											<input type="text" name="efaccare_province" value="<?php echo $efaccare_province ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_postcode; ?></span>
+											<input type="text" name="efaccare_postcode" value="<?php echo $efaccare_postcode ?>" class="form-control" style="width:15%;">
 										</div>
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_paid ?></label>
-										<div class="col-sm-6">
-											<input type="text" name="efaccapa" value="<?php echo $efaccapa ?>" class="form-control">
+										<div class="col-sm-6 d-flex align-items-center" style="gap:.35rem;">
+											<input type="text" name="efaccapa" value="<?php echo $efaccapa ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_address; ?></span>
+											<input type="text" name="efaccapa_address" value="<?php echo $efaccapa_address ?>" class="form-control" style="width:20%;">
+											<span class="text-nowrap"><?php echo $text_role_city; ?></span>
+											<input type="text" name="efaccapa_city" value="<?php echo $efaccapa_city ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_province; ?></span>
+											<input type="text" name="efaccapa_province" value="<?php echo $efaccapa_province ?>" class="form-control" style="width:15%;">
+											<span class="text-nowrap"><?php echo $text_role_postcode; ?></span>
+											<input type="text" name="efaccapa_postcode" value="<?php echo $efaccapa_postcode ?>" class="form-control" style="width:15%;">
 										</div>
 									</div>
 									<div class="form-group row">

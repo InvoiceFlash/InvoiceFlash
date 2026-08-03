@@ -32,4 +32,5 @@ $_['button_cancel']							  = 'Cancel';
 
 // Errors
 $_['error_permission']						  = 'Warning: You do not have permission to modify receipts';
+$_['error_no_selection']					  = 'Select at least one receipt.';
 ?>

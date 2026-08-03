@@ -138,9 +138,13 @@ $_['text_date_modified']    = 'Last modified:' ;
 $_['text_last_modified_by'] = 'Last modified by:' ;
 $_['text_bank']     		= 'Bank Account:';
 $_['text_bic']   		    = 'BIC:';
-$_['text_fiscal']			= 'Fiscal:';
+$_['text_fiscal']			= 'Emisor:';
 $_['text_receptor']			= 'Receptor:';
 $_['text_paid']				= 'Paid Out:';
+$_['text_role_address']		= 'Address';
+$_['text_role_city']			= 'Town';
+$_['text_role_province']		= 'Province';
+$_['text_role_postcode']		= 'C.P.';
 $_['text_valid']            = 'Valid';
 $_['text_no_valid']         = 'Not Valid';
 

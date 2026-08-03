@@ -52,6 +52,7 @@ $_['text_report_sale_coupon'] = 'Cupones';
 $_['text_setting'] = 'Ajustes';
 $_['text_module'] = 'M&oacute;dulos';
 $_['text_invoice_design'] = 'Dise&ntilde;o de Factura';
+$_['text_report_designer'] = 'Configurar Informes';
 $_['text_user_logs'] = 'Acciones de Usuarios';
 $_['text_design'] = 'Dise&ntilde;o';
 $_['text_layout'] = 'Dise&ntilde;os';

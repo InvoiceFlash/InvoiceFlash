@@ -78,7 +78,7 @@
 <script>
 function submitQuotes(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione un presupuesto para ver');
+		alert('<?php echo $error_no_selection; ?>');
 	} else {
 		var form = document.getElementById('form');
 		form.setAttribute('action', url);

@@ -686,6 +686,7 @@ class ControllerSaleQuote extends Controller {
       $this->data['button_copy'] = $this->language->get('button_copy');
       $this->data['button_delete'] = $this->language->get('button_delete');
       $this->data['button_filter'] = $this->language->get('button_filter');
+      $this->data['error_no_selection'] = $this->language->get('error_no_selection');
 
       $this->data['token'] = $this->session->data['token'];
       
@@ -2182,10 +2183,26 @@ class ControllerSaleQuote extends Controller {
 
 		$this->data['logo'] = $this->config->get('config_logo');
 
+		$this->load->model('tools/report_designer');
+
+		if (isset($this->request->get['preview_report_format_id'])) {
+			$custom_html = $this->model_tools_report_designer->getPreviewHtml((int)$this->request->get['preview_report_format_id'], 'quote', $this->data);
+		} else {
+			$custom_html = $this->model_tools_report_designer->getRenderableCustomHtml('quote', $this->data);
+		}
+
 		if ($lcFormat=='pdf') {
-			$this->renderPDF('sale/quote_printPDF.tpl', 'pdf', 'quote', $quote_id);
+			if ($custom_html !== false) {
+				$this->renderPDFFromHtml($custom_html, 'pdf', 'quote', $quote_id);
+			} else {
+				$this->renderPDF('sale/quote_printPDF.tpl', 'pdf', 'quote', $quote_id);
+			}
 		} elseif ($lcFormat=='email') {
-			$this->renderPDF('sale/quote_printPDF.tpl', 'email', 'quote', $quote_id);
+			if ($custom_html !== false) {
+				$this->renderPDFFromHtml($custom_html, 'email', 'quote', $quote_id);
+			} else {
+				$this->renderPDF('sale/quote_printPDF.tpl', 'email', 'quote', $quote_id);
+			}
 
 			$json = array();
 

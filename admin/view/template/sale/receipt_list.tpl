@@ -205,7 +205,7 @@ $('#form input').keydown(function(e) {
 <script type="text/javascript"><!--
 function validateGenerate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-			alert('Seleccione al menos un recibo');
+			alert('<?php echo $error_no_selection; ?>');
 	} else {
 		$('#form').submit();
 	}

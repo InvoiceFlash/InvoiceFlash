@@ -5,8 +5,8 @@
  * Self-contained adaptation of the signing approach used by josemmo/facturae-php
  * (https://github.com/josemmo/facturae-php, MIT license) for this codebase, which has no
  * Composer autoloading: builds an enveloped XAdES-EPES <ds:Signature> referencing the
- * official "Politica de Firma FacturaE v3.1", using plain openssl_*/DOMDocument instead of
- * that library's phpseclib-based toolchain.
+ * official "Politica de Firma FacturaE v3.1", using plain openssl_ functions and DOMDocument
+ * instead of that library's phpseclib-based toolchain.
  */
 class FacturaeSignerException extends Exception {
 }

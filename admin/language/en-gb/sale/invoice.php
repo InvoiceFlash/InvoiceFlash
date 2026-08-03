@@ -4,9 +4,15 @@ $_['heading_title']                           = 'Invoices';
 
 // Tabs
 $_['tab_receipts']                            = 'Receipts';
+$_['tab_aeat']                                = 'AEAT';
 
 // Text
 $_['text_success']                            = 'Success: You have modified invoices!';
+$_['text_aeat_sent_date']                     = 'Sent Date:';
+$_['text_aeat_response_date']                 = 'Response Date:';
+$_['text_aeat_status']                        = 'AEAT Status:';
+$_['text_aeat_notice']                        = 'Notice:';
+$_['text_aeat_csv']                           = 'CSV:';
 $_['text_invoice_id']                         = 'Invoice ID:';
 $_['text_invoice_no']                         = 'Invoice No.:';
 $_['text_invoice_date']                       = 'Invoice Date:';
@@ -146,6 +152,16 @@ $_['error_facturae_seller_postcode']          = 'Warning: The store address in S
 $_['error_facturae_buyer_vat_id']             = 'Warning: The customer/billing Tax ID is missing or invalid, it is required to generate a Facturae invoice!';
 $_['error_facturae_buyer_postcode']           = 'Warning: The customer/billing postcode is missing or invalid, a valid 5-digit postcode is required to generate a Facturae invoice!';
 $_['error_facturae_sign']                     = 'Warning: Could not sign the Facturae invoice with the certificate configured in Settings.';
+$_['error_aeat_inactive']                     = 'Warning: Sending invoices to the AEAT is disabled in Settings (Tax Office tab).';
+$_['error_aeat_vat_id']                       = 'Warning: You must set the VAT-ID field in Settings before sending an invoice to the AEAT!';
+$_['error_aeat_certificate']                  = 'Warning: You must upload the digital certificate and set its password in Settings before sending an invoice to the AEAT!';
+$_['error_aeat_not_found']                    = 'Warning: Invoice not found.';
+$_['error_aeat_seller_nif']                   = 'Warning: The store Tax ID must be exactly 9 characters to send to the AEAT.';
+$_['error_aeat_buyer_nif']                    = 'Warning: The customer Tax ID must be exactly 9 characters to send to the AEAT (foreign customers are not yet supported).';
+$_['error_aeat_generic']                      = 'The AEAT rejected the submission.';
+$_['text_success_aeat']                       = 'Success: The invoice was sent to the AEAT.';
+$_['text_aeat_status_error']                  = 'Error';
+$_['text_aeat_default_description']           = 'Sale of goods and/or provision of services';
 $_['error_telephone']                         = 'Telephone must be between 3 and 32 characters!';
 $_['error_password']                          = 'Password must be between 3 and 20 characters!';
 $_['error_confirm']                           = 'Password and password confirmation do not match!';
@@ -169,7 +185,7 @@ $_['error_subject']                           = 'Subject can not be empty!';
 $_['error_message']                           = 'Message can not be empty!';
 
 $_['error_paid_out']                          = 'One or more receipts of this invoice have already been paid, it is not possible to modify it.';
-$_['error_no_selection']                      = 'Selecciona al menos una factura.';
+$_['error_no_selection']                      = 'Select at least one invoice.';
 
 $_['button_invoice'] 						  = 'Print';
 $_['button_view']                             = 'View';

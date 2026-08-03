@@ -723,6 +723,7 @@ class ControllerSaleOrder extends Controller {
 		$this->data['button_copy'] = $this->language->get('button_copy');
 		$this->data['button_delete'] = $this->language->get('button_delete');
 		$this->data['button_filter'] = $this->language->get('button_filter');
+		$this->data['error_no_selection'] = $this->language->get('error_no_selection');
 
 		$this->data['token'] = $this->session->data['token'];
 		
@@ -2152,10 +2153,26 @@ class ControllerSaleOrder extends Controller {
 			$pdf_template = 'sale/order_printPDF.tpl';
 		}
 
+		$this->load->model('tools/report_designer');
+
+		if (isset($this->request->get['preview_report_format_id'])) {
+			$custom_html = $this->model_tools_report_designer->getPreviewHtml((int)$this->request->get['preview_report_format_id'], 'order', $this->data);
+		} else {
+			$custom_html = $this->model_tools_report_designer->getRenderableCustomHtml('order', $this->data);
+		}
+
 		if ($lcFormat=='pdf') {
-			$this->renderPDF($pdf_template, 'pdf', 'order', $order_id);
+			if ($custom_html !== false) {
+				$this->renderPDFFromHtml($custom_html, 'pdf', 'order', $order_id);
+			} else {
+				$this->renderPDF($pdf_template, 'pdf', 'order', $order_id);
+			}
 		} elseif ($lcFormat=='email') {
-			$this->renderPDF($pdf_template, 'email', 'order', $order_id);
+			if ($custom_html !== false) {
+				$this->renderPDFFromHtml($custom_html, 'email', 'order', $order_id);
+			} else {
+				$this->renderPDF($pdf_template, 'email', 'order', $order_id);
+			}
 
 			$json = array();
 

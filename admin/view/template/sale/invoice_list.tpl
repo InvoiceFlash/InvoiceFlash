@@ -96,7 +96,7 @@ function submitInvoices(url) {
 }
 function validate() {
 	if (!$('input[type="checkbox"]').is(':checked')) {
-		alert('Seleccione una factura para imprimir');
+		alert('<?php echo $error_no_selection; ?>');
 	} else {
 		$('input[type="checkbox"]:checked').each(function(){
 			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');

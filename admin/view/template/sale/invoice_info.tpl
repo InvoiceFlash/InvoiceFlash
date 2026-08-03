@@ -4,6 +4,7 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
+			<button type="button" class="btn btn-default" id="button-send-aeat" data-href="<?php echo $send_aeat; ?>" data-invoice-id="<?php echo $invoice_id; ?>"><i class="fa fa-paper-plane"></i><span class="hidden-xs"> AEAT</span></button>
 			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></button>
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
@@ -17,7 +18,7 @@
 				<?php if ($shipping_method) { ?>
 				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-bs-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-aeat" data-bs-toggle="tab"><?php echo $tab_aeat; ?></a></li>
 			</ul>
 			<div class="tab-content mt-2">
 				<div id="tab-invoice" class="tab-pane active">
@@ -228,6 +229,30 @@
 				<div class="tab-pane" id="tab-receipts">
 					<div id="receipts" data-href="index.php?route=sale/invoice/receipts&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>"></div>
 				</div>
+				<div class="tab-pane" id="tab-aeat">
+					<table class="table table-bordered table-striped table-hover info-page">
+						<tr>
+							<td class="col-sm-3"><?php echo $text_aeat_sent_date; ?></td>
+							<td><?php echo $aeat_sent_date; ?></td>
+						</tr>
+						<tr>
+							<td><?php echo $text_aeat_response_date; ?></td>
+							<td><?php echo $aeat_response_date; ?></td>
+						</tr>
+						<tr>
+							<td><?php echo $text_aeat_status; ?></td>
+							<td><?php echo $aeat_status; ?></td>
+						</tr>
+						<tr>
+							<td><?php echo $text_aeat_notice; ?></td>
+							<td><?php echo $aeat_notice; ?></td>
+						</tr>
+						<tr>
+							<td><?php echo $text_aeat_csv; ?></td>
+							<td><?php echo $aeat_csv; ?></td>
+						</tr>
+					</table>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -238,6 +263,40 @@ include(DIR_TEMPLATE . 'sale/email_modal.tpl');
 include(DIR_TEMPLATE . 'sale/print_modal.tpl');
 ?>
 <script>
+$('#button-send-aeat').on('click',function(e){
+	e.preventDefault();
+
+	if (!confirm(text_confirm)) {
+		return;
+	}
+
+	var url = $(this).data('href');
+	var invoiceId = $(this).data('invoice-id');
+	var button = $(this);
+
+	button.prop('disabled', true);
+
+	$.ajax({
+		url: url,
+		type: 'post',
+		dataType: 'json',
+		data: 'invoice_id=' + invoiceId,
+		success: function(json) {
+			button.prop('disabled', false);
+
+			if (json['error']) {
+				alertMessage('danger', json['error']);
+			} else {
+				alertMessage('success', json['success']);
+				location.reload();
+			}
+		},
+		error: function() {
+			button.prop('disabled', false);
+			alertMessage('danger', 'AEAT request failed.');
+		}
+	});
+});
 $('#button-facturae').on('click',function(e){
 	e.preventDefault();
 

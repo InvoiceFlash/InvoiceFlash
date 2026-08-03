@@ -41,6 +41,7 @@ $_['entry_layout'] = 'Dise&ntilde;o predeterminado';
 $_['entry_template'] = 'Plantilla';
 $_['entry_country'] = 'Pa&iacute;s';
 $_['entry_zone'] = 'Regi&oacute;n / Estado';
+$_['entry_postcode'] = 'CP';
 $_['entry_language'] = 'Idioma';
 $_['entry_admin_language'] = 'Administraci&oacute;n Idioma';
 $_['entry_currency'] = 'Moneda';

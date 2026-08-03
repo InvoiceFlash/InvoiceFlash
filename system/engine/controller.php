@@ -133,6 +133,39 @@ abstract class Controller {
 
 	//add
 	protected function renderPDF($template, $output, $name, $id, $watermark = '') {
+		$pdf = $this->preparePdf();
+
+		$this->template = $template;
+
+		// output the HTML content
+		$pdf->writeHTML($this->render(), true, false, true, false, '');
+
+		$this->finalizePdf($pdf, $output, $name, $id, $watermark);
+	}
+
+	// Igual que renderPDF(), pero para HTML ya generado (p.ej. una plantilla
+	// personalizada de tools/report_designer con los marcadores ya
+	// sustituidos) en vez de un archivo .tpl - evita repetir el montaje de
+	// TCPDF en cada sitio que lo necesite. $html puede ser un string (un
+	// documento) o un array de strings (impresion masiva por checkboxes: un
+	// documento por pagina).
+	protected function renderPDFFromHtml($html, $output, $name, $id, $watermark = '') {
+		$pdf = $this->preparePdf();
+
+		$pages = is_array($html) ? $html : array($html);
+
+		foreach ($pages as $index => $page_html) {
+			if ($index > 0) {
+				$pdf->AddPage();
+			}
+
+			$pdf->writeHTML($page_html, true, false, true, false, '');
+		}
+
+		$this->finalizePdf($pdf, $output, $name, $id, $watermark);
+	}
+
+	private function preparePdf() {
 		require_once(DIR_SYSTEM.'external/tcpdf/tcpdf.php');
 
 		$pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -144,11 +177,10 @@ abstract class Controller {
 		$pdf->setPrintFooter(false);
 		$pdf->AddPage();
 
-		$this->template = $template;
+		return $pdf;
+	}
 
-		// output the HTML content
-		$pdf->writeHTML($this->render(), true, false, true, false, '');
-
+	private function finalizePdf($pdf, $output, $name, $id, $watermark) {
 		// TCPDF sometimes appends a spurious blank page when the content
 		// ends right at the bottom margin - drop it if nothing was ever
 		// drawn on it (cursor never advanced past the top margin).
@@ -175,12 +207,12 @@ abstract class Controller {
 		if ($output == 'email'){
 		    //$this->output =  $pdf->Output(DIR_DOWNLOAD . $name . '.pdf', 'F');
 			$this->output =  $pdf->Output(DIR_DOWNLOAD . $name . '_' . $id . '.pdf', 'F');
-		}else{		 
+		}else{
 		    //$this->output =  $pdf->Output('invoice.pdf', 'I');
 			$this->output =  $pdf->Output(DIR_DOWNLOAD . $name . '_' . $id . '.pdf', 'I');
 		}
 	}
-	
+
 	// Returns null on success or the error message on failure. Mail::send()
 	// throws on SMTP/sendmail failure (bad credentials, unreachable host,
 	// etc.) - left uncaught, that became an uncaught fatal error, which
