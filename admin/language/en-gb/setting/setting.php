@@ -193,6 +193,8 @@ $_['entry_claude_api_key'] = 'API KEY Claude:';
 $_['entry_aeat_send'] = 'Sending mode:';
 $_['text_aeat_test'] = 'Test';
 $_['text_aeat_production'] = 'Production';
+$_['entry_aeat_ca_bundle'] = 'CA Bundle Path:';
+$_['text_aeat_ca_bundle_help'] = 'Optional. Path to a .pem file with trusted root certificates, relative to the InvoiceFlash root folder. Only needed if the server gets an SSL certificate error when sending to the AEAT (common on Windows/XAMPP setups with no CA bundle configured). A sample bundle is already included at system/external/cacert.pem.';
 
 $_['text_success_mail'] = 'Test Mail sent. Check your inbox.';
 ?>

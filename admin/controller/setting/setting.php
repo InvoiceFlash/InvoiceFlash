@@ -226,6 +226,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
 		$this->data['entry_aeat_active'] = $this->language->get('entry_aeat_active');
 		$this->data['entry_aeat_send'] = $this->language->get('entry_aeat_send');
+		$this->data['entry_aeat_ca_bundle'] = $this->language->get('entry_aeat_ca_bundle');
+		$this->data['text_aeat_ca_bundle_help'] = $this->language->get('text_aeat_ca_bundle_help');
 		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
 
 		$this->data['button_save'] = $this->language->get('button_save');
@@ -1327,6 +1329,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_aeat_send'] = $this->request->post['config_aeat_send'];
 		} else {
 			$this->data['config_aeat_send'] = $this->config->get('config_aeat_send');
+		}
+
+		if (isset($this->request->post['config_aeat_ca_bundle'])) {
+			$this->data['config_aeat_ca_bundle'] = $this->request->post['config_aeat_ca_bundle'];
+		} else {
+			$this->data['config_aeat_ca_bundle'] = $this->config->get('config_aeat_ca_bundle');
 		}
 
 		$this->template = 'setting/setting.tpl';

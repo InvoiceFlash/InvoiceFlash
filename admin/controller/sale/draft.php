@@ -389,6 +389,10 @@ class ControllerSaleDraft extends Controller {
 						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 					));
 
+					require_once(DIR_APPLICATION . 'controller/sale/invoice.php');
+					$invoice_controller = new ControllerSaleInvoice($this->registry);
+					$invoice_controller->autoSendAeat((int)$new_invoice_id);
+
 					$this->model_sale_draft->deleteDraft($draft_id);
 				}
 			}

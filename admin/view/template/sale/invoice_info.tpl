@@ -4,7 +4,6 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button type="button" class="btn btn-default" id="button-send-aeat" data-href="<?php echo $send_aeat; ?>" data-invoice-id="<?php echo $invoice_id; ?>"><i class="fa fa-paper-plane"></i><span class="hidden-xs"> AEAT</span></button>
 			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></button>
 			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
@@ -263,40 +262,6 @@ include(DIR_TEMPLATE . 'sale/email_modal.tpl');
 include(DIR_TEMPLATE . 'sale/print_modal.tpl');
 ?>
 <script>
-$('#button-send-aeat').on('click',function(e){
-	e.preventDefault();
-
-	if (!confirm(text_confirm)) {
-		return;
-	}
-
-	var url = $(this).data('href');
-	var invoiceId = $(this).data('invoice-id');
-	var button = $(this);
-
-	button.prop('disabled', true);
-
-	$.ajax({
-		url: url,
-		type: 'post',
-		dataType: 'json',
-		data: 'invoice_id=' + invoiceId,
-		success: function(json) {
-			button.prop('disabled', false);
-
-			if (json['error']) {
-				alertMessage('danger', json['error']);
-			} else {
-				alertMessage('success', json['success']);
-				location.reload();
-			}
-		},
-		error: function() {
-			button.prop('disabled', false);
-			alertMessage('danger', 'AEAT request failed.');
-		}
-	});
-});
 $('#button-facturae').on('click',function(e){
 	e.preventDefault();
 

@@ -1112,6 +1112,13 @@
 							<?php } ?>
 						</div>
 					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_aeat_ca_bundle; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_aeat_ca_bundle" value="<?php echo $config_aeat_ca_bundle; ?>" class="form-control" placeholder="system/external/cacert.pem">
+							<div class="form-text"><?php echo $text_aeat_ca_bundle_help; ?></div>
+						</div>
+					</div>
 				</div>
 				<div id="tab-fraud" class="tab-pane">
 					<div class="form-group row">

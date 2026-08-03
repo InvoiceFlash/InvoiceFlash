@@ -2666,6 +2666,10 @@ class ControllerSaledelivery extends Controller {
 
 			$this->db->query("UPDATE " . DB_PREFIX . "delivery SET invoice_no = " . (int)$invoice_no . " WHERE delivery_id = " . (int)$delivery_id);
 
+			require_once(DIR_APPLICATION . 'controller/sale/invoice.php');
+			$invoice_controller = new ControllerSaleInvoice($this->registry);
+			$invoice_controller->autoSendAeat((int)$invoice_no);
+
 			$this->redirect($this->url->link('sale/delivery/info', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$delivery_id, 'SSL'));
 		}
 	}

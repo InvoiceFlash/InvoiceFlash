@@ -94,6 +94,7 @@ class Verifactu {
 	private $certificatePath;
 	private $certificatePassword;
 	private $caBundlePath;
+	private $verifySsl = true;
 	private $production = false; // defaults to AEAT's testing environment
 
 	/**
@@ -126,6 +127,17 @@ class Verifactu {
 	 */
 	public function setCaBundle($path) {
 		$this->caBundlePath = $path;
+	}
+
+	/**
+	 * Disable SSL certificate verification entirely. Only meant for testing against
+	 * environments whose certificate chain isn't in any public CA bundle (AEAT's own
+	 * pre-production sandbox does this) - never call this with true in production.
+	 *
+	 * @param bool $verify Pass false to skip certificate verification, true (default) to require it
+	 */
+	public function setVerifySsl($verify) {
+		$this->verifySsl = (bool)$verify;
 	}
 
 	/**
@@ -292,8 +304,8 @@ class Verifactu {
 			),
 			CURLOPT_SSLCERT => $this->certificatePath,
 			CURLOPT_SSLCERTTYPE => $this->isPkcs12($this->certificatePath) ? 'P12' : 'PEM',
-			CURLOPT_SSL_VERIFYPEER => true,
-			CURLOPT_SSL_VERIFYHOST => 2,
+			CURLOPT_SSL_VERIFYPEER => $this->verifySsl,
+			CURLOPT_SSL_VERIFYHOST => $this->verifySsl ? 2 : 0,
 			CURLOPT_TIMEOUT => 60,
 		));
 		if ($this->certificatePassword !== null) {

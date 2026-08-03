@@ -306,5 +306,7 @@ $_['entry_claude_api_key'] = 'API KEY Claude:';
 $_['entry_aeat_send'] = 'Modo de Env&iacute;o:';
 $_['text_aeat_test'] = 'Pruebas';
 $_['text_aeat_production'] = 'Producci&oacute;n';
+$_['entry_aeat_ca_bundle'] = 'Ruta al almac&eacute;n CA:';
+$_['text_aeat_ca_bundle_help'] = 'Opcional. Ruta a un archivo .pem con certificados ra&iacute;z de confianza, relativa a la carpeta ra&iacute;z de InvoiceFlash. Solo hace falta si el servidor da un error de certificado SSL al enviar a la AEAT (com&uacute;n en entornos Windows/XAMPP sin almac&eacute;n de CA configurado). Ya se incluye uno de ejemplo en system/external/cacert.pem.';
 
 $_['text_success_mail'] = 'Email de prueba enviado. Revise su bandeja de entrada.';

@@ -35,8 +35,10 @@ class ControllerSaleInvoice extends Controller {
 				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 			));
 
+			$this->autoSendAeat($new_invoice_id);
+
 			$this->session->data['success'] = $this->language->get('text_success');
-		  
+
 			$url = '';
 			
 			if (isset($this->request->get['filter_invoice_id'])) {
@@ -1418,7 +1420,6 @@ class ControllerSaleInvoice extends Controller {
 
 			$this->data['printPDF'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=pdf', 'SSL');
 			$this->data['facturae'] = $this->url->link('sale/invoice/facturae', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
-			$this->data['send_aeat'] = html_entity_decode($this->url->link('sale/invoice/sendAeat', 'token=' . $this->session->data['token'], 'SSL'), ENT_QUOTES, 'UTF-8');
 			$this->data['invoice'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=view', 'SSL');
 			$this->data['sendEmail'] = $this->url->link('sale/invoice/email', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -2283,47 +2284,34 @@ class ControllerSaleInvoice extends Controller {
 
 	// Submits the invoice to the AEAT VERI*FACTU web service (Real Decreto 1007/2023) and
 	// records the outcome on the invoice's own row (aeat_* columns, shown on the AEAT tab).
-	public function sendAeat() {
+	// Called automatically right after an invoice is created (see insert(), and the
+	// delivery/draft-to-invoice conversion controllers) whenever config_aeat_active is on -
+	// there is no manual "send" button, this is not a user-facing AJAX action.
+	//
+	// @return array{success:bool,message:string}
+	public function autoSendAeat($invoice_id) {
 		$this->load->language('sale/invoice');
 
-		$json = array();
-
-		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
-			$json['error'] = $this->language->get('error_permission');
-			$this->response->setOutput(json_encode($json));
-			return;
-		}
-
 		if (!$this->config->get('config_aeat_active')) {
-			$json['error'] = $this->language->get('error_aeat_inactive');
-			$this->response->setOutput(json_encode($json));
-			return;
+			return array('success' => false, 'message' => $this->language->get('error_aeat_inactive'));
 		}
 
 		if (!$this->config->get('config_vat_id') && !$this->config->get('config_nif')) {
-			$json['error'] = $this->language->get('error_aeat_vat_id');
-			$this->response->setOutput(json_encode($json));
-			return;
+			return array('success' => false, 'message' => $this->language->get('error_aeat_vat_id'));
 		}
 
 		if (!$this->config->get('certificado') || !$this->config->get('clave')) {
-			$json['error'] = $this->language->get('error_aeat_certificate');
-			$this->response->setOutput(json_encode($json));
-			return;
+			return array('success' => false, 'message' => $this->language->get('error_aeat_certificate'));
 		}
 
 		require_once(DIR_SYSTEM . 'library/verifactu.php');
-
-		$invoice_id = isset($this->request->post['invoice_id']) ? (int)$this->request->post['invoice_id'] : 0;
 
 		$this->load->model('sale/invoice');
 
 		$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
 
 		if (!$invoice_info) {
-			$json['error'] = $this->language->get('error_aeat_not_found');
-			$this->response->setOutput(json_encode($json));
-			return;
+			return array('success' => false, 'message' => $this->language->get('error_aeat_not_found'));
 		}
 
 		$this->load->model('localisation/country');
@@ -2343,9 +2331,7 @@ class ControllerSaleInvoice extends Controller {
 		}
 
 		if ($error) {
-			$json['error'] = $error;
-			$this->response->setOutput(json_encode($json));
-			return;
+			return array('success' => false, 'message' => $error);
 		}
 
 		// Tax breakdown: same derivation as facturae() (taxable base from the tax amount and
@@ -2402,7 +2388,10 @@ class ControllerSaleInvoice extends Controller {
 				'regime_type'    => Verifactu::REGIME_GENERAL,
 				'operation_type' => Verifactu::OPERATION_SUBJECT,
 				'base_amount'    => number_format($tax['base'], 2, '.', ''),
-				'tax_rate'       => $tax['rate'] > 0 ? number_format($tax['rate'], 2, '.', '') : null,
+				// AEAT rule 1208: TipoImpositivo/CuotaRepercutida are mandatory for OPERATION_SUBJECT
+				// (S1) lines, even at a 0% rate - only genuinely exempt/non-subject operation types
+				// (not currently used here) are allowed to omit them.
+				'tax_rate'       => number_format($tax['rate'], 2, '.', ''),
 				'tax_amount'     => number_format($tax['amount'], 2, '.', '')
 			);
 		}
@@ -2451,9 +2440,33 @@ class ControllerSaleInvoice extends Controller {
 			'has_multi_taxpayer'      => false
 		);
 
+		$is_production = ($this->config->get('config_aeat_send') == 'production');
+
 		$verifactu = new Verifactu($seller['nif'], $seller['name'], $system);
 		$verifactu->setCertificate(DIR_DOWNLOAD . $this->config->get('certificado'), $this->config->get('clave'));
-		$verifactu->setProduction($this->config->get('config_aeat_send') == 'production');
+		$verifactu->setProduction($is_production);
+
+		// AEAT's own pre-production/testing sandbox serves a certificate that isn't in any
+		// public CA bundle, so SSL verification is skipped there to allow local testing.
+		// Production always verifies - this can never be disabled outside test mode.
+		if (!$is_production) {
+			$verifactu->setVerifySsl(false);
+		}
+
+		// Optional CA bundle for servers whose cURL build has no default trust store configured
+		// (see error_aeat_ca_bundle above) - path is either absolute or relative to the
+		// InvoiceFlash root folder (e.g. "system/external/cacert.pem", the sample bundle included).
+		$ca_bundle = trim((string)$this->config->get('config_aeat_ca_bundle'));
+
+		if ($ca_bundle !== '') {
+			$ca_bundle_path = is_file($ca_bundle) ? $ca_bundle : rtrim($this->getInvoiceFlashRoot(), '/') . '/' . ltrim(str_replace('\\', '/', $ca_bundle), '/');
+
+			if (!is_file($ca_bundle_path)) {
+				return array('success' => false, 'message' => $this->language->get('error_aeat_ca_bundle_not_found') . ' (' . $ca_bundle . ')');
+			}
+
+			$verifactu->setCaBundle($ca_bundle_path);
+		}
 
 		try {
 			$record = $verifactu->createRegistrationRecord(array(
@@ -2467,9 +2480,7 @@ class ControllerSaleInvoice extends Controller {
 				'previous'         => $previous
 			));
 		} catch (VerifactuException $e) {
-			$json['error'] = $e->getMessage();
-			$this->response->setOutput(json_encode($json));
-			return;
+			return array('success' => false, 'message' => $e->getMessage());
 		}
 
 		$sent_date = date('Y-m-d H:i:s');
@@ -2477,18 +2488,18 @@ class ControllerSaleInvoice extends Controller {
 		try {
 			$result = $verifactu->send(array($record));
 		} catch (VerifactuException $e) {
+			$notice = $this->isAeatCaBundleError($e->getMessage()) ? $this->language->get('error_aeat_ca_bundle') . ' (' . $e->getMessage() . ')' : $e->getMessage();
+
 			// The record itself was validated and hashed successfully - keep it in the local
 			// chain (so the next invoice still links to it) even though the HTTP call failed.
 			$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET
 				aeat_sent_date = '" . $this->db->escape($sent_date) . "',
 				aeat_status = '" . $this->db->escape($this->language->get('text_aeat_status_error')) . "',
-				aeat_notice = '" . $this->db->escape($e->getMessage()) . "',
+				aeat_notice = '" . $this->db->escape($notice) . "',
 				aeat_hash = '" . $this->db->escape($record['hash']) . "'
 				WHERE invoice_id = '" . (int)$invoice_id . "'");
 
-			$json['error'] = $e->getMessage();
-			$this->response->setOutput(json_encode($json));
-			return;
+			return array('success' => false, 'message' => $notice);
 		}
 
 		$response_date = date('Y-m-d H:i:s');
@@ -2518,12 +2529,10 @@ class ControllerSaleInvoice extends Controller {
 			WHERE invoice_id = '" . (int)$invoice_id . "'");
 
 		if ($result['success']) {
-			$json['success'] = $this->language->get('text_success_aeat');
-		} else {
-			$json['error'] = $notice ? $notice : $this->language->get('error_aeat_generic');
+			return array('success' => true, 'message' => $this->language->get('text_success_aeat'));
 		}
 
-		$this->response->setOutput(json_encode($json));
+		return array('success' => false, 'message' => $notice ? $notice : $this->language->get('error_aeat_generic'));
 	}
 
 	protected function buildFacturaeXml($data) {
@@ -2765,13 +2774,17 @@ class ControllerSaleInvoice extends Controller {
 	}
 
 	protected function getFacturaeParties($invoice_info) {
-		// Seller (issuer) party, taken from the store settings.
+		// Seller (issuer) party, taken from the store settings. Prefer the dedicated
+		// config_postcode field (Settings > Local) over parsing it out of the free-text
+		// address - older addresses may embed the postcode inline, newer ones don't have to.
 		$seller_address = (string)$this->config->get('config_address');
-		$seller_postcode = '';
+		$seller_postcode = (string)$this->config->get('config_postcode');
 		$seller_town = '';
 
 		if (preg_match('/(\d{5})\s*[\,\-]?\s*(.*)$/m', $seller_address, $matches)) {
-			$seller_postcode = $matches[1];
+			if (!$seller_postcode) {
+				$seller_postcode = $matches[1];
+			}
 			$seller_town = trim($matches[2]);
 			$seller_address = trim(str_replace($matches[0], '', $seller_address));
 		}
@@ -2887,6 +2900,29 @@ class ControllerSaleInvoice extends Controller {
 		);
 
 		return array($seller, $buyer);
+	}
+
+	// InvoiceFlash's project root (one level above DIR_APPLICATION/admin) - used to resolve
+	// config_aeat_ca_bundle when it's given as a relative path (e.g. "system/external/cacert.pem").
+	protected function getInvoiceFlashRoot() {
+		return dirname(rtrim(str_replace('\\', '/', DIR_APPLICATION), '/'));
+	}
+
+	// Detects the "no CA trust store configured" class of cURL/OpenSSL error - common on
+	// Windows/XAMPP-style PHP builds that ship without a default CA bundle - so sendAeat()
+	// can surface a clear, actionable notice instead of a cryptic OpenSSL message.
+	protected function isAeatCaBundleError($message) {
+		$needles = array('certificate problem', 'self-signed certificate', 'self signed certificate', 'unable to get local issuer certificate', 'unable to verify the first certificate', 'ssl certificate problem');
+
+		$message = strtolower($message);
+
+		foreach ($needles as $needle) {
+			if (strpos($message, $needle) !== false) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected function getFacturaePartiesError($seller, $buyer) {
