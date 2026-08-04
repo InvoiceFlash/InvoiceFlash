@@ -8,13 +8,16 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ---
-### 0.0.10
+### 0.0.11
 - [ ] Edit language
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-- [ ] Discount on line
+- [ ] Disegn reports
 - [ ] Mod PEPPOL support
 - [ ] Multi Store
-- [ ] Payroll
+
+### 0.0.10
+- [x] Discount on line
+- [x] Payroll
       
 ### 0.0.9 
 - [x] Export Account Sage 50
