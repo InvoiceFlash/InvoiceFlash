@@ -8,13 +8,22 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ---
-### 0.0.9 
+### 0.0.11
 - [ ] Edit language
 - [ ] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-- [ ] Export SAGE/ContaSol
+- [ ] Disegn reports
 - [ ] Mod PEPPOL support
 - [ ] Multi Store
-- [ ] MCP Server
+
+### 0.0.10
+- [x] Discount on line
+- [x] Payroll
+      
+### 0.0.9 
+- [x] Export Account Sage 50
+- [x] import from Excel, SaConta, Flash Gestión
+- [x] MCP Server
+- [x] General Discount
 
 ### 0.0.8 
 - [x] Upgraded to Boostrap 5.x
