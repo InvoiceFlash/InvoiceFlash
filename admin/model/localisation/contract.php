@@ -2,19 +2,19 @@
 
 class ModelLocalisationContract extends Model {
     public function addContract($data) {
-        $this->db->query("INSERT INTO `" . DB_PREFIX . "fl_contracts_status` SET `name` = '" . $data['name'] . "'");
+        $this->db->query("INSERT INTO `" . DB_PREFIX . "contracts_status` SET `name` = '" . $data['name'] . "'");
     }
 
     public function editContract($contract_id, $data) {
-        $this->db->query("UPDATE `" . DB_PREFIX . "fl_contracts_status` SET `name` = '" . $data['name'] . "' WHERE `contract_status_id` = '" . (int)$contract_id . "'");
+        $this->db->query("UPDATE `" . DB_PREFIX . "contracts_status` SET `name` = '" . $data['name'] . "' WHERE `contract_status_id` = '" . (int)$contract_id . "'");
     }
 
     public function deleteContract($contract_id) {
-        $this->db->query("DELETE FROM `" . DB_PREFIX . "fl_contracts_status` WHERE `contract_status_id` = '" . (int)$contract_id . "'");
+        $this->db->query("DELETE FROM `" . DB_PREFIX . "contracts_status` WHERE `contract_status_id` = '" . (int)$contract_id . "'");
     }
 
     public function getTotalContracts($data) {
-        $sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "fl_contracts_status`";
+        $sql = "SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "contracts_status`";
 
         if (isset($data['start']) || isset($data['limit'])) {
             if ($data['start'] < 0) {
@@ -34,7 +34,7 @@ class ModelLocalisationContract extends Model {
     }
 
     public function getContracts($data = array()) {
-        $sql = "SELECT * FROM `" . DB_PREFIX . "fl_contracts_status`";
+        $sql = "SELECT * FROM `" . DB_PREFIX . "contracts_status`";
 
         $sort_data = array(
             'contract_status_id',
@@ -71,7 +71,7 @@ class ModelLocalisationContract extends Model {
     }
 
     public function getContract($contract_id) {
-        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "fl_contracts_status` WHERE `contract_status_id` = '" . (int)$contract_id . "'");
+        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "contracts_status` WHERE `contract_status_id` = '" . (int)$contract_id . "'");
 
         return $query->row;
     }

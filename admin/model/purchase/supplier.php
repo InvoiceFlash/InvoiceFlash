@@ -212,25 +212,25 @@ class ModelPurchaseSupplier extends Model {
 	}
 
 	public function getSupplierContracts($supplier_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_supplier_contracts WHERE supplier_id = " . (int)$supplier_id);
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_contracts WHERE supplier_id = " . (int)$supplier_id);
 
 		return $query->rows;
 	}
 
 	public function getSupplierContract($contracts_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
 
 		return $query->row;
 	}
 
 	public function getSupplierContractStatus() {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "fl_contracts_status");
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "contracts_status");
 
 		return $query->rows;
 	}
 
 	public function addSupplierContract($data, $supplier_id) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "fl_supplier_contracts SET
+		$this->db->query("INSERT INTO " . DB_PREFIX . "supplier_contracts SET
 			supplier_id = " . (int)$supplier_id . ",
 			narticulo = " . (int)$data['product_id'] . ",
 			quantity = " . (int)$data['quantity'] . ",
@@ -244,7 +244,7 @@ class ModelPurchaseSupplier extends Model {
 	}
 
 	public function editSupplierContract($data, $contracts_id) {
-		$this->db->query("UPDATE " . DB_PREFIX . "fl_supplier_contracts SET
+		$this->db->query("UPDATE " . DB_PREFIX . "supplier_contracts SET
 			narticulo = " . (int)$data['product_id'] . ",
 			quantity = " . (int)$data['quantity'] . ",
 			dcompra = DATE('" . $this->db->escape($data['date_purchased']) . "'),
@@ -257,7 +257,7 @@ class ModelPurchaseSupplier extends Model {
 	}
 
 	public function deleteSupplierContract($contracts_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "fl_supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
+		$this->db->query("DELETE FROM " . DB_PREFIX . "supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
 	}
 
 	public function addSupplierNote($data, $supplier_id) {
