@@ -348,9 +348,9 @@
 						</div>
 						<div class="modal-body">
 							<ul class="nav nav-tabs">
-								<li class="nav-item"><a href="#modal-tab-supplier" class="nav-link active" data-toggle="tab">Supplier</a></li>
-								<li class="nav-item"><a href="#tab-payment" class="nav-link" data-toggle="tab">Payment</a></li>
-								<li class="nav-item"><a href="#tab-shipping" class="nav-link" data-toggle="tab">Shipping</a></li>
+								<li class="nav-item"><a href="#modal-tab-supplier" class="nav-link active" data-bs-toggle="tab">Supplier</a></li>
+								<li class="nav-item"><a href="#tab-payment" class="nav-link" data-bs-toggle="tab">Payment</a></li>
+								<li class="nav-item"><a href="#tab-shipping" class="nav-link" data-bs-toggle="tab">Shipping</a></li>
 							</ul>
 							<div class="tab-content mt-2">
 								<div class="tab-pane active" id="modal-tab-supplier">

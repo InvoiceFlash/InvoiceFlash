@@ -10,9 +10,9 @@
 	<div class="panel-body">
 		<div class="tabbable">
 			<ul class="nav nav-tabs">
-				<li class="nav-item"><a class="nav-link active" href="#tab-supplier" data-toggle="tab"><?php echo $tab_supplier; ?></a></li>
-				<li class="nav-item"><a class="nav-link" href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li>
-				<li class="nav-item"><a class="nav-link" href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li>
+				<li class="nav-item"><a class="nav-link active" href="#tab-supplier" data-bs-toggle="tab"><?php echo $tab_supplier; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li>
 			</ul>
 			<div class="tab-content mt-2">
 				<div id="tab-supplier" class="tab-pane active">

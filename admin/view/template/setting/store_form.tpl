@@ -3,7 +3,7 @@
 <div class="panel panel-default">
 	<?php $fa = 'cog'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
 	<div class="panel-body">
-		<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-store" data-toggle="tab"><?php echo $tab_store; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-local" data-toggle="tab"><?php echo $tab_local; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-option" data-toggle="tab"><?php echo $tab_option; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-image" data-toggle="tab"><?php echo $tab_image; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-server" data-toggle="tab"><?php echo $tab_server; ?></a></li></ul>
+		<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-store" data-bs-toggle="tab"><?php echo $tab_store; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-local" data-bs-toggle="tab"><?php echo $tab_local; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-option" data-bs-toggle="tab"><?php echo $tab_option; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li></ul>
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
 				<div class="tab-pane" id="tab-general">
@@ -173,11 +173,11 @@
 				<div id="tab-option" class="tab-pane">
 					<div>
 						<ul class="nav nav-tabs">
-							<li class="nav-item"><a class="nav-link" href="#tab-items" data-toggle="tab"><?php echo $text_items; ?></a></li>
-							<li class="nav-item"><a class="nav-link" href="#tab-tax" data-toggle="tab"><?php echo $text_tax; ?></a></li>
-							<li class="nav-item"><a class="nav-link" href="#tab-account" data-toggle="tab"><?php echo $text_account; ?></a></li>
-							<li class="nav-item"><a class="nav-link" href="#tab-checkout" data-toggle="tab"><?php echo $text_checkout; ?></a></li>
-							<li class="nav-item"><a class="nav-link" href="#tab-stock" data-toggle="tab"><?php echo $text_stock; ?></a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-items" data-bs-toggle="tab"><?php echo $text_items; ?></a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-tax" data-bs-toggle="tab"><?php echo $text_tax; ?></a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-account" data-bs-toggle="tab"><?php echo $text_account; ?></a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-checkout" data-bs-toggle="tab"><?php echo $text_checkout; ?></a></li>
+							<li class="nav-item"><a class="nav-link" href="#tab-stock" data-bs-toggle="tab"><?php echo $text_stock; ?></a></li>
 						</ul>
 						<div class="tab-content">
 							<div id="tab-items" class="tab-pane">

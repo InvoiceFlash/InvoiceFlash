@@ -12,11 +12,11 @@
 	</div>
 	<div class="panel-body">
 		<div class="tabbable">
-			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-draft" data-toggle="tab"><?php echo $tab_draft; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-toggle="tab"><?php echo $tab_payment; ?></a></li>
+			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-draft" data-bs-toggle="tab"><?php echo $tab_draft; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-bs-toggle="tab"><?php echo $tab_payment; ?></a></li>
 				<?php if ($shipping_method) { ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-toggle="tab"><?php echo $tab_shipping; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-bs-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li>
 			</ul>
 			<div class="tab-content mt-2">
 				<div id="tab-draft" class="tab-pane active">
