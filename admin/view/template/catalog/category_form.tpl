@@ -4,16 +4,16 @@
 	<?php $fa = 'sitemap'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
 	<div class="panel-body">
 		<ul class="nav nav-tabs">
-			<li class="nav-item"><a class="nav-link active"href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-data" data-bs-toggle="tab"><?php echo $tab_data; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-design" data-bs-toggle="tab"><?php echo $tab_design; ?></a></li></ul>
+			<li class="nav-item"><a class="nav-link active"href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-data" data-toggle="tab"><?php echo $tab_data; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-design" data-toggle="tab"><?php echo $tab_design; ?></a></li></ul>
 		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content mt-2">
 				<div class="tab-pane active" id="tab-general">
 					<div id="language-tabs">
 						<ul class="nav nav-tabs">
 						<?php foreach ($languages as $language) { ?>
-							<li class="nav-item"><a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-bs-toggle="tab"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a></li>
+							<li class="nav-item"><a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-toggle="tab"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a></li>
 						<?php } ?>
 						</ul>
 						<div class="tab-content mt-2" id="lang-pane">

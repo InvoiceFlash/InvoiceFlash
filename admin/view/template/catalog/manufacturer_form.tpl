@@ -3,7 +3,7 @@
 <div class="panel panel-default">
 	<?php $fa = 'qrcode'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
 	<div class="panel-body">
-		<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li></ul>
+		<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li></ul>
 		<div class="tab-content mt-2">
 			<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 				<div class="form-group row">

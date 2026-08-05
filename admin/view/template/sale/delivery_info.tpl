@@ -11,13 +11,13 @@
 	</div>
 	<div class="panel-body">
 		<div class="tabbable">
-			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-delivery" data-bs-toggle="tab"><?php echo $tab_delivery; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-bs-toggle="tab"><?php echo $tab_payment; ?></a></li>
+			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-delivery" data-toggle="tab"><?php echo $tab_delivery; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-toggle="tab"><?php echo $tab_payment; ?></a></li>
 				<?php if ($shipping_method) { ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-bs-toggle="tab"><?php echo $tab_shipping; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-product" data-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-toggle="tab"><?php echo $tab_history; ?></a></li>
 				<?php if ($maxmind_id) { ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-bs-toggle="tab"><?php echo $tab_fraud; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-toggle="tab"><?php echo $tab_fraud; ?></a></li>
 				<?php } ?>
 			</ul>
 			<div class="tab-content">

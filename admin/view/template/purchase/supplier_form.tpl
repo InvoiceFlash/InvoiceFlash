@@ -10,11 +10,11 @@
 	</div>
 	<div class="card-body">
 		<ul class="nav nav-tabs">
-			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-bs-toggle="tab"><?php echo $tab_invoices; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-general" data-toggle="tab"><?php echo $tab_general; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-toggle="tab"><?php echo $tab_contacts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-toggle="tab"><?php echo $tab_contracts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-products" data-toggle="tab"><?php echo $tab_products; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-toggle="tab"><?php echo $tab_invoices; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" id="form">
 			<div class="tab-content">
@@ -22,8 +22,8 @@
 					<div class="row">
 						<div class="col-xs-4 col-sm-3">
 							<div class="nav flex-column" id="vtabs-supplier">
-								<a href="#tab-supplier-general" class="nav-link active" role="tab" aria-selected="true" data-bs-toggle="pill"><?php echo $tab_general; ?></a>
-								<a href="#tab-supplier-notes" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"<?php if ($notes) { ?> style="background-color:#fdf6d3;"<?php } ?>><?php echo $tab_notes; ?></a>
+								<a href="#tab-supplier-general" class="nav-link active" role="tab" aria-selected="true" data-toggle="pill"><?php echo $tab_general; ?></a>
+								<a href="#tab-supplier-notes" class="nav-link" role="tab" aria-selected="false" data-toggle="pill"<?php if ($notes) { ?> style="background-color:#fdf6d3;"<?php } ?>><?php echo $tab_notes; ?></a>
 							</div>
 						</div>
 						<div class="col-xs-8 col-sm-9">
