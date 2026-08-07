@@ -171,15 +171,15 @@
 									<?php } ?>
 									<?php } ?></td>
 								<td class="text-right"><?php echo $product['quantity']; ?></td>
-								<td class="text-right"><?php echo $product['price']; ?></td>
-								<td class="text-right"><?php echo $product['discount']; ?></td>
-								<td class="text-right"><?php echo $product['total']; ?></td>
+								<td class="text-right" style="word-spacing:6px;"><?php echo $product['price']; ?></td>
+								<td class="text-right" style="word-spacing:6px;"><?php echo $product['discount']; ?></td>
+								<td class="text-right" style="word-spacing:6px;"><?php echo $product['total']; ?></td>
 							</tr>
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
 									<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>
-									<td class="text-right"><?php echo $total['text']; ?></td>
+									<td class="text-right" style="word-spacing:6px;"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
