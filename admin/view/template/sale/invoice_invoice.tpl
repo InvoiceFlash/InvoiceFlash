@@ -13,11 +13,12 @@
 <style>
 @media print {
 	@page { size: auto; margin: 0; }
-	body { margin: 15mm 10mm; }
+	body, .container { min-width: 0 !important; width: auto !important; }
+	body { margin: 15mm 10mm; padding-top: 0 !important; }
 }
 </style>
 </head>
-<body style="padding-top:0;">
+<body style="padding-top:80px;">
 <div class="container">
 <?php foreach ($invoices as $invoices) { ?>
 	<table style="width:100%; margin:0; border-collapse:collapse;">
@@ -32,12 +33,15 @@
 						<td style="width:53%; vertical-align:top; padding:0;">
 							<strong style="font-size:15px;"><?php echo $invoices['store_name']; ?></strong><br>
 							<?php echo $invoices['store_address']; ?><br>
+							<?php if ($invoices['store_locality']) { ?>
+							<?php echo $invoices['store_locality']; ?><br>
+							<?php } ?>
 							<?php echo $text_telephone; ?> <?php echo $invoices['store_telephone']; ?><br>
 							<?php if ($invoices['store_fax']) { ?>
 							<?php echo $text_fax; ?> <?php echo $invoices['store_fax']; ?><br>
 							<?php } ?>
-							<?php echo $invoices['store_email']; ?><br>
-							<?php echo $text_tax_id; ?> <?php echo $invoices['store_nif']; ?>
+							<?php echo $text_tax_id; ?> <?php echo $invoices['store_nif']; ?><br>
+							<?php echo $invoices['store_email']; ?>
 						</td>
 					</tr>
 				</table>
@@ -49,7 +53,7 @@
 						<td style="width:68%;"></td>
 						<td style="width:32%; text-align:center; padding:0;">
 							<div><b>QR tributario:</b></div>
-							<img src="<?php echo $invoices['qr_code']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><?php if ($invoices['qr_verifiable']) { ?><br>VERI*FACTU<?php } ?>
+							<img src="<?php echo $invoices['qr_code']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><br><b>VERI*FACTU</b>
 						</td>
 					</tr>
 				</table>
@@ -58,21 +62,19 @@
 		</tr>
 		<tr>
 			<td style="vertical-align:top; padding:0;">
-				<b>DATE:</b> <?php echo $invoices['date_added']; ?>
 			</td>
 			<td style="text-align:right; vertical-align:top; padding:0;">
-				<span class="title" style="font-size:22px;"><?php echo $text_invoice; ?></span> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?>
+				<b><?php echo mb_strtoupper($text_invoice, 'UTF-8'); ?>:</b> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?> &nbsp;&nbsp; <b>DATE:</b> <?php echo $invoices['date_added']; ?>
 			</td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top; padding:0;"></td>
-			<td style="text-align:left; vertical-align:top; padding:0;"><?php if ($invoices['payment_company']) { ?><strong><?php echo $invoices['payment_company']; ?></strong><br/><?php } ?><?php echo $invoices['payment_address']; ?><br/><?php echo $invoices['email']; ?><?php if ($invoices['telephone']) { ?><br/><?php echo $invoices['telephone']; ?><?php } ?><?php if ($invoices['payment_company_id']) { ?><br/><br/><?php echo $text_company_id; ?> <?php echo $invoices['payment_company_id']; ?><?php } ?><?php if ($invoices['payment_tax_id']) { ?><br/><?php echo $text_tax_id; ?> <?php echo $invoices['payment_tax_id']; ?><?php } ?></td>
+			<td style="text-align:left; vertical-align:top; padding:0;"><?php if ($invoices['payment_company']) { ?><strong><?php echo $invoices['payment_company']; ?></strong><br/><?php } ?><?php echo $invoices['payment_address']; ?><?php if ($invoices['payment_tax_id']) { ?><br/><?php echo $text_tax_id; ?> <?php echo $invoices['payment_tax_id']; ?><?php } ?><br/><?php echo $invoices['email']; ?><?php if ($invoices['telephone']) { ?><br/><?php echo $invoices['telephone']; ?><?php } ?><?php if ($invoices['payment_company_id']) { ?><br/><br/><?php echo $text_company_id; ?> <?php echo $invoices['payment_company_id']; ?><?php } ?></td>
 		</tr>
 	</table>
 	<table class="table table-bordered">
 		<tr>
 			<th><?php echo $column_product; ?></th>
-			<th><?php echo $column_model; ?></th>
 			<th class="text-right"><?php echo $column_quantity; ?></th>
 			<th class="text-right"><?php echo $column_price; ?></th>
 			<th class="text-right"><?php echo $column_total; ?></th>
@@ -84,7 +86,6 @@
 				<br>
 				&nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
 				<?php } ?></td>
-			<td><?php echo $product['model']; ?></td>
 			<td class="text-right"><?php echo $product['quantity']; ?></td>
 			<td class="text-right"><?php echo $product['price']; ?></td>
 			<td class="text-right"><?php echo $product['total']; ?></td>
@@ -92,7 +93,7 @@
 		<?php } ?>
 		<?php foreach ($invoices['total'] as $total) { ?>
 		<tr>
-			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="text-right" colspan="3"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="text-right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>
@@ -112,6 +113,8 @@
 </div>
 </body>
 </html>
+<?php if (!isset($auto_print) || $auto_print) { ?>
 <script type="text/javascript"><!--
 window.print()
 //--></script>
+<?php } ?>

@@ -407,8 +407,8 @@ class ControllerSaleInvoice extends Controller {
       		'separator' => ' :: '
    		);
 
-		$this->data['invoice'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['print'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['invoice'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&format=view', 'SSL');
+		$this->data['print'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
 		$this->data['insert'] = $this->url->link('sale/invoice/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('sale/invoice/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['copy'] = $this->url->link('sale/invoice/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -1428,7 +1428,7 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['cancel'] = $this->url->link('sale/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 			// add print selection
-			$this->data['print'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'], 'SSL');
+			$this->data['print'] = $this->url->link('sale/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$this->request->get['invoice_id'] . '&format=pdf', 'SSL');
 
 			$reports = array_slice(scandir(DIR_TEMPLATE . 'sale/reports'), 2);
 
@@ -1554,9 +1554,9 @@ class ControllerSaleInvoice extends Controller {
 					'model'    		   => $product['model'],
 					'option'   		   => $option_data,
 					'quantity'		   => $product['quantity'],
-					'price'    		   => $this->currency->format($product['price']),
-					'discount'         => (!empty($product['discount'])) ? $this->currency->format($product['discount']) : '',
-					'total'    		   => $this->currency->format($product['total']),
+					'price'    		   => $this->currency->format($product['price'], '', '', true, true),
+					'discount'         => (!empty($product['discount'])) ? $this->currency->format($product['discount'], '', '', true, true) : '',
+					'total'    		   => $this->currency->format($product['total'], '', '', true, true),
 					'href'     		   => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
 				);
 			}
@@ -1773,6 +1773,7 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['column_model'] = $this->language->get('column_model');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_comment'] = $this->language->get('column_comment');
 
@@ -1828,11 +1829,21 @@ class ControllerSaleInvoice extends Controller {
 				}
 				
 				//add
+				// the address setting is a textarea, so drop trailing/blank lines that would print as empty rows
+				$store_address = preg_replace("/[\r\n]+/", "\n", trim($store_address));
+
 				$store_nif = $this->config->get('config_vat_id');
 
 				if (!$store_nif) {
 					$store_nif = $this->config->get('config_nif');
 				}
+
+				// issuer postcode + town (town lives in the store's Region/State setting), shown on its own line under the street
+				$this->load->model('localisation/zone');
+
+				$store_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+
+				$store_locality = trim($this->config->get('config_postcode') . ' ' . (!empty($store_zone['name']) ? $store_zone['name'] : ''));
 				//end add
 				
 				if ($invoice_info['invoice_no']) {
@@ -1954,8 +1965,9 @@ class ControllerSaleInvoice extends Controller {
 						'option'   => $option_data,
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
-						'price'    => $this->currency->format($product['price']),
-						'total'    => $this->currency->format($product['total'])
+						'price'    => $this->currency->format($product['price'], '', '', true, true),
+						'discount' => (!empty($product['discount'])) ? $this->currency->format($product['discount'], '', '', true, true) : '',
+						'total'    => $this->currency->format($product['total'], '', '', true, true)
 					);
 				}
 				
@@ -1967,7 +1979,10 @@ class ControllerSaleInvoice extends Controller {
 				$qr_verifiable = defined('VERIFACTU_ONLINE_MODE') ? VERIFACTU_ONLINE_MODE : false;
 				$qr_numserie = $invoice_no ? $invoice_no : ($invoice_info['invoice_prefix'] . $invoice_id);
 
-				if ($store_nif && $qr_numserie) {
+				// only invoices actually registered with the AEAT carry a QR (same check as the list icon and resendAeat())
+				$qr_registered = in_array($invoice_info['aeat_status'], array('Correcto', 'ParcialmenteCorrecto'));
+
+				if ($store_nif && $qr_numserie && $qr_registered) {
 					require_once(DIR_SYSTEM . 'library/verifactu.php');
 					require_once(DIR_SYSTEM . 'external/tcpdf/tcpdf_barcodes_2d.php');
 
@@ -1997,6 +2012,7 @@ class ControllerSaleInvoice extends Controller {
 					'store_name'         => $invoice_info['store_name'],
 					'store_url'          => rtrim($invoice_info['store_url'], '/'),
 					'store_address'      => nl2br($store_address),
+					'store_locality'     => $store_locality,
 					'store_email'        => $store_email,
 					'store_telephone'    => $store_telephone,
 					'store_fax'          => $store_fax,
@@ -2037,7 +2053,8 @@ class ControllerSaleInvoice extends Controller {
 			if ($custom_html !== false) {
 				$this->renderPDFFromHtml($custom_html, 'pdf', 'invoice', $invoice_id);
 			} else {
-				$this->renderPDF('sale/invoice_printPDF.tpl', 'pdf', 'invoice', $invoice_id);
+				// honour the report picked in the print modal; fall back to the default layout
+				$this->renderPDF($lcReport ? 'sale/reports/' . $lcReport : 'sale/invoice_printPDF.tpl', 'pdf', 'invoice', $invoice_id);
 			}
 		} elseif ($lcFormat=='email') {
 			if ($custom_html !== false) {
@@ -2089,12 +2106,14 @@ class ControllerSaleInvoice extends Controller {
 
 			$this->response->setOutput(json_encode($json));
 		} else {
+			$this->data['auto_print'] = ($lcFormat != 'view');
+
 			if ($lcReport=='') {
 				$this->template = 'sale/invoice_invoice.tpl';
 			} else {
 				$this->template = 'sale/reports/' . $lcReport;
 			}
-			
+
 			$this->response->setOutput($this->render());
 		}
 	}

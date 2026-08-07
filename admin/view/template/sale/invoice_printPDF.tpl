@@ -57,6 +57,9 @@ th {
 						<td style="width:53%; vertical-align:top; padding:0;">
 							<strong style="font-size:15px;"><?php echo $invoices['store_name']; ?></strong><br>
 							<?php echo $invoices['store_address']; ?><br>
+							<?php if ($invoices['store_locality']) { ?>
+							<?php echo $invoices['store_locality']; ?><br>
+							<?php } ?>
 							<?php echo $text_telephone; ?> <?php echo $invoices['store_telephone']; ?><br>
 							<?php if ($invoices['store_fax']) { ?>
 							<?php echo $text_fax; ?> <?php echo $invoices['store_fax']; ?><br>
@@ -70,15 +73,18 @@ th {
 			<td style="vertical-align:top; text-align:center; padding:0;">
 				<?php if ($invoices['qr_code_pdf']) { ?>
 				<div><b>QR tributario:</b></div>
-				<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><?php if ($invoices['qr_verifiable']) { ?><br>VERI*FACTU<?php } ?>
+				<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><br><b>VERI*FACTU</b>
 				<?php } ?>
-				<div class="title" style="font-size:22px; text-align:center;"><?php echo $text_invoice; ?> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?></div>
 			</td>
 		</tr>
 		<tr>
-			<td style="vertical-align:top; padding:0;">
-				<b>DATE:</b> <?php echo $invoices['date_added']; ?>
+			<td style="vertical-align:top; padding:0;"></td>
+			<td style="text-align:right; vertical-align:top; padding:0;">
+				<b><?php echo mb_strtoupper($text_invoice, 'UTF-8'); ?>:</b> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?> &nbsp;&nbsp; <b>DATE:</b> <?php echo $invoices['date_added']; ?>
 			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top; padding:0;"></td>
 			<td style="text-align:left; vertical-align:top; padding:0;"><?php if ($invoices['payment_company']) { ?><strong><?php echo $invoices['payment_company']; ?></strong><br/><?php } ?><?php echo $invoices['payment_address']; ?><br/><?php echo $invoices['email']; ?><?php if ($invoices['telephone']) { ?><br/><?php echo $invoices['telephone']; ?><?php } ?><?php if ($invoices['payment_company_id']) { ?><br/><br/><?php echo $text_company_id; ?> <?php echo $invoices['payment_company_id']; ?><?php } ?><?php if ($invoices['payment_tax_id']) { ?><br/><?php echo $text_tax_id; ?> <?php echo $invoices['payment_tax_id']; ?><?php } ?></td>
 		</tr>
 	</table>
