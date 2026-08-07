@@ -232,25 +232,26 @@
 					<table class="table table-bordered table-striped table-hover info-page">
 						<tr>
 							<td class="col-sm-3"><?php echo $text_aeat_sent_date; ?></td>
-							<td><?php echo $aeat_sent_date; ?></td>
+							<td id="aeat-sent-date"><?php echo $aeat_sent_date; ?></td>
 						</tr>
 						<tr>
 							<td><?php echo $text_aeat_response_date; ?></td>
-							<td><?php echo $aeat_response_date; ?></td>
+							<td id="aeat-response-date"><?php echo $aeat_response_date; ?></td>
 						</tr>
 						<tr>
 							<td><?php echo $text_aeat_status; ?></td>
-							<td><?php echo $aeat_status; ?></td>
+							<td id="aeat-status"><?php echo $aeat_status; ?></td>
 						</tr>
 						<tr>
 							<td><?php echo $text_aeat_notice; ?></td>
-							<td><?php echo $aeat_notice; ?></td>
+							<td id="aeat-notice"><?php echo $aeat_notice; ?></td>
 						</tr>
 						<tr>
 							<td><?php echo $text_aeat_csv; ?></td>
-							<td><?php echo $aeat_csv; ?></td>
+							<td id="aeat-csv"><?php echo $aeat_csv; ?></td>
 						</tr>
 					</table>
+					<button type="button" id="button-aeat-resend" class="btn btn-primary"><i class="fa fa-paper-plane"></i> <?php echo $button_resend_aeat; ?></button>
 				</div>
 			</div>
 		</div>
@@ -277,6 +278,40 @@ $('#button-facturae').on('click',function(e){
 			} else {
 				window.open(url,'_blank');
 			}
+		}
+	});
+});
+$('#button-aeat-resend').on('click',function(e){
+	e.preventDefault();
+
+	var button = $(this);
+
+	button.prop('disabled', true);
+	button.find('i').removeClass('fa-paper-plane').addClass('fa-spinner fa-spin');
+
+	$.ajax({
+		url:'index.php?route=sale/invoice/resendAeat&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>',
+		type:'get',
+		dataType:'json',
+		success:function(json){
+			if(json['error']){
+				alertMessage('danger',json['error']);
+			} else {
+				$('#aeat-sent-date').text(json['aeat_sent_date']);
+				$('#aeat-response-date').text(json['aeat_response_date']);
+				$('#aeat-status').text(json['aeat_status']);
+				$('#aeat-notice').html(json['aeat_notice']);
+				$('#aeat-csv').text(json['aeat_csv']);
+
+				alertMessage(json['success'] ? 'success' : 'danger', json['message']);
+			}
+		},
+		error:function(request){
+			console.log("ajax call went wrong:" + request.responseText);
+		},
+		complete:function(){
+			button.prop('disabled', false);
+			button.find('i').removeClass('fa-spinner fa-spin').addClass('fa-paper-plane');
 		}
 	});
 });

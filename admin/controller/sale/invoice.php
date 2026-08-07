@@ -1366,7 +1366,8 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['text_aeat_status'] = $this->language->get('text_aeat_status');
 			$this->data['text_aeat_notice'] = $this->language->get('text_aeat_notice');
 			$this->data['text_aeat_csv'] = $this->language->get('text_aeat_csv');
-		
+			$this->data['button_resend_aeat'] = $this->language->get('button_resend_aeat');
+
 			$this->data['token'] = $this->session->data['token'];
 
 			$url = '';
@@ -2533,6 +2534,43 @@ class ControllerSaleInvoice extends Controller {
 		}
 
 		return array('success' => false, 'message' => $notice ? $notice : $this->language->get('error_aeat_generic'));
+	}
+
+	// Manual re-send button on the AEAT tab (invoice_info.tpl) - re-runs autoSendAeat() for an
+	// invoice that was never sent (AEAT was off, missing certificate...) or that failed and needs
+	// retrying after fixing the cause (e.g. a wrong config_vat_id). autoSendAeat() always reads
+	// config_vat_id/config_nif fresh via getFacturaeParties(), so a NIF change in Settings is
+	// picked up immediately with no extra step.
+	public function resendAeat() {
+		$this->load->language('sale/invoice');
+
+		$json = array();
+
+		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
+			$json['error'] = $this->language->get('error_permission');
+		} else {
+			$invoice_id = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
+
+			$result = $this->autoSendAeat($invoice_id);
+
+			$json['success'] = $result['success'];
+			$json['message'] = $result['message'];
+
+			$this->load->model('sale/invoice');
+
+			$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
+
+			if ($invoice_info) {
+				$json['aeat_sent_date']     = $invoice_info['aeat_sent_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_sent_date'])) : '';
+				$json['aeat_response_date'] = $invoice_info['aeat_response_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_response_date'])) : '';
+				$json['aeat_status']        = $invoice_info['aeat_status'];
+				$json['aeat_notice']        = $invoice_info['aeat_notice'] ? nl2br($invoice_info['aeat_notice']) : '';
+				$json['aeat_csv']           = $invoice_info['aeat_csv'];
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
 	}
 
 	protected function buildFacturaeXml($data) {

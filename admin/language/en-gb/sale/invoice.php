@@ -13,6 +13,7 @@ $_['text_aeat_response_date']                 = 'Response Date:';
 $_['text_aeat_status']                        = 'AEAT Status:';
 $_['text_aeat_notice']                        = 'Notice:';
 $_['text_aeat_csv']                           = 'CSV:';
+$_['button_resend_aeat']                      = 'Resend to AEAT';
 $_['text_invoice_id']                         = 'Invoice ID:';
 $_['text_invoice_no']                         = 'Invoice No.:';
 $_['text_invoice_date']                       = 'Invoice Date:';

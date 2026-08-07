@@ -13,6 +13,7 @@ $_['text_aeat_response_date']                 = 'Fecha Respuesta:';
 $_['text_aeat_status']                        = 'Estado AEAT:';
 $_['text_aeat_notice']                        = 'Aviso:';
 $_['text_aeat_csv']                           = 'CSV:';
+$_['button_resend_aeat']                      = 'Reenviar a la AEAT';
 $_['text_invoice_id']                         = 'ID de Factura:';
 $_['text_invoice_no']                         = 'N&ordm; de Factura:';
 $_['text_invoice_date']                       = 'Fecha de Factura:';
