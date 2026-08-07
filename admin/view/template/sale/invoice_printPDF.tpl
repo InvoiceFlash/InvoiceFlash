@@ -67,30 +67,18 @@ th {
 					</tr>
 				</table>
 			</td>
-			<td style="vertical-align:top; padding:0;">
+			<td style="vertical-align:top; text-align:center; padding:0;">
 				<?php if ($invoices['qr_code_pdf']) { ?>
-				<table style="width:100%; border-collapse:collapse; margin-top:-14mm;">
-					<tr>
-						<td style="width:68%;"></td>
-						<td style="width:32%; text-align:center; padding:0;">
-							<div><b>QR tributario:</b></div>
-							<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><?php if ($invoices['qr_verifiable']) { ?><br>VERI*FACTU<?php } ?>
-						</td>
-					</tr>
-				</table>
+				<div><b>QR tributario:</b></div>
+				<img src="<?php echo $invoices['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><?php if ($invoices['qr_verifiable']) { ?><br>VERI*FACTU<?php } ?>
 				<?php } ?>
+				<div class="title" style="font-size:22px; text-align:center;"><?php echo $text_invoice; ?> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?></div>
 			</td>
 		</tr>
 		<tr>
 			<td style="vertical-align:top; padding:0;">
 				<b>DATE:</b> <?php echo $invoices['date_added']; ?>
 			</td>
-			<td style="text-align:right; vertical-align:top; padding:0;">
-				<span class="title" style="font-size:22px;"><?php echo $text_invoice; ?></span> <?php echo $invoices['invoice_prefix'] . $invoices['invoice_id']; ?>
-			</td>
-		</tr>
-		<tr>
-			<td style="vertical-align:top; padding:0;"></td>
 			<td style="text-align:left; vertical-align:top; padding:0;"><?php if ($invoices['payment_company']) { ?><strong><?php echo $invoices['payment_company']; ?></strong><br/><?php } ?><?php echo $invoices['payment_address']; ?><br/><?php echo $invoices['email']; ?><?php if ($invoices['telephone']) { ?><br/><?php echo $invoices['telephone']; ?><?php } ?><?php if ($invoices['payment_company_id']) { ?><br/><br/><?php echo $text_company_id; ?> <?php echo $invoices['payment_company_id']; ?><?php } ?><?php if ($invoices['payment_tax_id']) { ?><br/><?php echo $text_tax_id; ?> <?php echo $invoices['payment_tax_id']; ?><?php } ?></td>
 		</tr>
 	</table>
