@@ -16,6 +16,7 @@
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
+						<th width="40" class="text-center hidden-xs"><i class="fas fa-qrcode"></i></th>
 						<th class="text-right"><a href="<?php echo $sort_invoice; ?>"><?php echo $column_invoice_id; echo ($sort == 'o.invoice_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_customer; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
@@ -27,6 +28,7 @@
 				<tbody data-link="row" class="rowlink">
 					<tr id="filter" class="info">
 						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/invoice&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+						<td class="hidden-xs"></td>
 						<td class="text-right"><input type="text" name="filter_invoice_id" value="<?php echo $filter_invoice_id; ?>" class="form-control text-right"></td>
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
 						<td class="hidden-xs"><select name="filter_invoice_status_id" class="form-control">
@@ -61,6 +63,11 @@
 							<?php } else { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $invoice['invoice_id']; ?>">
 							<?php } ?></td>
+						<td class="text-center hidden-xs"><?php if ($invoice['aeat_ok']) { ?>
+							<i class="fas fa-qrcode text-success" data-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"></i>
+							<?php } else { ?>
+							<i class="fas fa-qrcode" style="color:#000;" <?php if ($invoice['aeat_status']) { ?>data-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"<?php } ?>></i>
+							<?php } ?></td>
 						<td class="text-right"><?php echo $invoice['invoice_id']; ?></td>
 						<td><?php echo $invoice['company']; ?></td>
 						<td class="hidden-xs text-<?php echo strtolower($invoice['status']); ?>"><?php echo $invoice['status']; ?></td>
@@ -73,7 +80,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>
