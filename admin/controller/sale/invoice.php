@@ -472,6 +472,8 @@ class ControllerSaleInvoice extends Controller {
 				'total'         => $this->currency->format($result['total'], '', '', true, true),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['invoice_id'], $this->request->post['selected']),
+				'aeat_status'   => $result['aeat_status'],
+				'aeat_ok'       => in_array($result['aeat_status'], array('Correcto', 'ParcialmenteCorrecto')),
 				'action'        => $action
 			);
 		}
@@ -2551,14 +2553,24 @@ class ControllerSaleInvoice extends Controller {
 		} else {
 			$invoice_id = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
 
-			$result = $this->autoSendAeat($invoice_id);
-
-			$json['success'] = $result['success'];
-			$json['message'] = $result['message'];
-
 			$this->load->model('sale/invoice');
 
 			$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
+
+			// VERI*FACTU rejects re-submitting a record that was already accepted (Código 3000,
+			// "Registro de facturación duplicado") - short-circuit instead of hitting the AEAT
+			// again for nothing.
+			if ($invoice_info && in_array($invoice_info['aeat_status'], array('Correcto', 'ParcialmenteCorrecto'))) {
+				$json['success'] = true;
+				$json['message'] = $this->language->get('text_aeat_already_registered');
+			} else {
+				$result = $this->autoSendAeat($invoice_id);
+
+				$json['success'] = $result['success'];
+				$json['message'] = $result['message'];
+
+				$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
+			}
 
 			if ($invoice_info) {
 				$json['aeat_sent_date']     = $invoice_info['aeat_sent_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_sent_date'])) : '';

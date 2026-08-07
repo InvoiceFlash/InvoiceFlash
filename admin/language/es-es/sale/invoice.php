@@ -165,6 +165,7 @@ $_['error_aeat_ca_bundle_not_found']           = 'Advertencia: La ruta al almac&
 $_['text_success_aeat']                       = '&Eacute;xito: La factura se ha enviado correctamente a la AEAT.';
 $_['text_aeat_status_error']                  = 'Error';
 $_['text_aeat_default_description']           = 'Venta de bienes y/o prestaci&oacute;n de servicios';
+$_['text_aeat_already_registered']            = 'Esta factura ya est&aacute; correctamente registrada en la AEAT.';
 $_['error_telephone']                         = '&iexcl;El tel&eacute;fono debe tener entre 3 y 32 caracteres!';
 $_['error_password']                          = '&iexcl;La contrase&ntilde;a debe tener entre 3 y 20 caracteres!';
 $_['error_confirm']                           = '&iexcl;La contrase&ntilde;a y su confirmaci&oacute;n no coinciden!';

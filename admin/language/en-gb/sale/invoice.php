@@ -165,6 +165,7 @@ $_['error_aeat_ca_bundle_not_found']           = 'Warning: The CA bundle path co
 $_['text_success_aeat']                       = 'Success: The invoice was sent to the AEAT.';
 $_['text_aeat_status_error']                  = 'Error';
 $_['text_aeat_default_description']           = 'Sale of goods and/or provision of services';
+$_['text_aeat_already_registered']            = 'This invoice is already correctly registered with the AEAT.';
 $_['error_telephone']                         = 'Telephone must be between 3 and 32 characters!';
 $_['error_password']                          = 'Password must be between 3 and 20 characters!';
 $_['error_confirm']                           = 'Password and password confirmation do not match!';
