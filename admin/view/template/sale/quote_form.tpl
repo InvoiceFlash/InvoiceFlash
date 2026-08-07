@@ -59,7 +59,7 @@
 					</div>
 					<div class="row">
 						<div class="form-group col-sm-3">
-							<label class="control-label col-sm-4"><?php echo $entry_shipping; ?></label>
+							<label class="control-label col-sm-4 text-nowrap"><?php echo $entry_shipping; ?></label>
 							<div class="control-field col-sm-8">
 								<select id="shipping" name="shipping" class="form-control">
 									<option value=""><?php echo $text_select; ?></option>
@@ -98,10 +98,10 @@
 								</div>
 							</div>
 						</div>
-						<div class="form-group col-sm-3">
-							<label class="control-label col-sm-4"><?php echo $entry_global_discount; ?></label>
-							<div class="control-field col-sm-8">
-								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal">
+						<div class="form-group col-sm-3 d-flex align-items-center">
+							<label class="control-label text-nowrap mb-0 pr-1"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal" style="width:70px;">
 							</div>
 						</div>
 					</div>

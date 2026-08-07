@@ -77,6 +77,7 @@
 			<th><?php echo $column_product; ?></th>
 			<th class="text-right"><?php echo $column_quantity; ?></th>
 			<th class="text-right"><?php echo $column_price; ?></th>
+			<th class="text-right"><?php echo $column_discount; ?></th>
 			<th class="text-right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($invoices['product'] as $product) { ?>
@@ -88,12 +89,13 @@
 				<?php } ?></td>
 			<td class="text-right"><?php echo $product['quantity']; ?></td>
 			<td class="text-right"><?php echo $product['price']; ?></td>
+			<td class="text-right"><?php echo $product['discount']; ?></td>
 			<td class="text-right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($invoices['total'] as $total) { ?>
 		<tr>
-			<td class="text-right" colspan="3"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="text-right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>

@@ -86,7 +86,7 @@ $_['column_date_added']                       = 'Date Added';
 $_['column_date_modified']                    = 'Date Modified';
 $_['column_total']                            = 'Total';
 $_['column_base']                             = 'Amount';
-$_['column_discount']                         = 'Discount';
+$_['column_discount']                         = 'Discount %';
 $_['column_product']                          = 'Product';
 $_['column_model']                            = 'Model';
 $_['column_quantity']                         = 'Quantity';
@@ -136,7 +136,7 @@ $_['entry_coupon']                            = 'Coupon:';
 $_['entry_voucher']                           = 'Voucher:';
 $_['entry_name_ext']          				  = 'Description:';
 $_['entry_price']             				  = 'Price:';
-$_['entry_discount']          				  = 'Discount:';
+$_['entry_discount']          				  = 'Discount %:';
 $_['entry_tax_rate']          				  = 'Tax %:';
 $_['error_required']    = '%s required!';
 

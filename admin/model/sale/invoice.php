@@ -136,8 +136,10 @@ class ModelSaleInvoice extends Model {
 				
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['total']));
 				$discount = isset($invoice_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$invoice_product['discount'])) : 0;
+
+				// $discount es un porcentaje (0-100), no un importe
+				$total = ($price * (int)$invoice_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET
 				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "',
@@ -272,8 +274,10 @@ class ModelSaleInvoice extends Model {
       			
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/","",$invoice_product['total']));
 				$discount = isset($invoice_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$invoice_product['discount'])) : 0;
+
+				// $discount es un porcentaje (0-100), no un importe
+				$total = ($price * (int)$invoice_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "invoice_product SET
 				invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "',
@@ -401,7 +405,7 @@ class ModelSaleInvoice extends Model {
 				model = '" . $this->db->escape($invoice_product['model']) . "',
 				quantity = '" . (int)(-$invoice_product['quantity']) . "',
 				price = '" . (float)$invoice_product['price'] . "',
-				discount = '" . (float)(-$invoice_product['discount']) . "',
+				discount = '" . (float)$invoice_product['discount'] . "',
 				total = '" . (float)(-$invoice_product['total']) . "',
 				tax = '" . (float)(-$invoice_product['tax']) . "',
 				reward = '" . (int)$invoice_product['reward'] . "'");

@@ -159,7 +159,7 @@ class ControllerSaleRemittances extends Controller {
 
 			$this->data['remittances'][] = array(
 				'remittance_id'		=> $result['remittance_id'],
-				'total'				=> $this->currency->format($result['total']),
+				'total'				=> $this->currency->format($result['total'], '', '', true, true),
 				'date_added'		=> date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'selected'			=> isset($this->request->post['selected']) && in_array($result['remittance_id'], $this->request->post['selected']),
 				'action'			=> $action
@@ -481,6 +481,7 @@ class ControllerSaleRemittances extends Controller {
 		$this->data['column_amount'] = $this->language->get('column_amount');
 		$this->data['column_date_due'] = $this->language->get('column_date_due');
 		$this->data['column_invoice_no'] = $this->language->get('column_invoice_no');
+		$this->data['column_total'] = $this->language->get('column_total');
 
 		$this->load->model('sale/remittances');
 
@@ -531,19 +532,24 @@ class ControllerSaleRemittances extends Controller {
 				$iban = $this->config->get('iban');
 
 				$remittance_lines = array();
+				$total_amount = 0;
 
 				$lines = $this->model_sale_remittances->getRemittancesLines($remittance_id);
 
 				foreach ($lines as $line) {
+					$total_amount += (float)$line['amount'];
+
 					$remittance_lines[] = array(
 						'customer_id'	=> $line['customer_id'],
 						'customer'		=> $line['company'],
 						'date_due'		=> date($this->language->get('date_format_short'), strtotime($line['date_vto'])),
 						'invoice_no'	=> $line['invoice_no'],
 						'bank_cc'		=> $line['bank_cc'],
-						'amount'		=> $this->currency->format($line['amount'])
+						'amount'		=> $this->currency->format($line['amount'], '', '', true, true)
 					);
 				}
+
+				$total = $this->currency->format($total_amount, '', '', true, true);
 			}
 
 			$this->data['remittances'][] = array(
@@ -557,7 +563,8 @@ class ControllerSaleRemittances extends Controller {
 				'iban'       		=> $iban,
 				'store_telephone'   => $store_telephone,
 				'store_nif'         => $store_nif,
-				'remittance_lines'  => $remittance_lines
+				'remittance_lines'  => $remittance_lines,
+				'total'             => $total
 			);
 		}
 		

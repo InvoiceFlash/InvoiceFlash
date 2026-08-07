@@ -18,8 +18,43 @@ class ModelSaleReceipt extends Model {
 			receipt_id='" . (int)$order_id . "'");
 		
 		$this->db->query("UPDATE `" . DB_PREFIX . "receipt` SET paid = 1, remittance_id = '" .$remittance_id ."' where receipt_id = '" . (int)$order_id . "'");
+
+		$this->updateInvoiceStatusFromReceipts($this->getReceiptInvoiceId($order_id));
 	}
-	
+
+	public function getReceiptInvoiceId($receipt_id) {
+		$query = $this->db->query("SELECT invoice_id FROM `" . DB_PREFIX . "receipt` WHERE receipt_id = '" . (int)$receipt_id . "'");
+
+		return $query->num_rows ? (int)$query->row['invoice_id'] : 0;
+	}
+
+	// Keeps invoice_status_id (Pending/Paid/Partially Paid) in sync with the receipt(s)
+	// attached to the invoice, since this app has no separate "amount paid" tracking.
+	public function updateInvoiceStatusFromReceipts($invoice_id) {
+		if (!$invoice_id) {
+			return;
+		}
+
+		$query = $this->db->query("SELECT COUNT(*) AS total, SUM(paid) AS paid FROM `" . DB_PREFIX . "receipt` WHERE invoice_id = '" . (int)$invoice_id . "'");
+
+		$total = (int)$query->row['total'];
+		$paid = (int)$query->row['paid'];
+
+		if (!$total) {
+			return;
+		}
+
+		if ($paid == $total) {
+			$invoice_status_id = 2; // Paid
+		} elseif ($paid > 0) {
+			$invoice_status_id = 3; // Partially Paid
+		} else {
+			$invoice_status_id = 1; // Pending
+		}
+
+		$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET invoice_status_id = '" . (int)$invoice_status_id . "' WHERE invoice_id = '" . (int)$invoice_id . "'");
+	}
+
 	public function checknoremittance($receipt_id) {
 		$query = $this->db->query("SELECT COUNT(receipt_id) AS total FROM " . DB_PREFIX . "remittances_lines WHERE receipt_id = " . (int)$receipt_id);
 
@@ -189,6 +224,7 @@ class ModelSaleReceipt extends Model {
 
 		$this->db->query("UPDATE " . DB_PREFIX . "receipt SET paid = " . (int)$paid . ", bank_cc = '" . $this->db->escape($bank_cc) . "', date_modified = now() WHERE receipt_id = " . (int)$receipt_id);
 
+		$this->updateInvoiceStatusFromReceipts($this->getReceiptInvoiceId($receipt_id));
 	}
 
 	public function getReceipt($receipt_id)	{

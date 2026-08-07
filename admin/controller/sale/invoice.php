@@ -1181,7 +1181,7 @@ class ControllerSaleInvoice extends Controller {
 				'price'			   => $this->currency->format($invoice_product['price'], $invoice_info['currency_code'], $invoice_info['currency_value']),
 				'total'            => $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value']),
 				'tax'              => $invoice_product['tax'],
-				'discount'         => (!empty($invoice_product['discount'])) ? $this->currency->format($invoice_product['discount'], $invoice_info['currency_code'], $invoice_info['currency_value']) : '',
+				'discount'         => (!empty($invoice_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']), 2, '.', '') . '%' : '',
 				'discount_raw'     => (!empty($invoice_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']), 2, '.', '') : ''
 			);
 		}
@@ -1555,7 +1555,7 @@ class ControllerSaleInvoice extends Controller {
 					'option'   		   => $option_data,
 					'quantity'		   => $product['quantity'],
 					'price'    		   => $this->currency->format($product['price'], '', '', true, true),
-					'discount'         => (!empty($product['discount'])) ? $this->currency->format($product['discount'], '', '', true, true) : '',
+					'discount'         => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') . '%' : '',
 					'total'    		   => $this->currency->format($product['total'], '', '', true, true),
 					'href'     		   => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
 				);
@@ -1790,6 +1790,7 @@ class ControllerSaleInvoice extends Controller {
 		$this->data['invoices'] = array();
 
 		$invoices = array();
+		$invoice_id = 0;
 
 		if (isset($this->request->post['selected'])) {
 			$invoices = $this->request->post['selected'];
@@ -1842,8 +1843,14 @@ class ControllerSaleInvoice extends Controller {
 				$this->load->model('localisation/zone');
 
 				$store_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+				$store_postcode = (string)$this->config->get('config_postcode');
 
-				$store_locality = trim($this->config->get('config_postcode') . ' ' . (!empty($store_zone['name']) ? $store_zone['name'] : ''));
+				// same "NN.NNN" convention already used for the customer's postcode elsewhere in this method
+				if (preg_match('/^(\d{2})(\d{3})$/', $store_postcode, $postcode_match)) {
+					$store_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
+				$store_locality = trim($store_postcode . ' ' . (!empty($store_zone['name']) ? mb_strtoupper($store_zone['name'], 'UTF-8') : ''));
 				//end add
 				
 				if ($invoice_info['invoice_no']) {
@@ -1966,7 +1973,7 @@ class ControllerSaleInvoice extends Controller {
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
 						'price'    => $this->currency->format($product['price'], '', '', true, true),
-						'discount' => (!empty($product['discount'])) ? $this->currency->format($product['discount'], '', '', true, true) : '',
+						'discount' => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') . '%' : '',
 						'total'    => $this->currency->format($product['total'], '', '', true, true)
 					);
 				}
@@ -2053,8 +2060,8 @@ class ControllerSaleInvoice extends Controller {
 			if ($custom_html !== false) {
 				$this->renderPDFFromHtml($custom_html, 'pdf', 'invoice', $invoice_id);
 			} else {
-				// honour the report picked in the print modal; fall back to the default layout
-				$this->renderPDF($lcReport ? 'sale/reports/' . $lcReport : 'sale/invoice_printPDF.tpl', 'pdf', 'invoice', $invoice_id);
+				// honour the report picked in the print modal; fall back to the same layout the list's PDF button defaults to
+				$this->renderPDF($lcReport ? 'sale/reports/' . $lcReport : 'sale/reports/invoice_invoice.tpl', 'pdf', 'invoice', $invoice_id);
 			}
 		} elseif ($lcFormat=='email') {
 			if ($custom_html !== false) {
@@ -3092,7 +3099,8 @@ class ControllerSaleInvoice extends Controller {
 							? $invoice_product['name']
 							: $product_info['name'];
 
-						$discount = isset($invoice_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']) : 0;
+						$discount_percent = isset($invoice_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']) : 0;
+						$discount_amount = ($product_info['price'] * $invoice_product['quantity']) * ($discount_percent / 100);
 
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
@@ -3102,9 +3110,9 @@ class ControllerSaleInvoice extends Controller {
 							'option'	 => $option_data,
 							'price'		 => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($product_info['price']*$invoice_product['quantity']) - $discount,
+							'total'		 => ($product_info['price']*$invoice_product['quantity']) - $discount_amount,
 							'shipping'	 => $product_info['shipping'],
-							'discount'   => $discount
+							'discount'   => $discount_percent
 						);
 					}
 				}
@@ -3251,12 +3259,17 @@ class ControllerSaleInvoice extends Controller {
 
 	public function getTaxes($data) {
 		$this->load->model('catalog/product');
-		
+
 		$tax_data = array();
 
+		// VAT sobre el sub-total (neto de descuento de línea), no sobre el precio
+		// unitario de catálogo. invoice no tiene descuento global (no hay campo
+		// global_discount en este módulo), solo el de línea ya reflejado en 'total'.
 		foreach ($data as $product) {
 			if ($product['tax_class_id']!=0) {
-				$tax_rates = $this->model_catalog_product->getProductRates($product['price'], $product['tax_class_id']);
+				$unit_price_for_tax = $product['quantity'] ? ($product['total'] / $product['quantity']) : $product['price'];
+
+				$tax_rates = $this->model_catalog_product->getProductRates($unit_price_for_tax, $product['tax_class_id']);
 
 				foreach ($tax_rates as $tax_rate) {
 					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {

@@ -133,8 +133,12 @@ class ModelSaleQuote extends Model {
       		
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['total']));
 				$discount = isset($quote_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$quote_product['discount'])) : 0;
+
+				// Recalculado en servidor (no se confía en el campo oculto total, que
+				// solo se refresca en pantalla con el evento change del precio/cantidad)
+				// $discount es un porcentaje (0-100), no un importe
+				$total = ($price * (int)$quote_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET
 				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "',
@@ -264,8 +268,12 @@ class ModelSaleQuote extends Model {
 				
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/","",$quote_product['total']));
 				$discount = isset($quote_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$quote_product['discount'])) : 0;
+
+				// Recalculado en servidor (no se confía en el campo oculto total, que
+				// solo se refresca en pantalla con el evento change del precio/cantidad)
+				// $discount es un porcentaje (0-100), no un importe
+				$total = ($price * (int)$quote_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "quote_product SET
 				quote_product_id = '" . (int)$quote_product['quote_product_id'] . "',

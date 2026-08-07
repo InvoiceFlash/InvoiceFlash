@@ -130,8 +130,10 @@ class ModelSaleDraft extends Model {
 				
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['total']));
 				$discount = isset($draft_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$draft_product['discount'])) : 0;
+
+				// $discount es un porcentaje (0-100), no un importe
+				$total = ($price * (int)$draft_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "draft_product SET
 				draft_product_id = '" . (int)$draft_product['draft_product_id'] . "',
@@ -261,8 +263,10 @@ class ModelSaleDraft extends Model {
       			
 				// Valores float de price y total que llegan como strings
 				$price = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/","",$draft_product['total']));
 				$discount = isset($draft_product['discount']) ? floatval(preg_replace("/[^0-9\.]/","",$draft_product['discount'])) : 0;
+
+				// $discount es un porcentaje (0-100), no un importe
+				$total = ($price * (int)$draft_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "draft_product SET
 				draft_product_id = '" . (int)$draft_product['draft_product_id'] . "',

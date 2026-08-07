@@ -2397,7 +2397,8 @@ class ControllerSaledelivery extends Controller {
 							? (float)preg_replace('/[^-0-9\.]/', '', $delivery_product['price'])
 							: (float)$product_info['price'];
 
-						$discount = isset($delivery_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $delivery_product['discount']) : 0;
+						$discount_percent = isset($delivery_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $delivery_product['discount']) : 0;
+						$discount_amount = ($use_price * $delivery_product['quantity']) * ($discount_percent / 100);
 
 						$this->session->data['cart'][] = array(
 							'product_id' => $product_info['product_id'],
@@ -2409,9 +2410,9 @@ class ControllerSaledelivery extends Controller {
 							'price'		 => $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'=> $product_info['tax_class_id'],
-							'total'		 => ($use_price*$delivery_product['quantity']) - $discount,
+							'total'		 => ($use_price*$delivery_product['quantity']) - $discount_amount,
 							'shipping'	 => $product_info['shipping'],
-							'discount'   => $discount
+							'discount'   => $discount_percent
 						);
 					}
 				}
@@ -2442,7 +2443,8 @@ class ControllerSaledelivery extends Controller {
 					}
 
 					if (!isset($json['error']['product']['option'])) {
-						$discount = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+						$discount_percent = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+						$discount_amount = ($product_info['price'] * $quantity) * ($discount_percent / 100);
 
 						$this->session->data['cart'][] = array(
 							'product_id' 	=> $this->request->post['product_id'],
@@ -2453,9 +2455,9 @@ class ControllerSaledelivery extends Controller {
 							'option' 	 	=> $option,
 							'price'		 	=> $product_info['price'],
 							'tax_class_id'	=> $product_info['tax_class_id'],
-							'total'		 	=> ($product_info['price']*$quantity) - $discount,
+							'total'		 	=> ($product_info['price']*$quantity) - $discount_amount,
 							'shipping'	 	=> $product_info['shipping'],
-							'discount'		=> $discount
+							'discount'		=> $discount_percent
 						);
 
 					}
@@ -2561,12 +2563,19 @@ class ControllerSaledelivery extends Controller {
 
 	public function getTaxes($data) {
 		$this->load->model('catalog/product');
-		
+
 		$tax_data = array();
+
+		// VAT sobre el sub-total (neto de descuento de línea + descuento global),
+		// no sobre el precio unitario de catálogo.
+		$global_discount_percent = isset($this->request->post['global_discount']) ? (float)preg_replace('/[^0-9.]/', '', $this->request->post['global_discount']) : 0;
 
 		foreach ($data as $product) {
 			if ($product['tax_class_id']!=0) {
-				$tax_rates = $this->model_catalog_product->getProductRates($product['price'], $product['tax_class_id']);
+				$unit_price_after_discount = $product['quantity'] ? ($product['total'] / $product['quantity']) : $product['price'];
+				$unit_price_for_tax = $unit_price_after_discount * (1 - ($global_discount_percent / 100));
+
+				$tax_rates = $this->model_catalog_product->getProductRates($unit_price_for_tax, $product['tax_class_id']);
 
 				foreach ($tax_rates as $tax_rate) {
 					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {

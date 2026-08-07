@@ -59,6 +59,10 @@
 			<td class="text-right"><?php echo $line['amount']; ?></td>
 		</tr>
 		<?php } ?>
+		<tr>
+			<td class="text-right" colspan="5"><b><?php echo $column_total; ?>:</b></td>
+			<td class="text-right"><b><?php echo $remittance['total']; ?></b></td>
+		</tr>
 	</table>
 <?php } ?>
 </div>

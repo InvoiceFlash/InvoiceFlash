@@ -5,7 +5,7 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitInvoices(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
-			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_invoice; ?></span></button>
+			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirmCopy();" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger" data-toggle="tooltip" title="<?php echo $text_void_tooltip; ?>"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
@@ -33,11 +33,6 @@
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
 						<td class="hidden-xs"><select name="filter_invoice_status_id" class="form-control">
 							<option value="*">&ndash;</option>
-							<?php if ($filter_invoice_status_id == '0') { ?>
-							<option value="0" selected=""><?php echo $text_missing; ?></option>
-							<?php } else { ?>
-							<option value="0"><?php echo $text_missing; ?></option>
-							<?php } ?>
 							<?php foreach ($invoice_statuses as $invoice_status) { ?>
 							<?php if ($invoice_status['invoice_status_id'] == $filter_invoice_status_id) { ?>
 							<option value="<?php echo $invoice_status['invoice_status_id']; ?>" selected=""><?php echo $invoice_status['name']; ?></option>

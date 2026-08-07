@@ -41,6 +41,9 @@ th {
 			<td width="50%"><img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoice['store_name']; ?>" style="width:48mm;" /><br>
 				<?php echo $invoice['store_name']; ?><br>
 				<?php echo $invoice['store_address']; ?><br>
+				<?php if ($invoice['store_locality']) { ?>
+				<?php echo $invoice['store_locality']; ?><br>
+				<?php } ?>
 				<?php echo $text_telephone; ?> <?php echo $invoice['store_telephone']; ?><br>
 				<?php echo $text_tax_id; ?> <?php echo $invoice['store_nif']; ?><br>
 				<?php if ($invoice['store_fax']) { ?>
@@ -48,24 +51,32 @@ th {
 				<?php } ?>
 				<?php echo $invoice['store_email']; ?><br>
 				<?php echo $invoice['store_url']; ?><br>
-				<b><?php echo $text_date_added; ?></b>&nbsp;&nbsp;<?php echo $invoice['date_added']; ?><br>
 				<?php if ($invoice['invoice_no']) { ?>
 				<b><?php echo $text_invoice_no; ?></b>&nbsp;&nbsp;<?php echo $invoice['invoice_no']; ?><br>
 				<?php } ?>
+				<br>
 				<b><?php echo $text_payment_method; ?></b>&nbsp;&nbsp;<?php echo $invoice['payment_method']; ?><br>
 				<?php if ($invoice['shipping_method']) { ?>
 				<b><?php echo $text_shipping_method; ?></b>&nbsp;&nbsp;<?php echo $invoice['shipping_method']; ?><br>
 				<?php } ?>
 			</td>
-			<td style="text-align:right; vertical-align:top;">
+			<td style="vertical-align:top; padding:0;">
 				<?php if ($invoice['qr_code_pdf']) { ?>
-				<div><b>QR tributario:</b></div>
-				<img src="<?php echo $invoice['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><br><b>VERI*FACTU</b>
+				<table style="width:100%; border-collapse:collapse;">
+					<tr>
+						<td></td>
+						<td style="width:30mm; text-align:center; padding:0;">
+							<div><b>QR tributario:</b></div>
+							<img src="<?php echo $invoice['qr_code_pdf']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><br><b>VERI*FACTU</b>
+						</td>
+					</tr>
+				</table>
 				<?php } ?>
 			</td>
 		</tr>
 		<tr>
-			<td colspan="2" style="text-align:right;"><b><?php echo mb_strtoupper($text_invoice, 'UTF-8'); ?>:</b>&nbsp;&nbsp;<?php echo $invoice['invoice_prefix'] . $invoice['invoice_id']; ?></td>
+			<td style="text-align:left;"><b>DATE:</b>&nbsp;&nbsp;<?php echo $invoice['date_added']; ?></td>
+			<td style="text-align:right;"><b><?php echo mb_strtoupper($text_invoice, 'UTF-8'); ?>:</b>&nbsp;&nbsp;<?php echo $invoice['invoice_prefix'] . $invoice['invoice_id']; ?></td>
 		</tr>
 	</table>
 	<table class="table table-bordered">
@@ -74,7 +85,8 @@ th {
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php if ($invoice['payment_company']) { ?><strong><?php echo $invoice['payment_company']; ?></strong><br/><?php } ?><?php echo $invoice['payment_address']; ?><br/>
+			<td><?php if ($invoice['payment_company']) { ?><strong><?php echo $invoice['payment_company']; ?></strong><br/><?php } ?><?php echo $invoice['payment_address']; ?><?php if ($invoice['payment_tax_id']) { ?><br/>
+				<?php echo $text_tax_id; ?> <?php echo $invoice['payment_tax_id']; ?><?php } ?><br/>
 				<?php echo $invoice['email']; ?>
 				<?php if ($invoice['telephone']) { ?>
 				<br/>
@@ -83,14 +95,11 @@ th {
 				<?php if ($invoice['payment_company_id']) { ?>
 				<br/>
 				<?php echo $text_company_id; ?> <?php echo $invoice['payment_company_id']; ?>
-				<?php } ?>
-				<?php if ($invoice['payment_tax_id']) { ?>
-				<br/>
-				<?php echo $text_tax_id; ?> <?php echo $invoice['payment_tax_id']; ?>
 				<?php } ?></td>
 			<td><?php echo $invoice['shipping_address']; ?></td>
 		</tr>
 	</table>
+	<br>&nbsp;<br>
 	<table class="table table-bordered">
 		<tr>
 			<th><?php echo $column_product; ?></th>
