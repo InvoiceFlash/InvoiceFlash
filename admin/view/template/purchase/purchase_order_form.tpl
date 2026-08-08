@@ -38,6 +38,7 @@
 									<input type="text" name="supplier" value="<?php echo $supplier; ?>" id="purchase-order-supplier" autocomplete="off" class="form-control">
 									<input type="hidden" id="purchase_order_supplier_id" name="supplier_id" value="<?php echo $supplier_id; ?>">
 									<div class="input-group-append"><button class="btn btn-default" type="button" id="searchSupplier" title="Buscar Proveedor"><i class="fa fa-search"></i></button></div>
+									<div class="input-group-append"><button class="btn btn-info" type="button" id="viewSupplier" title="<?php echo $text_supplier_details; ?>"><i class="fa fa-eye"></i></button></div>
 								</div>
 								<?php if ($error_supplier) { ?>
 									<div class="help-block text-danger"><?php echo $error_supplier; ?></div>
@@ -72,6 +73,7 @@
 								<input type="hidden" name="payment_code" value="<?php echo $payment_code; ?>">
 							</div>
 						</div>
+						<?php if ($purchase_order_id) { ?>
 						<div class="form-group col-sm-4">
 							<label class="control-label col-sm-4"><?php echo $entry_purchase_order_status; ?></label>
 							<div class="control-field col-sm-8">
@@ -84,6 +86,13 @@
 									<?php } ?>
 									<?php } ?>
 								</select>
+							</div>
+						</div>
+						<?php } ?>
+						<div class="form-group col-sm-3 d-flex align-items-center">
+							<label class="control-label text-nowrap mb-0 pr-1"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal" style="width:70px;">
 							</div>
 						</div>
 					</div>
@@ -102,6 +111,7 @@
 								<th><?php echo $column_product; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_discount; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 						</tr>
 						</thead>
@@ -119,6 +129,7 @@
 								</td>
 								<td class="text-right"><input type="text" class="form-control text-right po-qty" name="purchase_order_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $purchase_order_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right po-price" data-catalog-price="<?php echo $purchase_order_product['catalog_price_raw']; ?>" name="purchase_order_product[<?php echo $product_row; ?>][price]" value="<?php echo $purchase_order_product['price_raw']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right po-discount" name="purchase_order_product[<?php echo $product_row; ?>][discount]" value="<?php echo $purchase_order_product['discount_raw']; ?>"></td>
 								<td class="text-right"><?php echo $purchase_order_product['total']; ?>
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][total]" value="<?php echo $purchase_order_product['total']; ?>">
 									<input type="hidden" name="purchase_order_product[<?php echo $product_row; ?>][tax]" value="<?php echo $purchase_order_product['tax']; ?>"></td>
@@ -128,7 +139,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -138,7 +149,7 @@
 							<?php foreach ($purchase_order_totals as $purchase_order_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="3"><?php echo $purchase_order_total['title']; ?>:
+								<td class="text-right" colspan="4"><?php echo $purchase_order_total['title']; ?>:
 									<input type="hidden" name="purchase_order_total[<?php echo $total_row; ?>][purchase_order_total_id]" value="<?php echo $purchase_order_total['purchase_order_total_id']; ?>">
 									<input type="hidden" name="purchase_order_total[<?php echo $total_row; ?>][code]" value="<?php echo $purchase_order_total['code']; ?>">
 									<input type="hidden" name="purchase_order_total[<?php echo $total_row; ?>][title]" value="<?php echo $purchase_order_total['title']; ?>">
@@ -192,6 +203,66 @@
 				</div>
 			</div>
 			<!-- Fin Modal Buscar Proveedor -->
+			<!-- Modal Datos del Proveedor -->
+			<div class="modal" tabindex="-1" role="dialog" id="SupplierDetailsModal">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title"><?php echo $text_supplier_details; ?></h5>
+							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						</div>
+						<div class="modal-body">
+							<div class="form-horizontal">
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_supplier; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-company"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_tax_id; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-tax-id"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_email; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-email"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_telephone; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-telephone"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_fax; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-fax"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_address_1; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-address-1"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_address_2; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-address-2"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_city; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-city"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_postcode; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-postcode"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_zone; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-zone"></p></div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-3"><?php echo $entry_country; ?></label>
+									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-country"></p></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Fin Modal Datos del Proveedor -->
 			<!-- Modal Buscar Producto -->
 			<div class="modal" tabindex="-1" role="dialog" id="ProductSearchModal">
 				<div class="modal-dialog modal-lg" role="document">
@@ -263,6 +334,12 @@
 										<input type="text" id="purchase_order_quantity" name="quantity" value="1" class="form-control">
 									</div>
 								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_discount; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" id="pm-discount" name="discount" value="" class="form-control">
+									</div>
+								</div>
 							</div>
 						</div>
 						<div class="modal-footer">
@@ -302,6 +379,43 @@ var ssSuppliers = [];
 
 $('#searchSupplier').click(function(e) {
 	bootstrap.Modal.getOrCreateInstance(document.getElementById('SupplierSearchModal')).show();
+});
+
+$('#viewSupplier').click(function(e) {
+	var supplierId = $('#purchase_order_supplier_id').val();
+
+	if (!supplierId || supplierId == '0') {
+		alert('Por favor, seleccione un proveedor primero');
+		return;
+	}
+
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $this->url->link('purchase/supplier/getDetails', 'token=' . $this->session->data['token'], 'SSL')); ?>&supplier_id=' + supplierId,
+		type: 'get',
+		dataType: 'json',
+		success: function(json) {
+			if (json.error) {
+				alert('No se han podido cargar los datos del proveedor');
+				return;
+			}
+			$('#sd-company').text(json.company || '');
+			$('#sd-tax-id').text(json.tax_id || '');
+			$('#sd-email').text(json.email || '');
+			$('#sd-telephone').text(json.telephone || '');
+			$('#sd-fax').text(json.fax || '');
+			$('#sd-address-1').text(json.address_1 || '');
+			$('#sd-address-2').text(json.address_2 || '');
+			$('#sd-city').text(json.city || '');
+			$('#sd-postcode').text(json.postcode || '');
+			$('#sd-zone').text(json.zone || '');
+			$('#sd-country').text(json.country || '');
+
+			bootstrap.Modal.getOrCreateInstance(document.getElementById('SupplierDetailsModal')).show();
+		},
+		error: function() {
+			alert('No se han podido cargar los datos del proveedor');
+		}
+	});
 });
 
 function ssDoSearch() {
@@ -374,6 +488,7 @@ $('#SupplierSearchModal').on('hidden.bs.modal', function() {
 $('#PurchaseOrderProductModal').on('hidden.bs.modal', function () {
 	$(this).find('#purchase-order-product').val('').end();
 	$(this).find('#purchase_order_product_id').val(0);
+	$(this).find('#pm-discount').val('');
 });
 $('#addPurchaseOrderProduct').click(function(e){
 	if($('#purchase_order_supplier_id').val()==0){
@@ -468,13 +583,21 @@ $(document).on('input', '.po-price', function() {
 	poMarkPriceChanged(this);
 });
 
-$(document).on('change', '.po-qty, .po-price', function() {
+$(document).on('change', '.po-qty, .po-price, .po-discount', function() {
 	poMarkPriceChanged(this);
 	$('#button-purchase_order-product').click();
 });
 
 $('.po-price').each(function() {
 	poMarkPriceChanged(this);
+});
+
+$(document).on('input', '.po-discount, #global_discount, #pm-discount', function() {
+	this.value = this.value.replace(/[^0-9.]/g, '');
+});
+
+$('#global_discount').on('change', function() {
+	$('#button-purchase_order-product').click();
 });
 </script>
 <style>

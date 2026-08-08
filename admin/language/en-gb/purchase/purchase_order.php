@@ -25,6 +25,11 @@ $_['text_wait']                      = 'Please Wait!';
 $_['text_product']                   = 'Add Product(s)';
 $_['text_yes']                       = 'Yes';
 $_['text_no']                        = 'No';
+$_['text_supplier_details']          = 'Supplier Details';
+$_['text_purchase_order']            = 'Purchase Order';
+$_['text_fax']                       = 'Fax:';
+$_['text_tax_id']                    = 'Tax ID:';
+$_['text_to']                        = 'To';
 
 // Column
 $_['column_purchase_order_id']       = 'PO ID';
@@ -38,6 +43,7 @@ $_['column_product']                 = 'Product';
 $_['column_model']                   = 'Model';
 $_['column_quantity']                = 'Quantity';
 $_['column_price']                   = 'Unit Price';
+$_['column_discount']                = 'Discount %';
 $_['column_comment']                 = 'Comment';
 $_['column_notify']                  = 'Supplier Notified';
 
@@ -51,6 +57,16 @@ $_['entry_notify']                   = 'Notify Supplier:';
 $_['entry_comment']                  = 'Comment:';
 $_['entry_product']                  = 'Choose Product:';
 $_['entry_quantity']                 = 'Quantity:';
+$_['entry_discount']                 = 'Discount %:';
+$_['entry_global_discount']          = 'Global Discount (%):';
+$_['entry_fax']                      = 'Fax:';
+$_['entry_tax_id']                   = 'Tax ID:';
+$_['entry_address_1']                = 'Address 1:';
+$_['entry_address_2']                = 'Address 2:';
+$_['entry_city']                     = 'City:';
+$_['entry_postcode']                 = 'Postcode:';
+$_['entry_country']                  = 'Country:';
+$_['entry_zone']                     = 'Region / State:';
 
 // Button
 $_['button_insert']                  = 'Add New';
@@ -72,4 +88,5 @@ $_['tab_history']                    = 'History';
 $_['error_warning']                  = 'Warning: Please check the form carefully for errors!';
 $_['error_permission']               = 'Warning: You do not have permission to modify purchase orders!';
 $_['error_supplier']                 = 'Please select a supplier!';
+$_['error_no_selection']             = 'Please select a purchase order!';
 ?>

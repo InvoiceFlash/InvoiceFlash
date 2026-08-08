@@ -8,6 +8,7 @@ $_['column_purchase_order'] = 'Pedido de Compra';
 $_['column_invoice']        = 'Factura';
 $_['column_date']           = 'Fecha';
 $_['column_status']         = 'Estado';
+$_['column_amount']         = 'Importe';
 
 // Entry / Filtros
 $_['entry_supplier']   = 'Proveedor';

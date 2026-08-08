@@ -126,6 +126,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 							'model'              => $purchase_order_product['model'],
 							'quantity'           => $purchase_order_product['quantity'],
 							'price'              => $purchase_order_product['price'],
+							'discount'           => $purchase_order_product['discount'],
 							'total'              => $purchase_order_product['total'],
 							'tax'                => $purchase_order_product['tax']
 						);
@@ -223,6 +224,8 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		$this->data['insert'] = $this->url->link('purchase/purchase_order/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('purchase/purchase_order/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['convert'] = $this->url->link('purchase/purchase_order/convertToInvoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$this->data['invoice'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&format=view', 'SSL');
+		$this->data['printPDF'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
 
 		$this->data['purchase_orders'] = array();
 
@@ -274,6 +277,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 		$this->data['text_missing'] = $this->language->get('text_missing');
+		$this->data['error_no_selection'] = $this->language->get('error_no_selection');
 
 		$this->data['column_purchase_order_id'] = $this->language->get('column_purchase_order_id');
 		$this->data['column_supplier'] = $this->language->get('column_supplier');
@@ -346,6 +350,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		$this->data['text_none'] = $this->language->get('text_none');
 		$this->data['text_wait'] = $this->language->get('text_wait');
 		$this->data['text_product'] = $this->language->get('text_product');
+		$this->data['text_supplier_details'] = $this->language->get('text_supplier_details');
 
 		$this->data['entry_store'] = $this->language->get('entry_store');
 		$this->data['entry_supplier'] = $this->language->get('entry_supplier');
@@ -354,11 +359,24 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		$this->data['entry_purchase_order_status'] = $this->language->get('entry_purchase_order_status');
 		$this->data['entry_product'] = $this->language->get('entry_product');
 		$this->data['entry_quantity'] = $this->language->get('entry_quantity');
+		$this->data['entry_discount'] = $this->language->get('entry_discount');
+		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
+		$this->data['entry_email'] = $this->language->get('text_email');
+		$this->data['entry_telephone'] = $this->language->get('text_telephone');
+		$this->data['entry_fax'] = $this->language->get('entry_fax');
+		$this->data['entry_tax_id'] = $this->language->get('entry_tax_id');
+		$this->data['entry_address_1'] = $this->language->get('entry_address_1');
+		$this->data['entry_address_2'] = $this->language->get('entry_address_2');
+		$this->data['entry_city'] = $this->language->get('entry_city');
+		$this->data['entry_postcode'] = $this->language->get('entry_postcode');
+		$this->data['entry_country'] = $this->language->get('entry_country');
+		$this->data['entry_zone'] = $this->language->get('entry_zone');
 
 		$this->data['column_product'] = $this->language->get('column_product');
 		$this->data['column_model'] = $this->language->get('column_model');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
 
 		$this->data['button_save'] = $this->language->get('button_save');
@@ -489,6 +507,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 				'price'                     => $this->currency->format($purchase_order_product['price']),
 				'price_raw'                 => number_format((float)$purchase_order_product['price'], 2, '.', ''),
 				'catalog_price_raw'         => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$purchase_order_product['price'], 2, '.', ''),
+				'discount_raw'              => (!empty($purchase_order_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $purchase_order_product['discount']), 2, '.', '') : '',
 				'total'                     => $this->currency->format($purchase_order_product['total']),
 				'tax'                       => $purchase_order_product['tax']
 			);
@@ -500,6 +519,19 @@ class ControllerPurchasePurchaseOrder extends Controller {
 			$this->data['purchase_order_totals'] = $this->model_purchase_purchase_order->getPurchaseOrderTotals($this->request->get['purchase_order_id']);
 		} else {
 			$this->data['purchase_order_totals'] = array();
+		}
+
+		if (isset($this->request->post['global_discount'])) {
+			$this->data['global_discount'] = $this->request->post['global_discount'];
+		} else {
+			$this->data['global_discount'] = '';
+
+			foreach ($this->data['purchase_order_totals'] as $purchase_order_total) {
+				if ($purchase_order_total['code'] == 'discount') {
+					$this->data['global_discount'] = number_format(abs((float)$purchase_order_total['value']), 2, '.', '');
+					break;
+				}
+			}
 		}
 
 		$this->template = 'purchase/purchase_order_form.tpl';
@@ -609,6 +641,8 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		);
 
 		$this->data['cancel'] = $this->url->link('purchase/purchase_order', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['invoice'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $purchase_order_info['purchase_order_id'] . '&format=view', 'SSL');
+		$this->data['printPDF'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $purchase_order_info['purchase_order_id'] . '&format=pdf', 'SSL');
 
 		$this->data['purchase_order_id'] = $purchase_order_info['purchase_order_id'];
 		$this->data['po_number'] = $purchase_order_info['po_number'];
@@ -622,7 +656,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		$this->data['payment_method'] = $purchase_order_info['payment_method'];
 		$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($purchase_order_info['date_added']));
 		$this->data['date_modified'] = date($this->language->get('date_format_short'), strtotime($purchase_order_info['date_modified']));
-		$this->data['total'] = $this->currency->format($purchase_order_info['total'], $purchase_order_info['currency_code'], $purchase_order_info['currency_value']);
+		$this->data['total'] = $this->currency->format($purchase_order_info['total'], $purchase_order_info['currency_code'], $purchase_order_info['currency_value'], true, true);
 		$this->data['purchase_order_status'] = $purchase_order_info['status'];
 		$this->data['purchase_order_status_id'] = $purchase_order_info['purchase_order_status_id'];
 		$this->data['purchase_order_statuses'] = $this->model_purchase_purchase_order->getPurchaseOrderStatuses();
@@ -734,6 +768,9 @@ class ControllerPurchasePurchaseOrder extends Controller {
 							? (float)preg_replace('/[^-0-9\.]/', '', $purchase_order_product['price'])
 							: (float)$product_info['price'];
 
+						$discount_percent = isset($purchase_order_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $purchase_order_product['discount']) : 0;
+						$discount_amount = ($use_price * $purchase_order_product['quantity']) * ($discount_percent / 100);
+
 						$this->session->data['cart'][] = array(
 							'product_id'    => $product_info['product_id'],
 							'name'          => $product_info['name'],
@@ -742,7 +779,8 @@ class ControllerPurchasePurchaseOrder extends Controller {
 							'price'         => $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id'  => $product_info['tax_class_id'],
-							'total'         => ($use_price * $purchase_order_product['quantity'])
+							'total'         => ($use_price * $purchase_order_product['quantity']) - $discount_amount,
+							'discount'      => $discount_percent
 						);
 					}
 				}
@@ -754,6 +792,9 @@ class ControllerPurchasePurchaseOrder extends Controller {
 				if ($product_info) {
 					$quantity = isset($this->request->post['quantity']) ? $this->request->post['quantity'] : 1;
 
+					$discount_percent = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+					$discount_amount = ($product_info['price'] * $quantity) * ($discount_percent / 100);
+
 					$this->session->data['cart'][] = array(
 						'product_id'   => $this->request->post['product_id'],
 						'name'         => $product_info['name'],
@@ -761,7 +802,8 @@ class ControllerPurchasePurchaseOrder extends Controller {
 						'quantity'     => $quantity,
 						'price'        => $product_info['price'],
 						'tax_class_id' => $product_info['tax_class_id'],
-						'total'        => ($product_info['price'] * $quantity)
+						'total'        => ($product_info['price'] * $quantity) - $discount_amount,
+						'discount'     => $discount_percent
 					);
 				} else {
 					$json['error']['product']['not_found'] = $this->language->get('error_action');
@@ -782,7 +824,8 @@ class ControllerPurchasePurchaseOrder extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id' => $product['tax_class_id'],
-					'total'        => $this->currency->format($product['total'])
+					'total'        => $this->currency->format($product['total']),
+					'discount'     => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
 
@@ -791,10 +834,14 @@ class ControllerPurchasePurchaseOrder extends Controller {
 			$total = 0;
 			$taxes = $this->getTaxes($products);
 
+			$this->load->model('total/discount');
 			$this->load->model('total/sub_total');
 			$this->load->model('total/tax');
 			$this->load->model('total/total');
 
+			// discount corre antes que sub_total para que este último salga neto
+			// (mismo orden que quote/order/delivery/draft, ver model/total/discount.php)
+			$this->model_total_discount->getTotal($json['purchase_order_total'], $total, $taxes);
 			$this->model_total_sub_total->getTotal($json['purchase_order_total'], $total, $taxes);
 			$this->model_total_tax->getTotal($json['purchase_order_total'], $total, $taxes);
 			$this->model_total_total->getTotal($json['purchase_order_total'], $total, $taxes);
@@ -812,9 +859,16 @@ class ControllerPurchasePurchaseOrder extends Controller {
 
 		$tax_data = array();
 
+		// IVA sobre el sub-total (neto de descuento de línea + descuento global),
+		// no sobre el precio unitario de catálogo.
+		$global_discount_percent = isset($this->request->post['global_discount']) ? (float)preg_replace('/[^0-9.]/', '', $this->request->post['global_discount']) : 0;
+
 		foreach ($data as $product) {
 			if ($product['tax_class_id'] != 0) {
-				$tax_rates = $this->model_catalog_product->getProductRates($product['price'], $product['tax_class_id']);
+				$unit_price_after_discount = $product['quantity'] ? ($product['total'] / $product['quantity']) : $product['price'];
+				$unit_price_for_tax = $unit_price_after_discount * (1 - ($global_discount_percent / 100));
+
+				$tax_rates = $this->model_catalog_product->getProductRates($unit_price_for_tax, $product['tax_class_id']);
 
 				foreach ($tax_rates as $tax_rate) {
 					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {
@@ -827,6 +881,159 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		}
 
 		return $tax_data;
+	}
+
+	// Documento imprimible del pedido de compra (View HTML / PDF), mismo patrón
+	// que ControllerSaleInvoice::invoice() pero simplificado: purchase_order no
+	// guarda su propia copia de la dirección del proveedor, así que el bloque
+	// "To" se resuelve en vivo contra la ficha actual del proveedor.
+	public function invoice() {
+		$lcFormat = isset($this->request->get['format']) ? $this->request->get['format'] : '';
+
+		$this->load->language('purchase/purchase_order');
+
+		$this->data['title'] = $this->language->get('text_purchase_order');
+
+		if (isset($this->request->server['HTTPS']) && in_array($this->request->server['HTTPS'], array('on', '1'))) {
+			$this->data['base'] = HTTPS_SERVER;
+		} else {
+			$this->data['base'] = HTTP_SERVER;
+		}
+
+		$this->data['direction'] = $this->language->get('direction');
+		$this->data['language'] = $this->language->get('code');
+
+		$this->data['text_purchase_order'] = $this->language->get('text_purchase_order');
+		$this->data['text_purchase_order_id'] = $this->language->get('text_purchase_order_id');
+		$this->data['text_date_added'] = $this->language->get('text_date_added');
+		$this->data['text_telephone'] = $this->language->get('text_telephone');
+		$this->data['text_fax'] = $this->language->get('text_fax');
+		$this->data['text_email'] = $this->language->get('text_email');
+		$this->data['text_tax_id'] = $this->language->get('text_tax_id');
+		$this->data['text_to'] = $this->language->get('text_to');
+		$this->data['text_payment_method'] = $this->language->get('text_payment_method');
+		$this->data['text_shipping_method'] = $this->language->get('text_shipping_method');
+
+		$this->data['column_product'] = $this->language->get('column_product');
+		$this->data['column_quantity'] = $this->language->get('column_quantity');
+		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
+		$this->data['column_total'] = $this->language->get('column_total');
+
+		$this->load->model('purchase/purchase_order');
+		$this->load->model('purchase/supplier');
+		$this->load->model('setting/setting');
+
+		$purchase_order_ids = array();
+		$purchase_order_id = 0;
+
+		if (isset($this->request->post['selected'])) {
+			$purchase_order_ids = $this->request->post['selected'];
+		} elseif (isset($this->request->get['purchase_order_id'])) {
+			$purchase_order_ids[] = $this->request->get['purchase_order_id'];
+		}
+
+		$purchase_order_ids = array_unique($purchase_order_ids);
+
+		$this->data['purchase_orders'] = array();
+
+		foreach ($purchase_order_ids as $purchase_order_id) {
+			$purchase_order_info = $this->model_purchase_purchase_order->getPurchaseOrder($purchase_order_id);
+
+			if (!$purchase_order_info) {
+				continue;
+			}
+
+			$store_info = $this->model_setting_setting->getSetting('config', $purchase_order_info['store_id']);
+
+			if ($store_info) {
+				$store_address = $store_info['config_address'];
+				$store_email = $store_info['config_email'];
+				$store_telephone = $store_info['config_telephone'];
+				$store_fax = isset($store_info['config_fax']) ? $store_info['config_fax'] : '';
+			} else {
+				$store_address = $this->config->get('config_address');
+				$store_email = $this->config->get('config_email');
+				$store_telephone = $this->config->get('config_telephone');
+				$store_fax = (string)$this->config->get('config_fax');
+			}
+
+			$store_nif = $this->config->get('config_vat_id');
+
+			if (!$store_nif) {
+				$store_nif = $this->config->get('config_nif');
+			}
+
+			$supplier_info = $this->model_purchase_supplier->getSupplier($purchase_order_info['supplier_id']);
+
+			$supplier_address = '';
+
+			if ($supplier_info) {
+				$supplier_address_lines = array_filter(array(
+					$supplier_info['address_1'],
+					$supplier_info['address_2'],
+					trim($supplier_info['postcode'] . ' ' . $supplier_info['city']),
+					$supplier_info['zone'],
+					$supplier_info['country']
+				));
+
+				$supplier_address = implode('<br/>', array_map('htmlspecialchars', $supplier_address_lines));
+			}
+
+			$product_data = array();
+
+			foreach ($this->model_purchase_purchase_order->getPurchaseOrderProducts($purchase_order_id) as $product) {
+				$product_data[] = array(
+					'name'     => $product['name'],
+					'model'    => $product['model'],
+					'quantity' => $product['quantity'],
+					'price'    => $this->currency->format($product['price'], $purchase_order_info['currency_code'], $purchase_order_info['currency_value'], true, true),
+					'discount' => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') . '%' : '',
+					'total'    => $this->currency->format($product['total'], $purchase_order_info['currency_code'], $purchase_order_info['currency_value'], true, true)
+				);
+			}
+
+			$total_data = array();
+
+			foreach ($this->model_purchase_purchase_order->getPurchaseOrderTotals($purchase_order_id) as $total) {
+				$total_data[] = array(
+					'title' => $total['title'],
+					'text'  => $this->currency->format($total['value'], $purchase_order_info['currency_code'], $purchase_order_info['currency_value'], true, true)
+				);
+			}
+
+			$this->data['purchase_orders'][] = array(
+				'purchase_order_id' => $purchase_order_id,
+				'po_number'         => $purchase_order_info['po_number'],
+				'date_added'        => date($this->language->get('date_format_short'), strtotime($purchase_order_info['date_added'])),
+				'store_name'        => $purchase_order_info['store_name'],
+				'store_address'     => nl2br(trim($store_address)),
+				'store_email'       => $store_email,
+				'store_telephone'   => $store_telephone,
+				'store_fax'         => $store_fax,
+				'store_nif'         => $store_nif,
+				'supplier_company'  => $supplier_info ? $supplier_info['company'] : $purchase_order_info['supplier_company'],
+				'supplier_tax_id'   => $supplier_info ? $supplier_info['tax_id'] : '',
+				'supplier_address'  => $supplier_address,
+				'supplier_email'    => $supplier_info ? $supplier_info['email'] : $purchase_order_info['supplier_email'],
+				'supplier_telephone'=> $supplier_info ? $supplier_info['telephone'] : $purchase_order_info['supplier_telephone'],
+				'payment_method'    => $purchase_order_info['payment_method'],
+				'shipping_method'   => $purchase_order_info['shipping_method'],
+				'product'           => $product_data,
+				'total'             => $total_data
+			);
+		}
+
+		$this->data['logo'] = $this->config->get('config_logo');
+
+		if ($lcFormat == 'pdf') {
+			$this->renderPDF('purchase/purchase_order_printPDF.tpl', 'pdf', 'purchase_order', $purchase_order_id);
+		} else {
+			$this->data['auto_print'] = ($lcFormat != 'view');
+
+			$this->template = 'purchase/purchase_order_invoice.tpl';
+			$this->response->setOutput($this->render());
+		}
 	}
 
 	private function buildFilterUrl() {

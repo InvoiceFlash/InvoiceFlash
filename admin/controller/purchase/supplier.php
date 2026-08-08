@@ -165,6 +165,37 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+	// Datos de solo lectura para el modal "ojo" de detalles del proveedor
+	// (p.ej. purchase/purchase_order/insert, que no guarda su propia copia
+	// de la dirección/contacto del proveedor como sí hace purchase/invoice).
+	public function getDetails() {
+		$this->load->model('purchase/supplier');
+
+		$supplier_id = isset($this->request->get['supplier_id']) ? (int)$this->request->get['supplier_id'] : 0;
+
+		$supplier_info = $supplier_id ? $this->model_purchase_supplier->getSupplier($supplier_id) : false;
+
+		if ($supplier_info) {
+			$json = array(
+				'company'    => $supplier_info['company'],
+				'tax_id'     => $supplier_info['tax_id'],
+				'email'      => $supplier_info['email'],
+				'telephone'  => $supplier_info['telephone'],
+				'fax'        => $supplier_info['fax'],
+				'address_1'  => $supplier_info['address_1'],
+				'address_2'  => $supplier_info['address_2'],
+				'city'       => $supplier_info['city'],
+				'postcode'   => $supplier_info['postcode'],
+				'country'    => $supplier_info['country'],
+				'zone'       => $supplier_info['zone']
+			);
+		} else {
+			$json = array('error' => 'not_found');
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
 	public function searchSuppliers() {
 		$this->load->model('purchase/supplier');
 

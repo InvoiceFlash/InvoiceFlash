@@ -1344,8 +1344,9 @@ $(function(){
 	});
 	$('#button-purchase_order-product').on('click',function(){
 		var a=$(this);
-		var data='#PurchaseOrderProductModal input[type="text"],#PurchaseOrderProductModal input[type="hidden"],';
-		data+='#product input[type="hidden"]';
+		var data='#tab-supplier input[type="text"],#tab-supplier input[type="hidden"],';
+		data+='#PurchaseOrderProductModal input[type="text"],#PurchaseOrderProductModal input[type="hidden"],';
+		data+='#product input[type="text"],#product input[type="hidden"]';
 		var ajaxData=$.param($(data));
 		var $productModal=$('#PurchaseOrderProductModal');
 		if($productModal.length&&$productModal.hasClass('show')){
@@ -1371,6 +1372,7 @@ $(function(){
 						html+='<td>'+product['name']+'<br><input type="hidden" name="purchase_order_product['+product_row+'][purchase_order_product_id]" value=""><input type="hidden" name="purchase_order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="purchase_order_product['+product_row+'][name]" value="'+product['name']+'"><input type="hidden" name="purchase_order_product['+product_row+'][model]" value="'+product['model']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right po-qty" name="purchase_order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
 						html+='<td class="text-right"><input type="text" class="form-control text-right po-price" data-catalog-price="'+product['catalog_price_raw']+'" name="purchase_order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-right"><input type="text" class="form-control text-right po-discount" name="purchase_order_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
 						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="purchase_order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="purchase_order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
@@ -1383,7 +1385,7 @@ $(function(){
 					for(i in json['purchase_order_total']){
 						total=json['purchase_order_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="3"><input type="hidden" name="purchase_order_total['+total_row+'][purchase_order_total_id]" value=""><input type="hidden" name="purchase_order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="purchase_order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="purchase_order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="purchase_order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="purchase_order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="purchase_order_total['+total_row+'][purchase_order_total_id]" value=""><input type="hidden" name="purchase_order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="purchase_order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="purchase_order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="purchase_order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="purchase_order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
 						html+='<td class="text-right">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;

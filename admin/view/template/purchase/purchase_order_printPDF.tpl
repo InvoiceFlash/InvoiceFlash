@@ -1,0 +1,102 @@
+<!doctype html>
+<html class="no-js" dir="<?php echo $direction; ?>">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title><?php echo $title; ?></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<base href="<?php echo $base; ?>">
+<style>
+* {
+	padding: 0;
+	margin: 0;
+}
+.table-bordered {
+	border: 1px solid grey;
+}
+.table {
+	width: 100%;
+	margin-bottom: 1rem;
+	background-color: white;
+	margin: 5px;
+	padding: 5px;
+}
+th {
+    font-weight: bold;
+	background-color: #dee2e6;
+}
+</style>
+</head>
+<body style="padding-top:0;">
+<div class="container">
+<?php foreach ($purchase_orders as $purchase_order) { ?>
+	<table style="width:100%; margin:0; border-collapse:collapse;">
+		<tr>
+			<td style="width:50%; vertical-align:top; padding:0;">
+				<table style="width:100%; border-collapse:collapse;">
+					<tr>
+						<td style="width:26%; vertical-align:top; padding:0;">
+							<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $purchase_order['store_name']; ?>" style="width:24mm;" />
+						</td>
+						<td style="width:21%; padding:0;"></td>
+						<td style="width:53%; vertical-align:top; padding:0;">
+							<strong style="font-size:15px;"><?php echo $purchase_order['store_name']; ?></strong><br>
+							<?php echo $purchase_order['store_address']; ?><br>
+							<?php echo $text_telephone; ?> <?php echo $purchase_order['store_telephone']; ?><br>
+							<?php if ($purchase_order['store_fax']) { ?>
+							<?php echo $text_fax; ?> <?php echo $purchase_order['store_fax']; ?><br>
+							<?php } ?>
+							<?php echo $text_tax_id; ?> <?php echo $purchase_order['store_nif']; ?><br>
+							<?php echo $purchase_order['store_email']; ?>
+						</td>
+					</tr>
+				</table>
+			</td>
+			<td style="text-align:right; vertical-align:top; padding:0;">
+				<b><?php echo mb_strtoupper($text_purchase_order, 'UTF-8'); ?>:</b> <?php echo $purchase_order['po_number']; ?> &nbsp;&nbsp; <b>DATE:</b> <?php echo $purchase_order['date_added']; ?>
+			</td>
+		</tr>
+		<tr>
+			<td style="vertical-align:top; padding:0;"></td>
+			<td style="text-align:left; vertical-align:top; padding:0;">
+				<b><?php echo $text_to; ?>:</b><br>
+				<?php if ($purchase_order['supplier_company']) { ?><strong><?php echo $purchase_order['supplier_company']; ?></strong><br/><?php } ?>
+				<?php if ($purchase_order['supplier_tax_id']) { ?><?php echo $text_tax_id; ?> <?php echo $purchase_order['supplier_tax_id']; ?><br/><?php } ?>
+				<?php echo $purchase_order['supplier_address']; ?><?php echo $purchase_order['supplier_address'] ? '<br/>' : ''; ?>
+				<?php echo $purchase_order['supplier_email']; ?>
+				<?php if ($purchase_order['supplier_telephone']) { ?><br/><?php echo $purchase_order['supplier_telephone']; ?><?php } ?>
+			</td>
+		</tr>
+	</table>
+	<table class="table table-bordered">
+		<tr>
+			<th><?php echo $column_product; ?></th>
+			<th class="text-right"><?php echo $column_quantity; ?></th>
+			<th class="text-right"><?php echo $column_price; ?></th>
+			<th class="text-right"><?php echo $column_discount; ?></th>
+			<th class="text-right"><?php echo $column_total; ?></th>
+		</tr>
+		<?php foreach ($purchase_order['product'] as $product) { ?>
+		<tr>
+			<td><?php echo $product['name']; ?></td>
+			<td class="text-right"><?php echo $product['quantity']; ?></td>
+			<td class="text-right"><?php echo $product['price']; ?></td>
+			<td class="text-right"><?php echo $product['discount']; ?></td>
+			<td class="text-right"><?php echo $product['total']; ?></td>
+		</tr>
+		<?php } ?>
+		<?php foreach ($purchase_order['total'] as $total) { ?>
+		<tr>
+			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="text-right"><?php echo $total['text']; ?></td>
+		</tr>
+		<?php } ?>
+	</table>
+	<div style="text-align:left;"><b><?php echo $text_payment_method; ?></b> &nbsp; <?php echo $purchase_order['payment_method']; ?></div>
+	<?php if ($purchase_order['shipping_method']) { ?>
+	<div style="text-align:left;"><b><?php echo $text_shipping_method; ?></b> &nbsp; <?php echo $purchase_order['shipping_method']; ?></div>
+	<?php } ?>
+<?php } ?>
+</div>
+</body>
+</html>

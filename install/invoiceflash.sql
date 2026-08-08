@@ -7808,6 +7808,7 @@ CREATE TABLE `if_purchase_invoice_product` (
   `model` varchar(64) NOT NULL,
   `quantity` int(4) NOT NULL,
   `price` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `discount` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `tax` decimal(15,4) NOT NULL DEFAULT '0.0000',
   PRIMARY KEY (`invoice_product_id`),
@@ -8648,6 +8649,7 @@ CREATE TABLE `if_purchase_order_product` (
   `model` varchar(64) NOT NULL,
   `quantity` int(4) NOT NULL,
   `price` decimal(15,4) NOT NULL DEFAULT '0.0000',
+  `discount` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `tax` decimal(15,4) NOT NULL DEFAULT '0.0000',
   PRIMARY KEY (`purchase_order_product_id`)

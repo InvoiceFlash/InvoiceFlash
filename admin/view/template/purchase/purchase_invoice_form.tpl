@@ -131,10 +131,16 @@
 								</select>
 							</div>
 						</div>
+						<div class="form-group col-sm-3 d-flex align-items-center">
+							<label class="control-label text-nowrap mb-0 pr-1"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal" style="width:70px;">
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="card" id="tab-product" style="width:100%;">
+				<div class="card" id="tab-product" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_product; ?>
 					<button class="btn btn-info pull-right" type="button" id="addProduct"><i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span></button>
@@ -148,6 +154,7 @@
 								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
 								<th class="text-right"><?php echo $column_quantity; ?></th>
 								<th class="text-right"><?php echo $column_price; ?></th>
+								<th class="text-right"><?php echo $column_discount; ?></th>
 								<th class="text-right"><?php echo $column_total; ?></th>
 						</tr>
 						</thead>
@@ -177,6 +184,7 @@
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][model]" value="<?php echo $invoice_product['model']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right pi-qty" name="invoice_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $invoice_product['quantity']; ?>"></td>
 								<td class="text-right"><input type="text" class="form-control text-right pi-price" data-catalog-price="<?php echo $invoice_product['catalog_price_raw']; ?>" name="invoice_product[<?php echo $product_row; ?>][price]" value="<?php echo $invoice_product['price_raw']; ?>"></td>
+								<td class="text-right"><input type="text" class="form-control text-right pi-discount" name="invoice_product[<?php echo $product_row; ?>][discount]" value="<?php echo $invoice_product['discount_raw']; ?>"></td>
 								<td class="text-right"><?php echo $invoice_product['total']; ?>
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][total]" value="<?php echo $invoice_product['total']; ?>">
 									<input type="hidden" name="invoice_product[<?php echo $product_row; ?>][tax]" value="<?php echo $invoice_product['tax']; ?>"></td>
@@ -186,7 +194,7 @@
 							<?php } else { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
 							</tr>
 							<?php } ?>
 						</tbody>
@@ -196,7 +204,7 @@
 							<?php foreach ($invoice_totals as $invoice_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="4"><?php echo $invoice_total['title']; ?>:
+								<td class="text-right" colspan="5"><?php echo $invoice_total['title']; ?>:
 									<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][invoice_total_id]" value="<?php echo $invoice_total['invoice_total_id']; ?>">
 									<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][code]" value="<?php echo $invoice_total['code']; ?>">
 									<input type="hidden" name="invoice_total[<?php echo $total_row; ?>][title]" value="<?php echo $invoice_total['title']; ?>">
@@ -321,6 +329,12 @@
 									<label class="control-label col-sm-4"><?php echo $entry_price; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="price_override" id="price_override" value="" class="form-control">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-sm-4"><?php echo $entry_discount; ?></label>
+									<div class="control-field col-sm-8">
+										<input type="text" name="discount" id="pm-discount" value="" class="form-control">
 									</div>
 								</div>
 							</div>
@@ -567,6 +581,7 @@ $('#PurchaseInvoiceProductModal').on('hidden.bs.modal', function () {
     $(this).find('#product_id').val(0);
     $(this).find('#pm-quantity').val(1);
     $(this).find('#price_override').val('');
+    $(this).find('#pm-discount').val('');
     $(this).find('#pm-product-name').text('<?php echo $text_product; ?>');
     $(this).find('#option').html('');
 });
@@ -689,8 +704,9 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 
 $('#button-purchase-invoice-product').on('click', function() {
 	var a = $(this);
-	var data = '#PurchaseInvoiceProductModal input[type="text"],#PurchaseInvoiceProductModal input[type="hidden"],#PurchaseInvoiceProductModal input[type="radio"]:checked,#PurchaseInvoiceProductModal input[type="checkbox"]:checked,#PurchaseInvoiceProductModal select,#PurchaseInvoiceProductModal textarea,';
-	data += '#product input[type="hidden"]';
+	var data = '#tab-customer input[type="text"],#tab-customer input[type="hidden"],';
+	data += '#PurchaseInvoiceProductModal input[type="text"],#PurchaseInvoiceProductModal input[type="hidden"],#PurchaseInvoiceProductModal input[type="radio"]:checked,#PurchaseInvoiceProductModal input[type="checkbox"]:checked,#PurchaseInvoiceProductModal select,#PurchaseInvoiceProductModal textarea,';
+	data += '#product input[type="text"],#product input[type="hidden"]';
 	var ajaxData = $.param($(data));
 	var $productModal = $('#PurchaseInvoiceProductModal');
 	if ($productModal.length && $productModal.hasClass('show')) {
@@ -734,6 +750,7 @@ $('#button-purchase-invoice-product').on('click', function() {
 					html += '<td class="d-none d-sm-table-cell">' + product.model + '<input type="hidden" name="invoice_product[' + product_row + '][model]" value="' + product.model + '"></td>';
 					html += '<td class="text-right"><input type="text" class="form-control text-right pi-qty" name="invoice_product[' + product_row + '][quantity]" value="' + product.quantity + '"></td>';
 					html += '<td class="text-right"><input type="text" class="form-control text-right pi-price" data-catalog-price="' + product.catalog_price_raw + '" name="invoice_product[' + product_row + '][price]" value="' + product.price_raw + '"></td>';
+					html += '<td class="text-right"><input type="text" class="form-control text-right pi-discount" name="invoice_product[' + product_row + '][discount]" value="' + (product.discount != null ? product.discount : '') + '"></td>';
 					html += '<td class="text-right">' + product.total + '<input type="hidden" name="invoice_product[' + product_row + '][total]" value="' + product.total + '"><input type="hidden" name="invoice_product[' + product_row + '][tax]" value=""></td>';
 					html += '</tr>';
 					product_row++;
@@ -745,7 +762,7 @@ $('#button-purchase-invoice-product').on('click', function() {
 				for (var i in json.invoice_total) {
 					var total = json.invoice_total[i];
 					html2 += '<tr id="total-row' + total_row + '">';
-					html2 += '<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="invoice_total[' + total_row + '][invoice_total_id]" value=""><input type="hidden" name="invoice_total[' + total_row + '][code]" value="' + total.code + '"><input type="hidden" name="invoice_total[' + total_row + '][title]" value="' + total.title + '"><input type="hidden" name="invoice_total[' + total_row + '][text]" value="' + total.text + '"><input type="hidden" name="invoice_total[' + total_row + '][value]" value="' + total.value + '"><input type="hidden" name="invoice_total[' + total_row + '][sort_order]" value="' + total.sort_order + '">' + total.title + ':</td>';
+					html2 += '<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="5"><input type="hidden" name="invoice_total[' + total_row + '][invoice_total_id]" value=""><input type="hidden" name="invoice_total[' + total_row + '][code]" value="' + total.code + '"><input type="hidden" name="invoice_total[' + total_row + '][title]" value="' + total.title + '"><input type="hidden" name="invoice_total[' + total_row + '][text]" value="' + total.text + '"><input type="hidden" name="invoice_total[' + total_row + '][value]" value="' + total.value + '"><input type="hidden" name="invoice_total[' + total_row + '][sort_order]" value="' + total.sort_order + '">' + total.title + ':</td>';
 					html2 += '<td class="text-right">' + total.text + '</td>';
 					html2 += '</tr>';
 					total_row++;
@@ -782,8 +799,16 @@ $(document).on('input', '.pi-price', function() {
 	piMarkPriceChanged(this);
 });
 
-$(document).on('change', '.pi-qty, .pi-price', function() {
+$(document).on('change', '.pi-qty, .pi-price, .pi-discount', function() {
 	piMarkPriceChanged(this);
+	$('#button-purchase-invoice-product').click();
+});
+
+$(document).on('input', '.pi-discount, #global_discount, #pm-discount', function() {
+	this.value = this.value.replace(/[^0-9.]/g, '');
+});
+
+$('#global_discount').on('change', function() {
 	$('#button-purchase-invoice-product').click();
 });
 

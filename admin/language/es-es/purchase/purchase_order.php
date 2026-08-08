@@ -25,6 +25,11 @@ $_['text_wait']                      = '&iexcl;Espere Por Favor!';
 $_['text_product']                   = 'A&ntilde;adir Producto(s)';
 $_['text_yes']                       = 'S&iacute;';
 $_['text_no']                        = 'No';
+$_['text_supplier_details']          = 'Datos del Proveedor';
+$_['text_purchase_order']            = 'Pedido de Compra';
+$_['text_fax']                       = 'Fax:';
+$_['text_tax_id']                    = 'CIF/NIF:';
+$_['text_to']                        = 'Para';
 
 // Column
 $_['column_purchase_order_id']       = 'ID PC';
@@ -38,6 +43,7 @@ $_['column_product']                 = 'Producto';
 $_['column_model']                   = 'Modelo';
 $_['column_quantity']                = 'Cantidad';
 $_['column_price']                   = 'Precio Unitario';
+$_['column_discount']                = 'Descuento';
 $_['column_comment']                 = 'Comentario';
 $_['column_notify']                  = 'Proveedor Notificado';
 
@@ -51,6 +57,16 @@ $_['entry_notify']                   = 'Notificar al Proveedor:';
 $_['entry_comment']                  = 'Comentario:';
 $_['entry_product']                  = 'Elegir Producto:';
 $_['entry_quantity']                 = 'Cantidad:';
+$_['entry_discount']                 = 'Descuento:';
+$_['entry_global_discount']          = 'Descuento Global:';
+$_['entry_fax']                      = 'Fax:';
+$_['entry_tax_id']                   = 'CIF/NIF:';
+$_['entry_address_1']                = 'Direcci&oacute;n 1:';
+$_['entry_address_2']                = 'Direcci&oacute;n 2:';
+$_['entry_city']                     = 'Ciudad:';
+$_['entry_postcode']                 = 'C&oacute;digo Postal:';
+$_['entry_country']                  = 'Pa&iacute;s:';
+$_['entry_zone']                     = 'Regi&oacute;n / Provincia:';
 
 // Button
 $_['button_insert']                  = 'A&ntilde;adir Nuevo';
@@ -72,4 +88,5 @@ $_['tab_history']                    = 'Historial';
 $_['error_warning']                  = 'Advertencia: &iexcl;Por favor, revise el formulario cuidadosamente en busca de errores!';
 $_['error_permission']               = 'Advertencia: &iexcl;No tiene permiso para modificar pedidos de compra!';
 $_['error_supplier']                 = '&iexcl;Por favor, seleccione un proveedor!';
+$_['error_no_selection']             = '&iexcl;Por favor, seleccione un pedido de compra!';
 ?>

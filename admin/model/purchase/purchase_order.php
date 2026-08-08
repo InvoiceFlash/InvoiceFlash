@@ -38,7 +38,7 @@ class ModelPurchasePurchaseOrder extends Model {
 			`shipping_code` = '" . $this->db->escape($data['shipping_code']) . "',
 			`payment_method` = '" . $this->db->escape($data['payment_method']) . "',
 			`payment_code` = '" . $this->db->escape($data['payment_code']) . "',
-			`purchase_order_status_id` = '" . (int)$data['purchase_order_status_id'] . "',
+			`purchase_order_status_id` = '" . (!empty($data['purchase_order_status_id']) ? (int)$data['purchase_order_status_id'] : 1) . "',
 			`language_id` = '" . (int)$this->config->get('config_language_id') . "',
 			`currency_id` = '" . (int)$currency_id . "',
 			`currency_code` = '" . $this->db->escape($currency_code) . "',
@@ -77,7 +77,11 @@ class ModelPurchasePurchaseOrder extends Model {
 		if (isset($data['purchase_order_product'])) {
 			foreach ($data['purchase_order_product'] as $purchase_order_product) {
 				$price = (float)preg_replace('/[^-0-9\.]/', '', $purchase_order_product['price']);
-				$total = (float)preg_replace('/[^-0-9\.]/', '', $purchase_order_product['total']);
+				$discount = isset($purchase_order_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $purchase_order_product['discount']) : 0;
+
+				// $discount es un porcentaje (0-100), no un importe; recalculado en
+				// servidor en vez de confiar en el campo oculto total posteado.
+				$total = ($price * (int)$purchase_order_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "purchase_order_product SET
 					purchase_order_id = '" . (int)$purchase_order_id . "',
@@ -86,6 +90,7 @@ class ModelPurchasePurchaseOrder extends Model {
 					model = '" . $this->db->escape($purchase_order_product['model']) . "',
 					quantity = '" . (int)$purchase_order_product['quantity'] . "',
 					price = '" . $price . "',
+					discount = '" . $discount . "',
 					total = '" . $total . "',
 					tax = '" . (float)$purchase_order_product['tax'] . "'");
 			}
@@ -103,7 +108,11 @@ class ModelPurchasePurchaseOrder extends Model {
 					`value` = '" . (float)$purchase_order_total['value'] . "',
 					sort_order = '" . (int)$purchase_order_total['sort_order'] . "'");
 
-				$total += $purchase_order_total['value'];
+				// Solo la fila "total" (ya es la suma del resto) fija el total guardado;
+				// sumar todas las filas aquí duplicaba el importe (bug preexistente).
+				if ($purchase_order_total['code'] == 'total') {
+					$total = $purchase_order_total['value'];
+				}
 			}
 		}
 

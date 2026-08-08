@@ -4,6 +4,8 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
+			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
+			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-eye"></i><span class="hidden-xs"> View</span></a>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>

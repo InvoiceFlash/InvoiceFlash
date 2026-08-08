@@ -4,6 +4,8 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
+			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitPurchaseOrders(this.dataset.url);" class="btn btn-default btn-spacer"><i class="far fa-eye"></i><span class="hidden-xs"> View</span></button>
+			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitPurchaseOrders(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirm(text_confirm);" id="btn-convert" class="btn btn-success"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_invoice; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
@@ -84,4 +86,16 @@
 		<div class="pagination"><?php echo str_replace('....','',$pagination); ?></div>
 	</div>
 </div>
+<script>
+function submitPurchaseOrders(url) {
+	if (!$('input[type="checkbox"]').is(':checked')) {
+		alert('<?php echo $error_no_selection; ?>');
+	} else {
+		var form = document.getElementById('form');
+		form.setAttribute('action', url);
+		form.setAttribute('target', '_blank');
+		document.form.submit();
+	}
+}
+</script>
 <?php echo $footer; ?>

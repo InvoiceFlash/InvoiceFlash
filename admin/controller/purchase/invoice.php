@@ -76,7 +76,7 @@ class ControllerPurchaseInvoice extends Controller {
 
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
 			foreach ($this->request->post['selected'] as $invoice_id) {
-				$this->model_purchase_invoice->createNegativeInvoice($invoice_id);
+				$this->model_purchase_invoice->deleteInvoice($invoice_id);
 			}
 			$this->session->data['success'] = $this->language->get('text_success');
 			$url = $this->buildFilterUrl();
@@ -107,6 +107,9 @@ class ControllerPurchaseInvoice extends Controller {
 							? (float)preg_replace('/[^-0-9\.]/', '', $invoice_product['price'])
 							: (float)$product_info['price'];
 
+						$discount_percent = isset($invoice_product['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']) : 0;
+						$discount_amount = ($use_price * $invoice_product['quantity']) * ($discount_percent / 100);
+
 						$this->session->data['cart'][] = array(
 							'product_id'   => $product_info['product_id'],
 							'name'         => $product_info['name'],
@@ -115,7 +118,8 @@ class ControllerPurchaseInvoice extends Controller {
 							'price'        => $use_price,
 							'catalog_price' => $product_info['price'],
 							'tax_class_id' => $product_info['tax_class_id'],
-							'total'        => ($use_price * $invoice_product['quantity'])
+							'total'        => ($use_price * $invoice_product['quantity']) - $discount_amount,
+							'discount'     => $discount_percent
 						);
 					}
 				}
@@ -131,6 +135,9 @@ class ControllerPurchaseInvoice extends Controller {
 						? (float)$this->request->post['price_override']
 						: (float)$product_info['price'];
 
+					$discount_percent = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+					$discount_amount = ($use_price * $quantity) * ($discount_percent / 100);
+
 					$this->session->data['cart'][] = array(
 						'product_id'   => $this->request->post['product_id'],
 						'name'         => $product_info['name'],
@@ -138,7 +145,8 @@ class ControllerPurchaseInvoice extends Controller {
 						'quantity'     => $quantity,
 						'price'        => $use_price,
 						'tax_class_id' => $product_info['tax_class_id'],
-						'total'        => ($use_price * $quantity)
+						'total'        => ($use_price * $quantity) - $discount_amount,
+						'discount'     => $discount_percent
 					);
 				} else {
 					$json['error']['product']['not_found'] = $this->language->get('error_action');
@@ -159,7 +167,8 @@ class ControllerPurchaseInvoice extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id' => $product['tax_class_id'],
-					'total'        => $this->currency->format($product['total'])
+					'total'        => $this->currency->format($product['total']),
+					'discount'     => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
 
@@ -168,10 +177,14 @@ class ControllerPurchaseInvoice extends Controller {
 			$total = 0;
 			$taxes = $this->getTaxes($products);
 
+			$this->load->model('total/discount');
 			$this->load->model('total/sub_total');
 			$this->load->model('total/tax');
 			$this->load->model('total/total');
 
+			// discount corre antes que sub_total para que este último salga neto
+			// (mismo orden que quote/order/delivery/draft/purchase_order)
+			$this->model_total_discount->getTotal($json['invoice_total'], $total, $taxes);
 			$this->model_total_sub_total->getTotal($json['invoice_total'], $total, $taxes);
 			$this->model_total_tax->getTotal($json['invoice_total'], $total, $taxes);
 			$this->model_total_total->getTotal($json['invoice_total'], $total, $taxes);
@@ -189,9 +202,16 @@ class ControllerPurchaseInvoice extends Controller {
 
 		$tax_data = array();
 
+		// IVA sobre el sub-total (neto de descuento de línea + descuento global),
+		// no sobre el precio unitario de catálogo.
+		$global_discount_percent = isset($this->request->post['global_discount']) ? (float)preg_replace('/[^0-9.]/', '', $this->request->post['global_discount']) : 0;
+
 		foreach ($data as $product) {
 			if ($product['tax_class_id'] != 0) {
-				$tax_rates = $this->model_catalog_product->getProductRates($product['price'], $product['tax_class_id']);
+				$unit_price_after_discount = $product['quantity'] ? ($product['total'] / $product['quantity']) : $product['price'];
+				$unit_price_for_tax = $unit_price_after_discount * (1 - ($global_discount_percent / 100));
+
+				$tax_rates = $this->model_catalog_product->getProductRates($unit_price_for_tax, $product['tax_class_id']);
 
 				foreach ($tax_rates as $tax_rate) {
 					if (!isset($tax_data[$tax_rate['tax_rate_id']])) {
@@ -424,11 +444,14 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->data['entry_shipping']        = $this->language->get('entry_shipping');
 		$this->data['entry_payment']         = $this->language->get('entry_payment');
 		$this->data['entry_coupon']          = $this->language->get('entry_coupon');
+		$this->data['entry_discount']        = $this->language->get('entry_discount');
+		$this->data['entry_global_discount'] = $this->language->get('entry_global_discount');
 
 		$this->data['column_product']        = $this->language->get('column_product');
 		$this->data['column_model']          = $this->language->get('column_model');
 		$this->data['column_quantity']       = $this->language->get('column_quantity');
 		$this->data['column_price']          = $this->language->get('column_price');
+		$this->data['column_discount']       = $this->language->get('column_discount');
 		$this->data['column_total']          = $this->language->get('column_total');
 
 		$this->data['button_save']           = $this->language->get('button_save');
@@ -560,6 +583,7 @@ class ControllerPurchaseInvoice extends Controller {
 				'price'              => isset($invoice_info) ? $this->currency->format($invoice_product['price'], $invoice_info['currency_code'], $invoice_info['currency_value']) : $invoice_product['price'],
 				'price_raw'         => number_format((float)$invoice_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$invoice_product['price'], 2, '.', ''),
+				'discount_raw'       => (!empty($invoice_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']), 2, '.', '') : '',
 				'total'              => isset($invoice_info) ? $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value']) : $invoice_product['total'],
 				'tax'                => $invoice_product['tax']
 			);
@@ -572,6 +596,19 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->data['invoice_totals'] = $this->model_purchase_invoice->getInvoiceTotals($this->request->get['invoice_id']);
 		} else {
 			$this->data['invoice_totals'] = array();
+		}
+
+		if (isset($this->request->post['global_discount'])) {
+			$this->data['global_discount'] = $this->request->post['global_discount'];
+		} else {
+			$this->data['global_discount'] = '';
+
+			foreach ($this->data['invoice_totals'] as $invoice_total) {
+				if ($invoice_total['code'] == 'discount') {
+					$this->data['global_discount'] = number_format(abs((float)$invoice_total['value']), 2, '.', '');
+					break;
+				}
+			}
 		}
 
 		$this->load->model('localisation/country');
@@ -686,7 +723,7 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->data['comment']         = nl2br($invoice_info['comment']);
 			$this->data['shipping_method'] = $invoice_info['shipping_method'];
 			$this->data['payment_method']  = $invoice_info['payment_method'];
-			$this->data['total']           = $this->currency->format($invoice_info['total'], $invoice_info['currency_code'], $invoice_info['currency_value']);
+			$this->data['total']           = $this->currency->format($invoice_info['total'], $invoice_info['currency_code'], $invoice_info['currency_value'], true, true);
 			$this->data['credit']          = ($invoice_info['total'] < 0) ? $invoice_info['total'] : 0;
 
 			$this->load->model('localisation/invoice_status');
@@ -885,24 +922,10 @@ class ControllerPurchaseInvoice extends Controller {
 				$replace = array($invoice_info['payment_company'],$invoice_info['payment_address_1'],$invoice_info['payment_address_2'],$invoice_info['payment_city'],$invoice_info['payment_postcode'],$invoice_info['payment_zone'],$invoice_info['payment_zone_code'],$invoice_info['payment_country']);
 				$payment_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
+				// purchase_invoice no tiene "customer_id" (es un documento de proveedor,
+				// no de cliente) - a diferencia de sale/invoice, aquí payment_tax_id ya
+				// viene siempre snapshotado en la propia factura de compra, sin fallback.
 				$payment_tax_id = $invoice_info['payment_tax_id'];
-
-				if ((!$payment_address || !$payment_tax_id) && $invoice_info['customer_id']) {
-					$this->load->model('sale/customer');
-					$customer_general = $this->model_sale_customer->getCustomer($invoice_info['customer_id']);
-					if (!empty($customer_general)) {
-						if (!$payment_address && isset($customer_general['address']) && $customer_general['address']) {
-							$customer_postcode = $customer_general['postcode'];
-							if (preg_match('/^(\d{2})(\d{3})$/', $customer_postcode, $postcode_match)) {
-								$customer_postcode = $postcode_match[1] . '.' . $postcode_match[2];
-							}
-							$payment_address = trim($customer_general['address']) . '<br />' . trim($customer_postcode . ' ' . $customer_general['city']);
-						}
-						if (!$payment_tax_id && isset($customer_general['nif'])) {
-							$payment_tax_id = $customer_general['nif'];
-						}
-					}
-				}
 
 				$product_data = array();
 				$products     = $this->model_purchase_invoice->getInvoiceProducts($invoice_id);

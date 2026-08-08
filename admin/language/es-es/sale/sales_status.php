@@ -10,6 +10,7 @@ $_['column_delivery'] = 'Albar&aacute;n';
 $_['column_invoice']  = 'Factura';
 $_['column_date']     = 'Fecha';
 $_['column_status']   = 'Estado';
+$_['column_amount']   = 'Importe';
 
 // Entry / Filtros
 $_['entry_customer']   = 'Cliente';

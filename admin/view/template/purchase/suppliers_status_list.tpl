@@ -68,7 +68,7 @@
 					<tr>
 						<th rowspan="2" class="align-middle"><?php echo $column_supplier; ?></th>
 						<th colspan="3" class="text-center col-po"><?php echo $column_purchase_order; ?></th>
-						<th colspan="3" class="text-center col-invoice"><?php echo $column_invoice; ?></th>
+						<th colspan="4" class="text-center col-invoice"><?php echo $column_invoice; ?></th>
 					</tr>
 					<tr>
 						<th class="col-po">Nº</th>
@@ -77,6 +77,7 @@
 						<th class="col-invoice">Nº</th>
 						<th class="col-invoice"><?php echo $column_date; ?></th>
 						<th class="col-invoice"><?php echo $column_status; ?></th>
+						<th class="col-invoice text-end"><?php echo $column_amount; ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -90,11 +91,12 @@
 						<td class="col-invoice"><?php echo $row['invoice_id'] ? '<a href="' . $row['invoice_href'] . '">' . $row['invoice_id'] . '</a>' : ''; ?></td>
 						<td class="col-invoice"><?php echo $row['invoice_date']; ?></td>
 						<td class="col-invoice"><?php if ($row['invoice_id']) { ?><span class="badge <?php echo $row['invoice_paid'] ? 'badge-paid' : 'badge-pending'; ?>"><?php echo $row['invoice_status']; ?></span><?php } ?></td>
+						<td class="col-invoice text-end"><?php echo $row['invoice_total']; ?></td>
 					</tr>
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

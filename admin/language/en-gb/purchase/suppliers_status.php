@@ -8,6 +8,7 @@ $_['column_purchase_order'] = 'Purchase Order';
 $_['column_invoice']        = 'Invoice';
 $_['column_date']           = 'Date';
 $_['column_status']         = 'Status';
+$_['column_amount']         = 'Amount';
 
 // Entry / Filters
 $_['entry_supplier']   = 'Supplier';

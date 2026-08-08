@@ -78,7 +78,7 @@ class ModelPurchaseSuppliersStatus extends Model {
 			SELECT
 				CONCAT('po', po.purchase_order_id) AS row_id,
 				po.purchase_order_id AS purchase_order_id, po.date_added AS po_date, pos.name AS po_status,
-				NULL AS invoice_id, NULL AS invoice_date, NULL AS invoice_status_id, NULL AS invoice_status,
+				NULL AS invoice_id, NULL AS invoice_date, NULL AS invoice_status_id, NULL AS invoice_status, NULL AS invoice_total,
 				po.supplier_id AS supplier_id,
 				po.po_number AS comment,
 				po.date_added AS sort_date
@@ -90,7 +90,7 @@ class ModelPurchaseSuppliersStatus extends Model {
 			SELECT
 				CONCAT('pi', i.invoice_id) AS row_id,
 				NULL, NULL, NULL,
-				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
+				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status, i.total AS invoice_total,
 				i.supplier_id AS supplier_id,
 				i.comment AS comment,
 				i.date_added AS sort_date

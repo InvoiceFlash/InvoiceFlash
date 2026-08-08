@@ -1,6 +1,14 @@
 <?php
 
 class ModelPurchaseInvoice extends Model {
+	public function deleteInvoice($invoice_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "purchase_invoice WHERE invoice_id = '" . (int)$invoice_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "purchase_invoice_product WHERE invoice_id = '" . (int)$invoice_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "purchase_invoice_option WHERE invoice_id = '" . (int)$invoice_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "purchase_invoice_total WHERE invoice_id = '" . (int)$invoice_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "purchase_invoice_history WHERE invoice_id = '" . (int)$invoice_id . "'");
+	}
+
 	public function addInvoice($data) {
 		$this->load->model('setting/store');
 
@@ -119,7 +127,11 @@ class ModelPurchaseInvoice extends Model {
 		if (isset($data['invoice_product'])) {
 			foreach ($data['invoice_product'] as $invoice_product) {
 				$price = floatval(preg_replace("/[^-0-9\.]/", "", $invoice_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/", "", $invoice_product['total']));
+				$discount = isset($invoice_product['discount']) ? floatval(preg_replace("/[^0-9\.]/", "", $invoice_product['discount'])) : 0;
+
+				// $discount es un porcentaje (0-100), no un importe; recalculado en
+				// servidor en vez de confiar en el campo oculto total posteado.
+				$total = ($price * (int)$invoice_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "purchase_invoice_product SET
 					invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "',
@@ -129,6 +141,7 @@ class ModelPurchaseInvoice extends Model {
 					model = '" . $this->db->escape($invoice_product['model']) . "',
 					quantity = '" . (int)$invoice_product['quantity'] . "',
 					price = '" . $price . "',
+					discount = '" . $discount . "',
 					total = '" . $total . "',
 					tax = '" . (float)$invoice_product['tax'] . "'");
 
@@ -242,7 +255,11 @@ class ModelPurchaseInvoice extends Model {
 		if (isset($data['invoice_product'])) {
 			foreach ($data['invoice_product'] as $invoice_product) {
 				$price = floatval(preg_replace("/[^-0-9\.]/", "", $invoice_product['price']));
-				$total = floatval(preg_replace("/[^-0-9\.]/", "", $invoice_product['total']));
+				$discount = isset($invoice_product['discount']) ? floatval(preg_replace("/[^0-9\.]/", "", $invoice_product['discount'])) : 0;
+
+				// $discount es un porcentaje (0-100), no un importe; recalculado en
+				// servidor en vez de confiar en el campo oculto total posteado.
+				$total = ($price * (int)$invoice_product['quantity']) * (1 - ($discount / 100));
 
 				$this->db->query("INSERT INTO " . DB_PREFIX . "purchase_invoice_product SET
 					invoice_product_id = '" . (int)$invoice_product['invoice_product_id'] . "',
@@ -252,6 +269,7 @@ class ModelPurchaseInvoice extends Model {
 					model = '" . $this->db->escape($invoice_product['model']) . "',
 					quantity = '" . (int)$invoice_product['quantity'] . "',
 					price = '" . $price . "',
+					discount = '" . $discount . "',
 					total = '" . $total . "',
 					tax = '" . (float)$invoice_product['tax'] . "'");
 
@@ -360,6 +378,7 @@ class ModelPurchaseInvoice extends Model {
 				model = '" . $this->db->escape($invoice_product['model']) . "',
 				quantity = '" . (int)(-$invoice_product['quantity']) . "',
 				price = '" . (float)$invoice_product['price'] . "',
+				discount = '" . (float)(isset($invoice_product['discount']) ? $invoice_product['discount'] : 0) . "',
 				total = '" . (float)(-$invoice_product['total']) . "',
 				tax = '" . (float)(-$invoice_product['tax']) . "'");
 
@@ -394,7 +413,12 @@ class ModelPurchaseInvoice extends Model {
 				`value` = '" . (float)$value . "',
 				sort_order = '" . (int)$invoice_total['sort_order'] . "'");
 
-			$total += $value;
+			// Solo la fila "total" (ya es la suma del resto) fija el total guardado;
+			// sumar todas las filas aquí duplicaba el importe (mismo bug que en
+			// purchase_order::addPurchaseOrderProducts()).
+			if ($invoice_total['code'] == 'total') {
+				$total = $value;
+			}
 		}
 
 		$this->db->query("UPDATE " . DB_PREFIX . "purchase_invoice SET total = '" . (float)$total . "' WHERE invoice_id = '" . (int)$negative_invoice_id . "'");

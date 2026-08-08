@@ -81,7 +81,7 @@ class ModelSaleSalesStatus extends Model {
 				q.quote_id AS quote_id, q.date_added AS quote_date, qs.name AS quote_status,
 				o.order_id AS order_id, o.date_added AS order_date, os.name AS order_status,
 				d.delivery_id AS delivery_id, d.date_added AS delivery_date, ds.name AS delivery_status,
-				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
+				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status, i.total AS invoice_total,
 				COALESCE(q.customer_id, o.customer_id, d.customer_id, i.customer_id) AS customer_id,
 				COALESCE(q.comment, o.comment, d.comment, i.comment) AS comment,
 				COALESCE(i.date_added, d.date_added, o.date_added, q.date_added) AS sort_date
@@ -101,7 +101,7 @@ class ModelSaleSalesStatus extends Model {
 				NULL, NULL, NULL,
 				o.order_id AS order_id, o.date_added AS order_date, os.name AS order_status,
 				d.delivery_id AS delivery_id, d.date_added AS delivery_date, ds.name AS delivery_status,
-				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
+				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status, i.total AS invoice_total,
 				COALESCE(o.customer_id, d.customer_id, i.customer_id) AS customer_id,
 				COALESCE(o.comment, d.comment, i.comment) AS comment,
 				COALESCE(i.date_added, d.date_added, o.date_added) AS sort_date
@@ -120,7 +120,7 @@ class ModelSaleSalesStatus extends Model {
 				NULL, NULL, NULL,
 				NULL, NULL, NULL,
 				d.delivery_id AS delivery_id, d.date_added AS delivery_date, ds.name AS delivery_status,
-				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
+				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status, i.total AS invoice_total,
 				COALESCE(d.customer_id, i.customer_id) AS customer_id,
 				COALESCE(d.comment, i.comment) AS comment,
 				COALESCE(i.date_added, d.date_added) AS sort_date
@@ -137,7 +137,7 @@ class ModelSaleSalesStatus extends Model {
 				NULL, NULL, NULL,
 				NULL, NULL, NULL,
 				NULL, NULL, NULL,
-				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status,
+				i.invoice_id AS invoice_id, i.date_added AS invoice_date, i.invoice_status_id AS invoice_status_id, ist.name AS invoice_status, i.total AS invoice_total,
 				i.customer_id AS customer_id,
 				i.comment AS comment,
 				i.date_added AS sort_date

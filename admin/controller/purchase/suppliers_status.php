@@ -74,7 +74,8 @@ class ControllerPurchaseSuppliersStatus extends Controller {
 				'invoice_date'      => $result['invoice_date'] ? date($date_format, strtotime($result['invoice_date'])) : '',
 				'invoice_status'    => $result['invoice_status'],
 				'invoice_paid'      => $result['invoice_status_id'] == 2,
-				'invoice_href'      => $result['invoice_id'] ? $this->url->link('purchase/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL') : ''
+				'invoice_href'      => $result['invoice_id'] ? $this->url->link('purchase/invoice/info', 'token=' . $this->session->data['token'] . '&invoice_id=' . $result['invoice_id'], 'SSL') : '',
+				'invoice_total'     => $result['invoice_id'] ? $this->currency->format($result['invoice_total'], '', '', true, true) : ''
 			);
 		}
 
@@ -87,6 +88,7 @@ class ControllerPurchaseSuppliersStatus extends Controller {
 		$this->data['column_invoice']        = $this->language->get('column_invoice');
 		$this->data['column_date']           = $this->language->get('column_date');
 		$this->data['column_status']         = $this->language->get('column_status');
+		$this->data['column_amount']         = $this->language->get('column_amount');
 
 		$this->data['entry_supplier']   = $this->language->get('entry_supplier');
 		$this->data['entry_reference']  = $this->language->get('entry_reference');
