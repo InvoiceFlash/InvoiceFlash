@@ -86,8 +86,8 @@
 						<th class="col-delivery"><?php echo $column_status; ?></th>
 						<th class="col-invoice">Nº</th>
 						<th class="col-invoice"><?php echo $column_date; ?></th>
-						<th class="col-invoice"><?php echo $column_status; ?></th>
 						<th class="col-invoice text-end"><?php echo $column_amount; ?></th>
+						<th class="col-invoice"><?php echo $column_status; ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -106,8 +106,8 @@
 						<td class="col-delivery"><?php echo $row['delivery_status']; ?></td>
 						<td class="col-invoice"><?php echo $row['invoice_id'] ? '<a href="' . $row['invoice_href'] . '">' . $row['invoice_id'] . '</a>' : ''; ?></td>
 						<td class="col-invoice"><?php echo $row['invoice_date']; ?></td>
-						<td class="col-invoice"><?php if ($row['invoice_id']) { ?><span class="badge <?php echo $row['invoice_paid'] ? 'badge-paid' : 'badge-pending'; ?>"><?php echo $row['invoice_status']; ?></span><?php } ?></td>
 						<td class="col-invoice text-end"><?php echo $row['invoice_total']; ?></td>
+						<td class="col-invoice"><?php if ($row['invoice_id']) { ?><span class="badge <?php echo $row['invoice_paid'] ? 'badge-paid' : 'badge-pending'; ?>"><?php echo $row['invoice_status']; ?></span><?php } ?></td>
 					</tr>
 					<?php } ?>
 					<?php } else { ?>

@@ -163,11 +163,11 @@ class ControllerPurchaseInvoice extends Controller {
 					'name'         => $product['name'],
 					'model'        => $product['model'],
 					'quantity'     => $product['quantity'],
-					'price'        => $this->currency->format($product['price']),
+					'price'        => $this->currency->format($product['price'], '', '', true, true),
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id' => $product['tax_class_id'],
-					'total'        => $this->currency->format($product['total']),
+					'total'        => $this->currency->format($product['total'], '', '', true, true),
 					'discount'     => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
@@ -768,8 +768,8 @@ class ControllerPurchaseInvoice extends Controller {
 					'model'              => $product['model'],
 					'option'             => $option_data,
 					'quantity'           => $product['quantity'],
-					'price'              => $this->currency->format($product['price']),
-					'total'              => $this->currency->format($product['total']),
+					'price'              => $this->currency->format($product['price'], '', '', true, true),
+					'total'              => $this->currency->format($product['total'], '', '', true, true),
 					'href'               => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
 				);
 			}
@@ -861,7 +861,7 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->data[$key] = $this->language->get($key);
 		}
 
-		foreach (array('column_product','column_image','column_model','column_quantity','column_price','column_total','column_comment') as $key) {
+		foreach (array('column_product','column_image','column_model','column_quantity','column_price','column_discount','column_total','column_comment') as $key) {
 			$this->data[$key] = $this->language->get($key);
 		}
 
@@ -902,8 +902,26 @@ class ControllerPurchaseInvoice extends Controller {
 					$store_fax       = (string)$this->config->get('config_fax');
 				}
 
+				// el campo de dirección es un textarea; recorta líneas en blanco finales
+				// que si no se imprimirían como una línea vacía extra (mismo tratamiento
+				// que sale/invoice)
+				$store_address = preg_replace("/[\r\n]+/", "\n", trim($store_address));
+
 				$store_nif = $this->config->get('config_vat_id');
 				if (!$store_nif) $store_nif = $this->config->get('config_nif');
+
+				// código postal + localidad del emisor, en su propia línea bajo la calle
+				// (mismo convenio "NN.NNN" que sale/invoice)
+				$this->load->model('localisation/zone');
+
+				$store_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+				$store_postcode = (string)$this->config->get('config_postcode');
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $store_postcode, $postcode_match)) {
+					$store_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
+				$store_locality = trim($store_postcode . ' ' . (!empty($store_zone['name']) ? mb_strtoupper($store_zone['name'], 'UTF-8') : ''));
 
 				if ($invoice_info['invoice_no']) {
 					$invoice_no = $invoice_info['invoice_prefix'] . $invoice_info['invoice_no'];
@@ -922,10 +940,23 @@ class ControllerPurchaseInvoice extends Controller {
 				$replace = array($invoice_info['payment_company'],$invoice_info['payment_address_1'],$invoice_info['payment_address_2'],$invoice_info['payment_city'],$invoice_info['payment_postcode'],$invoice_info['payment_zone'],$invoice_info['payment_zone_code'],$invoice_info['payment_country']);
 				$payment_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
 
-				// purchase_invoice no tiene "customer_id" (es un documento de proveedor,
-				// no de cliente) - a diferencia de sale/invoice, aquí payment_tax_id ya
-				// viene siempre snapshotado en la propia factura de compra, sin fallback.
+				// El formulario de purchase/invoice no tiene un campo para introducir el
+				// Tax ID del proveedor (a diferencia de payment_address_1/city/postcode,
+				// que sí son obligatorios), así que payment_tax_id casi siempre llega
+				// vacío desde el insert/edit. A diferencia del customer_id de sale/invoice
+				// (que no existe en purchase_invoice), aquí sí existe supplier_id, así que
+				// hacemos el mismo tipo de fallback: si no hay tax_id propio, usar el del
+				// proveedor seleccionado.
 				$payment_tax_id = $invoice_info['payment_tax_id'];
+
+				if (!$payment_tax_id && !empty($invoice_info['supplier_id'])) {
+					$this->load->model('purchase/supplier');
+					$supplier_info = $this->model_purchase_supplier->getSupplier($invoice_info['supplier_id']);
+
+					if (!empty($supplier_info['tax_id'])) {
+						$payment_tax_id = $supplier_info['tax_id'];
+					}
+				}
 
 				$product_data = array();
 				$products     = $this->model_purchase_invoice->getInvoiceProducts($invoice_id);
@@ -942,8 +973,9 @@ class ControllerPurchaseInvoice extends Controller {
 						'option'   => $option_data,
 						'image'    => ($product['image'] == '' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
-						'price'    => $this->currency->format($product['price']),
-						'total'    => $this->currency->format($product['total'])
+						'price'    => $this->currency->format($product['price'], '', '', true, true),
+						'discount' => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') . '%' : '',
+						'total'    => $this->currency->format($product['total'], '', '', true, true)
 					);
 				}
 
@@ -957,6 +989,7 @@ class ControllerPurchaseInvoice extends Controller {
 					'store_name'         => $invoice_info['store_name'],
 					'store_url'          => rtrim($invoice_info['store_url'], '/'),
 					'store_address'      => nl2br($store_address),
+					'store_locality'     => $store_locality,
 					'store_email'        => $store_email,
 					'store_telephone'    => $store_telephone,
 					'store_fax'          => $store_fax,
@@ -1012,7 +1045,11 @@ class ControllerPurchaseInvoice extends Controller {
 
 			$this->response->setOutput(json_encode($json));
 		} else {
-			$this->template = 'purchase/purchase_invoice_printPDF.tpl';
+			// '' y 'view' llegan aquí (pdf/email tienen su propia rama arriba); ninguno de
+			// los dos debe disparar window.print() automáticamente, igual que sale/invoice.
+			$this->data['auto_print'] = ($lcFormat != '' && $lcFormat != 'view');
+
+			$this->template = 'purchase/purchase_invoice_invoice.tpl';
 			$this->response->setOutput($this->render());
 		}
 	}
