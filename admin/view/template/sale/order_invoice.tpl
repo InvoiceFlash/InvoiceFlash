@@ -27,8 +27,12 @@
 	</div>
 	<table class="table table-bordered">
 		<tr>
-			<td width="50%"><?php echo $order['store_name']; ?><br>
+			<td width="50%"><b><?php echo $order['store_name']; ?></b><br>
 				<?php echo $order['store_address']; ?><br>
+				<?php if ($order['store_locality']) { ?>
+				<?php echo $order['store_locality']; ?><br>
+				<?php } ?>
+				<?php echo $text_tax_id; ?> <?php echo $order['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $order['store_telephone']; ?><br>
 				<?php if ($order['store_fax']) { ?>
 				<?php echo $text_fax; ?> <?php echo $order['store_fax']; ?><br>
@@ -54,7 +58,10 @@
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $order['payment_address']; ?><br/>
+			<td><?php if ($order['payment_company']) { ?>
+					<b><?php echo $order['payment_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $order['payment_address']; ?><br/>
 				<?php echo $order['email']; ?><br/>
 				<?php echo $order['telephone']; ?>
 				<?php if ($order['payment_company_id']) { ?>
@@ -75,6 +82,7 @@
 			<th><?php echo $column_model; ?></th>
 			<th class="text-right"><?php echo $column_quantity; ?></th>
 			<th class="text-right"><?php echo $column_price; ?></th>
+			<th class="text-right"><?php echo $column_discount; ?></th>
 			<th class="text-right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($order['product'] as $product) { ?>
@@ -87,12 +95,13 @@
 			<td><?php echo $product['model']; ?></td>
 			<td class="text-right"><?php echo $product['quantity']; ?></td>
 			<td class="text-right"><?php echo $product['price']; ?></td>
+			<td class="text-right"><?php echo $product['discount']; ?></td>
 			<td class="text-right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($order['total'] as $total) { ?>
 		<tr>
-			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="text-right" colspan="5"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="text-right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>

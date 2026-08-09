@@ -44,7 +44,7 @@ th {
 <?php foreach ($deliveries as $deliveries) { ?>
 	<div class="store_logo">
 		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $deliveries['store_name']; ?>" /><br>
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $deliveries['store_name']; ?>" width="242" /><br>
 			<span class="title"><?php echo $text_delivery; ?></span>
 		</div>
 	</div>
@@ -52,6 +52,10 @@ th {
 		<tr>
 			<td width="50%"><strong><?php echo $deliveries['store_name']; ?></strong><br>
 				<?php echo $deliveries['store_address']; ?><br>
+				<?php if ($deliveries['store_locality']) { ?>
+				<?php echo $deliveries['store_locality']; ?><br>
+				<?php } ?>
+				<?php echo $text_tax_id; ?> <?php echo $deliveries['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $deliveries['store_telephone']; ?><br>
 				<?php if ($deliveries['store_fax']) { ?>
 				<?php echo $text_fax; ?> <?php echo $deliveries['store_fax']; ?><br>
@@ -77,7 +81,10 @@ th {
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $deliveries['payment_address']; ?><br/>
+			<td><?php if ($deliveries['payment_company']) { ?>
+					<b><?php echo $deliveries['payment_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $deliveries['payment_address']; ?><br/>
 				<?php echo $deliveries['email']; ?><br/>
 				<?php echo $deliveries['telephone']; ?>
 				<?php if ($deliveries['payment_company_id']) { ?>
@@ -98,6 +105,7 @@ th {
 			<th><?php echo $column_model; ?></th>
 			<th class="center"><?php echo $column_quantity; ?></th>
 			<th class="right"><?php echo $column_price; ?></th>
+			<th class="right"><?php echo $column_discount; ?></th>
 			<th class="right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($deliveries['product'] as $product) { ?>
@@ -110,12 +118,13 @@ th {
 			<td><?php echo $product['model']; ?></td>
 			<td class="center"><?php echo $product['quantity']; ?></td>
 			<td class="right"><?php echo $product['price']; ?></td>
+			<td class="right"><?php echo $product['discount']; ?></td>
 			<td class="right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($deliveries['total'] as $total) { ?>
 		<tr>
-			<td class="right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="right" colspan="5"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>

@@ -550,8 +550,8 @@ class ControllerSaleDraft extends Controller {
       		'separator' => ' :: '
    		);
 
-		$this->data['draft'] = $this->url->link('sale/draft/draft', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['print'] = $this->url->link('sale/draft/draft', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['draft'] = $this->url->link('sale/draft/document', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['print'] = $this->url->link('sale/draft/document', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['insert'] = $this->url->link('sale/draft/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('sale/draft/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['copy'] = $this->url->link('sale/draft/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -1642,13 +1642,13 @@ class ControllerSaleDraft extends Controller {
 				'separator' => ' :: '
 			);
 
-			$this->data['printPDF'] = $this->url->link('sale/draft/draft', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$this->request->get['draft_id'] . '&format=pdf', 'SSL');
-			$this->data['draft'] = $this->url->link('sale/draft/draft', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$this->request->get['draft_id'] . '&format=view', 'SSL');
+			$this->data['printPDF'] = $this->url->link('sale/draft/document', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$this->request->get['draft_id'] . '&format=pdf', 'SSL');
+			$this->data['draft'] = $this->url->link('sale/draft/document', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$this->request->get['draft_id'] . '&format=view', 'SSL');
 			$this->data['sendEmail'] = $this->url->link('sale/draft/email', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$this->request->get['draft_id'], 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/draft', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 			// add print selection
-			$this->data['print'] = $this->url->link('sale/draft/draft', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$this->request->get['draft_id'], 'SSL');
+			$this->data['print'] = $this->url->link('sale/draft/document', 'token=' . $this->session->data['token'] . '&draft_id=' . (int)$this->request->get['draft_id'], 'SSL');
 
 			$reports = array_slice(scandir(DIR_TEMPLATE . 'sale/reports'), 2);
 
@@ -1869,7 +1869,7 @@ class ControllerSaleDraft extends Controller {
 		$this->response->setOutput($this->render());
   	}
 			
-  	public function draft() {
+  	public function document() {
 		
 		if (isset($this->request->get['format'])) {
 			$lcFormat = $this->request->get['format'];
@@ -1989,10 +1989,29 @@ class ControllerSaleDraft extends Controller {
 					$store_telephone = $this->config->get('config_telephone');
 					$store_fax = (string)$this->config->get('config_fax');
 				}
-				
+
+				// the address setting is a textarea, so drop trailing/blank lines that would print as empty rows
+				$store_address = preg_replace("/[\r\n]+/", "\n", trim($store_address));
+
 				//add
-				$store_nif = $this->config->get('config_nif');
+				$store_nif = $this->config->get('config_vat_id');
+
+				if (!$store_nif) {
+					$store_nif = $this->config->get('config_nif');
+				}
 				//end add
+
+				// issuer postcode + town (town lives in the store's Region/State setting), shown on its own line under the street
+				$this->load->model('localisation/zone');
+
+				$store_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+				$store_postcode = (string)$this->config->get('config_postcode');
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $store_postcode, $postcode_match)) {
+					$store_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
+				$store_locality = trim($store_postcode . ' ' . (!empty($store_zone['name']) ? mb_strtoupper($store_zone['name'], 'UTF-8') : ''));
 				
 				if ($draft_info['draft_no']) {
 					$draft_no = $draft_info['draft_prefix'] . $draft_info['draft_no'];
@@ -2033,11 +2052,7 @@ class ControllerSaleDraft extends Controller {
 				if ($draft_info['payment_address_format']) {
 					$format = $draft_info['payment_address_format'];
 				} else {
-					$format = '<b>{company}</b>' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city} ({zone}) {country}';
-
-					if ($customer_tax_id) {
-						$format .= "\n" . '<b>' . $this->language->get('text_tax_id') . '</b> {tax_id}';
-					}
+					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city} ({zone}) {country}';
 				}
 
 				$find = array(
@@ -2048,23 +2063,42 @@ class ControllerSaleDraft extends Controller {
 					'{postcode}',
 					'{zone}',
 					'{zone_code}',
-					'{country}',
-					'{tax_id}'
+					'{country}'
 				);
 
+				$payment_company = $draft_info['payment_company'];
+
 				$replace = array(
-					'company'   => $draft_info['payment_company'],
+					'company'   => '',
 					'address_1' => $draft_info['payment_address_1'],
 					'address_2' => $draft_info['payment_address_2'],
 					'city'      => $draft_info['payment_city'],
 					'postcode'  => $draft_info['payment_postcode'],
 					'zone'      => $draft_info['payment_zone'],
 					'zone_code' => $draft_info['payment_zone_code'],
-					'country'   => $draft_info['payment_country'],
-					'tax_id'    => $customer_tax_id
+					'country'   => $draft_info['payment_country']
 				);
 
 				$payment_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+				$payment_address = preg_replace('#^(<br\s*/?>)+#', '', $payment_address);
+
+				// the draft doesn't always capture a billing snapshot of its own - fall back to the
+				// customer's General tab (already loaded above for the tax-id lookup) when it's empty
+				if (!empty($customer_info)) {
+					if (!$payment_company && !empty($customer_info['company'])) {
+						$payment_company = $customer_info['company'];
+					}
+
+					if (!$payment_address && !empty($customer_info['address'])) {
+						$customer_postcode = $customer_info['postcode'];
+
+						if (preg_match('/^(\d{2})(\d{3})$/', $customer_postcode, $postcode_match)) {
+							$customer_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+						}
+
+						$payment_address = trim($customer_info['address']) . '<br />' . trim($customer_postcode . ' ' . $customer_info['city']);
+					}
+				}
 
 				$product_data = array();
 
@@ -2095,6 +2129,7 @@ class ControllerSaleDraft extends Controller {
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
 						'price'    => $this->currency->format($product['price'], $draft_info['currency_code'], $draft_info['currency_value'], true, true),
+						'discount' => (!empty($product['discount'])) ? $this->currency->format($product['discount'], $draft_info['currency_code'], $draft_info['currency_value'], true, true) : '',
 						'total'    => $this->currency->format($product['total'], $draft_info['currency_code'], $draft_info['currency_value'], true, true)
 					);
 				}
@@ -2109,6 +2144,7 @@ class ControllerSaleDraft extends Controller {
 					'store_name'         => $draft_info['store_name'],
 					'store_url'          => rtrim($draft_info['store_url'], '/'),
 					'store_address'      => nl2br($store_address),
+					'store_locality'     => $store_locality,
 					'store_email'        => $store_email,
 					'store_telephone'    => $store_telephone,
 					'store_fax'          => $store_fax,
@@ -2118,10 +2154,10 @@ class ControllerSaleDraft extends Controller {
 					'name_ext' 			 => '',
 					'telephone'          => $draft_info['telephone'],
 					'shipping_address'   => $shipping_address,
+					'payment_company'    => $payment_company,
 					'payment_address'    => $payment_address,
 					'payment_company_id' => $draft_info['payment_company_id'],
-					'payment_tax_id'     => $draft_info['payment_tax_id'],
-					'payment_address'    => $payment_address,
+					'payment_tax_id'     => $customer_tax_id,
 					'payment_method'     => $draft_info['payment_method'],
 					'shipping_method'    => $draft_info['shipping_method'],
 					'product'            => $product_data,

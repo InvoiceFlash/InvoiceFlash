@@ -47,7 +47,7 @@ th {
 	<?php } ?>
 	<div class="store_logo">
 		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $drafts['store_name']; ?>" /><br>
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $drafts['store_name']; ?>" width="242" /><br>
 			<span class="title"><?php echo $text_draft; ?></span>
 		</div>
 	</div>
@@ -55,6 +55,10 @@ th {
 		<tr>
 			<td width="50%"><strong><?php echo $drafts['store_name']; ?></strong><br>
 				<?php echo $drafts['store_address']; ?><br>
+				<?php if ($drafts['store_locality']) { ?>
+				<?php echo $drafts['store_locality']; ?><br>
+				<?php } ?>
+				<?php echo $text_tax_id; ?> <?php echo $drafts['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $drafts['store_telephone']; ?><br>
 				<?php if ($drafts['store_fax']) { ?>
 				<?php echo $text_fax; ?> <?php echo $drafts['store_fax']; ?><br>
@@ -80,7 +84,10 @@ th {
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $drafts['payment_address']; ?><br/>
+			<td><?php if ($drafts['payment_company']) { ?>
+					<b><?php echo $drafts['payment_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $drafts['payment_address']; ?><br/>
 				<?php echo $drafts['email']; ?><br/>
 				<?php echo $drafts['telephone']; ?>
 				<?php if ($drafts['payment_company_id']) { ?>
@@ -100,6 +107,7 @@ th {
 			<th><?php echo $column_product; ?></th>
 			<th class="center"><?php echo $column_quantity; ?></th>
 			<th class="right"><?php echo $column_price; ?></th>
+			<th class="right"><?php echo $column_discount; ?></th>
 			<th class="right"><?php echo $column_base; ?></th>
 		</tr>
 		<?php foreach ($drafts['product'] as $product) { ?>
@@ -111,12 +119,13 @@ th {
 				<?php } ?></td>
 			<td class="center"><?php echo $product['quantity']; ?></td>
 			<td class="right"><?php echo $product['price']; ?></td>
+			<td class="right"><?php echo $product['discount']; ?></td>
 			<td class="right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($drafts['total'] as $total) { ?>
 		<tr>
-			<td class="right" colspan="3"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>

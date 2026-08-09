@@ -715,9 +715,9 @@ class ControllerSaledelivery extends Controller {
             'separator' => ' :: '
          );
 
-      $this->data['invoice'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'], 'SSL');
-      $this->data['print'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'], 'SSL');
-      $this->data['printPDF'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
+      $this->data['invoice'] = $this->url->link('sale/delivery/document', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['print'] = $this->url->link('sale/delivery/document', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['printPDF'] = $this->url->link('sale/delivery/document', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
       $this->data['insert'] = $this->url->link('sale/delivery/insert', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['convert'] = $this->url->link('sale/delivery/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
       $this->data['copy'] = $this->url->link('sale/delivery/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -1475,7 +1475,7 @@ class ControllerSaledelivery extends Controller {
 				'price'            => $this->currency->format($delivery_product['price']),
 				'price_raw'         => number_format((float)$delivery_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$delivery_product['price'], 2, '.', ''),
-				'total'            => $this->currency->format($delivery_product['total']),
+				'total'            => $this->currency->format($delivery_product['total'], '', '', true, true),
 				'tax'              => $delivery_product['tax'],
 				'discount_raw'     => (!empty($delivery_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $delivery_product['discount']), 2, '.', '') : ''
 			);
@@ -1705,9 +1705,9 @@ class ControllerSaledelivery extends Controller {
 				'separator' => ' :: '
 			);
 
-			$this->data['printPDF'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$this->request->get['delivery_id'] . '&format=pdf', 'SSL');
-			$this->data['invoice'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$this->request->get['delivery_id'] . '&format=view', 'SSL');
-			$this->data['sendEmail'] = $this->url->link('sale/delivery/invoice', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$this->request->get['delivery_id'] . '&format=email', 'SSL');
+			$this->data['printPDF'] = $this->url->link('sale/delivery/document', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$this->request->get['delivery_id'] . '&format=pdf', 'SSL');
+			$this->data['invoice'] = $this->url->link('sale/delivery/document', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$this->request->get['delivery_id'] . '&format=view', 'SSL');
+			$this->data['sendEmail'] = $this->url->link('sale/delivery/document', 'token=' . $this->session->data['token'] . '&delivery_id=' . (int)$this->request->get['delivery_id'] . '&format=email', 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/delivery', 'token=' . $this->session->data['token'] . $url, 'SSL');
 			
 			$this->data['delivery_id'] = $this->request->get['delivery_id'];
@@ -1818,8 +1818,8 @@ class ControllerSaledelivery extends Controller {
 					'model'    		   => $product['model'],
 					'option'   		   => $option_data,
 					'quantity'		   => $product['quantity'],
-					'price'    		   => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $delivery_info['currency_code'], $delivery_info['currency_value']),
-					'total'    		   => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $delivery_info['currency_code'], $delivery_info['currency_value']),
+					'price'    		   => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $delivery_info['currency_code'], $delivery_info['currency_value'], true, true),
+					'total'    		   => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $delivery_info['currency_code'], $delivery_info['currency_value'], true, true),
 					'href'     		   => $this->url->link('catalog/product/update', 'token=' . $this->session->data['token'] . '&product_id=' . $product['product_id'], 'SSL')
 				);
 			}
@@ -2028,7 +2028,7 @@ class ControllerSaledelivery extends Controller {
 		$this->response->setOutput($this->render());
     }
       
-    public function invoice() {		
+    public function document() {
 		if (isset($this->request->get['format'])) {
 			$lcFormat = $this->request->get['format'];
 		} else {
@@ -2070,6 +2070,7 @@ class ControllerSaledelivery extends Controller {
 		$this->data['column_model'] = $this->language->get('column_model');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_comment'] = $this->language->get('column_comment');
 
@@ -2123,9 +2124,28 @@ class ControllerSaledelivery extends Controller {
 					$store_telephone = $this->config->get('config_telephone');
 					$store_fax = (string)$this->config->get('config_fax');
 				}
-				
-				$store_nif = $this->config->get('config_nif');
-				
+
+				// the address setting is a textarea, so drop trailing/blank lines that would print as empty rows
+				$store_address = preg_replace("/[\r\n]+/", "\n", trim($store_address));
+
+				$store_nif = $this->config->get('config_vat_id');
+
+				if (!$store_nif) {
+					$store_nif = $this->config->get('config_nif');
+				}
+
+				// issuer postcode + town (town lives in the store's Region/State setting), shown on its own line under the street
+				$this->load->model('localisation/zone');
+
+				$store_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+				$store_postcode = (string)$this->config->get('config_postcode');
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $store_postcode, $postcode_match)) {
+					$store_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
+				$store_locality = trim($store_postcode . ' ' . (!empty($store_zone['name']) ? mb_strtoupper($store_zone['name'], 'UTF-8') : ''));
+
 				if ($delivery_info['invoice_no']) {
 					$invoice_no = $delivery_info['invoice_prefix'] . $delivery_info['invoice_no'];
 				} else {
@@ -2179,8 +2199,10 @@ class ControllerSaledelivery extends Controller {
 					'{country}'
 				);
 
+				$payment_company = $delivery_info['payment_company'];
+
 				$replace = array(
-					'company'   => $delivery_info['payment_company'],
+					'company'   => '',
 					'address_1' => $delivery_info['payment_address_1'],
 					'address_2' => $delivery_info['payment_address_2'],
 					'city'      => $delivery_info['payment_city'],
@@ -2191,6 +2213,35 @@ class ControllerSaledelivery extends Controller {
 				);
 
 				$payment_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+				$payment_address = preg_replace('#^(<br\s*/?>)+#', '', $payment_address);
+
+				// fall back to the customer's general info (General tab) when the delivery has no billing name/address/tax-id of its own
+				$payment_tax_id = $delivery_info['payment_tax_id'];
+
+				if ((!$payment_company || !$payment_address || !$payment_tax_id) && $delivery_info['customer_id']) {
+					$this->load->model('sale/customer');
+					$customer_general = $this->model_sale_customer->getCustomer($delivery_info['customer_id']);
+
+					if (!empty($customer_general)) {
+						if (!$payment_company && $customer_general['company']) {
+							$payment_company = $customer_general['company'];
+						}
+
+						if (!$payment_address && $customer_general['address']) {
+							$customer_postcode = $customer_general['postcode'];
+
+							if (preg_match('/^(\d{2})(\d{3})$/', $customer_postcode, $postcode_match)) {
+								$customer_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+							}
+
+							$payment_address = trim($customer_general['address']) . '<br />' . trim($customer_postcode . ' ' . $customer_general['city']);
+						}
+
+						if (!$payment_tax_id) {
+							$payment_tax_id = $customer_general['nif'];
+						}
+					}
+				}
 
 				$product_data = array();
 
@@ -2220,8 +2271,9 @@ class ControllerSaledelivery extends Controller {
 						'option'   => $option_data,
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
-						'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $delivery_info['currency_code'], $delivery_info['currency_value']),
-						'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $delivery_info['currency_code'], $delivery_info['currency_value'])
+						'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $delivery_info['currency_code'], $delivery_info['currency_value'], true, true),
+						'discount' => (!empty($product['discount'])) ? $this->currency->format($product['discount'], $delivery_info['currency_code'], $delivery_info['currency_value'], true, true) : '',
+						'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $delivery_info['currency_code'], $delivery_info['currency_value'], true, true)
 					);
 				}
 				
@@ -2235,6 +2287,7 @@ class ControllerSaledelivery extends Controller {
 					'store_name'         => $delivery_info['store_name'],
 					'store_url'          => rtrim($delivery_info['store_url'], '/'),
 					'store_address'      => nl2br($store_address),
+					'store_locality'     => $store_locality,
 					'store_email'        => $store_email,
 					'store_telephone'    => $store_telephone,
 					'store_fax'          => $store_fax,
@@ -2244,10 +2297,10 @@ class ControllerSaledelivery extends Controller {
 					'name_ext' 			 => '',
 					'telephone'          => $delivery_info['telephone'],
 					'shipping_address'   => $shipping_address,
+					'payment_company'    => $payment_company,
 					'payment_address'    => $payment_address,
 					'payment_company_id' => $delivery_info['payment_company_id'],
-					'payment_tax_id'     => $delivery_info['payment_tax_id'],
-					'payment_address'    => $payment_address,
+					'payment_tax_id'     => $payment_tax_id,
 					'payment_method'     => $delivery_info['payment_method'],
 					'shipping_method'    => $delivery_info['shipping_method'],
 					'product'            => $product_data,
@@ -2504,7 +2557,7 @@ class ControllerSaledelivery extends Controller {
 					'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 					'catalog_price_raw' => number_format((float)(isset($product['catalog_price']) ? $product['catalog_price'] : $product['price']), 2, '.', ''),
 					'tax_class_id'	=> $product['tax_class_id'],
-					'total'      	=> $this->currency->format($product['total']),
+					'total'      	=> $this->currency->format($product['total'], '', '', true, true),
 					'discount'      => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : ''
 				);
 			}
@@ -2775,7 +2828,7 @@ class ControllerSaledelivery extends Controller {
 							'price_raw'         => number_format((float)$product['price'], 2, '.', ''),
 							'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$product['price'], 2, '.', ''),
 							'discount'   => (!empty($product['discount'])) ? number_format((float)$product['discount'], 2, '.', '') : '',
-							'total'      => $this->currency->format($product['total']),
+							'total'      => $this->currency->format($product['total'], '', '', true, true),
 							'tax'        => isset($product['tax']) ? $product['tax'] : 0,
 							'option'     => $option_data,
 						);

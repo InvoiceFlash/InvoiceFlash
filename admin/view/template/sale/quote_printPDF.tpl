@@ -49,6 +49,10 @@ th {
 		<tr>
 			<td width="50%"><strong><?php echo $quotes['store_name']; ?></strong><br>
 				<?php echo $quotes['store_address']; ?><br>
+				<?php if ($quotes['store_locality']) { ?>
+				<?php echo $quotes['store_locality']; ?><br>
+				<?php } ?>
+				<?php echo $text_tax_id; ?> <?php echo $quotes['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $quotes['store_telephone']; ?><br>
 				<?php if ($quotes['store_fax']) { ?>
 				<?php echo $text_fax; ?> <?php echo $quotes['store_fax']; ?><br>
@@ -71,7 +75,10 @@ th {
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $quotes['payment_address']; ?><br/>
+			<td><?php if ($quotes['payment_company']) { ?>
+					<b><?php echo $quotes['payment_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $quotes['payment_address']; ?><br/>
 				<?php echo $quotes['email']; ?><br/>
 				<?php echo $quotes['telephone']; ?>
 				<?php if ($quotes['payment_company_id']) { ?>
@@ -92,6 +99,7 @@ th {
 			<th><?php echo $column_delivery_date; ?></th>
 			<th class="center"><?php echo $column_quantity; ?></th>
 			<th class="right"><?php echo $column_price; ?></th>
+			<th class="right"><?php echo $column_discount; ?></th>
 			<th class="right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($quotes['product'] as $product) { ?>
@@ -104,12 +112,13 @@ th {
 			</td>
 			<td class="center"><?php echo $product['quantity']; ?></td>
 			<td class="right"><?php echo $product['price']; ?></td>
+			<td class="right"><?php echo $product['discount']; ?></td>
 			<td class="right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($quotes['total'] as $total) { ?>
 		<tr>
-			<td class="right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="right" colspan="5"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>

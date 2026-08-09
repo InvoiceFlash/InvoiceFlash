@@ -417,7 +417,7 @@ $('#send').on('click',function(e){
 	var message = editor.getData();
 	
 	$.ajax({
-		url:'index.php?route=sale/delivery/invoice&token=<?php echo $token; ?>&delivery_id=<?php echo $delivery_id; ?>&format=email',
+		url:'index.php?route=sale/delivery/document&token=<?php echo $token; ?>&delivery_id=<?php echo $delivery_id; ?>&format=email',
 		type:'post',
 		dataType:'json',
 		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),

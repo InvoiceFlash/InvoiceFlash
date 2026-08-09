@@ -27,8 +27,12 @@
 	</div>
 	<table class="table table-bordered">
 		<tr>
-			<td width="50%"><?php echo $quote['store_name']; ?><br>
+			<td width="50%"><b><?php echo $quote['store_name']; ?></b><br>
 				<?php echo $quote['store_address']; ?><br>
+				<?php if ($quote['store_locality']) { ?>
+				<?php echo $quote['store_locality']; ?><br>
+				<?php } ?>
+				<?php echo $text_tax_id; ?> <?php echo $quote['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $quote['store_telephone']; ?><br>
 				<?php if ($quote['store_fax']) { ?>
 				<?php echo $text_fax; ?> <?php echo $quote['store_fax']; ?><br>
@@ -54,7 +58,10 @@
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $quote['payment_address']; ?><br/>
+			<td><?php if ($quote['payment_company']) { ?>
+					<b><?php echo $quote['payment_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $quote['payment_address']; ?><br/>
 				<?php echo $quote['email']; ?><br/>
 				<?php echo $quote['telephone']; ?>
 				<?php if ($quote['payment_company_id']) { ?>
@@ -75,6 +82,7 @@
 			<th><?php echo $column_delivery_date; ?></th>
 			<th class="text-right"><?php echo $column_quantity; ?></th>
 			<th class="text-right"><?php echo $column_price; ?></th>
+			<th class="text-right"><?php echo $column_discount; ?></th>
 			<th class="text-right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($quote['product'] as $product) { ?>
@@ -87,12 +95,13 @@
 			</td>
 			<td class="text-right"><?php echo $product['quantity']; ?></td>
 			<td class="text-right"><?php echo $product['price']; ?></td>
+			<td class="text-right"><?php echo $product['discount']; ?></td>
 			<td class="text-right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($quote['total'] as $total) { ?>
 		<tr>
-			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="text-right" colspan="5"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="text-right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>

@@ -30,6 +30,9 @@
 		<tr>
 			<td width="50%"><b><?php echo $drafts['store_name']; ?></b><br>
 				<?php echo $drafts['store_address']; ?><br>
+				<?php if ($drafts['store_locality']) { ?>
+				<?php echo $drafts['store_locality']; ?><br>
+				<?php } ?>
 				<b><?php echo $text_nif; ?></b> <?php echo $drafts['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $drafts['store_telephone']; ?><br>
 				<?php if ($drafts['store_fax']) { ?>
@@ -56,7 +59,10 @@
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $drafts['payment_address']; ?><br/>
+			<td><?php if ($drafts['payment_company']) { ?>
+					<b><?php echo $drafts['payment_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $drafts['payment_address']; ?><br/>
 				<?php echo $drafts['email']; ?><br/>
 				<?php echo $drafts['telephone']; ?>
 				<?php if ($drafts['payment_company_id']) { ?>
@@ -88,7 +94,7 @@
 				<?php } ?></td>
 			<td class="text-right"><?php echo $product['quantity']; ?></td>
 			<td class="text-right"><?php echo $product['price']; ?></td>
-			<td class="text-right">0</td>
+			<td class="text-right"><?php echo $product['discount']; ?></td>
 			<td class="text-right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>

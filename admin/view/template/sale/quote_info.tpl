@@ -484,7 +484,7 @@ $('#send').on('click',function(e){
 	var message = editor.getData();
 	
 	$.ajax({
-		url:'index.php?route=sale/quote/invoice&token=<?php echo $token; ?>&quote_id=<?php echo $quote_id; ?>&format=email',
+		url:'index.php?route=sale/quote/document&token=<?php echo $token; ?>&quote_id=<?php echo $quote_id; ?>&format=email',
 		type:'post',
 		dataType:'json',
 		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),

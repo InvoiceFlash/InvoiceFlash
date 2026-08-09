@@ -262,7 +262,7 @@ $('#send').on('click',function(e){
 	var message = editor.getData();
 	
 	$.ajax({
-		url:'index.php?route=sale/order/invoice&token=<?php echo $token; ?>&order_id=<?php echo $order_id; ?>&format=email',
+		url:'index.php?route=sale/order/document&token=<?php echo $token; ?>&order_id=<?php echo $order_id; ?>&format=email',
 		type:'post',
 		dataType:'json',
 		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),

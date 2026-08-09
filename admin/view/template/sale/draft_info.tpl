@@ -226,7 +226,7 @@ $('#send').on('click',function(e){
 	var message = editor.getData();
 	
 	$.ajax({
-		url:'index.php?route=sale/draft/draft&token=<?php echo $token; ?>&draft_id=<?php echo $draft_id; ?>&format=email',
+		url:'index.php?route=sale/draft/document&token=<?php echo $token; ?>&draft_id=<?php echo $draft_id; ?>&format=email',
 		type:'post',
 		dataType:'json',
 		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),

@@ -609,9 +609,9 @@ class ControllerSaleQuote extends Controller {
             'separator' => ' :: '
          );
 
-      $this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
-      $this->data['printPDF'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
-      $this->data['print'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['invoice'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'], 'SSL');
+      $this->data['printPDF'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
+      $this->data['print'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['insert'] = $this->url->link('sale/quote/insert', 'token=' . $this->session->data['token'], 'SSL');
       $this->data['convert'] = $this->url->link('sale/quote/convert', 'token=' . $this->session->data['token'] . $url, 'SSL');
       $this->data['copy'] = $this->url->link('sale/quote/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -1617,9 +1617,9 @@ class ControllerSaleQuote extends Controller {
 				'separator' => ' :: '
 			);
 
-			$this->data['printPDF'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=pdf', 'SSL');
-			$this->data['invoice'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=view', 'SSL');
-			$this->data['sendEmail'] = $this->url->link('sale/quote/invoice', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=email', 'SSL');
+			$this->data['printPDF'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=pdf', 'SSL');
+			$this->data['invoice'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=view', 'SSL');
+			$this->data['sendEmail'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=email', 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL');
 			
 			$this->data['quote_id'] = $this->request->get['quote_id'];
@@ -1941,7 +1941,7 @@ class ControllerSaleQuote extends Controller {
 		$this->response->setOutput($this->render());
     }
       
-    public function invoice() {		
+    public function document() {
 		if (isset($this->request->get['format'])) {
 			$lcFormat = $this->request->get['format'];
 		} else {
@@ -1984,6 +1984,7 @@ class ControllerSaleQuote extends Controller {
 		$this->data['column_delivery_date'] = $this->language->get('column_delivery_date');
 		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_price'] = $this->language->get('column_price');
+		$this->data['column_discount'] = $this->language->get('column_discount');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_comment'] = $this->language->get('column_comment');
 
@@ -2031,9 +2032,28 @@ class ControllerSaleQuote extends Controller {
 					$store_telephone = $this->config->get('config_telephone');
 					$store_fax = (string)$this->config->get('config_fax');
 				}
-				
-				$store_nif = $this->config->get('config_nif');
-				
+
+				// the address setting is a textarea, so drop trailing/blank lines that would print as empty rows
+				$store_address = preg_replace("/[\r\n]+/", "\n", trim($store_address));
+
+				$store_nif = $this->config->get('config_vat_id');
+
+				if (!$store_nif) {
+					$store_nif = $this->config->get('config_nif');
+				}
+
+				// issuer postcode + town (town lives in the store's Region/State setting), shown on its own line under the street
+				$this->load->model('localisation/zone');
+
+				$store_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+				$store_postcode = (string)$this->config->get('config_postcode');
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $store_postcode, $postcode_match)) {
+					$store_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
+				$store_locality = trim($store_postcode . ' ' . (!empty($store_zone['name']) ? mb_strtoupper($store_zone['name'], 'UTF-8') : ''));
+
 				if ($quote_info['invoice_no']) {
 					$invoice_no = $quote_info['invoice_prefix'] . $quote_info['invoice_no'];
 				} else {
@@ -2096,8 +2116,10 @@ class ControllerSaleQuote extends Controller {
 					'{country}'
 				);
 
+				$payment_company = $quote_info['payment_company'];
+
 				$replace = array(
-					'company'   => $quote_info['payment_company'],
+					'company'   => '',
 					'address_1' => $quote_info['payment_address_1'],
 					'address_2' => $quote_info['payment_address_2'],
 					'city'      => $quote_info['payment_city'],
@@ -2108,6 +2130,35 @@ class ControllerSaleQuote extends Controller {
 				);
 
 				$payment_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+				$payment_address = preg_replace('#^(<br\s*/?>)+#', '', $payment_address);
+
+				// fall back to the customer's general info (General tab) when the quote has no billing name/address/tax-id of its own
+				$payment_tax_id = $quote_info['payment_tax_id'];
+
+				if ((!$payment_company || !$payment_address || !$payment_tax_id) && $quote_info['customer_id']) {
+					$this->load->model('sale/customer');
+					$customer_general = $this->model_sale_customer->getCustomer($quote_info['customer_id']);
+
+					if (!empty($customer_general)) {
+						if (!$payment_company && $customer_general['company']) {
+							$payment_company = $customer_general['company'];
+						}
+
+						if (!$payment_address && $customer_general['address']) {
+							$customer_postcode = $customer_general['postcode'];
+
+							if (preg_match('/^(\d{2})(\d{3})$/', $customer_postcode, $postcode_match)) {
+								$customer_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+							}
+
+							$payment_address = trim($customer_general['address']) . '<br />' . trim($customer_postcode . ' ' . $customer_general['city']);
+						}
+
+						if (!$payment_tax_id) {
+							$payment_tax_id = $customer_general['nif'];
+						}
+					}
+				}
 
 				$product_data = array();
 
@@ -2143,11 +2194,12 @@ class ControllerSaleQuote extends Controller {
 						'option'   => $option_data,
 						'image'    => ($product['image']=='' ? 'no_image.jpg' : $product['image']),
 						'quantity' => $product['quantity'],
-						'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $quote_info['currency_code'], $quote_info['currency_value']),
-						'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $quote_info['currency_code'], $quote_info['currency_value'])
+						'price'    => $this->currency->format($product['price'] + ($this->config->get('config_tax') ? $product['tax'] : 0), $quote_info['currency_code'], $quote_info['currency_value'], true, true),
+						'discount' => (!empty($product['discount'])) ? $this->currency->format($product['discount'], $quote_info['currency_code'], $quote_info['currency_value'], true, true) : '',
+						'total'    => $this->currency->format($product['total'] + ($this->config->get('config_tax') ? ($product['tax'] * $product['quantity']) : 0), $quote_info['currency_code'], $quote_info['currency_value'], true, true)
 					);
 				}
-				
+
 				$total_data = $this->model_sale_quote->getQuoteTotals($quote_id);
 				
 				$this->data['quotes'][] = array(
@@ -2159,6 +2211,7 @@ class ControllerSaleQuote extends Controller {
 					'store_name'         => $quote_info['store_name'],
 					'store_url'          => rtrim($quote_info['store_url'], '/'),
 					'store_address'      => nl2br($store_address),
+					'store_locality'     => $store_locality,
 					'store_email'        => $store_email,
 					'store_telephone'    => $store_telephone,
 					'store_fax'          => $store_fax,
@@ -2168,10 +2221,10 @@ class ControllerSaleQuote extends Controller {
 					'name_ext' 			 => '',
 					'telephone'          => $quote_info['telephone'],
 					'shipping_address'   => $shipping_address,
+					'payment_company'    => $payment_company,
 					'payment_address'    => $payment_address,
 					'payment_company_id' => $quote_info['payment_company_id'],
-					'payment_tax_id'     => $quote_info['payment_tax_id'],
-					'payment_address'    => $payment_address,
+					'payment_tax_id'     => $payment_tax_id,
 					'payment_method'     => $quote_info['payment_method'],
 					'shipping_method'    => $quote_info['shipping_method'],
 					'product'            => $product_data,

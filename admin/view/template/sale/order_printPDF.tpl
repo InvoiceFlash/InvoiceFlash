@@ -44,7 +44,7 @@ th {
 <?php foreach ($orders as $order) { ?>
 	<div class="store_logo">
 		<div class="logo">
-			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $order['store_name']; ?>" /><br>
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $order['store_name']; ?>" width="242" /><br>
 			<span class="title"><?php echo $text_order; ?></span>
 		</div>
 	</div>
@@ -52,6 +52,10 @@ th {
 		<tr>
 			<td width="50%"><strong><?php echo $order['store_name']; ?></strong><br>
 				<?php echo $order['store_address']; ?><br>
+				<?php if ($order['store_locality']) { ?>
+				<?php echo $order['store_locality']; ?><br>
+				<?php } ?>
+				<?php echo $text_tax_id; ?> <?php echo $order['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $order['store_telephone']; ?><br>
 				<?php if ($order['store_fax']) { ?>
 				<?php echo $text_fax; ?> <?php echo $order['store_fax']; ?><br>
@@ -77,7 +81,10 @@ th {
 			<th><?php echo $text_ship_to; ?></th>
 		</tr>
 		<tr>
-			<td><?php echo $order['payment_address']; ?><br/>
+			<td><?php if ($order['payment_company']) { ?>
+					<b><?php echo $order['payment_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $order['payment_address']; ?><br/>
 				<?php echo $order['email']; ?><br/>
 				<?php echo $order['telephone']; ?>
 				<?php if ($order['payment_company_id']) { ?>
@@ -98,6 +105,7 @@ th {
 			<th><?php echo $column_model; ?></th>
 			<th class="center"><?php echo $column_quantity; ?></th>
 			<th class="right"><?php echo $column_price; ?></th>
+			<th class="right"><?php echo $column_discount; ?></th>
 			<th class="right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($order['product'] as $product) { ?>
@@ -110,12 +118,13 @@ th {
 			<td><?php echo $product['model']; ?></td>
 			<td class="center"><?php echo $product['quantity']; ?></td>
 			<td class="right"><?php echo $product['price']; ?></td>
+			<td class="right"><?php echo $product['discount']; ?></td>
 			<td class="right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($order['total'] as $total) { ?>
 		<tr>
-			<td class="right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="right" colspan="5"><b><?php echo $total['title']; ?>:</b></td>
 			<td class="right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>
