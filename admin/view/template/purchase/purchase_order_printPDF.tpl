@@ -11,6 +11,18 @@
 	padding: 0;
 	margin: 0;
 }
+.center {
+	text-align: center;
+}
+.right {
+	text-align: right;
+}
+.title {
+	font-size: 32px;
+	text-transform: uppercase;
+	padding-left: 20px;
+	text-align: right;
+}
 .table-bordered {
 	border: 1px solid grey;
 }
@@ -30,72 +42,72 @@ th {
 <body style="padding-top:0;">
 <div class="container">
 <?php foreach ($purchase_orders as $purchase_order) { ?>
-	<table style="width:100%; margin:0; border-collapse:collapse;">
+	<div class="store_logo">
+		<div class="logo">
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $purchase_order['supplier_company']; ?>" width="242" /><br>
+			<span class="title"><?php echo $text_purchase_order; ?></span>
+		</div>
+	</div>
+	<table class="table table-bordered">
 		<tr>
-			<td style="width:50%; vertical-align:top; padding:0;">
-				<table style="width:100%; border-collapse:collapse;">
-					<tr>
-						<td style="width:26%; vertical-align:top; padding:0;">
-							<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $purchase_order['store_name']; ?>" style="width:24mm;" />
-						</td>
-						<td style="width:21%; padding:0;"></td>
-						<td style="width:53%; vertical-align:top; padding:0;">
-							<strong style="font-size:15px;"><?php echo $purchase_order['store_name']; ?></strong><br>
-							<?php echo $purchase_order['store_address']; ?><br>
-							<?php echo $text_telephone; ?> <?php echo $purchase_order['store_telephone']; ?><br>
-							<?php if ($purchase_order['store_fax']) { ?>
-							<?php echo $text_fax; ?> <?php echo $purchase_order['store_fax']; ?><br>
-							<?php } ?>
-							<?php echo $text_tax_id; ?> <?php echo $purchase_order['store_nif']; ?><br>
-							<?php echo $purchase_order['store_email']; ?>
-						</td>
-					</tr>
-				</table>
-			</td>
-			<td style="text-align:right; vertical-align:top; padding:0;">
-				<b><?php echo mb_strtoupper($text_purchase_order, 'UTF-8'); ?>:</b> <?php echo $purchase_order['po_number']; ?> &nbsp;&nbsp; <b>DATE:</b> <?php echo $purchase_order['date_added']; ?>
-			</td>
-		</tr>
-		<tr>
-			<td style="vertical-align:top; padding:0;"></td>
-			<td style="text-align:left; vertical-align:top; padding:0;">
-				<b><?php echo $text_to; ?>:</b><br>
-				<?php if ($purchase_order['supplier_company']) { ?><strong><?php echo $purchase_order['supplier_company']; ?></strong><br/><?php } ?>
-				<?php if ($purchase_order['supplier_tax_id']) { ?><?php echo $text_tax_id; ?> <?php echo $purchase_order['supplier_tax_id']; ?><br/><?php } ?>
-				<?php echo $purchase_order['supplier_address']; ?><?php echo $purchase_order['supplier_address'] ? '<br/>' : ''; ?>
-				<?php echo $purchase_order['supplier_email']; ?>
-				<?php if ($purchase_order['supplier_telephone']) { ?><br/><?php echo $purchase_order['supplier_telephone']; ?><?php } ?>
+			<td width="50%"><strong><?php echo $purchase_order['supplier_company']; ?></strong><br>
+				<?php echo $purchase_order['supplier_address']; ?><?php echo $purchase_order['supplier_address'] ? '<br>' : ''; ?>
+				<?php if ($purchase_order['supplier_tax_id']) { ?>
+				<?php echo $text_tax_id; ?> <?php echo $purchase_order['supplier_tax_id']; ?><br>
+				<?php } ?>
+				<?php if ($purchase_order['supplier_telephone']) { ?>
+				<?php echo $text_telephone; ?> <?php echo $purchase_order['supplier_telephone']; ?><br>
+				<?php } ?>
+				<?php echo $purchase_order['supplier_email']; ?></td>
+			<td>
+				<b><?php echo $text_date_added; ?></b> <?php echo $purchase_order['date_added']; ?><br>
+				<b><?php echo $text_purchase_order_id; ?></b> <?php echo $purchase_order['po_number']; ?><br>
+				<b><?php echo $text_payment_method; ?></b>&nbsp;&nbsp;<?php echo $purchase_order['payment_method']; ?><br>
+				<?php if ($purchase_order['shipping_method']) { ?>
+				<b><?php echo $text_shipping_method; ?></b>&nbsp;&nbsp;<?php echo $purchase_order['shipping_method']; ?><br>
+				<?php } ?>
 			</td>
 		</tr>
 	</table>
 	<table class="table table-bordered">
 		<tr>
+			<th><?php echo $text_to; ?></th>
+		</tr>
+		<tr>
+			<td><strong><?php echo $purchase_order['store_name']; ?></strong><br>
+				<?php echo $purchase_order['store_address']; ?><br>
+				<?php echo $text_tax_id; ?> <?php echo $purchase_order['store_nif']; ?><br>
+				<?php echo $text_telephone; ?> <?php echo $purchase_order['store_telephone']; ?><br>
+				<?php if ($purchase_order['store_fax']) { ?>
+				<?php echo $text_fax; ?> <?php echo $purchase_order['store_fax']; ?><br>
+				<?php } ?>
+				<?php echo $purchase_order['store_email']; ?></td>
+		</tr>
+	</table>
+	<table class="table table-bordered">
+		<tr>
 			<th><?php echo $column_product; ?></th>
-			<th class="text-right"><?php echo $column_quantity; ?></th>
-			<th class="text-right"><?php echo $column_price; ?></th>
-			<th class="text-right"><?php echo $column_discount; ?></th>
-			<th class="text-right"><?php echo $column_total; ?></th>
+			<th class="right"><?php echo $column_quantity; ?></th>
+			<th class="right"><?php echo $column_price; ?></th>
+			<th class="right"><?php echo $column_discount; ?></th>
+			<th class="right"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($purchase_order['product'] as $product) { ?>
 		<tr>
 			<td><?php echo $product['name']; ?></td>
-			<td class="text-right"><?php echo $product['quantity']; ?></td>
-			<td class="text-right"><?php echo $product['price']; ?></td>
-			<td class="text-right"><?php echo $product['discount']; ?></td>
-			<td class="text-right"><?php echo $product['total']; ?></td>
+			<td class="right"><?php echo $product['quantity']; ?></td>
+			<td class="right"><?php echo $product['price']; ?></td>
+			<td class="right"><?php echo $product['discount']; ?></td>
+			<td class="right"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($purchase_order['total'] as $total) { ?>
 		<tr>
-			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
-			<td class="text-right"><?php echo $total['text']; ?></td>
+			<td class="right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="right"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>
 	</table>
-	<div style="text-align:left;"><b><?php echo $text_payment_method; ?></b> &nbsp; <?php echo $purchase_order['payment_method']; ?></div>
-	<?php if ($purchase_order['shipping_method']) { ?>
-	<div style="text-align:left;"><b><?php echo $text_shipping_method; ?></b> &nbsp; <?php echo $purchase_order['shipping_method']; ?></div>
-	<?php } ?>
 <?php } ?>
 </div>
 </body>

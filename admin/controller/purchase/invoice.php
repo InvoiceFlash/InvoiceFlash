@@ -266,8 +266,8 @@ class ControllerPurchaseInvoice extends Controller {
 			'separator' => ' :: '
 		);
 
-		$this->data['invoice'] = $this->url->link('purchase/invoice/invoice', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['print']   = $this->url->link('purchase/invoice/invoice', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['invoice'] = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['print']   = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['insert']  = $this->url->link('purchase/invoice/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete']  = $this->url->link('purchase/invoice/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
@@ -686,11 +686,11 @@ class ControllerPurchaseInvoice extends Controller {
 				'separator' => ' :: '
 			);
 
-			$this->data['printPDF'] = $this->url->link('purchase/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id . '&format=pdf', 'SSL');
-			$this->data['invoice']  = $this->url->link('purchase/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id . '&format=view', 'SSL');
-			$this->data['sendEmail'] = $this->url->link('purchase/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id . '&format=email', 'SSL');
+			$this->data['printPDF'] = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id . '&format=pdf', 'SSL');
+			$this->data['invoice']  = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id . '&format=view', 'SSL');
+			$this->data['sendEmail'] = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id . '&format=email', 'SSL');
 			$this->data['cancel']   = $this->url->link('purchase/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
-			$this->data['print']    = $this->url->link('purchase/invoice/invoice', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id, 'SSL');
+			$this->data['print']    = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id, 'SSL');
 
 			$this->data['reports'] = array(
 				array('name' => 'Invoice', 'report' => 'purchase_invoice_printPDF.tpl')
@@ -846,7 +846,7 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->response->setOutput($this->render());
 	}
 
-	public function invoice() {
+	public function document() {
 		$lcFormat = isset($this->request->get['format']) ? $this->request->get['format'] : '';
 
 		$this->data['lang']  = $this->config->get('config_language');

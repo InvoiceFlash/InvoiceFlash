@@ -6,7 +6,6 @@
 <title><?php echo $title; ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <base href="<?php echo $base; ?>">
-<link href="view/stylesheet/stylesheet.css" rel="stylesheet">
 <link href="view/stylesheet/main.css" rel="stylesheet">
 <script src="view\javascript\jquery\jquery-3.3.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
@@ -18,45 +17,49 @@
 }
 </style>
 </head>
-<body style="padding-top:80px;">
+<body style="padding-top:0;">
 <div class="container">
 <?php foreach ($purchase_orders as $purchase_order) { ?>
-	<table style="width:100%; margin:0; border-collapse:collapse;">
+	<div class="store_logo">
+		<div class="logo">
+			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $purchase_order['supplier_company']; ?>" />
+			<span class="title"><?php echo $text_purchase_order; ?></span>
+		</div>
+	</div>
+	<table class="table table-bordered">
 		<tr>
-			<td style="width:50%; vertical-align:top; padding:0;">
-				<table style="width:100%; border-collapse:collapse;">
-					<tr>
-						<td style="width:26%; vertical-align:top; padding:0;">
-							<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $purchase_order['store_name']; ?>" style="width:24mm;" />
-						</td>
-						<td style="width:21%; padding:0;"></td>
-						<td style="width:53%; vertical-align:top; padding:0;">
-							<strong style="font-size:15px;"><?php echo $purchase_order['store_name']; ?></strong><br>
-							<?php echo $purchase_order['store_address']; ?><br>
-							<?php echo $text_telephone; ?> <?php echo $purchase_order['store_telephone']; ?><br>
-							<?php if ($purchase_order['store_fax']) { ?>
-							<?php echo $text_fax; ?> <?php echo $purchase_order['store_fax']; ?><br>
-							<?php } ?>
-							<?php echo $text_tax_id; ?> <?php echo $purchase_order['store_nif']; ?><br>
-							<?php echo $purchase_order['store_email']; ?>
-						</td>
-					</tr>
-				</table>
-			</td>
-			<td style="text-align:right; vertical-align:top; padding:0;">
-				<b><?php echo mb_strtoupper($text_purchase_order, 'UTF-8'); ?>:</b> <?php echo $purchase_order['po_number']; ?> &nbsp;&nbsp; <b>DATE:</b> <?php echo $purchase_order['date_added']; ?>
+			<td width="50%"><b><?php echo $purchase_order['supplier_company']; ?></b><br>
+				<?php echo $purchase_order['supplier_address']; ?><?php echo $purchase_order['supplier_address'] ? '<br>' : ''; ?>
+				<?php if ($purchase_order['supplier_tax_id']) { ?>
+				<?php echo $text_tax_id; ?> <?php echo $purchase_order['supplier_tax_id']; ?><br>
+				<?php } ?>
+				<?php if ($purchase_order['supplier_telephone']) { ?>
+				<?php echo $text_telephone; ?> <?php echo $purchase_order['supplier_telephone']; ?><br>
+				<?php } ?>
+				<?php echo $purchase_order['supplier_email']; ?></td>
+			<td>
+				<b><?php echo $text_date_added; ?></b> <?php echo $purchase_order['date_added']; ?><br>
+				<b><?php echo $text_purchase_order_id; ?></b> <?php echo $purchase_order['po_number']; ?><br>
+				<b><?php echo $text_payment_method; ?></b> <?php echo $purchase_order['payment_method']; ?><br>
+				<?php if ($purchase_order['shipping_method']) { ?>
+				<b><?php echo $text_shipping_method; ?></b> <?php echo $purchase_order['shipping_method']; ?><br>
+				<?php } ?>
 			</td>
 		</tr>
+	</table>
+	<table class="table table-bordered">
 		<tr>
-			<td style="vertical-align:top; padding:0;"></td>
-			<td style="text-align:left; vertical-align:top; padding:0;">
-				<b><?php echo $text_to; ?>:</b><br>
-				<?php if ($purchase_order['supplier_company']) { ?><strong><?php echo $purchase_order['supplier_company']; ?></strong><br/><?php } ?>
-				<?php if ($purchase_order['supplier_tax_id']) { ?><?php echo $text_tax_id; ?> <?php echo $purchase_order['supplier_tax_id']; ?><br/><?php } ?>
-				<?php echo $purchase_order['supplier_address']; ?><?php echo $purchase_order['supplier_address'] ? '<br/>' : ''; ?>
-				<?php echo $purchase_order['supplier_email']; ?>
-				<?php if ($purchase_order['supplier_telephone']) { ?><br/><?php echo $purchase_order['supplier_telephone']; ?><?php } ?>
-			</td>
+			<th><?php echo $text_to; ?></th>
+		</tr>
+		<tr>
+			<td><b><?php echo $purchase_order['store_name']; ?></b><br>
+				<?php echo $purchase_order['store_address']; ?><br>
+				<?php echo $text_tax_id; ?> <?php echo $purchase_order['store_nif']; ?><br>
+				<?php echo $text_telephone; ?> <?php echo $purchase_order['store_telephone']; ?><br>
+				<?php if ($purchase_order['store_fax']) { ?>
+				<?php echo $text_fax; ?> <?php echo $purchase_order['store_fax']; ?><br>
+				<?php } ?>
+				<?php echo $purchase_order['store_email']; ?></td>
 		</tr>
 	</table>
 	<table class="table table-bordered">
@@ -83,10 +86,6 @@
 		</tr>
 		<?php } ?>
 	</table>
-	<div style="text-align:left;"><b><?php echo $text_payment_method; ?></b> &nbsp; <?php echo $purchase_order['payment_method']; ?></div>
-	<?php if ($purchase_order['shipping_method']) { ?>
-	<div style="text-align:left;"><b><?php echo $text_shipping_method; ?></b> &nbsp; <?php echo $purchase_order['shipping_method']; ?></div>
-	<?php } ?>
 <?php } ?>
 </div>
 </body>

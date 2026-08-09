@@ -295,7 +295,7 @@ $('#send').on('click',function(e){
 	var message = editor.getData();
 
 	$.ajax({
-		url:'index.php?route=purchase/invoice/invoice&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>&format=email',
+		url:'index.php?route=purchase/invoice/document&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>&format=email',
 		type:'post',
 		dataType:'json',
 		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message),

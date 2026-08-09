@@ -224,8 +224,8 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		$this->data['insert'] = $this->url->link('purchase/purchase_order/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['delete'] = $this->url->link('purchase/purchase_order/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['convert'] = $this->url->link('purchase/purchase_order/convertToInvoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
-		$this->data['invoice'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&format=view', 'SSL');
-		$this->data['printPDF'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
+		$this->data['invoice'] = $this->url->link('purchase/purchase_order/document', 'token=' . $this->session->data['token'] . '&format=view', 'SSL');
+		$this->data['printPDF'] = $this->url->link('purchase/purchase_order/document', 'token=' . $this->session->data['token'] . '&format=pdf', 'SSL');
 
 		$this->data['purchase_orders'] = array();
 
@@ -641,8 +641,8 @@ class ControllerPurchasePurchaseOrder extends Controller {
 		);
 
 		$this->data['cancel'] = $this->url->link('purchase/purchase_order', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['invoice'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $purchase_order_info['purchase_order_id'] . '&format=view', 'SSL');
-		$this->data['printPDF'] = $this->url->link('purchase/purchase_order/invoice', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $purchase_order_info['purchase_order_id'] . '&format=pdf', 'SSL');
+		$this->data['invoice'] = $this->url->link('purchase/purchase_order/document', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $purchase_order_info['purchase_order_id'] . '&format=view', 'SSL');
+		$this->data['printPDF'] = $this->url->link('purchase/purchase_order/document', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $purchase_order_info['purchase_order_id'] . '&format=pdf', 'SSL');
 
 		$this->data['purchase_order_id'] = $purchase_order_info['purchase_order_id'];
 		$this->data['po_number'] = $purchase_order_info['po_number'];
@@ -887,7 +887,7 @@ class ControllerPurchasePurchaseOrder extends Controller {
 	// que ControllerSaleInvoice::invoice() pero simplificado: purchase_order no
 	// guarda su propia copia de la dirección del proveedor, así que el bloque
 	// "To" se resuelve en vivo contra la ficha actual del proveedor.
-	public function invoice() {
+	public function document() {
 		$lcFormat = isset($this->request->get['format']) ? $this->request->get['format'] : '';
 
 		$this->load->language('purchase/purchase_order');
