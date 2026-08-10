@@ -135,11 +135,13 @@
 </style>
 
 <script>
-var chatUrl   = '<?php echo addslashes($chat_url); ?>';
+var chatUrl    = '<?php echo addslashes($chat_url); ?>';
+var saveKeyUrl = '<?php echo addslashes($save_key_url); ?>';
+var serverKey  = <?php echo json_encode($config_claude_api_key); ?>;
 var apiMessages = [];
 
 document.addEventListener('DOMContentLoaded', function() {
-	var saved = localStorage.getItem('claude_api_key') || '';
+	var saved = localStorage.getItem('claude_api_key') || serverKey || '';
 	if (saved) {
 		document.getElementById('api-key-input').value = saved;
 		setKeyStatus('API Key cargada.', 'success');
@@ -148,10 +150,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.getElementById('save-key').addEventListener('click', function() {
 	var key = document.getElementById('api-key-input').value.trim();
-	if (key) {
-		localStorage.setItem('claude_api_key', key);
-		setKeyStatus('API Key guardada.', 'success');
+	if (!key) {
+		return;
 	}
+
+	localStorage.setItem('claude_api_key', key);
+
+	// Esta pantalla es ahora el unico sitio para configurar config_claude_api_key
+	// (la pestaña Settings > AI se quito de la UI), asi que tambien se guarda en
+	// servidor: de ahi la leen tool/borme y tool/import.
+	fetch(saveKeyUrl, {
+		method:  'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body:    JSON.stringify({ api_key: key })
+	})
+	.then(function(r) { return r.json(); })
+	.then(function(data) {
+		if (data && data.error) {
+			setKeyStatus('API Key guardada localmente, pero no se pudo guardar en el servidor: ' + data.error, 'error');
+			return;
+		}
+		setKeyStatus('API Key guardada.', 'success');
+	})
+	.catch(function() {
+		setKeyStatus('API Key guardada localmente, pero no se pudo guardar en el servidor.', 'error');
+	});
 });
 
 document.getElementById('toggle-key').addEventListener('click', function() {

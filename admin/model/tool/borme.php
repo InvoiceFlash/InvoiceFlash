@@ -38,7 +38,7 @@ class ModelToolBorme extends Model {
 		return $query->row['total'];
 	}
 
-	public function updateEmail($borme_id, $email) {
-		$this->db->query("UPDATE `" . DB_PREFIX . "borme` SET `email` = '" . $this->db->escape($email) . "', `status` = 'found' WHERE `borme_id` = '" . (int)$borme_id . "'");
+	public function updateContact($borme_id, $email, $website) {
+		$this->db->query("UPDATE `" . DB_PREFIX . "borme` SET `email` = '" . $this->db->escape($email) . "', `website` = '" . $this->db->escape($website) . "', `status` = 'found' WHERE `borme_id` = '" . (int)$borme_id . "'");
 	}
 }

@@ -97,11 +97,19 @@ class ControllerToolBorme extends Controller {
 		$this->data['error_no_api_key'] = $this->language->get('error_no_api_key');
 		$this->data['text_edit_email'] = $this->language->get('text_edit_email');
 		$this->data['entry_email'] = $this->language->get('entry_email');
+		$this->data['entry_website'] = $this->language->get('entry_website');
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_close'] = $this->language->get('button_close');
 		$this->data['error_invalid_email'] = $this->language->get('error_invalid_email');
+		$this->data['column_action'] = $this->language->get('column_action');
+		$this->data['button_email'] = $this->language->get('button_email');
+		$this->data['button_send'] = $this->language->get('button_send');
+		$this->data['text_to'] = $this->language->get('text_to');
+		$this->data['text_subject'] = $this->language->get('text_subject');
+		$this->data['text_message'] = $this->language->get('text_message');
 
 		$this->data['save_email_url'] = $this->url->link('tool/borme/saveEmail', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['send_email_url'] = $this->url->link('tool/borme/sendEmail', 'token=' . $this->session->data['token'], 'SSL');
 
 		$this->data['has_api_key'] = (bool)$this->config->get('config_claude_api_key');
 
@@ -201,6 +209,11 @@ class ControllerToolBorme extends Controller {
 
 		$borme_id = isset($this->request->post['borme_id']) ? (int)$this->request->post['borme_id'] : 0;
 		$email = isset($this->request->post['email']) ? trim($this->request->post['email']) : '';
+		$website = isset($this->request->post['website']) ? trim($this->request->post['website']) : '';
+
+		if ($website !== '' && !preg_match('#^https?://#i', $website)) {
+			$website = 'https://' . $website;
+		}
 
 		if (!$borme_id || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
 			$json['error'] = $this->language->get('error_invalid_email');
@@ -210,10 +223,53 @@ class ControllerToolBorme extends Controller {
 		}
 
 		$this->load->model('tool/borme');
-		$this->model_tool_borme->updateEmail($borme_id, $email);
+		$this->model_tool_borme->updateContact($borme_id, $email, $website);
 
 		$json['success'] = true;
 		$json['email'] = $email;
+		$json['website'] = $website;
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function sendEmail() {
+		$this->load->language('tool/borme');
+
+		$json = array();
+
+		if (!$this->user->hasPermission('modify', 'tool/borme')) {
+			$json['error']['permission'] = $this->language->get('error_permission');
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$to      = isset($this->request->post['to']) ? trim($this->request->post['to']) : '';
+		$subject = isset($this->request->post['subject']) ? trim($this->request->post['subject']) : '';
+		$message = isset($this->request->post['message']) ? $this->request->post['message'] : '';
+
+		if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
+			$json['error']['to'] = $this->language->get('error_to');
+		}
+
+		if ($subject === '') {
+			$json['error']['subject'] = $this->language->get('error_subject');
+		}
+
+		if ($message === '') {
+			$json['error']['message'] = $this->language->get('error_message');
+		}
+
+		if (empty($json['error'])) {
+			$mail_error = $this->sendnewmail($to, $subject, $message, '');
+
+			if ($mail_error) {
+				$json['error']['message'] = $mail_error;
+			} else {
+				$json['success'] = $this->language->get('text_success_email');
+			}
+		}
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
