@@ -45,6 +45,8 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_claude_chat'] = $this->language->get('text_claude_chat');
 		$this->data['text_claude_chat_placeholder'] = $this->language->get('text_claude_chat_placeholder');
 		$this->data['text_claude_chat_input_placeholder'] = $this->language->get('text_claude_chat_input_placeholder');
+		$this->data['error_claude_chat_connection'] = $this->language->get('error_claude_chat_connection');
+		$this->data['claude_chat_url'] = str_replace('&amp;', '&', $this->url->link('common/home/claudeChat', 'token=' . $this->session->data['token'], 'SSL'));
 
 		// Actions
 		$this->data['text_actions'] = $this->language->get('text_actions');
@@ -467,6 +469,276 @@ class ControllerCommonHome extends Controller {
 				return $this->forward('error/permission');
 			}
 		}
-	}	
+	}
+
+	public function claudeChat() {
+		set_time_limit(0);
+
+		$this->response->addHeader('Content-Type: application/json');
+
+		if ($this->request->server['REQUEST_METHOD'] !== 'POST') {
+			$this->response->setOutput(json_encode(array('error' => 'Method not allowed')));
+			return;
+		}
+
+		$api_key = (string)$this->config->get('config_claude_api_key');
+
+		if (!$api_key) {
+			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_claude_chat_no_api_key'))));
+			return;
+		}
+
+		$input    = json_decode(file_get_contents('php://input'), true);
+		$messages = isset($input['messages']) ? $input['messages'] : array();
+		$message  = isset($input['message']) ? trim($input['message']) : '';
+
+		if ($message === '') {
+			$this->response->setOutput(json_encode(array('error' => 'Empty message')));
+			return;
+		}
+
+		$messages[] = array('role' => 'user', 'content' => $message);
+
+		$tools = array(
+			array(
+				'name'         => 'list_tables',
+				'description'  => 'Lists all tables in the InvoiceFlash database.',
+				'input_schema' => array('type' => 'object', 'properties' => new stdClass(), 'required' => array())
+			),
+			array(
+				'name'         => 'describe_table',
+				'description'  => 'Shows the columns of a table (name, type, nullability, key, default).',
+				'input_schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'table' => array('type' => 'string', 'description' => 'Exact table name, as returned by list_tables')
+					),
+					'required'   => array('table')
+				)
+			),
+			array(
+				'name'         => 'query_database',
+				'description'  => 'Runs a single read-only SELECT query against the database and returns the rows (max 200).',
+				'input_schema' => array(
+					'type'       => 'object',
+					'properties' => array(
+						'sql' => array('type' => 'string', 'description' => 'A single SELECT statement')
+					),
+					'required'   => array('sql')
+				)
+			)
+		);
+
+		$system = 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad).
+
+Puedes responder dudas generales sobre cómo usar la aplicación, y también consultar datos reales de la base de datos con las herramientas list_tables, describe_table y query_database cuando el usuario pregunte por sus propios datos (p. ej. "cuántas facturas pendientes tengo" o "cuáles son mis mejores clientes"). Antes de escribir una consulta sobre una tabla que no conozcas, usa describe_table para ver sus columnas reales — no asumas nombres de columna.
+
+NO ESTÁS AUTORIZADO PARA modificar ni borrar datos de ningún tipo (nada de INSERT, UPDATE, DELETE, DROP, ALTER...), solo puedes leer. Si el usuario pide modificar o borrar algo, responde que no puedes hacerlo desde este chat.
+
+Responde siempre en español, de forma breve y clara.';
+
+		$content        = array();
+		$stop_reason    = '';
+		$max_iterations = 10;
+
+		for ($i = 0; $i < $max_iterations; $i++) {
+			$payload = array(
+				'model'      => 'claude-opus-4-8',
+				'max_tokens' => 2048,
+				'system'     => $system,
+				'tools'      => $tools,
+				'messages'   => $messages
+			);
+
+			$ch = curl_init('https://api.anthropic.com/v1/messages');
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+				'Content-Type: application/json',
+				'x-api-key: ' . $api_key,
+				'anthropic-version: 2023-06-01'
+			));
+			curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+			$raw        = curl_exec($ch);
+			$http_code  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$curl_error = curl_error($ch);
+			curl_close($ch);
+
+			if ($raw === false) {
+				$this->response->setOutput(json_encode(array('error' => 'cURL error: ' . $curl_error)));
+				return;
+			}
+
+			if ($http_code !== 200) {
+				$err = json_decode($raw, true);
+				$msg = isset($err['error']['message']) ? $err['error']['message'] : 'HTTP ' . $http_code . ': ' . substr($raw, 0, 200);
+				$this->response->setOutput(json_encode(array('error' => $msg)));
+				return;
+			}
+
+			$resp = json_decode($raw, true);
+
+			if (!isset($resp['content']) || !is_array($resp['content'])) {
+				$this->response->setOutput(json_encode(array('error' => 'Unexpected API response: ' . substr($raw, 0, 300))));
+				return;
+			}
+
+			$stop_reason = isset($resp['stop_reason']) ? $resp['stop_reason'] : '';
+			$content     = $resp['content'];
+
+			// json_decode(..., true) turns {} into [] — the API requires tool input to be an object, not an array
+			foreach ($content as &$block) {
+				if (isset($block['type']) && $block['type'] === 'tool_use' && empty($block['input'])) {
+					$block['input'] = new stdClass();
+				}
+			}
+			unset($block);
+
+			$messages[] = array('role' => 'assistant', 'content' => $content);
+
+			if ($stop_reason !== 'tool_use') {
+				break;
+			}
+
+			$tool_results = array();
+			foreach ($content as $block) {
+				if ($block['type'] === 'tool_use') {
+					$result         = $this->executeHomeChatTool($block['name'], $block['input']);
+					$tool_results[] = array(
+						'type'        => 'tool_result',
+						'tool_use_id' => $block['id'],
+						'content'     => $result
+					);
+				}
+			}
+			$messages[] = array('role' => 'user', 'content' => $tool_results);
+		}
+
+		$final_text = '';
+		foreach ($content as $block) {
+			if ($block['type'] === 'text') {
+				$final_text .= $block['text'];
+			}
+		}
+
+		$this->response->setOutput(json_encode(array(
+			'reply'    => $final_text,
+			'messages' => $messages
+		)));
+	}
+
+	private function executeHomeChatTool($tool_name, $tool_input) {
+		switch ($tool_name) {
+			case 'list_tables':
+				$result = $this->safeQuery('SHOW TABLES');
+
+				if (isset($result['error'])) {
+					return json_encode($result);
+				}
+
+				$tables = array();
+
+				foreach ($result['rows'] as $row) {
+					$tables[] = array_values($row)[0];
+				}
+
+				return json_encode(array('tables' => $tables));
+
+			case 'describe_table':
+				$table = isset($tool_input['table']) ? $tool_input['table'] : '';
+
+				if (!preg_match('/^[a-zA-Z0-9_]+$/', $table)) {
+					return json_encode(array('error' => 'Invalid table name.'));
+				}
+
+				$tablesResult = $this->safeQuery('SHOW TABLES');
+
+				if (isset($tablesResult['error'])) {
+					return json_encode($tablesResult);
+				}
+
+				$validTables = array();
+
+				foreach ($tablesResult['rows'] as $row) {
+					$validTables[] = array_values($row)[0];
+				}
+
+				if (!in_array($table, $validTables)) {
+					return json_encode(array('error' => 'Table "' . $table . '" does not exist.'));
+				}
+
+				$result = $this->safeQuery('DESCRIBE `' . $table . '`');
+
+				return json_encode($result);
+
+			case 'query_database':
+				$sql  = isset($tool_input['sql']) ? $tool_input['sql'] : '';
+				$safe = $this->sanitizeReadOnlySql($sql);
+
+				if ($safe === false) {
+					return json_encode(array('error' => 'Only single SELECT/SHOW/DESCRIBE statements are allowed, no write keywords.'));
+				}
+
+				$result = $this->safeQuery($safe);
+
+				if (isset($result['error'])) {
+					return json_encode($result);
+				}
+
+				$rows = array_slice($result['rows'], 0, 200);
+
+				return json_encode(array('rows' => $rows, 'row_count' => count($rows)));
+
+			default:
+				return json_encode(array('error' => 'Unknown tool: ' . $tool_name));
+		}
+	}
+
+	// Only single SELECT/SHOW/DESCRIBE statements, no write keywords — returns false if it doesn't qualify.
+	private function sanitizeReadOnlySql($sql) {
+		$sql = trim($sql);
+
+		if (substr_count($sql, ';') > 1) {
+			return false;
+		}
+
+		$sql = rtrim($sql, "; \t\n\r");
+
+		if (!preg_match('/^(SELECT|SHOW|DESCRIBE|DESC)\s/i', $sql)) {
+			return false;
+		}
+
+		if (preg_match('/\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|GRANT|REVOKE|REPLACE|CALL|EXEC|OUTFILE|LOAD_FILE|INFILE)\b/i', $sql)) {
+			return false;
+		}
+
+		if (stripos($sql, 'SELECT') === 0 && !preg_match('/\bLIMIT\s+\d+/i', $sql)) {
+			$sql .= ' LIMIT 200';
+		}
+
+		return $sql;
+	}
+
+	// DBMySQLi::query() calls trigger_error()+exit() on a SQL error, which would otherwise kill this
+	// whole AJAX request and break the JSON response — a temporary error handler turns it into a
+	// catchable exception instead (throwing from inside the handler skips the exit() that follows).
+	private function safeQuery($sql) {
+		set_error_handler(function ($errno, $errstr) {
+			throw new \RuntimeException($errstr);
+		});
+
+		try {
+			$query = $this->db->query($sql);
+			restore_error_handler();
+			return array('rows' => isset($query->rows) ? $query->rows : array());
+		} catch (\Throwable $e) {
+			restore_error_handler();
+			return array('error' => $e->getMessage());
+		}
+	}
 }
 ?>

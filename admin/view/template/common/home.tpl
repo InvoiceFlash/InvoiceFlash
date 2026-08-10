@@ -231,9 +231,9 @@
 						</div>
 					</div>
 					<div class="input-group">
-						<input type="text" id="claude-chat-input" class="form-control" placeholder="<?php echo $text_claude_chat_input_placeholder; ?>" disabled="disabled">
+						<input type="text" id="claude-chat-input" class="form-control" placeholder="<?php echo $text_claude_chat_input_placeholder; ?>">
 						<div class="input-group-append">
-							<button type="button" class="btn btn-info" id="claude-chat-send" disabled="disabled"><i class="fa fa-paper-plane"></i></button>
+							<button type="button" class="btn btn-info" id="claude-chat-send"><i class="fa fa-paper-plane"></i></button>
 						</div>
 					</div>
 				</div>
@@ -318,6 +318,87 @@ $('#btn-view-claude-chat').on('click', function() {
 	$('#claude-chat-view').show();
 	$(this).addClass('active');
 	$('#btn-view-dashboard').removeClass('active');
+});
+
+var claudeChatUrl = '<?php echo addslashes($claude_chat_url); ?>';
+var claudeChatMessages = [];
+var claudeChatBusy = false;
+
+function claudeChatAppend(role, text) {
+	var css = (role === 'user')
+		? 'background:#eef6fb; border:1px solid #cfe3ef; margin-left:auto;'
+		: 'background:#fff; border:1px solid #e5e2da;';
+
+	var $bubble = $('<div>')
+		.addClass('claude-chat-message claude-chat-message-' + (role === 'user' ? 'user' : 'bot'))
+		.attr('style', css + ' border-radius:8px; padding:10px 14px; max-width:80%; margin-bottom:10px; white-space:pre-wrap;')
+		.text(text);
+
+	$('#claude-chat-messages').append($bubble);
+	$('#claude-chat-messages').scrollTop($('#claude-chat-messages')[0].scrollHeight);
+}
+
+function claudeChatShowTyping() {
+	var $bubble = $('<div>')
+		.attr('id', 'claude-chat-typing')
+		.attr('style', 'background:#fff; border:1px solid #e5e2da; border-radius:8px; padding:8px 14px; max-width:80%; margin-bottom:10px;')
+		.html('<img src="view/image/ajax-loader.gif" width="20" height="20" alt="">');
+
+	$('#claude-chat-messages').append($bubble);
+	$('#claude-chat-messages').scrollTop($('#claude-chat-messages')[0].scrollHeight);
+}
+
+function claudeChatHideTyping() {
+	$('#claude-chat-typing').remove();
+}
+
+function claudeChatSend() {
+	var message = $('#claude-chat-input').val().trim();
+
+	if (!message || claudeChatBusy) {
+		return;
+	}
+
+	claudeChatAppend('user', message);
+	$('#claude-chat-input').val('');
+
+	claudeChatBusy = true;
+	$('#claude-chat-send').prop('disabled', true);
+	claudeChatShowTyping();
+
+	fetch(claudeChatUrl, {
+		method:  'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body:    JSON.stringify({ messages: claudeChatMessages, message: message })
+	})
+	.then(function(r) { return r.json(); })
+	.then(function(data) {
+		claudeChatBusy = false;
+		$('#claude-chat-send').prop('disabled', false);
+		claudeChatHideTyping();
+
+		if (data.error) {
+			claudeChatAppend('bot', data.error);
+			return;
+		}
+
+		claudeChatMessages = data.messages || claudeChatMessages;
+		claudeChatAppend('bot', data.reply || '');
+	})
+	.catch(function() {
+		claudeChatBusy = false;
+		$('#claude-chat-send').prop('disabled', false);
+		claudeChatHideTyping();
+		claudeChatAppend('bot', '<?php echo $error_claude_chat_connection; ?>');
+	});
+}
+
+$('#claude-chat-send').on('click', claudeChatSend);
+
+$('#claude-chat-input').on('keypress', function(e) {
+	if (e.which === 13) {
+		claudeChatSend();
+	}
 });
 </script>
 <?php echo $footer; ?>

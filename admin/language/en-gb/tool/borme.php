@@ -42,7 +42,7 @@ $_['button_send']            = 'Send';
 
 // Error
 $_['error_permission']       = 'You do not have permission to modify this module.';
-$_['error_no_api_key']       = 'No Claude API key is configured (Tools > Modules > IA button). Configure it before running this module.';
+$_['error_no_api_key']       = 'No Claude API key is configured (Settings > AI). Configure it before running this module.';
 $_['error_already_running']  = 'A process is already running. Wait for it to finish before launching another.';
 $_['error_launch']           = 'Could not launch the process (Python interpreter not found).';
 $_['error_invalid_email']    = 'Enter a valid email address.';

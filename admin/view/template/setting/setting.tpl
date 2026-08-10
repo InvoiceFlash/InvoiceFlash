@@ -16,9 +16,8 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-hacienda" data-bs-toggle="tab"><?php echo $tab_hacienda; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-bs-toggle="tab"><?php echo $tab_fraud; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li>
-			</ul>
+				<li class="nav-item"><a class="nav-link" href="#tab-ia" data-bs-toggle="tab"><?php echo $tab_ia; ?></a></li></ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
-				<input type="hidden" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>">
 			<div class="tab-content">
 				<div id="tab-general" class="tab-pane">
 					<div class="form-group row">
@@ -1289,6 +1288,14 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_google_analytics; ?></label>
 						<div class="col-sm-6">
 							<textarea name="config_google_analytics" class="form-control" rows="3"><?php echo $config_google_analytics; ?></textarea>
+						</div>
+					</div>
+				</div>
+				<div id="tab-ia" class="tab-pane">
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
 						</div>
 					</div>
 				</div>

@@ -177,10 +177,8 @@ class ControllerExtensionModule extends Controller {
 		$this->data['chat_url']      = str_replace('&amp;', '&', $this->url->link('extension/module/iaChat', 'token=' . $this->session->data['token'], 'SSL'));
 		$this->data['cancel']        = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 
-		// Settings > AI's own tab was removed from the UI, so this screen is now the only place
-		// to actually type in config_claude_api_key — the save button persists it server-side too
-		// (not just in localStorage), since other modules (tool/borme, tool/import) read it from there.
-		$this->data['save_key_url']         = str_replace('&amp;', '&', $this->url->link('extension/module/saveApiKey', 'token=' . $this->session->data['token'], 'SSL'));
+		// Only used to show a warning banner if it's not configured — the key itself is
+		// managed in Settings > IA now, not on this screen.
 		$this->data['config_claude_api_key'] = (string)$this->config->get('config_claude_api_key');
 
 		$this->data['server_software'] = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
@@ -225,33 +223,6 @@ class ControllerExtensionModule extends Controller {
 		return 'No se pudo determinar (SERVER_SOFTWARE: ' . ($server_software ? $server_software : 'desconocido') . ').';
 	}
 
-	public function saveApiKey() {
-		$this->response->addHeader('Content-Type: application/json');
-
-		$json = array();
-
-		if (!$this->user->hasPermission('modify', 'extension/module')) {
-			$json['error'] = 'No permission';
-			$this->response->setOutput(json_encode($json));
-			return;
-		}
-
-		$input   = json_decode(file_get_contents('php://input'), true);
-		$api_key = isset($input['api_key']) ? trim($input['api_key']) : '';
-
-		$exists = $this->db->query("SELECT setting_id FROM " . DB_PREFIX . "setting WHERE store_id = '0' AND `group` = 'config' AND `key` = 'config_claude_api_key'");
-
-		if ($exists->num_rows) {
-			$this->db->query("UPDATE " . DB_PREFIX . "setting SET `value` = '" . $this->db->escape($api_key) . "' WHERE store_id = '0' AND `group` = 'config' AND `key` = 'config_claude_api_key'");
-		} else {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "setting SET store_id = '0', `group` = 'config', `key` = 'config_claude_api_key', `value` = '" . $this->db->escape($api_key) . "', serialized = '0'");
-		}
-
-		$json['success'] = true;
-
-		$this->response->setOutput(json_encode($json));
-	}
-
 	public function iaChat() {
 		set_time_limit(0);
 
@@ -262,12 +233,18 @@ class ControllerExtensionModule extends Controller {
 			return;
 		}
 
-		$input   = json_decode(file_get_contents('php://input'), true);
-		$api_key = isset($input['api_key'])  ? trim($input['api_key'])  : '';
-		$messages = isset($input['messages']) ? $input['messages']       : array();
-		$message  = isset($input['message'])  ? trim($input['message'])  : '';
+		$api_key = (string)$this->config->get('config_claude_api_key');
 
-		if (!$api_key || !$message) {
+		if (!$api_key) {
+			$this->response->setOutput(json_encode(array('error' => 'No hay ninguna API key de Claude configurada. Ve a Ajustes > IA para configurarla.')));
+			return;
+		}
+
+		$input    = json_decode(file_get_contents('php://input'), true);
+		$messages = isset($input['messages']) ? $input['messages']      : array();
+		$message  = isset($input['message'])  ? trim($input['message']) : '';
+
+		if (!$message) {
 			$this->response->setOutput(json_encode(array('error' => 'Faltan campos requeridos')));
 			return;
 		}

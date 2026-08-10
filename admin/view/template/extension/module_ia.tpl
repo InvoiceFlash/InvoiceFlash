@@ -9,21 +9,9 @@
 	</div>
 	<div class="panel-body">
 
-		<div class="row mb-3">
-			<label class="col-sm-2 col-form-label" style="padding-top:6px;">API Key Claude</label>
-			<div class="col-sm-10">
-				<div class="input-group">
-					<input type="password" id="api-key-input" class="form-control" placeholder="sk-ant-...">
-					<span class="input-group-btn">
-						<button class="btn btn-default" type="button" id="toggle-key" title="Mostrar/ocultar">
-							<i class="fa fa-eye" id="toggle-icon"></i>
-						</button>
-						<button class="btn btn-success" type="button" id="save-key">Guardar</button>
-					</span>
-				</div>
-				<small id="key-status" class="text-muted"></small>
-			</div>
-		</div>
+		<?php if (!$config_claude_api_key) { ?>
+		<div class="alert alert-warning">No hay ninguna API key de Claude configurada. Ve a Ajustes &gt; IA para configurarla.</div>
+		<?php } ?>
 
 		<div class="row mb-3">
 			<label class="col-sm-2 col-form-label" style="padding-top:6px;">Timeout del servidor web</label>
@@ -135,59 +123,8 @@
 </style>
 
 <script>
-var chatUrl    = '<?php echo addslashes($chat_url); ?>';
-var saveKeyUrl = '<?php echo addslashes($save_key_url); ?>';
-var serverKey  = <?php echo json_encode($config_claude_api_key); ?>;
+var chatUrl     = '<?php echo addslashes($chat_url); ?>';
 var apiMessages = [];
-
-document.addEventListener('DOMContentLoaded', function() {
-	var saved = localStorage.getItem('claude_api_key') || serverKey || '';
-	if (saved) {
-		document.getElementById('api-key-input').value = saved;
-		setKeyStatus('API Key cargada.', 'success');
-	}
-});
-
-document.getElementById('save-key').addEventListener('click', function() {
-	var key = document.getElementById('api-key-input').value.trim();
-	if (!key) {
-		return;
-	}
-
-	localStorage.setItem('claude_api_key', key);
-
-	// Esta pantalla es ahora el unico sitio para configurar config_claude_api_key
-	// (la pestaña Settings > AI se quito de la UI), asi que tambien se guarda en
-	// servidor: de ahi la leen tool/borme y tool/import.
-	fetch(saveKeyUrl, {
-		method:  'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body:    JSON.stringify({ api_key: key })
-	})
-	.then(function(r) { return r.json(); })
-	.then(function(data) {
-		if (data && data.error) {
-			setKeyStatus('API Key guardada localmente, pero no se pudo guardar en el servidor: ' + data.error, 'error');
-			return;
-		}
-		setKeyStatus('API Key guardada.', 'success');
-	})
-	.catch(function() {
-		setKeyStatus('API Key guardada localmente, pero no se pudo guardar en el servidor.', 'error');
-	});
-});
-
-document.getElementById('toggle-key').addEventListener('click', function() {
-	var input = document.getElementById('api-key-input');
-	var icon  = document.getElementById('toggle-icon');
-	if (input.type === 'password') {
-		input.type    = 'text';
-		icon.className = 'fa fa-eye-slash';
-	} else {
-		input.type    = 'password';
-		icon.className = 'fa fa-eye';
-	}
-});
 
 document.getElementById('send-btn').addEventListener('click', sendMessage);
 document.getElementById('chat-input').addEventListener('keydown', function(e) {
@@ -195,13 +132,8 @@ document.getElementById('chat-input').addEventListener('keydown', function(e) {
 });
 
 function sendMessage() {
-	var apiKey  = document.getElementById('api-key-input').value.trim();
 	var message = document.getElementById('chat-input').value.trim();
 
-	if (!apiKey) {
-		alert('Introduce tu API Key de Claude primero y pulsa Guardar.');
-		return;
-	}
 	if (!message) return;
 
 	hideEmptyMsg();
@@ -216,7 +148,7 @@ function sendMessage() {
 	fetch(chatUrl, {
 		method:  'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body:    JSON.stringify({ api_key: apiKey, messages: apiMessages, message: message })
+		body:    JSON.stringify({ messages: apiMessages, message: message })
 	})
 	.then(function(r) { return r.json(); })
 	.then(function(data) {
@@ -267,12 +199,6 @@ function hideEmptyMsg() {
 function scrollBottom() {
 	var win = document.getElementById('chat-window');
 	win.scrollTop = win.scrollHeight;
-}
-
-function setKeyStatus(msg, type) {
-	var el = document.getElementById('key-status');
-	el.textContent = msg;
-	el.className   = type === 'success' ? 'text-success small' : 'text-danger small';
 }
 
 function escHtml(s) {

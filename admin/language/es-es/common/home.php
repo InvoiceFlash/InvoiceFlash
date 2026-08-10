@@ -49,8 +49,10 @@ $_['button_search']                 = 'Buscar Ahora';
 $_['text_view_dashboard']           = 'Ver Panel de Control';
 $_['text_view_claude_chat']         = 'Ver Chat con IA';
 $_['text_claude_chat']              = 'Chat con IA';
-$_['text_claude_chat_placeholder']  = 'Este chat todav&iacute;a no est&aacute; conectado. Pr&oacute;ximamente podr&aacute;s hablar aqu&iacute; con el asistente.';
+$_['text_claude_chat_placeholder']  = 'Hola, soy el asistente de InvoiceFlash. Puedo responder dudas sobre la aplicaci&oacute;n y consultar datos de tu cuenta (facturas, clientes, ventas...). &iquest;En qu&eacute; puedo ayudarte?';
 $_['text_claude_chat_input_placeholder'] = 'Escribe un mensaje...';
+$_['error_claude_chat_connection']  = 'Error de conexi&oacute;n.';
+$_['error_claude_chat_no_api_key']  = 'No hay ninguna API key de Claude configurada. Ve a Ajustes &gt; IA para configurarla.';
 
 // Actions
 $_['text_actions']                  = 'Acciones R&aacute;pidas';

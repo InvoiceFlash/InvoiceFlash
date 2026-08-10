@@ -49,8 +49,10 @@ $_['button_search']                 = 'Search Now';
 $_['text_view_dashboard']           = 'View Dashboard';
 $_['text_view_claude_chat']         = 'View AI Chat';
 $_['text_claude_chat']              = 'AI Chat';
-$_['text_claude_chat_placeholder']  = 'This chat is not connected yet. You will soon be able to talk to the assistant here.';
+$_['text_claude_chat_placeholder']  = 'Hi, I\'m the InvoiceFlash assistant. I can answer questions about the app and look up data in your account (invoices, customers, sales...). How can I help?';
 $_['text_claude_chat_input_placeholder'] = 'Type a message...';
+$_['error_claude_chat_connection']  = 'Connection error.';
+$_['error_claude_chat_no_api_key']  = 'No Claude API key is configured. Go to Settings > AI to configure it.';
 
 // Actions
 $_['text_actions']                  = 'Quick Actions';
