@@ -25,6 +25,15 @@
 			</div>
 		</div>
 
+		<div class="row mb-3">
+			<label class="col-sm-2 col-form-label" style="padding-top:6px;">Timeout del servidor web</label>
+			<div class="col-sm-10" style="padding-top:6px;">
+				<span class="text-muted">
+					<?php if ($server_software) { ?><?php echo $server_software; ?> &mdash; <?php } ?><?php echo $server_timeout; ?>
+				</span>
+			</div>
+		</div>
+
 		<div id="chat-window">
 			<div id="chat-messages">
 				<div id="empty-msg" class="empty-hint">

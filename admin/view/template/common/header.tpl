@@ -16,7 +16,7 @@
 	<link type="text/css" href="view/stylesheet/main.css" rel="stylesheet"/>
 	<link type="text/css" href="view/javascript/datepicker/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
 	<link type="text/css" href="view/javascript/font-awesome/css/all.min.css" rel="stylesheet"/>
-	<script type="text/javascript" src="view/javascript/jquery/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="view/javascript/jquery/jquery-3.7.1.min.js"></script>
 	<script type="text/javascript" src="view/javascript/moment.js"></script>
 	<script type="text/javascript" src="view/javascript/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="view/javascript/common.js?v=<?php echo filemtime(DIR_APPLICATION . 'view/javascript/common.js'); ?>"></script>

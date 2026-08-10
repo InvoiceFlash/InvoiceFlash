@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <base href="<?php echo $base; ?>">
 <link href="view/stylesheet/main.css" rel="stylesheet">
-<script src="view\javascript\jquery\jquery-3.3.1.min.js"></script>
+<script src="view\javascript\jquery\jquery-3.7.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
 <style>
 /* TCPDF ignores the linked main.css, so anything the PDF needs has to live here */

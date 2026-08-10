@@ -16,8 +16,9 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-hacienda" data-bs-toggle="tab"><?php echo $tab_hacienda; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-bs-toggle="tab"><?php echo $tab_fraud; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-ia" data-bs-toggle="tab"><?php echo $tab_ia; ?></a></li></ul>
+			</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+				<input type="hidden" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>">
 			<div class="tab-content">
 				<div id="tab-general" class="tab-pane">
 					<div class="form-group row">
@@ -45,6 +46,32 @@
 							<?php if ($error_address) { ?>
 								<div class="help-block text-danger"><?php echo $error_address; ?></div>
 							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
+						<div class="col-sm-6">
+							<select name="config_country_id" data-id="<?php echo $config_zone_id; ?>" data-none="<?php echo $text_none; ?>" class="form-control">
+								<?php foreach ($countries as $country) { ?>
+									<?php if ($country['country_id'] == $config_country_id) { ?>
+									<option value="<?php echo $country['country_id']; ?>" selected=""><?php echo $country['name']; ?></option>
+									<?php } else { ?>
+									<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
+									<?php } ?>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
+						<div class="col-sm-6">
+							<select name="config_zone_id" class="form-control"></select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_postcode" value="<?php echo $config_postcode; ?>" class="form-control" style="width:20%;">
 						</div>
 					</div>
 					<div class="form-group row">
@@ -125,32 +152,6 @@
 					</div>
 				</div>
 				<div id="tab-local" class="tab-pane">
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
-						<div class="col-sm-6">
-							<select name="config_country_id" data-id="<?php echo $config_zone_id; ?>" data-none="<?php echo $text_none; ?>" class="form-control">
-								<?php foreach ($countries as $country) { ?>
-									<?php if ($country['country_id'] == $config_country_id) { ?>
-									<option value="<?php echo $country['country_id']; ?>" selected=""><?php echo $country['name']; ?></option>
-									<?php } else { ?>
-									<option value="<?php echo $country['country_id']; ?>"><?php echo $country['name']; ?></option>
-									<?php } ?>
-								<?php } ?>
-							</select>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
-						<div class="col-sm-6">
-							<select name="config_zone_id" class="form-control"></select>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_postcode; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_postcode" value="<?php echo $config_postcode; ?>" class="form-control" style="width:20%;">
-						</div>
-					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_language; ?></label>
 						<div class="col-sm-6">
@@ -1288,14 +1289,6 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_google_analytics; ?></label>
 						<div class="col-sm-6">
 							<textarea name="config_google_analytics" class="form-control" rows="3"><?php echo $config_google_analytics; ?></textarea>
-						</div>
-					</div>
-				</div>
-				<div id="tab-ia" class="tab-pane">
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
 						</div>
 					</div>
 				</div>

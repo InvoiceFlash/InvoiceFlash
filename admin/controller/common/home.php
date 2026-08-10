@@ -165,8 +165,8 @@ class ControllerCommonHome extends Controller {
 
 		$this->load->model('sale/invoice');
 
-		$this->data['total_sale'] = $this->currency->format($this->model_sale_invoice->getTotalSales(), $this->config->get('config_currency'));
-		$this->data['total_sale_year'] = $this->currency->format($this->model_sale_invoice->getTotalSalesByYear(date('Y')), $this->config->get('config_currency'));
+		$this->data['total_sale'] = $this->currency->format($this->model_sale_invoice->getTotalSales(), $this->config->get('config_currency'), '', true, true);
+		$this->data['total_sale_year'] = $this->currency->format($this->model_sale_invoice->getTotalSalesByYear(date('Y')), $this->config->get('config_currency'), '', true, true);
 		$this->data['total_order'] = $this->model_sale_invoice->getTotalInvoices();
 
 		$this->load->model('sale/customer');

@@ -8,7 +8,7 @@
 <base href="<?php echo $base; ?>">
 <link href="view/stylesheet/stylesheet.css" rel="stylesheet">
 <link href="view/stylesheet/main.css" rel="stylesheet">
-<script src="view\javascript\jquery\jquery-3.3.1.min.js"></script>
+<script src="view\javascript\jquery\jquery-3.7.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
 <style>
 @media print {

@@ -177,6 +177,9 @@ class ControllerExtensionModule extends Controller {
 		$this->data['chat_url']      = str_replace('&amp;', '&', $this->url->link('extension/module/iaChat', 'token=' . $this->session->data['token'], 'SSL'));
 		$this->data['cancel']        = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 
+		$this->data['server_software'] = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
+		$this->data['server_timeout']  = $this->detectWebServerTimeout($this->data['server_software']);
+
 		$this->template = 'extension/module_ia.tpl';
 		$this->children = array(
 			'common/header',
@@ -186,7 +189,39 @@ class ControllerExtensionModule extends Controller {
 		$this->response->setOutput($this->render());
 	}
 
+	// Best-effort only: reads the web server's own config file (not PHP's) to show the request
+	// timeout the browser will actually hit, since it's independent from max_execution_time.
+	private function detectWebServerTimeout($server_software) {
+		if (stripos($server_software, 'nginx') !== false) {
+			foreach ((array)glob('C:/nginx*/conf/nginx.conf') as $conf) {
+				$content = @file_get_contents($conf);
+
+				if ($content && preg_match('/proxy_read_timeout\s+(\d+)/i', $content, $match)) {
+					return $match[1] . 's (proxy_read_timeout, ' . $conf . ')';
+				}
+			}
+
+			return 'nginx detectado, pero no se pudo leer nginx.conf automáticamente (revisa proxy_read_timeout / fastcgi_read_timeout a mano).';
+		}
+
+		if (stripos($server_software, 'apache') !== false) {
+			foreach ((array)glob('C:/Program Files (x86)/EasyPHP-Devserver-17/eds-binaries/httpserver/*/conf/httpd.conf') as $conf) {
+				$content = @file_get_contents($conf);
+
+				if ($content && preg_match('/^\s*Timeout\s+(\d+)/mi', $content, $match)) {
+					return $match[1] . 's (directiva Timeout, ' . $conf . ')';
+				}
+			}
+
+			return '60s (valor por defecto de Apache 2.4 — no se encontró una directiva Timeout explícita).';
+		}
+
+		return 'No se pudo determinar (SERVER_SOFTWARE: ' . ($server_software ? $server_software : 'desconocido') . ').';
+	}
+
 	public function iaChat() {
+		set_time_limit(0);
+
 		$this->response->addHeader('Content-Type: application/json');
 
 		if ($this->request->server['REQUEST_METHOD'] !== 'POST') {
@@ -313,8 +348,14 @@ Responde siempre en español.';
 				return;
 			}
 
-			$resp        = json_decode($raw, true);
-			$stop_reason = $resp['stop_reason'];
+			$resp = json_decode($raw, true);
+
+			if (!isset($resp['content']) || !is_array($resp['content'])) {
+				$this->response->setOutput(json_encode(array('error' => 'Respuesta inesperada de la API: ' . substr($raw, 0, 300))));
+				return;
+			}
+
+			$stop_reason = isset($resp['stop_reason']) ? $resp['stop_reason'] : '';
 			$content     = $resp['content'];
 
 			// json_decode(..., true) turns {} into [] — the API requires tool input to be an object, not an array
