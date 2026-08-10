@@ -812,7 +812,7 @@ class ControllerCommonHeader extends Controller {
 				'href'     => $this->url->link('tool/user_logs', 'token=' . $this->session->data['token'], 'SSL'),
 				'children' => array()
 			);
-			
+
 			// Design
 			$design = array();
 
@@ -1198,6 +1198,27 @@ class ControllerCommonHeader extends Controller {
 					'name' => $this->language->get('text_system'),
 					'href' => '',
 					'children' => $tools
+				);
+			}
+
+			// CRM
+			$crm = array();
+
+			// CRM - BORME
+			if ($this->user->hasPermission('access', 'tool/borme')) {
+				$crm[] = array(
+					'name'     => $this->language->get('text_borme'),
+					'href'     => $this->url->link('tool/borme', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($crm) {
+				$this->data['menus'][] = array(
+					'id' => 'crm',
+					'name' => $this->language->get('text_crm'),
+					'href' => '',
+					'children' => $crm
 				);
 			}
 
