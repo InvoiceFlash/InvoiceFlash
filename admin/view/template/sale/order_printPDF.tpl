@@ -96,7 +96,10 @@ th {
 				<br/>
 				<?php echo $text_tax_id; ?> <?php echo $order['payment_tax_id']; ?>
 				<?php } ?></td>
-			<td><?php echo $order['shipping_address']; ?></td>
+			<td><?php if ($order['shipping_company']) { ?>
+					<b><?php echo $order['shipping_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $order['shipping_address']; ?></td>
 		</tr>
 	</table>
 	<table class="table table-bordered">

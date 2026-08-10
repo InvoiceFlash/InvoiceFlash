@@ -15,6 +15,7 @@ $_['text_to']                = 'To';
 $_['text_subject']           = 'Subject';
 $_['text_message']           = 'Message';
 $_['text_success_email']     = 'Email sent successfully.';
+$_['text_success']           = 'Deleted successfully.';
 
 // Entry
 $_['entry_date']              = 'BORME date';
@@ -25,6 +26,7 @@ $_['entry_website']          = 'Website';
 
 // Column
 $_['column_date']            = 'BORME date';
+$_['column_last_search']     = 'Last search';
 $_['column_province']        = 'Province';
 $_['column_company']         = 'Company';
 $_['column_city']            = 'City';
@@ -39,6 +41,8 @@ $_['button_save']            = 'Save';
 $_['button_close']           = 'Close';
 $_['button_email']           = 'E-mail';
 $_['button_send']            = 'Send';
+$_['button_delete']          = 'Delete';
+$_['button_search_again']    = 'Search again';
 
 // Error
 $_['error_permission']       = 'You do not have permission to modify this module.';
@@ -49,3 +53,4 @@ $_['error_invalid_email']    = 'Enter a valid email address.';
 $_['error_to']               = 'Enter a valid recipient email address.';
 $_['error_subject']          = 'Enter a subject.';
 $_['error_message']          = 'Enter a message.';
+$_['error_select_warning']   = 'Select at least one row.';

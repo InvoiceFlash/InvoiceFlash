@@ -5,7 +5,11 @@
 <div class="panel panel-default">
 
 	<div class="panel-heading clearfix">
-		<div class="h2"><i class="fa fa-building"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><i class="fa fa-building"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-right">
+			<button type="button" id="btn-search-again" class="btn btn-default" onclick="bormeSearchAgain();"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_search_again; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+		</div>
 	</div>
 
 	<div class="panel-body">
@@ -45,11 +49,14 @@
 			</div>
 		</div>
 
+		<form id="form" name="form" method="post" enctype="multipart/form-data" action="<?php echo $delete; ?>">
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped">
 				<thead>
 					<tr>
+						<td class="text-center" width="30"><input type="checkbox" data-toggle="selected"></td>
 						<td class="left"><?php echo $column_date; ?></td>
+						<td class="left"><?php echo $column_last_search; ?></td>
 						<td class="left"><?php echo $column_province; ?></td>
 						<td class="left"><?php echo $column_company; ?></td>
 						<td class="left"><?php echo $column_city; ?></td>
@@ -63,7 +70,9 @@
 					<?php if ($bormes) { ?>
 					<?php foreach ($bormes as $borme) { ?>
 					<tr id="borme-row-<?php echo $borme['borme_id']; ?>">
+						<td class="text-center"><input type="checkbox" name="selected[]" value="<?php echo $borme['borme_id']; ?>"></td>
 						<td class="text-left"><?php echo $borme['borme_date']; ?></td>
+						<td class="text-left" data-role="last_search"><?php echo $borme['last_search']; ?></td>
 						<td class="text-left"><?php echo $borme['province']; ?></td>
 						<td class="text-left" data-role="company"><?php echo $borme['company_name']; ?></td>
 						<td class="text-left"><?php echo $borme['city']; ?></td>
@@ -79,12 +88,13 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="10"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>
 			</table>
 		</div>
+		</form>
 
 		<?php echo $pagination; ?>
 	</div>
@@ -203,6 +213,46 @@ function bormeRun() {
 	});
 }
 
+function bormeSearchAgain() {
+	var ids = [];
+	$('input[name="selected[]"]:checked').each(function() {
+		ids.push($(this).val());
+	});
+
+	if (!ids.length) {
+		alert(text_select_warning);
+		return;
+	}
+
+	if (!confirm(text_confirm)) {
+		return;
+	}
+
+	bormeWatching = true;
+	$('#borme-run,#btn-search-again').prop('disabled', true);
+	$('#borme-status').html('<i class="fa fa-spinner fa-spin"></i> ...');
+
+	$.ajax({
+		url: '<?php echo str_replace('&amp;', '&', $search_again_url); ?>',
+		type: 'post',
+		data: { 'selected[]': ids },
+		dataType: 'json',
+		success: function(json) {
+			if (json.error) {
+				$('#borme-status').text(json.error);
+				$('#borme-run,#btn-search-again').prop('disabled', false);
+				return;
+			}
+
+			bormePoll();
+		},
+		error: function() {
+			$('#borme-status').text('Error de conexión.');
+			$('#borme-run,#btn-search-again').prop('disabled', false);
+		}
+	});
+}
+
 function bormePoll() {
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $status_url); ?>',
@@ -216,7 +266,7 @@ function bormePoll() {
 				bormePollTimer = setTimeout(bormePoll, 3000);
 			} else {
 				clearTimeout(bormePollTimer);
-				$('#borme-run').prop('disabled', false);
+				$('#borme-run,#btn-search-again').prop('disabled', false);
 
 				if (json.message) {
 					$('#borme-status').text(json.message);

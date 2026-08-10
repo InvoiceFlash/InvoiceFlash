@@ -15,6 +15,7 @@ $_['text_to']                = 'Para';
 $_['text_subject']           = 'Asunto';
 $_['text_message']           = 'Mensaje';
 $_['text_success_email']     = 'Correo enviado correctamente.';
+$_['text_success']           = 'Eliminado correctamente.';
 
 // Entry
 $_['entry_date']              = 'Fecha BORME';
@@ -25,6 +26,7 @@ $_['entry_website']          = 'Web';
 
 // Column
 $_['column_date']            = 'Fecha BORME';
+$_['column_last_search']     = 'Última búsqueda';
 $_['column_province']        = 'Provincia';
 $_['column_company']         = 'Empresa';
 $_['column_city']            = 'Localidad';
@@ -39,6 +41,8 @@ $_['button_save']            = 'Guardar';
 $_['button_close']           = 'Cerrar';
 $_['button_email']           = 'E-mail';
 $_['button_send']            = 'Enviar';
+$_['button_delete']          = 'Eliminar';
+$_['button_search_again']    = 'Buscar de nuevo';
 
 // Error
 $_['error_permission']       = 'No tiene permiso para modificar este módulo.';
@@ -49,3 +53,4 @@ $_['error_invalid_email']    = 'Introduce un email válido.';
 $_['error_to']               = 'Introduce un email de destino válido.';
 $_['error_subject']          = 'Introduce un asunto.';
 $_['error_message']          = 'Introduce un mensaje.';
+$_['error_select_warning']   = 'Selecciona al menos una fila.';

@@ -10,6 +10,7 @@ bloquear la peticion HTTP de Apache/PHP mientras dura el proceso.
 
 Uso:
     python borme_scraper.py --province "ZARAGOZA" --max-emails 5 [--date YYYYMMDD] [--max-attempts 60]
+    python borme_scraper.py --ids 12,15,20      (re-busca web/email de filas ya existentes, botón "Search again")
 
 Variables de entorno requeridas:
     DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT, DB_PREFIX
@@ -329,17 +330,83 @@ def insert_result(conn, prefix, borme_date, province, company):
         )
 
 
+def get_company(conn, prefix, borme_id):
+    with conn.cursor() as cur:
+        cur.execute("SELECT company_name, city FROM `%sborme` WHERE borme_id = %%s" % prefix, (borme_id,))
+        row = cur.fetchone()
+        return {"company_name": row[0], "city": row[1]} if row else None
+
+
+def update_contact_by_id(conn, prefix, borme_id, website, email, status_val):
+    with conn.cursor() as cur:
+        cur.execute(
+            "UPDATE `%sborme` SET website=%%s, email=%%s, status=%%s, last_search=NOW() WHERE borme_id=%%s" % prefix,
+            (website, email, status_val, borme_id),
+        )
+
+
+def run_search_again(ids, api_key, db_prefix, status):
+    """Re-busca web/email de filas ya existentes (boton 'Search again' del listado),
+    sin volver a consultar el sumario del BOE - la empresa ya esta en la tabla."""
+    conn = db_connect()
+    total = len(ids)
+    scanned = 0
+    found_emails = 0
+
+    status.update(target_emails=total, message="Preparando re-busqueda de %d empresas..." % total)
+
+    for borme_id in ids:
+        company = get_company(conn, db_prefix, borme_id)
+        if not company:
+            continue
+
+        scanned += 1
+        status.update(scanned=scanned, message="Buscando de nuevo: %s" % company["company_name"])
+
+        try:
+            website, claude_email = ask_claude_for_contact(api_key, company["company_name"], company.get("city"))
+        except Exception as e:
+            log("Error consultando Claude para %s: %s" % (company["company_name"], e))
+            website, claude_email = None, None
+
+        email = None
+        if website:
+            try:
+                status.update(message="Rastreando web de: %s" % company["company_name"])
+                crawled_email, found_at = find_email_on_website(website)
+                if crawled_email:
+                    log("Email encontrado en %s: %s" % (found_at, crawled_email))
+                    email = crawled_email
+            except Exception as e:
+                log("Error rastreando %s: %s" % (website, e))
+
+        if not email:
+            email = claude_email
+
+        status_val = "found" if email else "not_found"
+        update_contact_by_id(conn, db_prefix, borme_id, website, email, status_val)
+
+        if email:
+            found_emails += 1
+            status.update(found_emails=found_emails)
+
+        time.sleep(1)
+
+    conn.close()
+    status.finish("Terminado. %d empresas re-buscadas, %d emails encontrados." % (scanned, found_emails))
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--province", required=True)
+    parser.add_argument("--province", default=None)
     parser.add_argument("--max-emails", type=int, default=5)
     parser.add_argument("--max-attempts", type=int, default=60)
     parser.add_argument("--date", default=None, help="YYYYMMDD, por defecto hoy-7dias")
+    parser.add_argument("--ids", default=None, help="Lista de borme_id separados por coma, para re-buscar filas existentes")
     args = parser.parse_args()
 
     status_path = os.environ["STATUS_FILE"]
     status = StatusWriter(status_path)
-    status.update(province=args.province, target_emails=args.max_emails)
 
     db_prefix = os.environ.get("DB_PREFIX", "")
     api_key = os.environ.get("CLAUDE_API_KEY", "")
@@ -347,6 +414,17 @@ def main():
     if not api_key:
         status.finish("Error: no hay API key de Claude configurada (Ajustes > IA).", error="missing_api_key")
         return
+
+    if args.ids:
+        ids = [int(x) for x in args.ids.split(",") if x.strip().isdigit()]
+        run_search_again(ids, api_key, db_prefix, status)
+        return
+
+    if not args.province:
+        status.finish("Error: falta --province o --ids.", error="missing_args")
+        return
+
+    status.update(province=args.province, target_emails=args.max_emails)
 
     if args.date:
         target_date = datetime.strptime(args.date, "%Y%m%d")

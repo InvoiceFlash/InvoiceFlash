@@ -2022,7 +2022,7 @@ class ControllerSaleDraft extends Controller {
 				if ($draft_info['shipping_address_format']) {
 					$format = $draft_info['shipping_address_format'];
 				} else {
-					$format = '<b>{company}</b>' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city} ({zone}) {country}';
+					$format = '<b>{company}</b>' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city} {country}';
 				}
 
 				$find = array(
@@ -2036,12 +2036,18 @@ class ControllerSaleDraft extends Controller {
 					'{country}'
 				);
 
+				$shipping_postcode = $draft_info['shipping_postcode'];
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $shipping_postcode, $postcode_match)) {
+					$shipping_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
 				$replace = array(
 					'company'   => $draft_info['shipping_company'],
 					'address_1' => $draft_info['shipping_address_1'],
 					'address_2' => $draft_info['shipping_address_2'],
-					'city'      => $draft_info['shipping_city'],
-					'postcode'  => $draft_info['shipping_postcode'],
+					'city'      => mb_strtoupper($draft_info['shipping_city'], 'UTF-8'),
+					'postcode'  => $shipping_postcode,
 					'zone'      => $draft_info['shipping_zone'],
 					'zone_code' => $draft_info['shipping_zone_code'],
 					'country'   => $draft_info['shipping_country']

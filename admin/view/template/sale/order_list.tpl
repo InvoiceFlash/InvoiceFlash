@@ -6,7 +6,7 @@
 		<div class="pull-right">
 			<button type="button" data-url="<?php echo $print; ?>" onclick="submitOrders(this.dataset.url);" class="btn btn-default btn-spacer"><i class="far fa-eye"></i><span class="hidden-xs"> View</span></button>
 			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="openPrintModal(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
-			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirm(text_confirm);" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_delivery; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>

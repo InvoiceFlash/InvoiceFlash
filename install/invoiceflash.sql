@@ -294,6 +294,7 @@ DROP TABLE IF EXISTS `if_borme`;
 CREATE TABLE `if_borme` (
   `borme_id` int(11) NOT NULL AUTO_INCREMENT,
   `borme_date` date NOT NULL,
+  `last_search` datetime DEFAULT NULL,
   `province` varchar(100) NOT NULL,
   `identifier` varchar(64) NOT NULL,
   `company_name` varchar(255) NOT NULL,

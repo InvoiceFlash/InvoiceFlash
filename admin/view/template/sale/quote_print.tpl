@@ -73,7 +73,10 @@
 				<br/>
 				<?php echo $text_tax_id; ?> <?php echo $quote['payment_tax_id']; ?>
 				<?php } ?></td>
-			<td><?php echo $quote['shipping_address']; ?></td>
+			<td><?php if ($quote['shipping_company']) { ?>
+					<b><?php echo $quote['shipping_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $quote['shipping_address']; ?></td>
 		</tr>
 	</table>
 	<table class="table table-bordered">

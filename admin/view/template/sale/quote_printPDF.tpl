@@ -90,7 +90,10 @@ th {
 				<br/>
 				<?php echo $text_tax_id; ?> <?php echo $quotes['payment_tax_id']; ?>
 				<?php } ?></td>
-			<td><?php echo $quotes['shipping_address']; ?></td>
+			<td><?php if ($quotes['shipping_company']) { ?>
+					<b><?php echo $quotes['shipping_company']; ?></b><br/>
+					<?php } ?>
+					<?php echo $quotes['shipping_address']; ?></td>
 		</tr>
 	</table>
 	<table class="table table-bordered">

@@ -2043,7 +2043,7 @@ class ControllerSaleOrder extends Controller {
 				if ($order_info['shipping_address_format']) {
 					$format = $order_info['shipping_address_format'];
 				} else {
-					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city}' . "\n" . '{country}';
 				}
 
 				$find = array(
@@ -2057,18 +2057,26 @@ class ControllerSaleOrder extends Controller {
 					'{country}'
 				);
 
+				$shipping_company  = $order_info['shipping_company'];
+				$shipping_postcode = $order_info['shipping_postcode'];
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $shipping_postcode, $postcode_match)) {
+					$shipping_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
 				$replace = array(
-					'company'   => $order_info['shipping_company'],
+					'company'   => '',
 					'address_1' => $order_info['shipping_address_1'],
 					'address_2' => $order_info['shipping_address_2'],
-					'city'      => $order_info['shipping_city'],
-					'postcode'  => $order_info['shipping_postcode'],
+					'city'      => mb_strtoupper($order_info['shipping_city'], 'UTF-8'),
+					'postcode'  => $shipping_postcode,
 					'zone'      => $order_info['shipping_zone'],
 					'zone_code' => $order_info['shipping_zone_code'],
 					'country'   => $order_info['shipping_country']
 				);
 
 				$shipping_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+				$shipping_address = preg_replace('#^(<br\s*/?>)+#', '', $shipping_address);
 
 				if ($order_info['payment_address_format']) {
 					$format = $order_info['payment_address_format'];
@@ -2184,6 +2192,7 @@ class ControllerSaleOrder extends Controller {
 					'vat_id'             => '',
 					'name_ext' 			 => '',
 					'telephone'          => $order_info['telephone'],
+					'shipping_company'   => $shipping_company,
 					'shipping_address'   => $shipping_address,
 					'payment_company'    => $payment_company,
 					'payment_address'    => $payment_address,

@@ -41,4 +41,8 @@ class ModelToolBorme extends Model {
 	public function updateContact($borme_id, $email, $website) {
 		$this->db->query("UPDATE `" . DB_PREFIX . "borme` SET `email` = '" . $this->db->escape($email) . "', `website` = '" . $this->db->escape($website) . "', `status` = 'found' WHERE `borme_id` = '" . (int)$borme_id . "'");
 	}
+
+	public function deleteBorme($borme_id) {
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "borme` WHERE `borme_id` = '" . (int)$borme_id . "'");
+	}
 }

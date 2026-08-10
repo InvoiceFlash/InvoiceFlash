@@ -41,6 +41,14 @@ class ControllerToolBorme extends Controller {
 			'href' => $this->url->link('tool/borme', 'token=' . $this->session->data['token'], 'SSL')
 		);
 
+		if (isset($this->session->data['success'])) {
+			$this->data['success'] = $this->session->data['success'];
+
+			unset($this->session->data['success']);
+		} else {
+			$this->data['success'] = '';
+		}
+
 		$results = $this->model_tool_borme->getBormes($filter_data);
 		$total = $this->model_tool_borme->getTotalBormes($filter_data);
 
@@ -50,6 +58,7 @@ class ControllerToolBorme extends Controller {
 			$this->data['bormes'][] = array(
 				'borme_id'     => $row['borme_id'],
 				'borme_date'   => date('d-m-Y', strtotime($row['borme_date'])),
+				'last_search'  => $row['last_search'] ? date('d-m-Y H:i', strtotime($row['last_search'])) : '',
 				'province'     => $row['province'],
 				'company_name' => $row['company_name'],
 				'city'         => $row['city'],
@@ -84,6 +93,7 @@ class ControllerToolBorme extends Controller {
 		$this->data['entry_max_emails'] = $this->language->get('entry_max_emails');
 		$this->data['button_run'] = $this->language->get('button_run');
 		$this->data['column_date'] = $this->language->get('column_date');
+		$this->data['column_last_search'] = $this->language->get('column_last_search');
 		$this->data['column_province'] = $this->language->get('column_province');
 		$this->data['column_company'] = $this->language->get('column_company');
 		$this->data['column_city'] = $this->language->get('column_city');
@@ -110,6 +120,10 @@ class ControllerToolBorme extends Controller {
 
 		$this->data['save_email_url'] = $this->url->link('tool/borme/saveEmail', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['send_email_url'] = $this->url->link('tool/borme/sendEmail', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['delete'] = $this->url->link('tool/borme/delete', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['button_delete'] = $this->language->get('button_delete');
+		$this->data['search_again_url'] = $this->url->link('tool/borme/searchAgain', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['button_search_again'] = $this->language->get('button_search_again');
 
 		$this->data['has_api_key'] = (bool)$this->config->get('config_claude_api_key');
 
@@ -177,6 +191,61 @@ class ControllerToolBorme extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+	public function searchAgain() {
+		$this->load->language('tool/borme');
+
+		$json = array();
+
+		if (!$this->user->hasPermission('modify', 'tool/borme')) {
+			$json['error'] = $this->language->get('error_permission');
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		if (!$this->config->get('config_claude_api_key')) {
+			$json['error'] = $this->language->get('error_no_api_key');
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		if ($this->isRunning()) {
+			$json['error'] = $this->language->get('error_already_running');
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$ids = array();
+
+		if (isset($this->request->post['selected'])) {
+			foreach ((array)$this->request->post['selected'] as $borme_id) {
+				if ((int)$borme_id > 0) {
+					$ids[] = (int)$borme_id;
+				}
+			}
+		}
+
+		if (!$ids) {
+			$json['error'] = $this->language->get('error_select_warning');
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$launched = $this->launchSearchAgain($ids);
+
+		if ($launched) {
+			$json['success'] = $this->language->get('text_started');
+		} else {
+			$json['error'] = $this->language->get('error_launch');
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
 	public function status() {
 		$this->response->addHeader('Content-Type: application/json');
 
@@ -231,6 +300,24 @@ class ControllerToolBorme extends Controller {
 
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	public function delete() {
+		$this->load->language('tool/borme');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('tool/borme');
+
+		if (isset($this->request->post['selected']) && $this->user->hasPermission('modify', 'tool/borme')) {
+			foreach ($this->request->post['selected'] as $borme_id) {
+				$this->model_tool_borme->deleteBorme($borme_id);
+			}
+
+			$this->session->data['success'] = $this->language->get('text_success');
+		}
+
+		$this->redirect($this->url->link('tool/borme', 'token=' . $this->session->data['token'], 'SSL'));
 	}
 
 	public function sendEmail() {
@@ -329,6 +416,22 @@ class ControllerToolBorme extends Controller {
 	}
 
 	private function launchScraper($province, $max_emails, $date = '') {
+		$args = '--province ' . escapeshellarg($province) . ' --max-emails ' . (int)$max_emails;
+
+		if ($date !== '') {
+			$args .= ' --date ' . escapeshellarg($date);
+		}
+
+		return $this->spawnPython($args);
+	}
+
+	private function launchSearchAgain($ids) {
+		$args = '--ids ' . escapeshellarg(implode(',', $ids));
+
+		return $this->spawnPython($args);
+	}
+
+	private function spawnPython($args) {
 		$python = $this->findPython();
 
 		if (!$python) {
@@ -351,12 +454,6 @@ class ControllerToolBorme extends Controller {
 			'CLAUDE_API_KEY'  => $this->config->get('config_claude_api_key'),
 			'STATUS_FILE'     => $this->status_file,
 		);
-
-		$args = '--province ' . escapeshellarg($province) . ' --max-emails ' . (int)$max_emails;
-
-		if ($date !== '') {
-			$args .= ' --date ' . escapeshellarg($date);
-		}
 
 		if (stripos(PHP_OS, 'WIN') === 0) {
 			foreach ($env as $key => $value) {

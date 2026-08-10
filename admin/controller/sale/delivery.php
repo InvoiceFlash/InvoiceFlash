@@ -2155,7 +2155,7 @@ class ControllerSaledelivery extends Controller {
 				if ($delivery_info['shipping_address_format']) {
 					$format = $delivery_info['shipping_address_format'];
 				} else {
-					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{city} {postcode}' . "\n" . '{zone}' . "\n" . '{country}';
+					$format = '{company}' . "\n" . '{address_1}' . "\n" . '{address_2}' . "\n" . '{postcode} {city}' . "\n" . '{country}';
 				}
 
 				$find = array(
@@ -2169,18 +2169,26 @@ class ControllerSaledelivery extends Controller {
 					'{country}'
 				);
 
+				$shipping_company  = $delivery_info['shipping_company'];
+				$shipping_postcode = $delivery_info['shipping_postcode'];
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $shipping_postcode, $postcode_match)) {
+					$shipping_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
 				$replace = array(
-					'company'   => $delivery_info['shipping_company'],
+					'company'   => '',
 					'address_1' => $delivery_info['shipping_address_1'],
 					'address_2' => $delivery_info['shipping_address_2'],
-					'city'      => $delivery_info['shipping_city'],
-					'postcode'  => $delivery_info['shipping_postcode'],
+					'city'      => mb_strtoupper($delivery_info['shipping_city'], 'UTF-8'),
+					'postcode'  => $shipping_postcode,
 					'zone'      => $delivery_info['shipping_zone'],
 					'zone_code' => $delivery_info['shipping_zone_code'],
 					'country'   => $delivery_info['shipping_country']
 				);
 
 				$shipping_address = str_replace(array("\r\n", "\r", "\n"), '<br />', preg_replace(array("/\s\s+/", "/\r\r+/", "/\n\n+/"), '<br />', trim(str_replace($find, $replace, $format))));
+				$shipping_address = preg_replace('#^(<br\s*/?>)+#', '', $shipping_address);
 
 				if ($delivery_info['payment_address_format']) {
 					$format = $delivery_info['payment_address_format'];
@@ -2296,6 +2304,7 @@ class ControllerSaledelivery extends Controller {
 					'vat_id'             => '',
 					'name_ext' 			 => '',
 					'telephone'          => $delivery_info['telephone'],
+					'shipping_company'   => $shipping_company,
 					'shipping_address'   => $shipping_address,
 					'payment_company'    => $payment_company,
 					'payment_address'    => $payment_address,
