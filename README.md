@@ -11,7 +11,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or
 ### 0.0.12
   - [] Edit language
   - [] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-  - [] Mod PEPPOL support
+  - [] Upgrade jquery to 3.7.1
   - [] Multi Store
  
 ### 0.0.11
