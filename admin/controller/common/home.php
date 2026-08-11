@@ -47,6 +47,7 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_claude_chat_input_placeholder'] = $this->language->get('text_claude_chat_input_placeholder');
 		$this->data['error_claude_chat_connection'] = $this->language->get('error_claude_chat_connection');
 		$this->data['claude_chat_url'] = str_replace('&amp;', '&', $this->url->link('common/home/claudeChat', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['ai_chat_model'] = ($this->config->get('config_ai_provider') == 'ollama') ? 'qwen3:1.7b' : 'claude-opus-4-8';
 
 		// Actions
 		$this->data['text_actions'] = $this->language->get('text_actions');
@@ -481,13 +482,6 @@ class ControllerCommonHome extends Controller {
 			return;
 		}
 
-		$api_key = (string)$this->config->get('config_claude_api_key');
-
-		if (!$api_key) {
-			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_claude_chat_no_api_key'))));
-			return;
-		}
-
 		$input    = json_decode(file_get_contents('php://input'), true);
 		$messages = isset($input['messages']) ? $input['messages'] : array();
 		$message  = isset($input['message']) ? trim($input['message']) : '';
@@ -497,37 +491,35 @@ class ControllerCommonHome extends Controller {
 			return;
 		}
 
+		$provider = (string)$this->config->get('config_ai_provider');
+
+		if ($provider === '') {
+			$provider = 'claude';
+		}
+
+		if ($provider === 'ollama') {
+			$this->ollamaChat($messages, $message);
+			return;
+		}
+
+		$api_key = (string)$this->config->get('config_claude_api_key');
+
+		if (!$api_key) {
+			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_claude_chat_no_api_key'))));
+			return;
+		}
+
 		$messages[] = array('role' => 'user', 'content' => $message);
 
-		$tools = array(
-			array(
-				'name'         => 'list_tables',
-				'description'  => 'Lists all tables in the InvoiceFlash database.',
-				'input_schema' => array('type' => 'object', 'properties' => new stdClass(), 'required' => array())
-			),
-			array(
-				'name'         => 'describe_table',
-				'description'  => 'Shows the columns of a table (name, type, nullability, key, default).',
-				'input_schema' => array(
-					'type'       => 'object',
-					'properties' => array(
-						'table' => array('type' => 'string', 'description' => 'Exact table name, as returned by list_tables')
-					),
-					'required'   => array('table')
-				)
-			),
-			array(
-				'name'         => 'query_database',
-				'description'  => 'Runs a single read-only SELECT query against the database and returns the rows (max 200).',
-				'input_schema' => array(
-					'type'       => 'object',
-					'properties' => array(
-						'sql' => array('type' => 'string', 'description' => 'A single SELECT statement')
-					),
-					'required'   => array('sql')
-				)
-			)
-		);
+		$tools = array();
+
+		foreach ($this->getHomeChatToolDefs() as $def) {
+			$tools[] = array(
+				'name'         => $def['name'],
+				'description'  => $def['description'],
+				'input_schema' => $def['parameters']
+			);
+		}
 
 		$system = 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad).
 
@@ -627,6 +619,170 @@ Responde siempre en español, de forma breve y clara.';
 
 		$this->response->setOutput(json_encode(array(
 			'reply'    => $final_text,
+			'messages' => $messages
+		)));
+	}
+
+	// Definiciones de las 3 herramientas de solo-lectura sobre la BD, compartidas
+	// entre claudeChat() (formato Anthropic, input_schema) y ollamaChat() (formato
+	// OpenAI-style que usa Ollama, function.parameters) para no duplicarlas.
+	private function getHomeChatToolDefs() {
+		return array(
+			array(
+				'name'        => 'list_tables',
+				'description' => 'Lists all tables in the InvoiceFlash database.',
+				'parameters'  => array('type' => 'object', 'properties' => new stdClass(), 'required' => array())
+			),
+			array(
+				'name'        => 'describe_table',
+				'description' => 'Shows the columns of a table (name, type, nullability, key, default).',
+				'parameters'  => array(
+					'type'       => 'object',
+					'properties' => array(
+						'table' => array('type' => 'string', 'description' => 'Exact table name, as returned by list_tables')
+					),
+					'required'   => array('table')
+				)
+			),
+			array(
+				'name'        => 'query_database',
+				'description' => 'Runs a single read-only SELECT query against the database and returns the rows (max 200).',
+				'parameters'  => array(
+					'type'       => 'object',
+					'properties' => array(
+						'sql' => array('type' => 'string', 'description' => 'A single SELECT statement')
+					),
+					'required'   => array('sql')
+				)
+			)
+		);
+	}
+
+	// json_decode(..., true) convierte "arguments":{} en un array PHP vacío,
+	// indistinguible de un array indexado vacío — al reenviar ese historial con
+	// json_encode() saldría como [] en vez de {} y Ollama rechaza la petición con
+	// "Value looks like object, but can't find closing '}' symbol". Pasa tanto con
+	// un tool_call recién generado como con uno ya guardado en el historial que
+	// llega desde el navegador (ida y vuelta por json_decode/json_encode), así que
+	// se normaliza el array de mensajes completo justo antes de cada envío, no solo
+	// el último mensaje.
+	private function fixEmptyOllamaToolArgs($messages) {
+		foreach ($messages as &$msg) {
+			if (empty($msg['tool_calls'])) {
+				continue;
+			}
+
+			foreach ($msg['tool_calls'] as &$call) {
+				if (isset($call['function']['arguments']) && is_array($call['function']['arguments']) && empty($call['function']['arguments'])) {
+					$call['function']['arguments'] = new stdClass();
+				}
+			}
+			unset($call);
+		}
+		unset($msg);
+
+		return $messages;
+	}
+
+	// Modelo local vía Ollama (p. ej. qwen3:1.7b) — mismo bucle de herramientas
+	// (list_tables/describe_table/query_database) que la rama de Claude, adaptado
+	// al formato de tool-calling de Ollama. think:true (no false): con think:false
+	// el modelo se inventaba nombres de tabla y, si una consulta fallaba, le pedía
+	// al usuario que comprobara el nombre en vez de corregirse solo — con
+	// think:true acierta la tabla y se autocorrige de forma consistente, a cambio
+	// de ser bastante más lento (varios segundos por llamada, y puede encadenar
+	// 2-3 llamadas para una sola pregunta).
+	private function ollamaChat($messages, $message) {
+		$url = (string)$this->config->get('config_ollama_url');
+
+		if ($url === '') {
+			$url = 'http://127.0.0.1:11434/api/chat';
+		}
+
+		if (!$messages) {
+			$messages[] = array(
+				'role'    => 'system',
+				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 3 herramientas: list_tables, describe_table, query_database. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar las herramientas para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Nunca respondas un número que no venga literalmente del resultado de query_database. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
+			);
+		}
+
+		$messages[] = array('role' => 'user', 'content' => $message);
+
+		$tools = array();
+
+		foreach ($this->getHomeChatToolDefs() as $def) {
+			$tools[] = array(
+				'type'     => 'function',
+				'function' => array(
+					'name'        => $def['name'],
+					'description' => $def['description'],
+					'parameters'  => $def['parameters']
+				)
+			);
+		}
+
+		$final_message  = array('content' => '');
+		$max_iterations = 8;
+
+		for ($i = 0; $i < $max_iterations; $i++) {
+			$payload = array(
+				'model'    => 'qwen3:1.7b',
+				'messages' => $this->fixEmptyOllamaToolArgs($messages),
+				'tools'    => $tools,
+				'options'  => array('num_predict' => 1024),
+				'think'    => true,
+				'stream'   => false
+			);
+
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+
+			$raw        = curl_exec($ch);
+			$http_code  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$curl_error = curl_error($ch);
+			curl_close($ch);
+
+			if ($raw === false) {
+				$this->response->setOutput(json_encode(array('error' => 'cURL error: ' . $curl_error)));
+				return;
+			}
+
+			$resp = json_decode($raw, true);
+
+			if (!isset($resp['message'])) {
+				$this->response->setOutput(json_encode(array('error' => 'Respuesta inesperada de Ollama (HTTP ' . $http_code . '): ' . substr($raw, 0, 300))));
+				return;
+			}
+
+			$final_message = $resp['message'];
+			$messages[]    = $final_message;
+
+			if (empty($final_message['tool_calls'])) {
+				break;
+			}
+
+			foreach ($final_message['tool_calls'] as $call) {
+				$name   = isset($call['function']['name']) ? $call['function']['name'] : '';
+				$args   = isset($call['function']['arguments']) ? $call['function']['arguments'] : array();
+				$result = $this->executeHomeChatTool($name, $args);
+
+				$messages[] = array('role' => 'tool', 'content' => $result);
+			}
+		}
+
+		$reply = isset($final_message['content']) ? $final_message['content'] : '';
+
+		if (($reply === '') && !empty($final_message['tool_calls'])) {
+			$reply = 'No he podido completar la respuesta tras varios intentos.';
+		}
+
+		$this->response->setOutput(json_encode(array(
+			'reply'    => $reply,
 			'messages' => $messages
 		)));
 	}

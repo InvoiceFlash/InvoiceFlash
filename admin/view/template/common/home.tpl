@@ -223,7 +223,7 @@
 	<div class="row mb-3">
 		<div class="col-sm-12">
 			<div class="panel panel-default" id="claude-chat">
-				<div class="panel-heading clearfix"><h5><i class="fa fa-robot"></i> <?php echo $text_claude_chat; ?></h5></div>
+				<div class="panel-heading clearfix"><h5><i class="fa fa-robot"></i> <?php echo $text_claude_chat; ?> (<?php echo $ai_chat_model; ?>)</h5></div>
 				<div class="panel-body">
 					<div id="claude-chat-messages" style="height:400px; overflow-y:auto; background:#faf9f7; border:1px solid #e5e2da; border-radius:6px; padding:15px; margin-bottom:15px;">
 						<div class="claude-chat-message claude-chat-message-bot" style="background:#fff; border:1px solid #e5e2da; border-radius:8px; padding:10px 14px; max-width:80%; margin-bottom:10px;">

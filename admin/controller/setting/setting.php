@@ -228,7 +228,11 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_aeat_send'] = $this->language->get('entry_aeat_send');
 		$this->data['entry_aeat_ca_bundle'] = $this->language->get('entry_aeat_ca_bundle');
 		$this->data['text_aeat_ca_bundle_help'] = $this->language->get('text_aeat_ca_bundle_help');
+		$this->data['entry_ai_provider'] = $this->language->get('entry_ai_provider');
+		$this->data['text_ai_claude'] = $this->language->get('text_ai_claude');
+		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
 		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
+		$this->data['entry_ollama_url'] = $this->language->get('entry_ollama_url');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -519,6 +523,18 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_claude_api_key'] = $this->request->post['config_claude_api_key'];
 		} else {
 			$this->data['config_claude_api_key'] = $this->config->get('config_claude_api_key');
+		}
+
+		if (isset($this->request->post['config_ai_provider'])) {
+			$this->data['config_ai_provider'] = $this->request->post['config_ai_provider'];
+		} else {
+			$this->data['config_ai_provider'] = $this->config->get('config_ai_provider') ?: 'claude';
+		}
+
+		if (isset($this->request->post['config_ollama_url'])) {
+			$this->data['config_ollama_url'] = $this->request->post['config_ollama_url'];
+		} else {
+			$this->data['config_ollama_url'] = $this->config->get('config_ollama_url') ?: 'http://127.0.0.1:11434/api/chat';
 		}
 
 		if (isset($this->request->post['config_conta_digits'])) {

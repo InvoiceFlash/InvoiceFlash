@@ -1293,9 +1293,28 @@
 				</div>
 				<div id="tab-ia" class="tab-pane">
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_provider; ?></label>
+						<div class="col-sm-6">
+							<div class="btn-group" data-toggle="buttons">
+								<label class="btn btn-default<?php echo ($config_ai_provider != 'ollama') ? ' active' : ''; ?>">
+									<input type="radio" name="config_ai_provider" id="input-ai-provider-claude" value="claude"<?php echo ($config_ai_provider != 'ollama') ? ' checked' : ''; ?>> <?php echo $text_ai_claude; ?>
+								</label>
+								<label class="btn btn-default<?php echo ($config_ai_provider == 'ollama') ? ' active' : ''; ?>">
+									<input type="radio" name="config_ai_provider" id="input-ai-provider-ollama" value="ollama"<?php echo ($config_ai_provider == 'ollama') ? ' checked' : ''; ?>> <?php echo $text_ai_ollama; ?>
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="form-group row" id="ai-claude-group"<?php echo ($config_ai_provider == 'ollama') ? ' style="display:none;"' : ''; ?>>
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row" id="ai-ollama-group"<?php echo ($config_ai_provider != 'ollama') ? ' style="display:none;"' : ''; ?>>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ollama_url; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_ollama_url" value="<?php echo $config_ollama_url; ?>" placeholder="http://127.0.0.1:11434/api/chat" class="form-control">
 						</div>
 					</div>
 				</div>
@@ -1309,6 +1328,16 @@
 <script>
 	$('#input-vat-id').on('input', function() {
 		this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
+	});
+
+	$('input[name="config_ai_provider"]').on('change', function() {
+		if ($(this).val() == 'ollama') {
+			$('#ai-claude-group').hide();
+			$('#ai-ollama-group').show();
+		} else {
+			$('#ai-ollama-group').hide();
+			$('#ai-claude-group').show();
+		}
 	});
 
 	$('#button-clave').on('click', function() {
