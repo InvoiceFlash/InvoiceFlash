@@ -472,6 +472,7 @@ class ControllerSaleRemittances extends Controller {
 		$this->data['text_remittance'] = $this->language->get('heading_title');
 		$this->data['text_telephone'] = $this->language->get('text_telephone');
 		$this->data['text_date'] = $this->language->get('text_date');
+		$this->data['text_bank'] = $this->language->get('text_bank');
 		$this->data['text_iban'] = $this->language->get('text_iban');
 		$this->data['text_bic'] = $this->language->get('text_bic');
 
@@ -525,11 +526,36 @@ class ControllerSaleRemittances extends Controller {
 					$store_telephone = $this->config->get('config_telephone');
 				}
 
-				$store_name = $this->config->get('config_title');
+				$store_name = $this->config->get('config_name');
 				$store_nif = $this->config->get('config_nif');
 
-				$bic = $this->config->get('bic');
-				$iban = $this->config->get('iban');
+				// the address setting is a textarea, so drop trailing/blank lines that would print as empty rows
+				$store_address = preg_replace("/[\r\n]+/", "\n", trim($store_address));
+
+				// issuer postcode + town (town lives in the store's Region/State setting), shown on its own line under the street
+				$this->load->model('localisation/zone');
+
+				$store_zone = $this->model_localisation_zone->getZone($this->config->get('config_zone_id'));
+				$store_postcode = (string)$this->config->get('config_postcode');
+
+				if (preg_match('/^(\d{2})(\d{3})$/', $store_postcode, $postcode_match)) {
+					$store_postcode = $postcode_match[1] . '.' . $postcode_match[2];
+				}
+
+				$store_locality = trim($store_postcode . ' ' . (!empty($store_zone['name']) ? mb_strtoupper($store_zone['name'], 'UTF-8') : ''));
+
+				$banks = $this->config->get('banks');
+				$bank_default = $this->config->get('bank_default');
+
+				if ($banks && isset($banks[$bank_default])) {
+					$bank_name = $banks[$bank_default]['name'];
+					$bic = $banks[$bank_default]['bic'];
+					$iban = $banks[$bank_default]['iban'];
+				} else {
+					$bank_name = '';
+					$bic = $this->config->get('bic');
+					$iban = $this->config->get('iban');
+				}
 
 				$remittance_lines = array();
 				$total_amount = 0;
@@ -558,7 +584,9 @@ class ControllerSaleRemittances extends Controller {
 				'store_name'        => $store_name,
 				'store_url'         => rtrim(HTTP_CATALOG, '/'),
 				'store_address'     => nl2br($store_address),
+				'store_locality'    => $store_locality,
 				'store_email'       => $store_email,
+				'bank_name'   		=> $bank_name,
 				'bic'       		=> $bic,
 				'iban'       		=> $iban,
 				'store_telephone'   => $store_telephone,

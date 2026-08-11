@@ -16,6 +16,7 @@
         <ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-banks" data-bs-toggle="tab"><?php echo $tab_banks; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-email" data-bs-toggle="tab"><?php echo $tab_email; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-quotes" data-bs-toggle="tab"><?php echo $tab_quotes; ?></a></li>
@@ -451,6 +452,37 @@
 		              <tfoot>
 		                <tr>
 		                  <td class="text-right" colspan="5"><a href="<?php echo $add_contact ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact ?></a></td>
+		                </tr>
+		              </tfoot>
+		            </table>
+		          </div>
+					<div class="tab-pane" id="tab-banks">
+		            <table class="table table-bordered table-striped table-hover">
+		              <thead>
+		                <tr>
+		                  <th><?php echo $column_bank_name ?></th>
+		                  <th><?php echo $column_iban ?></th>
+		                  <th></th>
+		                </tr>
+		              </thead>
+		              <tbody>
+		                <?php if ($banks): ?>
+		                  <?php foreach ($banks as $bank): ?>
+		                    <tr>
+		                      <td><?php echo $bank['bank_name']; ?><input type="hidden" name="bank_id" value="<?php echo $bank['bank_id']; ?>"></td>
+		                      <td><?php echo $bank['iban']; ?></td>
+		                      <td class="text-right"><?php foreach ($bank['action'] as $action): ?>
+		                        <?php echo $action['link']; ?>
+		                      <?php endforeach ?></td>
+		                    </tr>
+		                  <?php endforeach ?>
+						<?php else: ?>
+							<tr><td colspan="3" class="text-center"><?php echo $text_no_results; ?></td></tr>
+		                <?php endif ?>
+		              </tbody>
+		              <tfoot>
+		                <tr>
+		                  <td class="text-right" colspan="3"><a href="<?php echo $add_bank ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_bank ?></a></td>
 		                </tr>
 		              </tfoot>
 		            </table>

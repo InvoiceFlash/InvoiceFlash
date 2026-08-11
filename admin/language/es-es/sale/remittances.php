@@ -7,6 +7,7 @@ $_['text_success']                            = '&Eacute;xito: &iexcl;Ha modific
 $_['text_select']                             = 'Por favor, seleccione una remesa';
 $_['text_select_one']                         = 'Solo puede seleccionar una remesa';
 $_['text_remittance_id']                      = 'ID Remesa:';
+$_['text_bank']                               = 'Banco:';
 $_['text_iban']                               = 'IBAN:';
 $_['text_bic']                                = 'BIC:';
 $_['text_telephone']                          = 'Tel&eacute;fono:';

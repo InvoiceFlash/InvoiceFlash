@@ -33,14 +33,32 @@
 								</select>
 							</div>
 						</div>
-						<div class="form-group col-sm-8">
-							<label class="control-label col-sm-2"><?php echo $entry_customer; ?></label>
-							<div class="control-field input-group col-sm-10">
+						<div class="form-group col-sm-6">
+							<label class="control-label col-sm-3"><?php echo $entry_customer; ?></label>
+							<div class="control-field input-group col-sm-9">
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
 								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="<?php echo $title_search_customer; ?>"><i class="fa fa-search"></i></button></div>
 								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
+							</div>
+						</div>
+						<div class="form-group col-sm-2">
+							<label class="control-label col-sm-4">Bank:</label>
+							<div class="control-field col-sm-8">
+								<select name="bank_index" id="bank_index" class="form-control">
+									<option value=""><?php echo $text_select; ?></option>
+									<optgroup label="Our Bank">
+										<?php foreach ($banks as $bank_row => $bank) { ?>
+										<option value="<?php echo $bank_row; ?>" <?php echo ((string)$bank_row === (string)$bank_index) ? 'selected' : ''; ?>><?php echo $bank['name'] ? $bank['name'] : $bank['iban']; ?></option>
+										<?php } ?>
+									</optgroup>
+									<optgroup label="Customer Bank" id="customer-bank-group"<?php echo (!$customer_banks) ? ' style="display:none;"' : ''; ?>>
+										<?php foreach ($customer_banks as $customer_bank) { ?>
+										<option value="c<?php echo $customer_bank['customer_bank_id']; ?>" <?php echo ($bank_index === 'c' . $customer_bank['customer_bank_id']) ? 'selected' : ''; ?>><?php echo $customer_bank['bank_name']; ?> (<?php echo $customer_bank['iban']; ?>)</option>
+										<?php } ?>
+									</optgroup>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -84,10 +102,10 @@
 								<label class="radio-inline m-0 p-0" style="padding-left:20px;"><input type="radio" name="simplified" value="1" <?php echo ($simplified) ? 'checked=""' : ''; ?>> <?php echo $text_simplified; ?></label>
 							</div>
 						</div>
-						<div class="form-group col-sm-3">
-							<label class="control-label col-sm-4"><?php echo $entry_global_discount; ?></label>
-							<div class="control-field col-sm-8">
-								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right">
+						<div class="form-group col-sm-3 d-flex align-items-center">
+							<label class="control-label text-nowrap mb-0 pr-1"><?php echo $entry_global_discount; ?></label>
+							<div class="control-field">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal" style="width:70px;">
 							</div>
 						</div>
 					</div>
@@ -712,6 +730,20 @@ $(document).on('dblclick', '#cs-results tr[data-idx]', function() {
 	$('select#customer_group_id').val(c.customer_group_id).change();
 	$('input[name="email"]').val(c.email);
 	$('input[name="telephone"]').val(c.telephone);
+
+	var $bankGroup = $('#customer-bank-group');
+	if (c.banks && c.banks.length) {
+		var bankHtml = '';
+		for (var b = 0; b < c.banks.length; b++) {
+			bankHtml += '<option value="c' + c.banks[b].customer_bank_id + '">' + c.banks[b].bank_name + ' (' + c.banks[b].iban + ')</option>';
+		}
+		$bankGroup.html(bankHtml).show();
+	} else {
+		$bankGroup.html('').hide();
+		if (($('#bank_index').val() || '').charAt(0) === 'c') {
+			$('#bank_index').val('');
+		}
+	}
 
 	var html = '<option value="0">&mdash;</option>';
 	for (var i in c.address) {

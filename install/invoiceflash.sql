@@ -7654,6 +7654,7 @@ CREATE TABLE `if_invoice` (
   `payment_address_format` text NOT NULL,
   `payment_method` varchar(128) NOT NULL,
   `payment_code` varchar(128) NOT NULL,
+   `bank_index` varchar(20) NOT NULL,
   `shipping_firstname` varchar(32) NOT NULL,
   `shipping_lastname` varchar(32) NOT NULL,
   `shipping_company` varchar(32) NOT NULL,
@@ -7910,6 +7911,7 @@ CREATE TABLE `if_draft` (
   `payment_address_format` text NOT NULL,
   `payment_method` varchar(128) NOT NULL,
   `payment_code` varchar(128) NOT NULL,
+  `bank_index` varchar(20) NOT NULL,
   `shipping_firstname` varchar(32) NOT NULL,
   `shipping_lastname` varchar(32) NOT NULL,
   `shipping_company` varchar(32) NOT NULL,
@@ -8204,6 +8206,23 @@ CREATE TABLE `if_customer_contacts` (
    PRIMARY KEY (`customer_contacts_id`),
    KEY `cemail` (`cemail`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `if_customer_banks`
+--
+
+DROP TABLE IF EXISTS `if_customer_banks`;
+CREATE TABLE `if_customer_banks` (
+  `customer_bank_id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) NOT NULL,
+  `bank_name` varchar(255) NOT NULL,
+  `iban` varchar(50) NOT NULL,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`customer_bank_id`),
+  KEY `customer_id` (`customer_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `if_contracts`;
 CREATE TABLE `if_contracts` (

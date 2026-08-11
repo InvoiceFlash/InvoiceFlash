@@ -27,14 +27,20 @@
 	</div>
 	<table class="table table-bordered">
 		<tr>
-			<td width="50%"><?php echo $remittance['store_name']; ?><br>
+			<td width="50%"><b><?php echo $remittance['store_name']; ?></b><br>
 				<?php echo $remittance['store_address']; ?><br>
+				<?php if ($remittance['store_locality']) { ?>
+				<?php echo $remittance['store_locality']; ?><br>
+				<?php } ?>
 				<?php echo $text_telephone; ?> <?php echo $remittance['store_telephone']; ?><br>
 				<?php echo $remittance['store_email']; ?><br>
 				<?php echo $remittance['store_url']; ?></td>
 			<td>
 				<b><?php echo $text_date; ?></b> <?php echo $remittance['date']; ?><br>
 				<b><?php echo $text_remittance_id; ?></b> <?php echo $remittance['remittance_id']; ?><br>
+				<?php if ($remittance['bank_name']) { ?>
+				<b><?php echo $text_bank; ?></b> <?php echo $remittance['bank_name']; ?><br>
+				<?php } ?>
 				<b><?php echo $text_bic; ?></b> <?php echo $remittance['bic']; ?><br>
 				<b><?php echo $text_iban; ?></b> <?php echo $remittance['iban']; ?><br>
 			</td>

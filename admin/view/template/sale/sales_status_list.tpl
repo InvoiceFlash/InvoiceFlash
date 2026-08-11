@@ -69,7 +69,7 @@
 				<thead>
 					<tr>
 						<th rowspan="2" class="align-middle"><?php echo $column_customer; ?></th>
-						<th colspan="3" class="text-center col-quote"><?php echo $column_quote; ?></th>
+						<th colspan="2" class="text-center col-quote"><?php echo $column_quote; ?></th>
 						<th colspan="3" class="text-center col-order"><?php echo $column_order; ?></th>
 						<th colspan="3" class="text-center col-delivery"><?php echo $column_delivery; ?></th>
 						<th colspan="4" class="text-center col-invoice"><?php echo $column_invoice; ?></th>
@@ -77,7 +77,6 @@
 					<tr>
 						<th class="col-quote">Nº</th>
 						<th class="col-quote"><?php echo $column_date; ?></th>
-						<th class="col-quote"><?php echo $column_status; ?></th>
 						<th class="col-order">Nº</th>
 						<th class="col-order"><?php echo $column_date; ?></th>
 						<th class="col-order"><?php echo $column_status; ?></th>
@@ -97,7 +96,6 @@
 						<td><?php echo $row['customer']; ?></td>
 						<td class="col-quote"><?php echo $row['quote_id'] ? '<a href="' . $row['quote_href'] . '">' . $row['quote_id'] . '</a>' : ''; ?></td>
 						<td class="col-quote"><?php echo $row['quote_date']; ?></td>
-						<td class="col-quote"><?php echo $row['quote_status']; ?></td>
 						<td class="col-order"><?php echo $row['order_id'] ? '<a href="' . $row['order_href'] . '">' . $row['order_id'] . '</a>' : ''; ?></td>
 						<td class="col-order"><?php echo $row['order_date']; ?></td>
 						<td class="col-order"><?php echo $row['order_status']; ?></td>
@@ -112,7 +110,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="14"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="13"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

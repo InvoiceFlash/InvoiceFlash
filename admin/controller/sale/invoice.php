@@ -992,6 +992,21 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['addresses'] = array();
 		}
 
+		if (isset($this->request->post['bank_index'])) {
+			$this->data['bank_index'] = $this->request->post['bank_index'];
+		} elseif (!empty($invoice_info)) {
+			$this->data['bank_index'] = $invoice_info['bank_index'];
+		} else {
+			$this->data['bank_index'] = '';
+		}
+
+		$this->data['banks'] = (array)$this->config->get('banks');
+		$this->data['customer_banks'] = array();
+
+		if ((int)$this->data['customer_id']) {
+			$this->data['customer_banks'] = $this->model_sale_customer->getCustomerBanks($this->data['customer_id']);
+		}
+
     	if (isset($this->request->post['payment_company'])) {
       		$this->data['payment_company'] = $this->request->post['payment_company'];
     	} elseif (!empty($invoice_info)) { 

@@ -1171,6 +1171,12 @@ class ControllerSaleDraft extends Controller {
 			$this->data['addresses'] = array();
 		}
 
+		$this->data['customer_banks'] = array();
+
+		if ((int)$this->data['customer_id']) {
+			$this->data['customer_banks'] = $this->model_sale_customer->getCustomerBanks($this->data['customer_id']);
+		}
+
     	if (isset($this->request->post['payment_company'])) {
       		$this->data['payment_company'] = $this->request->post['payment_company'];
     	} elseif (!empty($draft_info)) { 
@@ -1245,11 +1251,21 @@ class ControllerSaleDraft extends Controller {
 		
     	if (isset($this->request->post['payment_code'])) {
       		$this->data['payment_code'] = $this->request->post['payment_code'];
-    	} elseif (!empty($draft_info)) { 
+    	} elseif (!empty($draft_info)) {
 			$this->data['payment_code'] = $draft_info['payment_code'];
 		} else {
       		$this->data['payment_code'] = '';
-    	}			
+    	}
+
+    	if (isset($this->request->post['bank_index'])) {
+      		$this->data['bank_index'] = $this->request->post['bank_index'];
+    	} elseif (!empty($draft_info)) {
+			$this->data['bank_index'] = $draft_info['bank_index'];
+		} else {
+      		$this->data['bank_index'] = '';
+    	}
+
+		$this->data['banks'] = (array)$this->config->get('banks');
 
     	if (isset($this->request->post['shipping_company'])) {
       		$this->data['shipping_company'] = $this->request->post['shipping_company'];
@@ -2142,6 +2158,28 @@ class ControllerSaleDraft extends Controller {
 				
 				$total_data = $this->model_sale_draft->getDraftTotals($draft_id);
 				
+				$payment_bank_label   = '';
+				$payment_bank_account = '';
+
+				if ($draft_info['bank_index'] !== '') {
+					if (substr($draft_info['bank_index'], 0, 1) === 'c') {
+						$customer_bank_info = $this->model_sale_customer->getCustomerBank((int)substr($draft_info['bank_index'], 1));
+
+						if (!empty($customer_bank_info)) {
+							$payment_bank_label   = 'Direct debit from:';
+							$payment_bank_account = trim($customer_bank_info['bank_name'] . ' ' . $customer_bank_info['iban']);
+						}
+					} else {
+						$company_banks = (array)$this->config->get('banks');
+						$bank_idx      = (int)$draft_info['bank_index'];
+
+						if (isset($company_banks[$bank_idx])) {
+							$payment_bank_label   = 'Transfer to:';
+							$payment_bank_account = trim($company_banks[$bank_idx]['name'] . ' ' . $company_banks[$bank_idx]['iban']);
+						}
+					}
+				}
+
 				$this->data['drafts'][] = array(
 					'draft_id'	         => $draft_id,
 					'draft_no'         => $draft_no,
@@ -2166,6 +2204,8 @@ class ControllerSaleDraft extends Controller {
 					'payment_tax_id'     => $customer_tax_id,
 					'payment_method'     => $draft_info['payment_method'],
 					'shipping_method'    => $draft_info['shipping_method'],
+					'payment_bank_label'   => $payment_bank_label,
+					'payment_bank_account' => $payment_bank_account,
 					'product'            => $product_data,
 					'total'              => $total_data,
 					'comment'            => nl2br($draft_info['comment'])

@@ -211,6 +211,22 @@ $_['entry_notas'] = 'Notas:';
 
 $_['text_error_contact_name'] = 'Advertencia: &iexcl;El campo Nombre debe tener entre 3 y 50 caracteres!';
 
+// banks
+$_['tab_banks'] = 'Bancos';
+$_['column_bank_name'] = 'Banco';
+$_['column_iban'] = 'IBAN';
+
+$_['button_add_bank'] = 'A&ntilde;adir Banco';
+
+// banks form
+
+$_['heading_bank'] = 'Banco del Cliente';
+$_['entry_bank_name'] = 'Banco:';
+$_['entry_iban'] = 'IBAN:';
+
+$_['text_error_bank_name'] = 'Advertencia: &iexcl;El campo Banco debe tener entre 2 y 100 caracteres!';
+$_['text_error_iban'] = 'Advertencia: &iexcl;Introduce un IBAN v&aacute;lido!';
+
 // documentos del cliente
 $_['heading_title_contract'] = 'Documentos';
 $_['tab_contracts'] = 'Documentos';

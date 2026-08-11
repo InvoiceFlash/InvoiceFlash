@@ -7,6 +7,7 @@ $_['text_success']                            = 'Success: You have modified remi
 $_['text_select']                             = 'Please, select a remittance';
 $_['text_select_one']                         = 'You can only select a remittance';
 $_['text_remittance_id']                      = 'Remittance ID:';
+$_['text_bank']                               = 'Bank:';
 $_['text_iban']                               = 'IBAN:';
 $_['text_bic']                                = 'BIC:';
 $_['text_telephone']                          = 'Telephone:';

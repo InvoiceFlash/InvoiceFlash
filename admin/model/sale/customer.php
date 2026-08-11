@@ -147,6 +147,8 @@ class ModelSaleCustomer extends Model {
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_contacts WHERE customer_id = " . (int)$customer_id);
 
+		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_banks WHERE customer_id = " . (int)$customer_id);
+
 	}
 
 	public function getCustomer($customer_id) {
@@ -1037,6 +1039,37 @@ class ModelSaleCustomer extends Model {
 
 	public function deleteCustomerContact($customer_contacts_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_contacts WHERE customer_contacts_id = " . (int)$customer_contacts_id);
+	}
+
+	public function getCustomerBanks($customer_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer_banks WHERE customer_id = " . (int)$customer_id . " ORDER BY customer_bank_id ASC");
+
+		return $query->rows;
+	}
+
+	public function getCustomerBank($customer_bank_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "customer_banks WHERE customer_bank_id = " . (int)$customer_bank_id);
+
+		return $query->row;
+	}
+
+	public function addCustomerBank($data, $customer_id) {
+		$this->db->query("INSERT INTO " . DB_PREFIX . "customer_banks SET
+			customer_id = " . (int)$customer_id . ",
+			bank_name = '" . $this->db->escape($data['bank_name']) . "',
+			iban = '" . $this->db->escape($data['iban']) . "',
+			date_added = now()");
+	}
+
+	public function editCustomerBank($data, $customer_bank_id) {
+		$this->db->query("UPDATE " . DB_PREFIX . "customer_banks SET
+			bank_name = '" . $this->db->escape($data['bank_name']) . "',
+			iban = '" . $this->db->escape($data['iban']) . "'
+			WHERE customer_bank_id = " . (int)$customer_bank_id);
+	}
+
+	public function deleteCustomerBank($customer_bank_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_banks WHERE customer_bank_id = " . (int)$customer_bank_id);
 	}
 
 	public function getCustomerDocuments($customer_id) {

@@ -75,6 +75,9 @@ th {
 				<?php if ($drafts['shipping_method']) { ?>
 				<b><?php echo $text_shipping_method; ?></b> <?php echo $drafts['shipping_method']; ?><br>
 				<?php } ?>
+				<?php if ($drafts['payment_bank_account']) { ?>
+				<b>Payment Bank:</b> <?php echo $drafts['payment_bank_label']; ?> <?php echo $drafts['payment_bank_account']; ?><br>
+				<?php } ?>
 			</td>
 		</tr>
 	</table>

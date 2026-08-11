@@ -732,6 +732,12 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['button_add_contact'] = $this->language->get('button_add_contact');
 		$this->data['button_remove_contact'] = $this->language->get('button_remove_contact');
 
+		// Banks
+		$this->data['tab_banks'] = $this->language->get('tab_banks');
+		$this->data['column_bank_name'] = $this->language->get('column_bank_name');
+		$this->data['column_iban'] = $this->language->get('column_iban');
+		$this->data['button_add_bank'] = $this->language->get('button_add_bank');
+
 		// Documentos
 		$this->data['tab_contracts'] = $this->language->get('tab_contracts');
 
@@ -1103,6 +1109,36 @@ class ControllerSaleCustomer extends Controller {
 			}
 
 			$this->data['add_contact'] = $this->url->link('sale/customer/insertContact', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'], 'SSL');
+
+			// Banks
+			$this->data['banks'] = array();
+
+			if (isset($customer_info)) {
+				$results = $this->model_sale_customer->getCustomerBanks($this->request->get['customer_id']);
+
+				foreach ($results as $result) {
+					$action = array();
+
+					$link = $this->url->link('sale/customer/updateBank', 'token=' . $this->session->data['token'] . '&bank_id=' . $result['customer_bank_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
+					$action[] = array(
+						'link'	=> '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i><span class="hidden-xs"> ' . $this->language->get('text_edit') . '</span></a>'
+					);
+
+					$link = $this->url->link('sale/customer/deleteBank', 'token=' . $this->session->data['token'] . '&bank_id=' . $result['customer_bank_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
+					$action[] = array(
+						'link'	=> '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i><span class="hidden-xs"> ' . $this->language->get('text_delete') . '</span></a>'
+					);
+
+					$this->data['banks'][] = array(
+						'bank_id'   => $result['customer_bank_id'],
+						'bank_name' => $result['bank_name'],
+						'iban'      => $result['iban'],
+						'action'    => $action
+					);
+				}
+			}
+
+			$this->data['add_bank'] = $this->url->link('sale/customer/insertBank', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'], 'SSL');
 
 			// Customer documents
 			$this->data['contracts'] = array();
@@ -1956,6 +1992,18 @@ class ControllerSaleCustomer extends Controller {
 		$json = array();
 
 		foreach ($results as $result) {
+			$customer_banks = $this->model_sale_customer->getCustomerBanks($result['customer_id']);
+
+			$banks = array();
+
+			foreach ($customer_banks as $customer_bank) {
+				$banks[] = array(
+					'customer_bank_id' => $customer_bank['customer_bank_id'],
+					'bank_name'        => $customer_bank['bank_name'],
+					'iban'             => $customer_bank['iban']
+				);
+			}
+
 			$json[] = array(
 				'customer_id'       => $result['customer_id'],
 				'customer_group_id' => $result['customer_group_id'],
@@ -1963,6 +2011,7 @@ class ControllerSaleCustomer extends Controller {
 				'customer_group'    => $result['customer_group'],
 				'email'             => $result['email'],
 				'telephone'         => $result['telephone'],
+				'banks'             => $banks,
 				'address'           => $this->model_sale_customer->getAddresses($result['customer_id'])
 			);
 		}
@@ -2160,6 +2209,155 @@ class ControllerSaleCustomer extends Controller {
 			'common/footer',
 		);
 				
+		$this->response->setOutput($this->render());
+	}
+
+	public function updateBank() {
+		$this->load->language('sale/customer');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('sale/customer');
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateBankForm()) {
+			$this->model_sale_customer->editCustomerBank($this->request->post, $this->request->get['bank_id']);
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&bank_id=' . $this->request->get['bank_id'], 'SSL'));
+		}
+
+		$this->getBankForm();
+	}
+
+	public function insertBank() {
+		$this->load->language('sale/customer');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('sale/customer');
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateBankForm()) {
+			$this->model_sale_customer->addCustomerBank($this->request->post, $this->request->get['customer_id']);
+			$this->session->data['success'] = $this->language->get('text_success');
+			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'));
+		}
+
+		$this->getBankForm();
+	}
+
+	public function validateBankForm() {
+		if (utf8_strlen($this->request->post['bank_name']) < 2 || utf8_strlen($this->request->post['bank_name']) > 100) {
+			$this->error['bank_name'] = $this->language->get('text_error_bank_name');
+		}
+
+		if (utf8_strlen($this->request->post['iban']) < 15 || utf8_strlen($this->request->post['iban']) > 34) {
+			$this->error['iban'] = $this->language->get('text_error_iban');
+		}
+
+		if ($this->error) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public function deleteBank() {
+		$this->load->language('sale/customer');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('sale/customer');
+
+		if (isset($this->request->get['bank_id'])) {
+			$this->model_sale_customer->deleteCustomerBank($this->request->get['bank_id']);
+			$this->session->data['success'] = $this->language->get('text_success');
+			$this->redirect($this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'));
+		}
+
+		$this->getForm();
+	}
+
+	public function getBankForm() {
+		$this->data['heading_title'] 			= $this->language->get('heading_bank');
+
+		$this->data['entry_bank_name']			= $this->language->get('entry_bank_name');
+		$this->data['entry_iban']				= $this->language->get('entry_iban');
+
+		$this->data['button_save']				= $this->language->get('button_save');
+		$this->data['button_cancel']			= $this->language->get('button_cancel');
+
+		$this->data['breadcrumbs'] = array();
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('text_home'),
+			'href'      => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL'),
+			'separator' => false
+		);
+
+		$this->data['breadcrumbs'][] = array(
+			'text'      => $this->language->get('heading_bank'),
+			'href'      => $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL'),
+			'separator' => ' :: '
+		);
+
+		if (isset($this->request->get['bank_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+			$bank_info = $this->model_sale_customer->getCustomerBank($this->request->get['bank_id']);
+		}
+
+		if (isset($this->request->get['bank_id'])) {
+			$this->data['bank_id'] = $this->request->get['bank_id'];
+		} else {
+			$this->data['bank_id'] = 0;
+		}
+
+		if (isset($this->error['warning'])) {
+			$this->data['error_warning'] = $this->error['warning'];
+		} else {
+			$this->data['error_warning'] = '';
+		}
+
+		if (isset($this->error['bank_name'])) {
+			$this->data['error_bank_name'] = $this->error['bank_name'];
+		} else {
+			$this->data['error_bank_name'] = '';
+		}
+
+		if (isset($this->error['iban'])) {
+			$this->data['error_iban'] = $this->error['iban'];
+		} else {
+			$this->data['error_iban'] = '';
+		}
+
+		if (isset($this->request->post['bank_name'])) {
+			$this->data['bank_name'] = $this->request->post['bank_name'];
+		} elseif (isset($bank_info)) {
+			$this->data['bank_name'] = $bank_info['bank_name'];
+		} else {
+			$this->data['bank_name'] = '';
+		}
+
+		if (isset($this->request->post['iban'])) {
+			$this->data['iban'] = $this->request->post['iban'];
+		} elseif (isset($bank_info)) {
+			$this->data['iban'] = $bank_info['iban'];
+		} else {
+			$this->data['iban'] = '';
+		}
+
+		if ($this->data['bank_id'] == 0) {
+			$this->data['action'] = $this->url->link('sale/customer/insertBank', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
+		} else {
+			$this->data['action'] = $this->url->link('sale/customer/updateBank', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'] . '&bank_id=' . $this->data['bank_id'], 'SSL');
+		}
+
+		$this->data['cancel'] = $this->url->link('sale/customer/update', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
+
+		$this->template = 'sale/customer_banks.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer',
+		);
+
 		$this->response->setOutput($this->render());
 	}
 
