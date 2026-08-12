@@ -22,6 +22,10 @@ system/logs/error.txt
 *.log
 download/certificado/
 download/suppliers/
+system/vendor/supplier_invoice_import/status.json
+system/vendor/supplier_invoice_import/last_run.log
+__pycache__/
+*.pyc
 system/backup/
 system/cache/update_*
 docs/

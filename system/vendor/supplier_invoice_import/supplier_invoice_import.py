@@ -947,6 +947,15 @@ def format_currency(value, code):
 # Log de importación (idempotencia entre ejecuciones)
 # ---------------------------------------------------------------------------
 
+def invoice_exists(conn, invoice_id):
+    if not invoice_id:
+        return False
+    prefix = db_prefix()
+    with conn.cursor() as cur:
+        cur.execute("SELECT 1 FROM `{}purchase_invoice` WHERE invoice_id = %s LIMIT 1".format(prefix), (invoice_id,))
+        return cur.fetchone() is not None
+
+
 def get_log_row(conn, mailbox, message_uid):
     prefix = db_prefix()
     with conn.cursor() as cur:
@@ -1026,8 +1035,13 @@ def process_message(conn, imap_conn, mailbox, uid, raw_bytes, counters, own_comp
 
     existing = get_log_row(conn, mailbox, message_key)
     if existing and existing["status"] == "imported":
-        mark_seen(imap_conn, uid)
-        return
+        if invoice_exists(conn, existing["invoice_id"]):
+            mark_seen(imap_conn, uid)
+            return
+        # La factura se borró después (limpieza manual, pruebas...) — el log decía
+        # "imported" pero ya no hay nada real que la respalde, así que se reprocesa
+        # como si fuera la primera vez en vez de darla por hecha para siempre.
+        log("Aviso: invoice_id {} ya no existe (factura borrada), reprocesando: {}".format(existing["invoice_id"], subject))
     if existing and existing["status"] == "error" and existing["attempts"] >= MAX_ATTEMPTS:
         move_message(imap_conn, uid, FOLDER_ERRORS)
         mark_seen(imap_conn, uid)
