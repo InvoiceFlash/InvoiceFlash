@@ -663,6 +663,7 @@ def reconcile_invoice(data):
             tax_total = 0.0
 
     total = round(sub_total + tax_total, 2)
+    extracted_total = parse_float(data.get("invoice", {}).get("total"))
 
     return {
         "lines": normalized_lines,
@@ -670,7 +671,36 @@ def reconcile_invoice(data):
         "tax_rows": tax_rows,
         "tax_total": tax_total,
         "total": total,
+        "extracted_total": extracted_total,
     }
+
+
+CONSISTENCY_MIN_TOLERANCE = 0.05  # € — margen fijo para facturas muy pequeñas
+CONSISTENCY_RELATIVE_TOLERANCE = 0.01  # 1% — margen para el resto
+
+
+def check_total_consistency(reconciled):
+    """Compara el total impreso en el documento (transcrito literal por el
+    modelo, sin que él lo calcule) contra el total que recalculamos nosotros
+    desde las líneas. Si no coinciden, lo más probable es que el modelo se
+    haya equivocado leyendo una cifra (línea o total) — mejor no crear la
+    factura automáticamente que crearla con un importe incorrecto.
+    Si el documento no trae un total legible/parseable, no hay nada con que
+    comparar y se deja pasar (no es un fallo, es falta de dato)."""
+    extracted_total = reconciled.get("extracted_total", 0.0)
+    if not extracted_total:
+        return
+
+    computed_total = reconciled["total"]
+    tolerance = max(CONSISTENCY_MIN_TOLERANCE, abs(computed_total) * CONSISTENCY_RELATIVE_TOLERANCE)
+
+    if abs(computed_total - extracted_total) > tolerance:
+        raise ValueError(
+            "El total calculado a partir de las líneas ({:.2f}) no coincide con el total impreso "
+            "en el documento ({:.2f}) — posible error de lectura, no se crea la factura.".format(
+                computed_total, extracted_total
+            )
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -1032,6 +1062,8 @@ def process_message(conn, imap_conn, mailbox, uid, raw_bytes, counters, own_comp
             )
 
         reconciled = reconcile_invoice(extracted)
+        check_total_consistency(reconciled)
+
         supplier_id, created = find_or_create_supplier(conn, extracted["supplier"])
 
         source_note = "Factura importada automáticamente desde email (asunto: {}, adjunto: {}, método: {}).".format(
