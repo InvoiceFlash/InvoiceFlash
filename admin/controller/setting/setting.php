@@ -233,6 +233,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
 		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
 		$this->data['entry_ollama_url'] = $this->language->get('entry_ollama_url');
+		$this->data['text_ocr_title'] = $this->language->get('text_ocr_title');
+		$this->data['entry_ocr_ollama_url'] = $this->language->get('entry_ocr_ollama_url');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -535,6 +537,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_ollama_url'] = $this->request->post['config_ollama_url'];
 		} else {
 			$this->data['config_ollama_url'] = $this->config->get('config_ollama_url') ?: 'http://127.0.0.1:11434/api/chat';
+		}
+
+		if (isset($this->request->post['config_ocr_ollama_url'])) {
+			$this->data['config_ocr_ollama_url'] = $this->request->post['config_ocr_ollama_url'];
+		} else {
+			$this->data['config_ocr_ollama_url'] = $this->config->get('config_ocr_ollama_url') ?: 'http://127.0.0.1:11434/api/chat';
 		}
 
 		if (isset($this->request->post['config_conta_digits'])) {

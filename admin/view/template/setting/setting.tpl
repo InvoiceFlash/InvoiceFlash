@@ -1317,6 +1317,19 @@
 							<input type="text" name="config_ollama_url" value="<?php echo $config_ollama_url; ?>" placeholder="http://127.0.0.1:11434/api/chat" class="form-control">
 						</div>
 					</div>
+
+					<hr>
+
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><b><?php echo $text_ocr_title; ?></b></label>
+						<div class="col-sm-6"></div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ocr_ollama_url; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_ocr_ollama_url" value="<?php echo $config_ocr_ollama_url; ?>" placeholder="http://127.0.0.1:11434/api/chat" class="form-control">
+						</div>
+					</div>
 				</div>
 			</div>
 		</form>
