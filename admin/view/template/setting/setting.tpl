@@ -966,6 +966,48 @@
 							<textarea name="config_alert_emails" class="form-control" rows="3"><?php echo $config_alert_emails; ?></textarea>
 						</div>
 					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_email; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_supplier_invoice_email" value="<?php echo $config_supplier_invoice_email; ?>" class="form-control">
+							<?php if ($error_supplier_invoice_email) { ?>
+								<div class="help-block text-danger"><?php echo $error_supplier_invoice_email; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_email_password; ?></label>
+						<div class="col-sm-6">
+							<input type="password" name="config_supplier_invoice_email_password" value="<?php echo $config_supplier_invoice_email_password; ?>" class="form-control" autocomplete="new-password">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_imap_host; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_supplier_invoice_imap_host" value="<?php echo $config_supplier_invoice_imap_host; ?>" class="form-control" placeholder="mail.midominio.com">
+							<?php if ($error_supplier_invoice_imap_host) { ?>
+								<div class="help-block text-danger"><?php echo $error_supplier_invoice_imap_host; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_imap_port; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_supplier_invoice_imap_port" value="<?php echo $config_supplier_invoice_imap_port; ?>" class="form-control" style="max-width:120px;">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_imap_ssl; ?></label>
+						<div class="col-sm-6">
+							<?php if ($config_supplier_invoice_imap_ssl) { ?>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="1" checked=""><?php echo $text_yes; ?></label>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="0"><?php echo $text_no; ?></label>
+							<?php } else { ?>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="1"><?php echo $text_yes; ?></label>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="0" checked=""><?php echo $text_no; ?></label>
+							<?php } ?>
+						</div>
+					</div>
 				</div>
 				<div id="tab-payroll" class="tab-pane">
 					<div class="table-responsive">
@@ -1328,6 +1370,21 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ocr_ollama_url; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_ocr_ollama_url" value="<?php echo $config_ocr_ollama_url; ?>" placeholder="http://127.0.0.1:11434/api/chat" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_import_supplier_invoices; ?></label>
+						<div class="col-sm-6">
+							<?php if ($config_import_supplier_invoices) { ?>
+								<label class="radio-inline"><input type="radio" name="config_import_supplier_invoices" value="1" checked=""><?php echo $text_yes; ?></label>
+								<label class="radio-inline"><input type="radio" name="config_import_supplier_invoices" value="0"><?php echo $text_no; ?></label>
+								<?php } else { ?>
+								<label class="radio-inline"><input type="radio" name="config_import_supplier_invoices" value="1"><?php echo $text_yes; ?></label>
+								<label class="radio-inline"><input type="radio" name="config_import_supplier_invoices" value="0" checked=""><?php echo $text_no; ?></label>
+								<?php } ?>
+							<?php if ($error_supplier_invoice_email) { ?>
+								<div class="help-block text-danger"><?php echo $error_supplier_invoice_email; ?></div>
+							<?php } ?>
 						</div>
 					</div>
 				</div>

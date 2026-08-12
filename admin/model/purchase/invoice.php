@@ -496,6 +496,7 @@ class ModelPurchaseInvoice extends Model {
 				'shipping_method'         => $invoice_query->row['shipping_method'],
 				'shipping_code'           => $invoice_query->row['shipping_code'],
 				'comment'                 => $invoice_query->row['comment'],
+				'attachment_path'         => $invoice_query->row['attachment_path'],
 				'total'                   => $invoice_query->row['total'],
 				'invoice_status_id'       => $invoice_query->row['invoice_status_id'],
 				'language_id'             => $invoice_query->row['language_id'],

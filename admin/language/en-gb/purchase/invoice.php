@@ -132,6 +132,7 @@ $_['button_add_product']           = 'Add Product';
 $_['button_remove']                = 'Remove';
 $_['button_update_total']          = 'Update Total';
 $_['button_upload']                = 'Upload';
+$_['button_original_document']     = 'Original Document';
 $_['button_add_history']           = 'Add History';
 
 // Errors

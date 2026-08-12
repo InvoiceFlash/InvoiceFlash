@@ -1,0 +1,12 @@
+{
+  "running": false,
+  "started_at": "2026-08-12 18:22:04",
+  "finished_at": "2026-08-12 18:23:24",
+  "counters": {
+    "scanned": 1,
+    "imported": 1,
+    "deleted_no_attachment": 0,
+    "errors": 0
+  },
+  "message": "Completado"
+}

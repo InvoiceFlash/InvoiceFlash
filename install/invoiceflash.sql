@@ -7810,6 +7810,7 @@ CREATE TABLE `if_purchase_invoice` (
   `shipping_method` varchar(128) NOT NULL,
   `shipping_code` varchar(128) NOT NULL,
   `comment` text NOT NULL,
+  `attachment_path` varchar(500) NOT NULL DEFAULT '',
   `total` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `invoice_status_id` int(11) NOT NULL DEFAULT '0',
   `language_id` int(11) NOT NULL,
@@ -7877,6 +7878,27 @@ CREATE TABLE `if_purchase_invoice_history` (
   `comment` text NOT NULL,
   `date_added` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`invoice_history_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `if_purchase_invoice_import_log`;
+CREATE TABLE `if_purchase_invoice_import_log` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT,
+  `mailbox` varchar(96) NOT NULL DEFAULT '',
+  `message_uid` varchar(200) NOT NULL DEFAULT '',
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `attempts` int(4) NOT NULL DEFAULT '0',
+  `subject` varchar(255) NOT NULL DEFAULT '',
+  `from_email` varchar(255) NOT NULL DEFAULT '',
+  `date_received` datetime DEFAULT NULL,
+  `date_processed` datetime DEFAULT NULL,
+  `supplier_id` int(11) NOT NULL DEFAULT '0',
+  `invoice_id` int(11) NOT NULL DEFAULT '0',
+  `attachment_path` varchar(500) NOT NULL DEFAULT '',
+  `extraction_method` varchar(20) NOT NULL DEFAULT '',
+  `error_message` text,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `message_uid_unique` (`mailbox`,`message_uid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 /*Table structure for table `draft` */
@@ -8490,6 +8512,9 @@ CREATE TABLE `if_cron` (
   `date_next` datetime NOT NULL,
   PRIMARY KEY (`cron_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+INSERT INTO `if_cron` (`code`, `action`, `cycle`, `status`, `date_last`, `date_next`) VALUES
+('supplier_invoice_import', 'supplier_invoice_import.php', 720, 1, NOW(), NOW());
 
 DROP TABLE IF EXISTS `if_delivery_option`;
 CREATE TABLE `if_delivery_option` (

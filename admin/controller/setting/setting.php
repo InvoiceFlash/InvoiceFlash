@@ -235,6 +235,12 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_ollama_url'] = $this->language->get('entry_ollama_url');
 		$this->data['text_ocr_title'] = $this->language->get('text_ocr_title');
 		$this->data['entry_ocr_ollama_url'] = $this->language->get('entry_ocr_ollama_url');
+		$this->data['entry_import_supplier_invoices'] = $this->language->get('entry_import_supplier_invoices');
+		$this->data['entry_supplier_invoice_email'] = $this->language->get('entry_supplier_invoice_email');
+		$this->data['entry_supplier_invoice_email_password'] = $this->language->get('entry_supplier_invoice_email_password');
+		$this->data['entry_supplier_invoice_imap_host'] = $this->language->get('entry_supplier_invoice_imap_host');
+		$this->data['entry_supplier_invoice_imap_port'] = $this->language->get('entry_supplier_invoice_imap_port');
+		$this->data['entry_supplier_invoice_imap_ssl'] = $this->language->get('entry_supplier_invoice_imap_ssl');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -436,6 +442,18 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_conta_result_account'] = '';
 		}
 
+		if (isset($this->error['supplier_invoice_email'])) {
+			$this->data['error_supplier_invoice_email'] = $this->error['supplier_invoice_email'];
+		} else {
+			$this->data['error_supplier_invoice_email'] = '';
+		}
+
+		if (isset($this->error['supplier_invoice_imap_host'])) {
+			$this->data['error_supplier_invoice_imap_host'] = $this->error['supplier_invoice_imap_host'];
+		} else {
+			$this->data['error_supplier_invoice_imap_host'] = '';
+		}
+
 		$this->data['breadcrumbs'] = array();
 
 		$this->data['breadcrumbs'][] = array(
@@ -543,6 +561,43 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_ocr_ollama_url'] = $this->request->post['config_ocr_ollama_url'];
 		} else {
 			$this->data['config_ocr_ollama_url'] = $this->config->get('config_ocr_ollama_url') ?: 'http://127.0.0.1:11434/api/chat';
+		}
+
+		if (isset($this->request->post['config_import_supplier_invoices'])) {
+			$this->data['config_import_supplier_invoices'] = $this->request->post['config_import_supplier_invoices'];
+		} else {
+			$this->data['config_import_supplier_invoices'] = $this->config->get('config_import_supplier_invoices');
+		}
+
+		if (isset($this->request->post['config_supplier_invoice_email'])) {
+			$this->data['config_supplier_invoice_email'] = $this->request->post['config_supplier_invoice_email'];
+		} else {
+			$this->data['config_supplier_invoice_email'] = $this->config->get('config_supplier_invoice_email');
+		}
+
+		if (isset($this->request->post['config_supplier_invoice_email_password'])) {
+			$this->data['config_supplier_invoice_email_password'] = $this->request->post['config_supplier_invoice_email_password'];
+		} else {
+			$this->data['config_supplier_invoice_email_password'] = $this->config->get('config_supplier_invoice_email_password');
+		}
+
+		if (isset($this->request->post['config_supplier_invoice_imap_host'])) {
+			$this->data['config_supplier_invoice_imap_host'] = $this->request->post['config_supplier_invoice_imap_host'];
+		} else {
+			$this->data['config_supplier_invoice_imap_host'] = $this->config->get('config_supplier_invoice_imap_host');
+		}
+
+		if (isset($this->request->post['config_supplier_invoice_imap_port'])) {
+			$this->data['config_supplier_invoice_imap_port'] = $this->request->post['config_supplier_invoice_imap_port'];
+		} else {
+			$this->data['config_supplier_invoice_imap_port'] = $this->config->get('config_supplier_invoice_imap_port') ?: '993';
+		}
+
+		if (isset($this->request->post['config_supplier_invoice_imap_ssl'])) {
+			$this->data['config_supplier_invoice_imap_ssl'] = $this->request->post['config_supplier_invoice_imap_ssl'];
+		} else {
+			$imap_ssl = $this->config->get('config_supplier_invoice_imap_ssl');
+			$this->data['config_supplier_invoice_imap_ssl'] = ($imap_ssl === null) ? '1' : $imap_ssl;
 		}
 
 		if (isset($this->request->post['config_conta_digits'])) {
@@ -1493,6 +1548,14 @@ class ControllerSettingSetting extends Controller {
 
 		if ($this->request->post['config_conta_result_account'] && (utf8_strlen($this->request->post['config_conta_result_account']) != $conta_digits)) {
 			$this->error['conta_result_account'] = sprintf($this->language->get('error_conta_result_account'), $conta_digits);
+		}
+
+		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_supplier_invoice_email'])) {
+			$this->error['supplier_invoice_email'] = $this->language->get('error_supplier_invoice_email');
+		}
+
+		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_supplier_invoice_imap_host'])) {
+			$this->error['supplier_invoice_imap_host'] = $this->language->get('error_supplier_invoice_imap_host');
 		}
 
 		if ($this->error && !isset($this->error['warning'])) {

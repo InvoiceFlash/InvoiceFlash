@@ -20,11 +20,13 @@ $db = new DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 $registry->set('db', $db);
 
 // Select rows in queue ready for processing
-$query = $db->query("SELECT * FROM `" . DB_PREFIX . "cron`  WHERE status = 1 and date_next > now()");
+// date_next <= now(): un cron está "vencido" (listo para ejecutar) cuando su
+// próxima fecha ya ha pasado, no al revés.
+$query = $db->query("SELECT * FROM `" . DB_PREFIX . "cron`  WHERE status = 1 and date_next <= now()");
 
 foreach ($query->rows as $result) {
 	require_once(DIR_SYSTEM. 'vendor/cron/'. $result['action']);
-	
-	$db->query("UPDATE `" . DB_PREFIX . "cron` SET `date_last` = now(),  `date_next` = now() + INTERVAL '" . (int)$result['cycle'] . "' MINUTE WHERE cron_id = '" . (int)$result[cron_id] . "'");
+
+	$db->query("UPDATE `" . DB_PREFIX . "cron` SET `date_last` = now(),  `date_next` = now() + INTERVAL '" . (int)$result['cycle'] . "' MINUTE WHERE cron_id = '" . (int)$result['cron_id'] . "'");
 }
 ?>

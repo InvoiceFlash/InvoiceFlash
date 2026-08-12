@@ -662,7 +662,7 @@ class ControllerPurchaseInvoice extends Controller {
 				$this->data[$key] = $this->language->get($key);
 			}
 
-			foreach (array('button_invoice','button_cancel','button_add_history') as $key) {
+			foreach (array('button_invoice','button_cancel','button_add_history','button_original_document') as $key) {
 				$this->data[$key] = $this->language->get($key);
 			}
 
@@ -691,6 +691,9 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->data['sendEmail'] = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id . '&format=email', 'SSL');
 			$this->data['cancel']   = $this->url->link('purchase/invoice', 'token=' . $this->session->data['token'] . $url, 'SSL');
 			$this->data['print']    = $this->url->link('purchase/invoice/document', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id, 'SSL');
+
+			$this->data['has_original_document'] = !empty($invoice_info['attachment_path']);
+			$this->data['original_document']     = $this->url->link('purchase/invoice/viewDoc', 'token=' . $this->session->data['token'] . '&invoice_id=' . (int)$invoice_id, 'SSL');
 
 			$this->data['reports'] = array(
 				array('name' => 'Invoice', 'report' => 'purchase_invoice_printPDF.tpl')
@@ -1127,19 +1130,30 @@ class ControllerPurchaseInvoice extends Controller {
 			exit('Invoice not found');
 		}
 
-		$sid  = (int)$invoice_info['supplier_id'];
-		$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
-		$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
-		$dir  = $base . '/docs/suppliers/' . date('Y') . '/';
+		$file = '';
 
-		$matches = glob($dir . $sid . '_' . $sino . '.*');
+		// El documento original recibido por email (import automático de facturas
+		// de proveedores) queda guardado en purchase_invoice.attachment_path.
+		if (!empty($invoice_info['attachment_path']) && is_file($invoice_info['attachment_path'])) {
+			$file = $invoice_info['attachment_path'];
+		} else {
+			// Documento subido a mano vía uploadDoc(), localizado por supplier_id + supplier_invoice_no.
+			$sid  = (int)$invoice_info['supplier_id'];
+			$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
+			$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
+			$dir  = $base . '/docs/suppliers/' . date('Y') . '/';
 
-		if (empty($matches)) {
+			$matches = glob($dir . $sid . '_' . $sino . '.*');
+
+			if (!empty($matches)) {
+				$file = $matches[0];
+			}
+		}
+
+		if (!$file) {
 			http_response_code(404);
 			exit('Document not found');
 		}
-
-		$file = $matches[0];
 		$ext  = strtolower(pathinfo($file, PATHINFO_EXTENSION));
 
 		$mime_types = array(
