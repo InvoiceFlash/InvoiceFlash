@@ -662,6 +662,26 @@ Responde siempre en español, de forma breve y clara.';
 		);
 	}
 
+	// Herramienta de busqueda semantica sobre if_document_chunks (embeddings de PDFs
+	// de producto, ver setting/document_embeddings). NO forma parte de
+	// getHomeChatToolDefs() a proposito: solo se ofrece en ollamaChat() (modelo local
+	// qwen3:1.7b), nunca en claudeChat() — a peticion expresa del usuario.
+	private function getDocumentSearchToolDef() {
+		return array(
+			'name'        => 'search_product_documents',
+			'description' => 'Semantic search over previously imported product PDF documentation (technical datasheets). Use it when the user asks about product specifications, capacities, measurements or any technical detail that would be documented in a product PDF rather than in the regular database tables.',
+			'parameters'  => array(
+				'type'       => 'object',
+				'properties' => array(
+					'query'      => array('type' => 'string', 'description' => 'Natural language search query, in the same language as the documents (Spanish).'),
+					'product_id' => array('type' => 'integer', 'description' => 'Optional: restrict the search to a specific product_id.'),
+					'limit'      => array('type' => 'integer', 'description' => 'Optional: max number of passages to return, default 5, max 20.')
+				),
+				'required'   => array('query')
+			)
+		);
+	}
+
 	// json_decode(..., true) convierte "arguments":{} en un array PHP vacío,
 	// indistinguible de un array indexado vacío — al reenviar ese historial con
 	// json_encode() saldría como [] en vez de {} y Ollama rechaza la petición con
@@ -706,7 +726,7 @@ Responde siempre en español, de forma breve y clara.';
 		if (!$messages) {
 			$messages[] = array(
 				'role'    => 'system',
-				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 3 herramientas: list_tables, describe_table, query_database. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar las herramientas para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Nunca respondas un número que no venga literalmente del resultado de query_database. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
+				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 4 herramientas: list_tables, describe_table, query_database y search_product_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico que no venga literalmente del resultado de search_product_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
 			);
 		}
 
@@ -714,7 +734,11 @@ Responde siempre en español, de forma breve y clara.';
 
 		$tools = array();
 
-		foreach ($this->getHomeChatToolDefs() as $def) {
+		// search_product_documents solo se ofrece aqui (rama Ollama/qwen3:1.7b), no en
+		// claudeChat() — no forma parte de getHomeChatToolDefs() a proposito.
+		$tool_defs = array_merge($this->getHomeChatToolDefs(), array($this->getDocumentSearchToolDef()));
+
+		foreach ($tool_defs as $def) {
 			$tools[] = array(
 				'type'     => 'function',
 				'function' => array(
@@ -853,9 +877,88 @@ Responde siempre en español, de forma breve y clara.';
 
 				return json_encode(array('rows' => $rows, 'row_count' => count($rows)));
 
+			case 'search_product_documents':
+				$query      = isset($tool_input['query']) ? trim((string)$tool_input['query']) : '';
+				$product_id = !empty($tool_input['product_id']) ? (int)$tool_input['product_id'] : 0;
+				$limit      = isset($tool_input['limit']) ? (int)$tool_input['limit'] : 5;
+				$limit      = min(max($limit, 1), 20);
+
+				if ($query === '') {
+					return json_encode(array('error' => 'Missing query.'));
+				}
+
+				$result = $this->searchProductDocuments($query, $product_id, $limit);
+
+				if (isset($result['error'])) {
+					return json_encode($result);
+				}
+
+				return json_encode(array('results' => $result['rows']));
+
 			default:
 				return json_encode(array('error' => 'Unknown tool: ' . $tool_name));
 		}
+	}
+
+	// Embedding de la consulta via Ollama (mismo modelo nomic-embed-text usado por
+	// system/vendor/document_embeddings/document_embeddings.py al ingerir los PDFs) +
+	// busqueda de los chunks mas cercanos en if_document_chunks (VECTOR, MariaDB 11.7+).
+	private function searchProductDocuments($query, $product_id = 0, $limit = 5) {
+		$embedding = $this->generateEmbedding($query);
+
+		if ($embedding === false) {
+			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado).');
+		}
+
+		$vector_text = '[' . implode(',', array_map(function ($v) { return (float)$v; }, $embedding)) . ']';
+
+		$sql = "SELECT document, product_id, product_name, page, chunk_text,
+			VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "')) AS distance
+			FROM `" . DB_PREFIX . "document_chunks`";
+
+		if ($product_id) {
+			$sql .= " WHERE product_id = '" . (int)$product_id . "'";
+		}
+
+		$sql .= " ORDER BY distance ASC LIMIT " . (int)$limit;
+
+		return $this->safeQuery($sql);
+	}
+
+	private function generateEmbedding($text) {
+		$chat_url = (string)$this->config->get('config_ollama_url');
+
+		if ($chat_url === '') {
+			$chat_url = 'http://127.0.0.1:11434/api/chat';
+		}
+
+		$base = preg_replace('#/api/.*$#', '', $chat_url);
+		$url  = rtrim($base, '/') . '/api/embed';
+
+		$payload = array('model' => 'nomic-embed-text', 'input' => $text);
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+
+		$raw = curl_exec($ch);
+		curl_close($ch);
+
+		if ($raw === false) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		if (empty($resp['embeddings'][0]) || !is_array($resp['embeddings'][0])) {
+			return false;
+		}
+
+		return $resp['embeddings'][0];
 	}
 
 	// Only single SELECT/SHOW/DESCRIBE statements, no write keywords — returns false if it doesn't qualify.

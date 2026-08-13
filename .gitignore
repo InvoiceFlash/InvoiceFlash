@@ -23,6 +23,8 @@ system/logs/error.txt
 download/certificado/
 system/vendor/supplier_invoice_import/status.json
 system/vendor/supplier_invoice_import/last_run.log
+system/vendor/document_embeddings/status.json
+system/vendor/document_embeddings/last_run.log
 __pycache__/
 *.pyc
 system/backup/

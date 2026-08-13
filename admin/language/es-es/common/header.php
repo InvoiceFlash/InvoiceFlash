@@ -92,6 +92,7 @@ $_['text_export'] = 'Exportador Contabilidad';
 $_['text_import'] = 'Importador';
 $_['text_upgrade'] = 'Actualizar';
 $_['text_vqmod'] = 'Gestor de M&oacute;dulos';
+$_['text_document_embeddings'] = 'Importar Documentos';
 $_['text_error_log'] = 'Registro de Errores';
 $_['Clientes Online'] = 'En linea';
 $_['text_approval'] = 'En espera de aprobaci&oacute;n ';

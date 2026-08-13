@@ -105,6 +105,7 @@ $_['text_recurring_profile']           = 'Recurring Profiles';
 $_['text_recurring']                   = 'Recurring';
 $_['text_upgrade']           		   = 'Upgrade';
 $_['text_vqmod']                       = 'Add-on Manager';
+$_['text_document_embeddings']         = 'Import Documents';
 $_['text_export']                     = 'Accounting Exporter';
 $_['text_import']                     = 'Importer';
 

@@ -1369,7 +1369,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_provider; ?></label>
 						<div class="col-sm-6">
-							<div class="btn-group" data-toggle="buttons">
+							<div class="btn-group" id="ai-provider-group" data-toggle="buttons">
 								<label class="btn btn-default<?php echo ($config_ai_provider != 'ollama') ? ' active' : ''; ?>">
 									<input type="radio" name="config_ai_provider" id="input-ai-provider-claude" value="claude"<?php echo ($config_ai_provider != 'ollama') ? ' checked' : ''; ?>> <?php echo $text_ai_claude; ?>
 								</label>
@@ -1377,6 +1377,12 @@
 									<input type="radio" name="config_ai_provider" id="input-ai-provider-ollama" value="ollama"<?php echo ($config_ai_provider == 'ollama') ? ' checked' : ''; ?>> <?php echo $text_ai_ollama; ?>
 								</label>
 							</div>
+							<style>
+								#ai-provider-group > .btn:nth-child(2).active {
+									background-color: #28a745;
+									border-color: #176128;
+								}
+							</style>
 						</div>
 					</div>
 					<div class="form-group row" id="ai-claude-group"<?php echo ($config_ai_provider == 'ollama') ? ' style="display:none;"' : ''; ?>>
@@ -1494,5 +1500,5 @@
 			}, "text"
 		);
 	}
-	
+
 </script>

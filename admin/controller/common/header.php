@@ -1191,7 +1191,16 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
-			
+
+			// Importar Documentos
+			if ($this->user->hasPermission('access', 'setting/document_embeddings')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_document_embeddings'),
+					'href' => $this->url->link('setting/document_embeddings', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($tools) {
 				$this->data['menus'][] = array(
 					'id' => 'tools',
