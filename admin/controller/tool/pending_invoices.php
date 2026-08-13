@@ -132,7 +132,7 @@ class ControllerToolPendingInvoices extends Controller {
 		// facturas de proveedor, igual que hace el import automático.
 		if (!empty($pending_info['attachment_path']) && is_file($pending_info['attachment_path'])) {
 			$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
-			$new_dir = $project_root . '/docs/suppliers/invoices/' . date('Y-m') . '/' . $new_invoice_id . '/';
+			$new_dir = $project_root . '/docs/purchases/invoices/' . date('Y-m') . '/' . $new_invoice_id . '/';
 
 			if (!is_dir($new_dir)) {
 				mkdir($new_dir, 0755, true);

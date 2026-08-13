@@ -360,6 +360,17 @@ EXTRACTION_SCHEMA_PROMPT = """Eres un extractor de datos de facturas de proveedo
     "email": "email de contacto si aparece, si no cadena vacía",
     "phone": "teléfono si aparece, si no cadena vacía"
   },
+  "client": {
+    "company": "razón social de quien RECIBE la factura (el destinatario/cliente, casilla 'Cliente', 'Facturar a' o similar)",
+    "tax_id": "NIF/CIF del destinatario",
+    "address": "calle y número",
+    "city": "ciudad",
+    "postcode": "código postal",
+    "province": "provincia",
+    "country": "país (si no aparece, asume España)",
+    "email": "email de contacto si aparece, si no cadena vacía",
+    "phone": "teléfono si aparece, si no cadena vacía"
+  },
   "invoice": {
     "number": "número de factura tal cual aparece impreso",
     "date": "fecha de emisión en formato YYYY-MM-DD",
@@ -384,6 +395,9 @@ Reglas importantes:
 - La empresa que emite normalmente aparece en el membrete/cabecera del documento, a menudo junto a su logo. La
   empresa que recibe suele aparecer en una casilla aparte tipo "Cliente", "Facturar a", "Datos del cliente" o
   "Destinatario" — esa NUNCA es "supplier", aunque aparezca primero o más grande en la página.
+- Rellena TAMBIÉN el objeto "client" con los datos de quien RECIBE la factura (el destinatario). Es un campo de
+  comprobación cruzada: "supplier" y "client" deben ser dos empresas DISTINTAS. Si no localizas destinatario,
+  usa cadena vacía "" en sus campos.
 - Si no encuentras un dato, usa cadena vacía "" (o "0" para números), nunca inventes datos.
 - MUY IMPORTANTE sobre los números (quantity, unit_price, discount_percent, tax_rate, subtotal, tax_total,
   total): transcríbelos EXACTAMENTE como aparecen impresos en el documento, como texto, sin reformatearlos ni
@@ -1085,7 +1099,7 @@ def upsert_log(conn, mailbox, message_uid, **fields):
 
 def save_attachment(filename, data, invoice_id):
     """<ATTACHMENT_DIR>/<YYYY-MM>/<invoice_id>/<archivo original>. ATTACHMENT_DIR
-    lo fija system/vendor/cron/supplier_invoice_import.php (docs/suppliers/invoices/
+    lo fija system/vendor/cron/supplier_invoice_import.php (docs/purchases/invoices/
     en la raíz del proyecto, no download/) — no asumir la ruta aquí."""
     attach_dir = os.environ.get("ATTACHMENT_DIR", "")
     if not attach_dir:
@@ -1155,10 +1169,21 @@ def process_message(conn, pop, mailbox, msgnum, uidl, raw_bytes, counters, own_c
             raise ValueError("La extracción no devolvió líneas de factura")
 
         if is_own_company(extracted["supplier"], own_company_name, own_tax_id):
-            raise ValueError(
-                "El proveedor extraído coincide con nuestra propia empresa ({}) — el modelo ha confundido "
-                "emisor y cliente, no se crea la factura.".format(own_company_name)
-            )
+            client_data = extracted.get("client") or {}
+            if client_data.get("company") and not is_own_company(client_data, own_company_name, own_tax_id):
+                log(
+                    "Aviso: el modelo puso nuestra propia empresa ({}) como proveedor — se ha confundido de "
+                    "parte. Se usa el otro dato extraído ('client': {}) como proveedor real.".format(
+                        own_company_name, client_data.get("company")
+                    )
+                )
+                extracted["supplier"] = client_data
+            else:
+                raise ValueError(
+                    "El proveedor extraído coincide con nuestra propia empresa ({}) — el modelo ha confundido "
+                    "emisor y cliente, y no se ha podido recuperar el otro dato ('client') para corregirlo, "
+                    "no se crea la factura.".format(own_company_name)
+                )
 
         reconciled = reconcile_invoice(extracted)
         check_total_consistency(reconciled)

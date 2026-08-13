@@ -1090,7 +1090,7 @@ class ControllerPurchaseInvoice extends Controller {
 				// Original" funcione igual venga el adjunto de donde venga.
 				// /docs vive en la raíz del proyecto, no dentro de /download.
 				$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
-				$dir = $project_root . '/docs/suppliers/invoices/' . date('Y-m') . '/' . $invoice_id . '/';
+				$dir = $project_root . '/docs/purchases/invoices/' . date('Y-m') . '/' . $invoice_id . '/';
 
 				if (!is_dir($dir)) {
 					mkdir($dir, 0755, true);

@@ -43,14 +43,18 @@
 </div>
 <script type="text/javascript">
   $('#formEmail').on('submit', function(e) {
+		// El envío real lo hace por AJAX el JS propio de cada pantalla (p. ej.
+		// invoice_info.tpl) enganchado al click de #send — este <form> no tiene
+		// ninguna acción real que funcione ($sendEmail apunta a una ruta que
+		// ningún controller implementa), así que su envío nativo siempre se
+		// bloquea, no solo cuando falta el destinatario.
+		e.preventDefault();
+
 		var to = $('#to');
 
 		// Check if there is an entered value
 		if(!to.val()) {
 			alert("Email to is necesary!!");
-			
-			// Stop submission of the form
-			e.preventDefault();
 		}
 
    });

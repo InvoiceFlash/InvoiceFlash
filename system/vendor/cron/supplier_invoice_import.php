@@ -57,7 +57,7 @@ $log_file    = DIR_SYSTEM . 'vendor/supplier_invoice_import/last_run.log';
 // no en /download — mismo sitio que usaba el upload manual antes de existir
 // este import automático.
 $project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
-$attach_dir   = $project_root . '/docs/suppliers/invoices/';
+$attach_dir   = $project_root . '/docs/purchases/invoices/';
 
 if (!is_dir(dirname($status_file))) {
 	mkdir(dirname($status_file), 0755, true);

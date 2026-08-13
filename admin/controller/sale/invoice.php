@@ -1496,7 +1496,7 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['comment'] = nl2br($invoice_info['comment']);
 			$this->data['shipping_method'] = $invoice_info['shipping_method'];
 			$this->data['payment_method'] = $invoice_info['payment_method'];
-			$this->data['total'] = $this->currency->format($invoice_info['total'], $invoice_info['currency_code'], $invoice_info['currency_value']);
+			$this->data['total'] = $this->currency->format($invoice_info['total'], $invoice_info['currency_code'], $invoice_info['currency_value'], true, true);
 			
 			if ($invoice_info['total'] < 0) {
 				$this->data['credit'] = $invoice_info['total'];
@@ -2083,6 +2083,23 @@ class ControllerSaleInvoice extends Controller {
 				$this->renderPDFFromHtml($custom_html, 'email', 'invoice', $invoice_id);
 			} else {
 				$this->renderPDF('sale/invoice_printPDF.tpl', 'email', 'invoice', $invoice_id);
+			}
+
+			// Copia del PDF enviado, archivada por número de factura (no por
+			// invoice_id interno) en docs/sales/invoices/<año-mes>/ en la raíz
+			// del proyecto.
+			$pdf_source = DIR_DOWNLOAD . 'invoice_' . $invoice_id . '.pdf';
+
+			if (is_file($pdf_source)) {
+				$document_number = preg_replace('/[^A-Za-z0-9_\-]/', '_', $invoice_info['invoice_prefix'] . $invoice_info['invoice_no']);
+				$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
+				$docs_dir = $project_root . '/docs/sales/invoices/' . date('Y-m') . '/';
+
+				if (!is_dir($docs_dir)) {
+					mkdir($docs_dir, 0755, true);
+				}
+
+				copy($pdf_source, $docs_dir . $document_number . '.pdf');
 			}
 
 			$json = array();
