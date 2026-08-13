@@ -51,7 +51,13 @@ if (empty($settings['config_import_supplier_invoices'])) {
 $script_path = DIR_SYSTEM . 'vendor/supplier_invoice_import/supplier_invoice_import.py';
 $status_file = DIR_SYSTEM . 'vendor/supplier_invoice_import/status.json';
 $log_file    = DIR_SYSTEM . 'vendor/supplier_invoice_import/last_run.log';
-$attach_dir  = DIR_DOWNLOAD . 'suppliers/invoices/';
+
+// Los documentos originales (auto-importados o subidos a mano desde
+// purchase/invoice/update) se guardan en /docs, en la raíz del proyecto,
+// no en /download — mismo sitio que usaba el upload manual antes de existir
+// este import automático.
+$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
+$attach_dir   = $project_root . '/docs/suppliers/invoices/';
 
 if (!is_dir(dirname($status_file))) {
 	mkdir(dirname($status_file), 0755, true);

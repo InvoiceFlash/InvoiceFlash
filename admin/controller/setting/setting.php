@@ -120,6 +120,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_admin_language'] = $this->language->get('entry_admin_language');
 		$this->data['entry_currency'] = $this->language->get('entry_currency');
 		$this->data['entry_currency_auto'] = $this->language->get('entry_currency_auto');
+		$this->data['entry_decimal_point'] = $this->language->get('entry_decimal_point');
+		$this->data['entry_thousand_point'] = $this->language->get('entry_thousand_point');
 		$this->data['entry_length_class'] = $this->language->get('entry_length_class');
 		$this->data['entry_weight_class'] = $this->language->get('entry_weight_class');
 		$this->data['entry_catalog_limit'] = $this->language->get('entry_catalog_limit');
@@ -233,14 +235,13 @@ class ControllerSettingSetting extends Controller {
 		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
 		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
 		$this->data['entry_ollama_url'] = $this->language->get('entry_ollama_url');
-		$this->data['text_ocr_title'] = $this->language->get('text_ocr_title');
-		$this->data['entry_ocr_ollama_url'] = $this->language->get('entry_ocr_ollama_url');
 		$this->data['entry_import_supplier_invoices'] = $this->language->get('entry_import_supplier_invoices');
 		$this->data['entry_supplier_invoice_email'] = $this->language->get('entry_supplier_invoice_email');
 		$this->data['entry_supplier_invoice_email_password'] = $this->language->get('entry_supplier_invoice_email_password');
 		$this->data['entry_supplier_invoice_pop_host'] = $this->language->get('entry_supplier_invoice_pop_host');
 		$this->data['entry_supplier_invoice_pop_port'] = $this->language->get('entry_supplier_invoice_pop_port');
 		$this->data['entry_supplier_invoice_pop_ssl'] = $this->language->get('entry_supplier_invoice_pop_ssl');
+		$this->data['entry_supplier_invoice_match_order'] = $this->language->get('entry_supplier_invoice_match_order');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -454,6 +455,18 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_supplier_invoice_pop_host'] = '';
 		}
 
+		if (isset($this->error['decimal_point'])) {
+			$this->data['error_decimal_point'] = $this->error['decimal_point'];
+		} else {
+			$this->data['error_decimal_point'] = '';
+		}
+
+		if (isset($this->error['thousand_point'])) {
+			$this->data['error_thousand_point'] = $this->error['thousand_point'];
+		} else {
+			$this->data['error_thousand_point'] = '';
+		}
+
 		$this->data['breadcrumbs'] = array();
 
 		$this->data['breadcrumbs'][] = array(
@@ -557,12 +570,6 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_ollama_url'] = $this->config->get('config_ollama_url') ?: 'http://127.0.0.1:11434/api/chat';
 		}
 
-		if (isset($this->request->post['config_ocr_ollama_url'])) {
-			$this->data['config_ocr_ollama_url'] = $this->request->post['config_ocr_ollama_url'];
-		} else {
-			$this->data['config_ocr_ollama_url'] = $this->config->get('config_ocr_ollama_url') ?: 'http://127.0.0.1:11434/api/chat';
-		}
-
 		if (isset($this->request->post['config_import_supplier_invoices'])) {
 			$this->data['config_import_supplier_invoices'] = $this->request->post['config_import_supplier_invoices'];
 		} else {
@@ -598,6 +605,14 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$pop_ssl = $this->config->get('config_supplier_invoice_pop_ssl');
 			$this->data['config_supplier_invoice_pop_ssl'] = ($pop_ssl === null) ? '1' : $pop_ssl;
+		}
+
+		// Checkbox real (no radios Sí/No): un checkbox sin marcar no manda nada en el
+		// POST, así que hay que distinguir "GET, aún sin enviar" de "POST, desmarcado".
+		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
+			$this->data['config_supplier_invoice_match_order'] = isset($this->request->post['config_supplier_invoice_match_order']) ? '1' : '0';
+		} else {
+			$this->data['config_supplier_invoice_match_order'] = $this->config->get('config_supplier_invoice_match_order') ? '1' : '0';
 		}
 
 		if (isset($this->request->post['config_conta_digits'])) {
@@ -704,6 +719,18 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_currency_auto'] = $this->request->post['config_currency_auto'];
 		} else {
 			$this->data['config_currency_auto'] = $this->config->get('config_currency_auto');
+		}
+
+		if (isset($this->request->post['config_decimal_point'])) {
+			$this->data['config_decimal_point'] = $this->request->post['config_decimal_point'];
+		} else {
+			$this->data['config_decimal_point'] = $this->config->get('config_decimal_point') ?: ',';
+		}
+
+		if (isset($this->request->post['config_thousand_point'])) {
+			$this->data['config_thousand_point'] = $this->request->post['config_thousand_point'];
+		} else {
+			$this->data['config_thousand_point'] = $this->config->get('config_thousand_point') ?: '.';
 		}
 
 		$this->load->model('localisation/currency');
@@ -1556,6 +1583,14 @@ class ControllerSettingSetting extends Controller {
 
 		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_supplier_invoice_pop_host'])) {
 			$this->error['supplier_invoice_pop_host'] = $this->language->get('error_supplier_invoice_pop_host');
+		}
+
+		if (utf8_strlen($this->request->post['config_decimal_point']) != 1) {
+			$this->error['decimal_point'] = $this->language->get('error_decimal_point');
+		}
+
+		if ((utf8_strlen($this->request->post['config_thousand_point']) != 1) || ($this->request->post['config_thousand_point'] === $this->request->post['config_decimal_point'])) {
+			$this->error['thousand_point'] = $this->language->get('error_thousand_point');
 		}
 
 		if ($this->error && !isset($this->error['warning'])) {

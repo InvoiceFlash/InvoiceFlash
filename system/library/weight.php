@@ -40,7 +40,15 @@ class Weight {
 		return $value * ($to / $from);
 	}
 
-	public function format($value, $weight_class_id, $decimal_point = '.', $thousand_point = ',') {
+	public function format($value, $weight_class_id, $decimal_point = null, $thousand_point = null) {
+		if ($decimal_point === null) {
+			$decimal_point = $this->config->get('config_decimal_point') ?: '.';
+		}
+
+		if ($thousand_point === null) {
+			$thousand_point = $this->config->get('config_thousand_point') ?: ',';
+		}
+
 		if (isset($this->weights[$weight_class_id])) {
 			return number_format($value, 2, $decimal_point, $thousand_point) . $this->weights[$weight_class_id]['unit'];
 		} else {

@@ -953,6 +953,76 @@ def format_currency(value, code):
 
 
 # ---------------------------------------------------------------------------
+# Comprobación opcional contra Pedidos de Compra (config_supplier_invoice_match_order)
+# ---------------------------------------------------------------------------
+
+PO_TOTAL_TOLERANCE = 0.01  # "coincide 100%" — solo margen para redondeo de céntimo
+
+
+def find_matching_purchase_order(conn, supplier_id, total):
+    """Busca un pedido de compra de ese proveedor, sin facturar aún
+    (purchase_order.invoice_no = 0), con el mismo total exacto. Devuelve
+    (purchase_order_id, None) si hay exactamente uno, o (None, motivo) si no
+    hay ninguno o hay varios candidatos ambiguos (no se adivina, se manda a
+    revisión manual)."""
+    prefix = db_prefix()
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT purchase_order_id, total FROM `{}purchase_order` WHERE supplier_id = %s AND invoice_no = 0".format(prefix),
+            (supplier_id,),
+        )
+        candidates = [row for row in cur.fetchall() if abs(float(row["total"]) - total) <= PO_TOTAL_TOLERANCE]
+
+    if len(candidates) == 1:
+        return candidates[0]["purchase_order_id"], None
+    if len(candidates) == 0:
+        return None, "Sin ningún pedido de compra sin facturar de ese proveedor que coincida 100% en el total."
+    return None, "Varios pedidos de compra de ese proveedor coinciden con el mismo total — revisión manual."
+
+
+def save_pending_review(conn, mailbox, message_uid, subject, from_email, date_received, reason,
+                         supplier_id, supplier_data, invoice_data, filename, data, extraction_method):
+    """Guarda la extracción ya hecha (proveedor ya resuelto/creado, factura ya
+    reconciliada) para que un humano decida desde tool/pending_invoices si la
+    incorpora tal cual o la descarta — no se crea la purchase_invoice."""
+    prefix = db_prefix()
+    supplier_payload = dict(supplier_data)
+    supplier_payload["supplier_id"] = supplier_id
+
+    with conn.cursor() as cur:
+        cur.execute(
+            """INSERT INTO `{}purchase_invoice_pending_review`
+                (mailbox, message_uid, subject, from_email, date_received, reason,
+                 supplier_data, invoice_data, attachment_filename, extraction_method, date_added)
+               VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, NOW())""".format(prefix),
+            (
+                mailbox, message_uid, subject[:255], from_email[:255], date_received, reason[:255],
+                json.dumps(supplier_payload, ensure_ascii=False), json.dumps(invoice_data, ensure_ascii=False),
+                filename[:255], extraction_method,
+            ),
+        )
+        pending_id = cur.lastrowid
+
+    attach_dir = os.environ.get("ATTACHMENT_DIR", "")
+    attachment_path = ""
+    if attach_dir:
+        subdir = os.path.join(attach_dir, "_pendientes", datetime.now().strftime("%Y-%m"), str(pending_id))
+        os.makedirs(subdir, exist_ok=True)
+        safe_name = re.sub(r"[^A-Za-z0-9_.\-]", "_", filename)[:150] or "adjunto"
+        attachment_path = os.path.join(subdir, safe_name)
+        with open(attachment_path, "wb") as f:
+            f.write(data)
+
+        with conn.cursor() as cur:
+            cur.execute(
+                "UPDATE `{}purchase_invoice_pending_review` SET attachment_path = %s WHERE pending_id = %s".format(prefix),
+                (attachment_path, pending_id),
+            )
+
+    return pending_id
+
+
+# ---------------------------------------------------------------------------
 # Log de importación (idempotencia entre ejecuciones)
 # ---------------------------------------------------------------------------
 
@@ -1014,7 +1084,9 @@ def upsert_log(conn, mailbox, message_uid, **fields):
 # ---------------------------------------------------------------------------
 
 def save_attachment(filename, data, invoice_id):
-    """download/suppliers/invoices/<YYYY-MM>/<invoice_id>/<archivo original>"""
+    """<ATTACHMENT_DIR>/<YYYY-MM>/<invoice_id>/<archivo original>. ATTACHMENT_DIR
+    lo fija system/vendor/cron/supplier_invoice_import.php (docs/suppliers/invoices/
+    en la raíz del proyecto, no download/) — no asumir la ruta aquí."""
     attach_dir = os.environ.get("ATTACHMENT_DIR", "")
     if not attach_dir:
         return ""
@@ -1031,7 +1103,7 @@ def save_attachment(filename, data, invoice_id):
 # Procesar un único mensaje
 # ---------------------------------------------------------------------------
 
-def process_message(conn, pop, mailbox, msgnum, uidl, raw_bytes, counters, own_company_name="", own_tax_id=""):
+def process_message(conn, pop, mailbox, msgnum, uidl, raw_bytes, counters, own_company_name="", own_tax_id="", match_orders=False):
     msg = email.message_from_bytes(raw_bytes)
     message_key = uidl
     subject = decode_mime_header(msg.get("Subject", ""))
@@ -1093,11 +1165,47 @@ def process_message(conn, pop, mailbox, msgnum, uidl, raw_bytes, counters, own_c
 
         supplier_id, created = find_or_create_supplier(conn, extracted["supplier"])
 
+        matched_po_id = None
+        if match_orders:
+            matched_po_id, no_match_reason = find_matching_purchase_order(conn, supplier_id, reconciled["total"])
+
+            if matched_po_id is None:
+                invoice_data_for_review = dict(reconciled)
+                invoice_data_for_review["number"] = extracted["invoice"].get("number", "")
+                invoice_data_for_review["date"] = extracted["invoice"].get("date", "")
+                invoice_data_for_review["currency"] = extracted["invoice"].get("currency", "EUR")
+
+                pending_id = save_pending_review(
+                    conn, mailbox, message_key, subject, from_email, date_received, no_match_reason,
+                    supplier_id, extracted["supplier"], invoice_data_for_review, filename, data, method,
+                )
+
+                upsert_log(
+                    conn, mailbox, message_key,
+                    status="pending_review", subject=subject[:255], from_email=from_email[:255],
+                    date_received=date_received, date_processed=datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                    supplier_id=supplier_id, extraction_method=method, error_message=no_match_reason,
+                    increment_attempt=True,
+                )
+
+                pop.dele(msgnum)
+                counters["pending_review"] += 1
+                log("A revisión manual (pending_id {}): {} — {}".format(pending_id, subject, no_match_reason))
+                return
+
         source_note = "Factura importada automáticamente desde email (asunto: {}, adjunto: {}, método: {}).".format(
             subject, filename, method
         )
 
         invoice_id = create_purchase_invoice(conn, supplier_id, extracted["supplier"], reconciled, extracted["invoice"], source_note)
+
+        if matched_po_id:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "UPDATE `{}purchase_order` SET invoice_no = %s WHERE purchase_order_id = %s".format(db_prefix()),
+                    (invoice_id, matched_po_id),
+                )
+
         attachment_path = save_attachment(filename, data, invoice_id)
 
         if attachment_path:
@@ -1203,7 +1311,7 @@ def main():
         status.write(running=False, started_at=started_at, finished_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), error=msg)
         return 1
 
-    counters = {"scanned": 0, "imported": 0, "deleted_no_attachment": 0, "errors": 0}
+    counters = {"scanned": 0, "imported": 0, "deleted_no_attachment": 0, "pending_review": 0, "errors": 0}
 
     conn = None
     pop = None
@@ -1212,6 +1320,7 @@ def main():
 
         own_company_name = get_setting(conn, "config_name", "config", "") or ""
         own_tax_id = get_setting(conn, "config_vat_id", "config", "") or get_setting(conn, "config_nif", "config", "") or ""
+        match_orders = get_setting(conn, "config_supplier_invoice_match_order", "config", "0") == "1"
 
         status.write(running=True, started_at=started_at, message="Conectando al buzón POP3")
         pop = pop3_connect()
@@ -1231,7 +1340,7 @@ def main():
                 continue
 
             try:
-                process_message(conn, pop, email_addr, msgnum, uidl, raw_bytes, counters, own_company_name, own_tax_id)
+                process_message(conn, pop, email_addr, msgnum, uidl, raw_bytes, counters, own_company_name, own_tax_id, match_orders)
             except Exception as exc:
                 log("ERROR inesperado procesando mensaje {} (uidl={}): {}".format(msgnum, uidl, exc))
                 counters["errors"] += 1

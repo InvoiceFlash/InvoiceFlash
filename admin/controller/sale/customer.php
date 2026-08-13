@@ -918,6 +918,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['invoices'] = array();
 		$this->data['contacts'] = array();
 		$this->data['contracts'] = array();
+		$this->data['has_documents'] = false;
 		$this->data['add_contact'] = '';
 		$this->data['add_contract'] = '';
 
@@ -1167,6 +1168,8 @@ class ControllerSaleCustomer extends Controller {
 					);
 				}
 			}
+
+			$this->data['has_documents'] = !empty($this->data['contracts']);
 
 			$this->data['add_contract'] = $this->url->link('sale/customer/insertContract', 'token=' . $this->session->data['token'] . '&customer_id=' . $this->data['customer_id'], 'SSL');
 
@@ -2362,6 +2365,30 @@ class ControllerSaleCustomer extends Controller {
 	}
 
 
+	private function getCustomerDocumentDir($company) {
+		$accents = array(
+			'á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ñ'=>'n','ü'=>'u',
+			'Á'=>'A','É'=>'E','Í'=>'I','Ó'=>'O','Ú'=>'U','Ñ'=>'N','Ü'=>'U',
+			'à'=>'a','è'=>'e','ì'=>'i','ò'=>'o','ù'=>'u','ç'=>'c','Ç'=>'C',
+		);
+
+		$company_sanitized = trim(preg_replace('/[^A-Za-z0-9]+/', '_', strtr(trim((string)$company), $accents)), '_');
+
+		if ($company_sanitized === '') {
+			$company_sanitized = 'SIN_NOMBRE';
+		}
+
+		$first_char = strtoupper(substr($company_sanitized, 0, 1));
+
+		if (!preg_match('/^[A-Z0-9]$/', $first_char)) {
+			$first_char = '_';
+		}
+
+		$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
+
+		return $project_root . '/docs/customer/' . $first_char . '/' . $company_sanitized . '/';
+	}
+
 	public function insertContract() {
 		$this->load->language('sale/customer');
 
@@ -2380,17 +2407,27 @@ class ControllerSaleCustomer extends Controller {
 				if (!in_array($ext, array('pdf', 'xlsx'))) {
 					$this->error['warning'] = $this->language->get('error_document_type');
 				} else {
-					$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
-					$dir  = $base . '/docs/customers/' . $customer_id . '/';
+					$customer_info = $this->model_sale_customer->getCustomer($customer_id);
+					$dir = $this->getCustomerDocumentDir($customer_info ? $customer_info['company'] : '');
 
 					if (!is_dir($dir)) {
-						mkdir($dir, 0777, true);
+						mkdir($dir, 0755, true);
 					}
 
-					$stored_filename = uniqid() . '.' . $ext;
+					$safe_name = preg_replace('/[^A-Za-z0-9_.\-]/', '_', basename($_FILES['document']['name']));
+					if ($safe_name === '' || $safe_name === '.' . $ext) {
+						$safe_name = 'documento.' . $ext;
+					}
 
-					if (move_uploaded_file($_FILES['document']['tmp_name'], $dir . $stored_filename)) {
-						$this->model_sale_customer->addCustomerDocument($customer_id, $_FILES['document']['name'], $stored_filename);
+					// No pisar un documento distinto que por casualidad tenga el mismo nombre
+					// (aquí, a diferencia de purchase/invoice, un cliente puede tener varios).
+					$path = $dir . $safe_name;
+					if (is_file($path)) {
+						$path = $dir . pathinfo($safe_name, PATHINFO_FILENAME) . '_' . date('YmdHis') . '.' . $ext;
+					}
+
+					if (move_uploaded_file($_FILES['document']['tmp_name'], $path)) {
+						$this->model_sale_customer->addCustomerDocument($customer_id, $_FILES['document']['name'], $path);
 
 						$this->session->data['success'] = $this->language->get('text_success');
 
@@ -2416,11 +2453,8 @@ class ControllerSaleCustomer extends Controller {
 			$document_info = $this->model_sale_customer->getCustomerDocument($this->request->get['document_id']);
 
 			if ($document_info) {
-				$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
-				$file = $base . '/docs/customers/' . (int)$document_info['customer_id'] . '/' . $document_info['stored_filename'];
-
-				if (is_file($file)) {
-					@unlink($file);
+				if (is_file($document_info['stored_filename'])) {
+					@unlink($document_info['stored_filename']);
 				}
 
 				$this->model_sale_customer->deleteCustomerDocument($this->request->get['document_id']);
@@ -2454,8 +2488,7 @@ class ControllerSaleCustomer extends Controller {
 			exit('Document not found');
 		}
 
-		$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
-		$file = $base . '/docs/customers/' . (int)$document_info['customer_id'] . '/' . $document_info['stored_filename'];
+		$file = $document_info['stored_filename'];
 
 		if (!is_file($file)) {
 			http_response_code(404);

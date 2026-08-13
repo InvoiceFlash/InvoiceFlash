@@ -233,8 +233,8 @@ class ControllerReportSaleInvoice extends Controller {
 			$csv .= '"' . str_replace('"', '""', (string)$result['email'])           . '";';
 			$csv .= '"' . str_replace('"', '""', (string)$result['telephone'])       . '";';
 			$csv .= '"' . date($date_format, strtotime($result['date_added']))        . '";';
-			$csv .= '"' . number_format((float)$result['tax'], 2, ',', '.')          . '";';
-			$csv .= '"' . number_format((float)$result['total'], 2, ',', '.')        . '";';
+			$csv .= '"' . number_format((float)$result['tax'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.')          . '";';
+			$csv .= '"' . number_format((float)$result['total'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.')        . '";';
 			$csv .= '"' . str_replace('"', '""', (string)$result['status'])          . '"' . "\n";
 		}
 

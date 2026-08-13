@@ -76,6 +76,11 @@
 			<div class="card">
 				<a href="<?php echo $add_product; ?>"><h5 class="buton"><i class="fas fa-box-open"></i> <span class="hidden-xs"><?php echo $text_add_product; ?></span></h5></a>
 			</div>
+			<?php if ($view['pending_invoices']) { ?>
+			<div class="card">
+				<a href="<?php echo $pending_invoices; ?>"><h5 class="buton"><i class="fas fa-envelope-open-text"></i> <span class="hidden-xs"><?php echo $text_pending_invoices; ?></span></h5></a>
+			</div>
+			<?php } ?>
 		</div>
 	</div>
 </div>

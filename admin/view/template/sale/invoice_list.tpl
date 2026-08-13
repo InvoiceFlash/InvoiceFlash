@@ -6,7 +6,7 @@
 		<div class="pull-right">
 			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitInvoices(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
 			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
-			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirmCopy();" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirmCopy();" id="btn-copy-invoice" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger" data-toggle="tooltip" title="<?php echo $text_void_tooltip; ?>"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>

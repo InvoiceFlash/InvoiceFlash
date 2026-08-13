@@ -206,6 +206,24 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_decimal_point; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_decimal_point" value="<?php echo $config_decimal_point; ?>" maxlength="1" class="form-control" style="max-width:80px;">
+							<?php if ($error_decimal_point) { ?>
+								<div class="help-block text-danger"><?php echo $error_decimal_point; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_thousand_point; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_thousand_point" value="<?php echo $config_thousand_point; ?>" maxlength="1" class="form-control" style="max-width:80px;">
+							<?php if ($error_thousand_point) { ?>
+								<div class="help-block text-danger"><?php echo $error_thousand_point; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_length_class; ?></label>
 						<div class="col-sm-6">
 							<select name="config_length_class_id" class="form-control">
@@ -966,46 +984,58 @@
 							<textarea name="config_alert_emails" class="form-control" rows="3"><?php echo $config_alert_emails; ?></textarea>
 						</div>
 					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_email; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_supplier_invoice_email" value="<?php echo $config_supplier_invoice_email; ?>" class="form-control">
-							<?php if ($error_supplier_invoice_email) { ?>
-								<div class="help-block text-danger"><?php echo $error_supplier_invoice_email; ?></div>
-							<?php } ?>
+					<div style="border:1px solid #ddd; border-radius:4px; background-color:#f5f5f5; padding:20px 15px 1px 15px; margin-bottom:1.5em;">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_email; ?></label>
+							<div class="col-sm-6">
+								<input type="text" name="config_supplier_invoice_email" value="<?php echo $config_supplier_invoice_email; ?>" class="form-control">
+								<?php if ($error_supplier_invoice_email) { ?>
+									<div class="help-block text-danger"><?php echo $error_supplier_invoice_email; ?></div>
+								<?php } ?>
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_email_password; ?></label>
-						<div class="col-sm-6">
-							<input type="password" name="config_supplier_invoice_email_password" value="<?php echo $config_supplier_invoice_email_password; ?>" class="form-control" autocomplete="new-password">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_email_password; ?></label>
+							<div class="col-sm-6">
+								<input type="password" name="config_supplier_invoice_email_password" value="<?php echo $config_supplier_invoice_email_password; ?>" class="form-control" autocomplete="new-password">
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_host; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_supplier_invoice_pop_host" value="<?php echo $config_supplier_invoice_pop_host; ?>" class="form-control" placeholder="mail.midominio.com">
-							<?php if ($error_supplier_invoice_pop_host) { ?>
-								<div class="help-block text-danger"><?php echo $error_supplier_invoice_pop_host; ?></div>
-							<?php } ?>
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_host; ?></label>
+							<div class="col-sm-6">
+								<input type="text" name="config_supplier_invoice_pop_host" value="<?php echo $config_supplier_invoice_pop_host; ?>" class="form-control" placeholder="mail.midominio.com">
+								<?php if ($error_supplier_invoice_pop_host) { ?>
+									<div class="help-block text-danger"><?php echo $error_supplier_invoice_pop_host; ?></div>
+								<?php } ?>
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_port; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_supplier_invoice_pop_port" value="<?php echo $config_supplier_invoice_pop_port; ?>" class="form-control" style="max-width:120px;">
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_port; ?></label>
+							<div class="col-sm-6">
+								<input type="text" name="config_supplier_invoice_pop_port" value="<?php echo $config_supplier_invoice_pop_port; ?>" class="form-control" style="max-width:120px;">
+							</div>
 						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_ssl; ?></label>
-						<div class="col-sm-6">
-							<?php if ($config_supplier_invoice_pop_ssl) { ?>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="1" checked=""><?php echo $text_yes; ?></label>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="0"><?php echo $text_no; ?></label>
-							<?php } else { ?>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="1"><?php echo $text_yes; ?></label>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="0" checked=""><?php echo $text_no; ?></label>
-							<?php } ?>
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_ssl; ?></label>
+							<div class="col-sm-6">
+								<?php if ($config_supplier_invoice_pop_ssl) { ?>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="1" checked=""><?php echo $text_yes; ?></label>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="0"><?php echo $text_no; ?></label>
+								<?php } else { ?>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="1"><?php echo $text_yes; ?></label>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="0" checked=""><?php echo $text_no; ?></label>
+								<?php } ?>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_match_order; ?></label>
+							<div class="col-sm-6">
+								<div class="form-control-plaintext">
+									<label class="checkbox-inline">
+										<input type="checkbox" name="config_supplier_invoice_match_order" value="1"<?php echo $config_supplier_invoice_match_order ? ' checked=""' : ''; ?>>
+									</label>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -1362,16 +1392,6 @@
 
 					<hr>
 
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><b><?php echo $text_ocr_title; ?></b></label>
-						<div class="col-sm-6"></div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ocr_ollama_url; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_ocr_ollama_url" value="<?php echo $config_ocr_ollama_url; ?>" placeholder="http://127.0.0.1:11434/api/chat" class="form-control">
-						</div>
-					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_import_supplier_invoices; ?></label>
 						<div class="col-sm-6">

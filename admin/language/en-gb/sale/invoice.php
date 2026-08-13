@@ -195,7 +195,7 @@ $_['button_invoice'] 						  = 'Print';
 $_['button_view']                             = 'View';
 $_['button_delete']                           = 'Void';
 $_['text_void_tooltip']                       = 'Creates a reversing invoice with the same lines in negative to cancel this one out. The original is never deleted.';
-$_['button_copy']                             = 'Copy';
+$_['button_copy']                             = 'Copy to Draft';
 $_['text_success_copy']                       = 'Success: The invoice has been copied to a new Draft!';
 $_['text_confirm_copy_draft']                 = 'This will create a copy of the selected invoice(s) as a new Draft. Do you want to continue?';
 

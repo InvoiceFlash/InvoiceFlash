@@ -330,7 +330,7 @@ class ControllerReportBalanceSheet extends Controller {
 	}
 
 	private function formatAmount($value) {
-		return number_format((float)$value, 2, ',', '.');
+		return number_format((float)$value, 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.');
 	}
 
 	// El datepicker (clase .date de common.js) envia DD-MM-YYYY; el modelo compara en formato YYYY-MM-DD.

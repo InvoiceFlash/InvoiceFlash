@@ -21,7 +21,6 @@ InvoiceFlash-master.zip
 system/logs/error.txt
 *.log
 download/certificado/
-download/suppliers/
 system/vendor/supplier_invoice_import/status.json
 system/vendor/supplier_invoice_import/last_run.log
 __pycache__/

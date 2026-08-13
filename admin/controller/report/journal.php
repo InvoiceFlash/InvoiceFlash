@@ -54,8 +54,8 @@ class ControllerReportJournal extends Controller {
 				'account'     => $result['account'],
 				'description' => $result['description'],
 				'concept'     => $result['concept'],
-				'debit'       => $result['debit'] > 0 ? number_format($result['debit'], 2, ',', '.') : '',
-				'credit'      => $result['credit'] > 0 ? number_format($result['credit'], 2, ',', '.') : ''
+				'debit'       => $result['debit'] > 0 ? number_format($result['debit'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.') : '',
+				'credit'      => $result['credit'] > 0 ? number_format($result['credit'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.') : ''
 			);
 		}
 
@@ -135,8 +135,8 @@ class ControllerReportJournal extends Controller {
 			$csv .= '"' . str_replace('"', '""', (string)$result['account'])     . '";';
 			$csv .= '"' . str_replace('"', '""', (string)$result['description']) . '";';
 			$csv .= '"' . str_replace('"', '""', (string)$result['concept'])     . '";';
-			$csv .= '"' . number_format((float)$result['debit'], 2, ',', '.')    . '";';
-			$csv .= '"' . number_format((float)$result['credit'], 2, ',', '.')   . '"' . "\n";
+			$csv .= '"' . number_format((float)$result['debit'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.')    . '";';
+			$csv .= '"' . number_format((float)$result['credit'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.')   . '"' . "\n";
 		}
 
 		ob_start();
@@ -177,8 +177,8 @@ class ControllerReportJournal extends Controller {
 				'account'     => $result['account'],
 				'description' => $result['description'],
 				'concept'     => $result['concept'],
-				'debit'       => $result['debit'] > 0 ? number_format($result['debit'], 2, ',', '.') : '',
-				'credit'      => $result['credit'] > 0 ? number_format($result['credit'], 2, ',', '.') : ''
+				'debit'       => $result['debit'] > 0 ? number_format($result['debit'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.') : '',
+				'credit'      => $result['credit'] > 0 ? number_format($result['credit'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.') : ''
 			);
 		}
 

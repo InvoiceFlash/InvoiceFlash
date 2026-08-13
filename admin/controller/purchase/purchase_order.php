@@ -167,6 +167,11 @@ class ControllerPurchasePurchaseOrder extends Controller {
 
 					$new_invoice_id = $this->model_purchase_invoice->addInvoice($data);
 
+					// Marca el pedido como ya facturado — lo usa la importación automática
+					// de facturas por email para no crear una factura duplicada si el
+					// proveedor manda por email la misma factura de un pedido ya convertido.
+					$this->db->query("UPDATE `" . DB_PREFIX . "purchase_order` SET invoice_no = '" . (int)$new_invoice_id . "' WHERE purchase_order_id = '" . (int)$purchase_order_id . "'");
+
 					$this->model_tool_user_logs->addLog(array(
 						'user_id'       => $this->user->getId(),
 						'username'      => $this->user->getUserName(),

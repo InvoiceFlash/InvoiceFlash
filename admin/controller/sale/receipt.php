@@ -463,7 +463,7 @@ class ControllerSaleReceipt extends Controller {
 			$csv .= '"' . (int)$result['invoice_id'] . '";';
 			$csv .= '"' . str_replace('"', '""', (string)$result['customer']) . '";';
 			$csv .= '"' . $status . '";';
-			$csv .= '"' . number_format((float)$result['amount'], 2, ',', '.') . '";';
+			$csv .= '"' . number_format((float)$result['amount'], 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.') . '";';
 			$csv .= '"' . date($date_format, strtotime($result['date_due'])) . '";';
 			$csv .= '"' . date($date_format, strtotime($result['date_modified'])) . '"' . "\n";
 		}

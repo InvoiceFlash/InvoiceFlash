@@ -9144,9 +9144,10 @@ a.btn.btn-danger {
   max-width: 1000px; }
 
 #actions {
-  max-height: 9rem; }
+  max-height: 7rem; }
   #actions h5.buton {
-    padding-top: 1em;
+    padding-top: 0.5em;
+    font-size: 0.9rem;
     text-align: center; }
   @media screen and (min-width: 310px) and (max-width: 992px) {
     #actions .card-group {

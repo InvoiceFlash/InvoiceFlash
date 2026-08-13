@@ -23,7 +23,7 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-orders" data-bs-toggle="tab"><?php echo $tab_orders; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-delivery" data-bs-toggle="tab"><?php echo $tab_delivery; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-bs-toggle="tab"><?php echo $tab_invoice; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"<?php if ($has_documents) { ?> style="background-color:#c3e6cb;color:#fff;"<?php } ?>><?php echo $tab_contracts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-bs-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>

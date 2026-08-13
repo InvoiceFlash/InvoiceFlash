@@ -256,7 +256,7 @@ class ModelPurchasePurchaseOrder extends Model {
 	}
 
 	public function getPurchaseOrderStatuses() {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "purchase_order_status WHERE language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY purchase_order_status_id");
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "purchase_order_status WHERE language_id = '" . (int)$this->config->get('config_language_id') . "' ORDER BY name");
 
 		return $query->rows;
 	}

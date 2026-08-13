@@ -285,7 +285,7 @@ class ControllerReportTrialBalance extends Controller {
 	}
 
 	private function formatAmount($value) {
-		return number_format((float)$value, 2, ',', '.');
+		return number_format((float)$value, 2, $this->config->get('config_decimal_point') ?: ',', $this->config->get('config_thousand_point') ?: '.');
 	}
 
 	private function buildFilterData($filter_account_start, $filter_account_end, $filter_date_start, $filter_date_end) {

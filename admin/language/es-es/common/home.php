@@ -60,4 +60,5 @@ $_['text_add_customer']             = 'A&ntilde;adir Cliente';
 $_['text_view_inbox']                = 'Ver Bandeja de Entrada';
 $_['text_new_invoice']              = 'Crear Factura';
 $_['text_add_product']              = 'A&ntilde;adir Producto';
+$_['text_pending_invoices']          = 'Invoices recibidos no procesados';
 ?>

@@ -314,7 +314,7 @@ class ControllerPurchaseInvoice extends Controller {
 				'status'        => $result['status'],
 				'total'         => $this->currency->format($result['total']),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'date_modified' => date($this->language->get('date_format_short'), strtotime($result['date_modified'])),
+				'date_modified' => date($this->language->get('date_format_short') . ' H:i', strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['invoice_id'], $this->request->post['selected']),
 				'action'        => $action
 			);
@@ -534,11 +534,16 @@ class ControllerPurchaseInvoice extends Controller {
 		$this->data['doc_exists'] = false;
 		$invoice_id_check = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
 		if ($invoice_id_check && !empty($invoice_info)) {
-			$doc_dir = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/') . '/docs/suppliers/' . date('Y') . '/';
-			$sid  = (int)$invoice_info['supplier_id'];
-			$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
-			$matches = glob($doc_dir . $sid . '_' . $sino . '.*');
-			$this->data['doc_exists'] = !empty($matches);
+			if (!empty($invoice_info['attachment_path']) && is_file($invoice_info['attachment_path'])) {
+				$this->data['doc_exists'] = true;
+			} else {
+				// Legado: documentos subidos a mano antes de que uploadDoc() guardara attachment_path.
+				$doc_dir = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/') . '/docs/suppliers/' . date('Y') . '/';
+				$sid  = (int)$invoice_info['supplier_id'];
+				$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
+				$matches = glob($doc_dir . $sid . '_' . $sino . '.*');
+				$this->data['doc_exists'] = !empty($matches);
+			}
 		}
 		$this->data['upload_doc_url'] = $this->url->link('purchase/invoice/uploadDoc', 'token=' . $this->session->data['token'] . '&invoice_id=' . $invoice_id_check, 'SSL');
 		$this->data['view_doc_url']   = $this->url->link('purchase/invoice/viewDoc',   'token=' . $this->session->data['token'] . '&invoice_id=' . $invoice_id_check, 'SSL');
@@ -584,7 +589,7 @@ class ControllerPurchaseInvoice extends Controller {
 				'price_raw'         => number_format((float)$invoice_product['price'], 2, '.', ''),
 				'catalog_price_raw' => $product_info ? number_format((float)$product_info['price'], 2, '.', '') : number_format((float)$invoice_product['price'], 2, '.', ''),
 				'discount_raw'       => (!empty($invoice_product['discount'])) ? number_format((float)preg_replace('/[^0-9\.]/', '', $invoice_product['discount']), 2, '.', '') : '',
-				'total'              => isset($invoice_info) ? $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value']) : $invoice_product['total'],
+				'total'              => isset($invoice_info) ? $this->currency->format($invoice_product['total'], $invoice_info['currency_code'], $invoice_info['currency_value'], true, true) : $invoice_product['total'],
 				'tax'                => $invoice_product['tax']
 			);
 		}
@@ -722,7 +727,7 @@ class ControllerPurchaseInvoice extends Controller {
 			$this->data['fax']             = $invoice_info['fax'];
 			$this->data['company']         = $invoice_info['company'];
 			$this->data['date_added']      = date($this->language->get('date_format_short'), strtotime($invoice_info['date_added']));
-			$this->data['date_modified']   = date($this->language->get('date_format_short'), strtotime($invoice_info['date_modified']));
+			$this->data['date_modified']   = date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['date_modified']));
 			$this->data['comment']         = nl2br($invoice_info['comment']);
 			$this->data['shipping_method'] = $invoice_info['shipping_method'];
 			$this->data['payment_method']  = $invoice_info['payment_method'];
@@ -1074,33 +1079,44 @@ class ControllerPurchaseInvoice extends Controller {
 			$json['error'] = 'Invalid upload';
 		} else {
 			$this->load->model('purchase/invoice');
-			$invoice_info = $this->model_purchase_invoice->getInvoice((int)$this->request->get['invoice_id']);
+			$invoice_id   = (int)$this->request->get['invoice_id'];
+			$invoice_info = $this->model_purchase_invoice->getInvoice($invoice_id);
 
 			if (!$invoice_info) {
 				$json['error'] = 'Invoice not found';
 			} else {
-				$sid  = (int)$invoice_info['supplier_id'];
-				$sino = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $invoice_info['supplier_invoice_no']);
-				$ext  = strtolower(pathinfo($_FILES['doc']['name'], PATHINFO_EXTENSION));
-
-				$base = rtrim(str_replace('\\', '/', realpath(dirname(DIR_APPLICATION))), '/');
-				$dir  = $base . '/docs/suppliers/' . date('Y') . '/';
+				// Misma carpeta que usa la importación automática por email
+				// (system/vendor/supplier_invoice_import), para que "Documento
+				// Original" funcione igual venga el adjunto de donde venga.
+				// /docs vive en la raíz del proyecto, no dentro de /download.
+				$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
+				$dir = $project_root . '/docs/suppliers/invoices/' . date('Y-m') . '/' . $invoice_id . '/';
 
 				if (!is_dir($dir)) {
-					mkdir($dir, 0777, true);
+					mkdir($dir, 0755, true);
 				}
 
-				foreach ((array)glob($dir . $sid . '_' . $sino . '.*') as $old) {
-					@unlink($old);
+				// Un solo documento original por factura: se sustituye cualquier
+				// fichero anterior en la carpeta (auto-importado o subido a mano antes).
+				foreach ((array)glob($dir . '*') as $old) {
+					if (is_file($old)) {
+						@unlink($old);
+					}
 				}
 
-				$filename = $sid . '_' . $sino . '.' . $ext;
+				$original_name = preg_replace('/[^A-Za-z0-9_.\-]/', '_', basename($_FILES['doc']['name']));
+				if ($original_name === '') {
+					$original_name = 'documento.' . strtolower(pathinfo($_FILES['doc']['name'], PATHINFO_EXTENSION));
+				}
 
-				if (move_uploaded_file($_FILES['doc']['tmp_name'], $dir . $filename)) {
+				$path = $dir . $original_name;
+
+				if (move_uploaded_file($_FILES['doc']['tmp_name'], $path)) {
+					$this->db->query("UPDATE `" . DB_PREFIX . "purchase_invoice` SET attachment_path = '" . $this->db->escape($path) . "' WHERE invoice_id = '" . $invoice_id . "'");
 					$json['success'] = true;
-					$json['filename'] = $filename;
+					$json['filename'] = $original_name;
 				} else {
-					$json['error'] = 'move_uploaded_file failed. Dir: ' . $dir . ' File: ' . $filename;
+					$json['error'] = 'move_uploaded_file failed. Dir: ' . $dir . ' File: ' . $original_name;
 				}
 			}
 		}
