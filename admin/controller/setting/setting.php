@@ -238,9 +238,9 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_import_supplier_invoices'] = $this->language->get('entry_import_supplier_invoices');
 		$this->data['entry_supplier_invoice_email'] = $this->language->get('entry_supplier_invoice_email');
 		$this->data['entry_supplier_invoice_email_password'] = $this->language->get('entry_supplier_invoice_email_password');
-		$this->data['entry_supplier_invoice_imap_host'] = $this->language->get('entry_supplier_invoice_imap_host');
-		$this->data['entry_supplier_invoice_imap_port'] = $this->language->get('entry_supplier_invoice_imap_port');
-		$this->data['entry_supplier_invoice_imap_ssl'] = $this->language->get('entry_supplier_invoice_imap_ssl');
+		$this->data['entry_supplier_invoice_pop_host'] = $this->language->get('entry_supplier_invoice_pop_host');
+		$this->data['entry_supplier_invoice_pop_port'] = $this->language->get('entry_supplier_invoice_pop_port');
+		$this->data['entry_supplier_invoice_pop_ssl'] = $this->language->get('entry_supplier_invoice_pop_ssl');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
@@ -448,10 +448,10 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_supplier_invoice_email'] = '';
 		}
 
-		if (isset($this->error['supplier_invoice_imap_host'])) {
-			$this->data['error_supplier_invoice_imap_host'] = $this->error['supplier_invoice_imap_host'];
+		if (isset($this->error['supplier_invoice_pop_host'])) {
+			$this->data['error_supplier_invoice_pop_host'] = $this->error['supplier_invoice_pop_host'];
 		} else {
-			$this->data['error_supplier_invoice_imap_host'] = '';
+			$this->data['error_supplier_invoice_pop_host'] = '';
 		}
 
 		$this->data['breadcrumbs'] = array();
@@ -581,23 +581,23 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_supplier_invoice_email_password'] = $this->config->get('config_supplier_invoice_email_password');
 		}
 
-		if (isset($this->request->post['config_supplier_invoice_imap_host'])) {
-			$this->data['config_supplier_invoice_imap_host'] = $this->request->post['config_supplier_invoice_imap_host'];
+		if (isset($this->request->post['config_supplier_invoice_pop_host'])) {
+			$this->data['config_supplier_invoice_pop_host'] = $this->request->post['config_supplier_invoice_pop_host'];
 		} else {
-			$this->data['config_supplier_invoice_imap_host'] = $this->config->get('config_supplier_invoice_imap_host');
+			$this->data['config_supplier_invoice_pop_host'] = $this->config->get('config_supplier_invoice_pop_host');
 		}
 
-		if (isset($this->request->post['config_supplier_invoice_imap_port'])) {
-			$this->data['config_supplier_invoice_imap_port'] = $this->request->post['config_supplier_invoice_imap_port'];
+		if (isset($this->request->post['config_supplier_invoice_pop_port'])) {
+			$this->data['config_supplier_invoice_pop_port'] = $this->request->post['config_supplier_invoice_pop_port'];
 		} else {
-			$this->data['config_supplier_invoice_imap_port'] = $this->config->get('config_supplier_invoice_imap_port') ?: '993';
+			$this->data['config_supplier_invoice_pop_port'] = $this->config->get('config_supplier_invoice_pop_port') ?: '995';
 		}
 
-		if (isset($this->request->post['config_supplier_invoice_imap_ssl'])) {
-			$this->data['config_supplier_invoice_imap_ssl'] = $this->request->post['config_supplier_invoice_imap_ssl'];
+		if (isset($this->request->post['config_supplier_invoice_pop_ssl'])) {
+			$this->data['config_supplier_invoice_pop_ssl'] = $this->request->post['config_supplier_invoice_pop_ssl'];
 		} else {
-			$imap_ssl = $this->config->get('config_supplier_invoice_imap_ssl');
-			$this->data['config_supplier_invoice_imap_ssl'] = ($imap_ssl === null) ? '1' : $imap_ssl;
+			$pop_ssl = $this->config->get('config_supplier_invoice_pop_ssl');
+			$this->data['config_supplier_invoice_pop_ssl'] = ($pop_ssl === null) ? '1' : $pop_ssl;
 		}
 
 		if (isset($this->request->post['config_conta_digits'])) {
@@ -1554,8 +1554,8 @@ class ControllerSettingSetting extends Controller {
 			$this->error['supplier_invoice_email'] = $this->language->get('error_supplier_invoice_email');
 		}
 
-		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_supplier_invoice_imap_host'])) {
-			$this->error['supplier_invoice_imap_host'] = $this->language->get('error_supplier_invoice_imap_host');
+		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_supplier_invoice_pop_host'])) {
+			$this->error['supplier_invoice_pop_host'] = $this->language->get('error_supplier_invoice_pop_host');
 		}
 
 		if ($this->error && !isset($this->error['warning'])) {

@@ -982,29 +982,29 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_imap_host; ?></label>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_host; ?></label>
 						<div class="col-sm-6">
-							<input type="text" name="config_supplier_invoice_imap_host" value="<?php echo $config_supplier_invoice_imap_host; ?>" class="form-control" placeholder="mail.midominio.com">
-							<?php if ($error_supplier_invoice_imap_host) { ?>
-								<div class="help-block text-danger"><?php echo $error_supplier_invoice_imap_host; ?></div>
+							<input type="text" name="config_supplier_invoice_pop_host" value="<?php echo $config_supplier_invoice_pop_host; ?>" class="form-control" placeholder="mail.midominio.com">
+							<?php if ($error_supplier_invoice_pop_host) { ?>
+								<div class="help-block text-danger"><?php echo $error_supplier_invoice_pop_host; ?></div>
 							<?php } ?>
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_imap_port; ?></label>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_port; ?></label>
 						<div class="col-sm-6">
-							<input type="text" name="config_supplier_invoice_imap_port" value="<?php echo $config_supplier_invoice_imap_port; ?>" class="form-control" style="max-width:120px;">
+							<input type="text" name="config_supplier_invoice_pop_port" value="<?php echo $config_supplier_invoice_pop_port; ?>" class="form-control" style="max-width:120px;">
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_imap_ssl; ?></label>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_pop_ssl; ?></label>
 						<div class="col-sm-6">
-							<?php if ($config_supplier_invoice_imap_ssl) { ?>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="1" checked=""><?php echo $text_yes; ?></label>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="0"><?php echo $text_no; ?></label>
+							<?php if ($config_supplier_invoice_pop_ssl) { ?>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="1" checked=""><?php echo $text_yes; ?></label>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="0"><?php echo $text_no; ?></label>
 							<?php } else { ?>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="1"><?php echo $text_yes; ?></label>
-								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_imap_ssl" value="0" checked=""><?php echo $text_no; ?></label>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="1"><?php echo $text_yes; ?></label>
+								<label class="radio-inline"><input type="radio" name="config_supplier_invoice_pop_ssl" value="0" checked=""><?php echo $text_no; ?></label>
 							<?php } ?>
 						</div>
 					</div>

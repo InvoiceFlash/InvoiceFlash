@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Revisa el buzón IMAP configurado en Ajustes > Mail (config_supplier_invoice_email)
+Revisa por POP3 el buzón configurado en Ajustes > Mail (config_supplier_invoice_email)
 cada vez que lo lanza el cron `supplier_invoice_import` (ver
 system/vendor/cron/supplier_invoice_import.php, cycle=720 minutos = 12h), y por
-cada email no leído:
+cada mensaje que sigue en el buzón:
 
-  - Si no tiene ningún adjunto PDF/JPG/PNG/XML soportado -> se borra.
+  - Si no tiene ningún adjunto PDF/JPG/PNG/XML soportado -> se borra del buzón.
   - Si el adjunto es un PDF con texto embebido (no escaneado) -> se extrae el
     texto directamente (PyMuPDF, gratis/instantáneo/exacto) y se le pide a un
     modelo de texto de Ollama que lo estructure en JSON.
@@ -13,6 +13,16 @@ cada email no leído:
     convierte a imagen y se usa el modelo de visión Qwen2.5-VL (Ollama) para
     extraer los datos directamente de la imagen.
   - Si es un XML de Facturae -> se parsea de forma determinista (sin IA).
+  - Si se crea la factura correctamente -> se borra del buzón (POP3 DELE).
+  - Si falla, se deja en el buzón para reintentar en el siguiente ciclo del
+    cron (hasta MAX_ATTEMPTS veces); al agotar los intentos se guarda una
+    copia del email en disco (ATTACHMENT_DIR/_errores/) y se borra del buzón.
+
+Se usa POP3 (no IMAP) a propósito: no depende del flag \\Seen del servidor
+(cualquiera que abra el buzón por webmail lo marca leído sin que nos enteremos)
+ni de mover mensajes entre carpetas — el propio UIDL de POP3 (estable e
+independiente del estado de lectura) es la clave de idempotencia, cruzada
+contra nuestra tabla `purchase_invoice_import_log`.
 
 Con los datos extraídos: crea el proveedor en BD si no existe (por tax_id) y
 crea la factura de proveedor (purchase_invoice + purchase_invoice_product +
@@ -21,17 +31,17 @@ ModelPurchaseInvoice::addInvoice() en admin/model/purchase/invoice.php.
 
 Variables de entorno esperadas (las pone system/vendor/cron/supplier_invoice_import.php):
   DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT, DB_PREFIX
-  IMAP_HOST, IMAP_PORT, IMAP_SSL, IMAP_EMAIL, IMAP_PASSWORD
+  POP_HOST, POP_PORT, POP_SSL, POP_EMAIL, POP_PASSWORD
   OLLAMA_URL, ATTACHMENT_DIR, STATUS_FILE
 """
 
 import base64
 import email
 import html
-import imaplib
 import io
 import json
 import os
+import poplib
 import re
 import sys
 import unicodedata
@@ -62,9 +72,6 @@ SUPPORTED_EXTENSIONS = (".pdf", ".jpg", ".jpeg", ".png", ".xml")
 MAX_PDF_PAGES = 3
 MAX_IMAGE_DIMENSION = 1600
 MAX_ATTEMPTS = 3
-
-FOLDER_PROCESSED = "Procesadas"
-FOLDER_ERRORS = "Errores"
 
 STATUS_FILE = os.environ.get("STATUS_FILE", "")
 
@@ -208,55 +215,57 @@ def parse_date(value):
 
 
 # ---------------------------------------------------------------------------
-# IMAP
+# POP3
 # ---------------------------------------------------------------------------
 
-def imap_connect():
-    host = os.environ.get("IMAP_HOST", "")
-    port = int(os.environ.get("IMAP_PORT", "993") or "993")
-    use_ssl = os.environ.get("IMAP_SSL", "1") != "0"
-    user = os.environ.get("IMAP_EMAIL", "")
-    password = os.environ.get("IMAP_PASSWORD", "")
+def pop3_connect():
+    host = os.environ.get("POP_HOST", "")
+    port = int(os.environ.get("POP_PORT", "995") or "995")
+    use_ssl = os.environ.get("POP_SSL", "1") != "0"
+    user = os.environ.get("POP_EMAIL", "")
+    password = os.environ.get("POP_PASSWORD", "")
 
     if use_ssl:
-        conn = imaplib.IMAP4_SSL(host, port)
+        conn = poplib.POP3_SSL(host, port, timeout=60)
     else:
-        conn = imaplib.IMAP4(host, port)
+        conn = poplib.POP3(host, port, timeout=60)
 
-    conn.login(user, password)
+    conn.user(user)
+    conn.pass_(password)
     return conn
 
 
-def ensure_folder(conn, name):
-    typ, _ = conn.select(name, readonly=True)
-    if typ != "OK":
-        conn.create(name)
-    conn.select("INBOX")
+def list_uidls(pop):
+    """[(msgnum, uidl), ...] para todos los mensajes que siguen en el buzón."""
+    resp, lines, octets = pop.uidl()
+    entries = []
+    for line in lines:
+        parts = line.decode(errors="replace").split(" ", 1)
+        if len(parts) == 2:
+            entries.append((int(parts[0]), parts[1].strip()))
+    return entries
 
 
-def move_message(conn, uid, dest_folder):
-    """COPY + marcar \\Deleted + EXPUNGE (más portable que UID MOVE entre servidores IMAP)."""
-    typ, _ = conn.uid("COPY", uid, dest_folder)
-    if typ != "OK":
-        raise RuntimeError("No se pudo copiar el mensaje a " + dest_folder)
-    conn.uid("STORE", uid, "+FLAGS", r"(\Deleted)")
-    conn.expunge()
+def fetch_message(pop, msgnum):
+    resp, lines, octets = pop.retr(msgnum)
+    return b"\r\n".join(lines)
 
 
-def mark_seen(conn, uid):
-    conn.uid("STORE", uid, "+FLAGS", r"(\Seen)")
-
-
-def delete_message(conn, uid):
-    conn.uid("STORE", uid, "+FLAGS", r"(\Deleted)")
-    conn.expunge()
-
-
-def get_message_key(msg, uid):
-    message_id = msg.get("Message-ID")
-    if message_id:
-        return message_id.strip()[:200]
-    return "UID:" + uid.decode() if isinstance(uid, bytes) else "UID:" + str(uid)
+def save_failed_email(raw_bytes, uidl):
+    """Copia local del mensaje original antes de borrarlo del buzón al agotar
+    los reintentos — sin esto, al no haber carpeta 'Errores' en el servidor
+    (POP3 no tiene carpetas), se perdería el único rastro del documento que
+    nunca llegó a convertirse en adjunto guardado."""
+    attach_dir = os.environ.get("ATTACHMENT_DIR", "")
+    if not attach_dir:
+        return ""
+    subdir = os.path.join(attach_dir, "_errores", datetime.now().strftime("%Y-%m"))
+    os.makedirs(subdir, exist_ok=True)
+    safe_uidl = re.sub(r"[^A-Za-z0-9_.\-]", "_", uidl)[:100] or "mensaje"
+    path = os.path.join(subdir, safe_uidl + ".eml")
+    with open(path, "wb") as f:
+        f.write(raw_bytes)
+    return path
 
 
 def extract_attachments(msg):
@@ -1022,9 +1031,9 @@ def save_attachment(filename, data, invoice_id):
 # Procesar un único mensaje
 # ---------------------------------------------------------------------------
 
-def process_message(conn, imap_conn, mailbox, uid, raw_bytes, counters, own_company_name="", own_tax_id=""):
+def process_message(conn, pop, mailbox, msgnum, uidl, raw_bytes, counters, own_company_name="", own_tax_id=""):
     msg = email.message_from_bytes(raw_bytes)
-    message_key = get_message_key(msg, uid)
+    message_key = uidl
     subject = decode_mime_header(msg.get("Subject", ""))
     from_email = decode_mime_header(msg.get("From", ""))
     date_received = None
@@ -1036,21 +1045,25 @@ def process_message(conn, imap_conn, mailbox, uid, raw_bytes, counters, own_comp
     existing = get_log_row(conn, mailbox, message_key)
     if existing and existing["status"] == "imported":
         if invoice_exists(conn, existing["invoice_id"]):
-            mark_seen(imap_conn, uid)
+            pop.dele(msgnum)
             return
         # La factura se borró después (limpieza manual, pruebas...) — el log decía
         # "imported" pero ya no hay nada real que la respalde, así que se reprocesa
         # como si fuera la primera vez en vez de darla por hecha para siempre.
         log("Aviso: invoice_id {} ya no existe (factura borrada), reprocesando: {}".format(existing["invoice_id"], subject))
     if existing and existing["status"] == "error" and existing["attempts"] >= MAX_ATTEMPTS:
-        move_message(imap_conn, uid, FOLDER_ERRORS)
-        mark_seen(imap_conn, uid)
+        # Ya se había dado por perdido en una ejecución anterior; si sigue aquí es
+        # porque el DELE de entonces no llegó a confirmarse (p.ej. caída de red
+        # antes del QUIT). Se finaliza otra vez, sin gastar una nueva llamada a IA.
+        saved_path = save_failed_email(raw_bytes, uidl)
+        log("Máximo de intentos ya alcanzado, guardado en {} y borrado del buzón: {}".format(saved_path, subject))
+        pop.dele(msgnum)
         return
 
     attachments = extract_attachments(msg)
 
     if not attachments:
-        delete_message(imap_conn, uid)
+        pop.dele(msgnum)
         upsert_log(
             conn, mailbox, message_key,
             status="deleted_no_attachment", subject=subject[:255], from_email=from_email[:255],
@@ -1103,8 +1116,7 @@ def process_message(conn, imap_conn, mailbox, uid, raw_bytes, counters, own_comp
             increment_attempt=True,
         )
 
-        mark_seen(imap_conn, uid)
-        move_message(imap_conn, uid, FOLDER_PROCESSED)
+        pop.dele(msgnum)
 
         counters["imported"] += 1
         log("Factura #{} creada (proveedor {}{}) desde: {}".format(
@@ -1124,10 +1136,11 @@ def process_message(conn, imap_conn, mailbox, uid, raw_bytes, counters, own_comp
 
         updated = get_log_row(conn, mailbox, message_key)
         if updated and updated["attempts"] >= MAX_ATTEMPTS:
-            move_message(imap_conn, uid, FOLDER_ERRORS)
-            mark_seen(imap_conn, uid)
-        # si no ha llegado al máximo de intentos, se deja tal cual (no leído)
-        # para que el próximo ciclo del cron lo reintente.
+            saved_path = save_failed_email(raw_bytes, uidl)
+            log("Máximo de intentos alcanzado ({}), guardado en {} y borrado del buzón: {}".format(MAX_ATTEMPTS, saved_path, subject))
+            pop.dele(msgnum)
+        # si no ha llegado al máximo de intentos, se deja en el buzón (no se
+        # borra) para que el próximo ciclo del cron lo reintente.
 
 
 def extract_invoice_data(ext, data, own_company_name="", own_tax_id=""):
@@ -1174,9 +1187,9 @@ def main():
     started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     status.write(running=True, started_at=started_at, message="Comprobando configuración")
 
-    email_addr = os.environ.get("IMAP_EMAIL", "").strip()
-    password = os.environ.get("IMAP_PASSWORD", "").strip()
-    host = os.environ.get("IMAP_HOST", "").strip()
+    email_addr = os.environ.get("POP_EMAIL", "").strip()
+    password = os.environ.get("POP_PASSWORD", "").strip()
+    host = os.environ.get("POP_HOST", "").strip()
 
     if not email_addr or not password:
         msg = "Faltan el email o la contraseña del buzón de facturas de proveedores (Ajustes > Mail)."
@@ -1185,7 +1198,7 @@ def main():
         return 1
 
     if not host:
-        msg = "Falta configurar el servidor IMAP (host) en Ajustes > Mail."
+        msg = "Falta configurar el servidor POP3 (host) en Ajustes > Mail."
         log(msg)
         status.write(running=False, started_at=started_at, finished_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), error=msg)
         return 1
@@ -1193,40 +1206,41 @@ def main():
     counters = {"scanned": 0, "imported": 0, "deleted_no_attachment": 0, "errors": 0}
 
     conn = None
-    imap_conn = None
+    pop = None
     try:
         conn = db_connect()
 
         own_company_name = get_setting(conn, "config_name", "config", "") or ""
         own_tax_id = get_setting(conn, "config_vat_id", "config", "") or get_setting(conn, "config_nif", "config", "") or ""
 
-        status.write(running=True, started_at=started_at, message="Conectando al buzón IMAP")
-        imap_conn = imap_connect()
-        ensure_folder(imap_conn, FOLDER_PROCESSED)
-        ensure_folder(imap_conn, FOLDER_ERRORS)
+        status.write(running=True, started_at=started_at, message="Conectando al buzón POP3")
+        pop = pop3_connect()
 
-        imap_conn.select("INBOX")
-        typ, msg_ids = imap_conn.uid("SEARCH", None, "UNSEEN")
-        if typ != "OK":
-            raise RuntimeError("No se pudo buscar mensajes en INBOX")
+        entries = list_uidls(pop)
+        log("Mensajes en el buzón: {}".format(len(entries)))
 
-        uids = msg_ids[0].split()
-        log("Mensajes no leídos encontrados: {}".format(len(uids)))
-
-        for uid in uids:
+        for msgnum, uidl in entries:
             counters["scanned"] += 1
-            status.write(running=True, started_at=started_at, message="Procesando mensaje {}/{}".format(counters["scanned"], len(uids)))
-            typ, msg_data = imap_conn.uid("FETCH", uid, "(RFC822)")
-            if typ != "OK" or not msg_data or not msg_data[0]:
-                continue
-            raw_bytes = msg_data[0][1]
+            status.write(running=True, started_at=started_at, message="Procesando mensaje {}/{}".format(counters["scanned"], len(entries)))
+
             try:
-                process_message(conn, imap_conn, email_addr, uid, raw_bytes, counters, own_company_name, own_tax_id)
+                raw_bytes = fetch_message(pop, msgnum)
             except Exception as exc:
-                log("ERROR inesperado procesando UID {}: {}".format(uid, exc))
+                log("ERROR descargando mensaje {} (uidl={}): {}".format(msgnum, uidl, exc))
+                counters["errors"] += 1
+                continue
+
+            try:
+                process_message(conn, pop, email_addr, msgnum, uidl, raw_bytes, counters, own_company_name, own_tax_id)
+            except Exception as exc:
+                log("ERROR inesperado procesando mensaje {} (uidl={}): {}".format(msgnum, uidl, exc))
                 counters["errors"] += 1
 
-        imap_conn.logout()
+        # El QUIT es imprescindible: en POP3 los DELE marcados durante la sesión
+        # no se confirman de verdad en el servidor hasta que se cierra la sesión
+        # correctamente con QUIT (si se corta antes, el servidor los descarta).
+        pop.quit()
+        pop = None
 
     except Exception as exc:
         log("ERROR fatal: {}".format(exc))
@@ -1236,6 +1250,14 @@ def main():
         )
         return 1
     finally:
+        if pop is not None:
+            try:
+                pop.quit()
+            except Exception:
+                try:
+                    pop.close()
+                except Exception:
+                    pass
         if conn:
             conn.close()
 
