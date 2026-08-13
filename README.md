@@ -8,11 +8,14 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ---
-### 0.0.12
+### 0.0.13
   - [] Edit language
   - [] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-  - [] Mod PEPPOL support
+  - [] Upgrade database a MariaDB
   - [] Multi Store
+    
+### 0.0.12
+  - [x] OCR Supplier invoices
  
 ### 0.0.11
   - [x] Disegn reports
