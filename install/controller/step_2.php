@@ -50,7 +50,7 @@ class ControllerStep2 extends Controller {
 		}
 
 		if (!extension_loaded('mysqli')) {
-			$this->error['warning'] = 'Warning: MySQL extension needs to be loaded for invoiceflash to work!';
+			$this->error['warning'] = 'Warning: MariaDB extension needs to be loaded for invoiceflash to work!';
 		}
 
 		if (!extension_loaded('gd')) {

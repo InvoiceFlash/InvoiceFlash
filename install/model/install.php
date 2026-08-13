@@ -1,7 +1,7 @@
 <?php
 class ModelInstall extends Model {
 	public function database($data) {
-		$db = new DB($data['db_driver'], $data['db_host'], $data['db_user'], $data['db_password'], $data['db_name']);
+		$db = new DB($data['db_driver'], $data['db_host'], $data['db_user'], $data['db_password'], $data['db_name'], !empty($data['db_port']) ? (int)$data['db_port'] : 3306);
 				
 		$file = DIR_APPLICATION . 'invoiceflash.sql';
 		

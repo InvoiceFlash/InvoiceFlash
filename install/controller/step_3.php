@@ -263,11 +263,26 @@ class ControllerStep3 extends Controller {
 
 		if ($this->request->post['db_driver'] == 'mysqli') {
 			if(function_exists('mysqli_connect')) {
-				$connection = new mysqli($this->request->post['db_host'], $this->request->post['db_user'], $this->request->post['db_password'], $this->request->post['db_name']);
+				mysqli_report(MYSQLI_REPORT_OFF);
+
+				$connection = new mysqli($this->request->post['db_host'], $this->request->post['db_user'], $this->request->post['db_password'], $this->request->post['db_name'], (int)$this->request->post['db_port']);
 
 				if (mysqli_connect_error()) {
 					$this->error['warning'] = 'Error: Could not connect to the database please make sure the database server, username and password is correct!';
 				} else {
+					$server_version = '';
+
+					if ($result = $connection->query("SELECT VERSION() AS version")) {
+						$row = $result->fetch_assoc();
+						$server_version = $row['version'];
+					}
+
+					if (stripos($server_version, 'MariaDB') === false) {
+						$this->error['warning'] = 'Error: MariaDB 11.7 or above is required. Detected server: ' . $server_version;
+					} elseif (preg_match('/(\d+\.\d+)/', $server_version, $matches) && version_compare($matches[1], '11.7', '<')) {
+						$this->error['warning'] = 'Error: MariaDB 11.7 or above is required. Detected version: ' . $server_version;
+					}
+
 					$connection->close();
 				}
 			} else {

@@ -3,6 +3,8 @@ final class DBMySQLi {
 	private $link;
 
 	public function __construct($hostname, $username, $password, $database, $port = '3306') {
+		mysqli_report(MYSQLI_REPORT_OFF);
+
 		$this->link = new mysqli($hostname, $username, $password, $database, $port);
 
 		if (mysqli_connect_error()) {

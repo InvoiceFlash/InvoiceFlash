@@ -29,7 +29,7 @@ These instructions are for a manual installation using FTP, cPanel or other web 
 
 		If 0755 does not work try 0777.
 
-5. Make sure you have installed a MySQL Database which has a user assigned to it
+5. Make sure you have installed a MariaDB 11.7 (or above) Database which has a user assigned to it
 	DO NOT USE YOUR ROOT USERNAME AND ROOT PASSWORD
 
 6. Visit the homepage e.g. http://www.example.com or http://www.example.com/web/
@@ -50,7 +50,7 @@ These instructions are for a manual installation using FTP, cPanel or other web 
 		config.php
 		admin/config.php
 
-4. Make sure you have installed a MySQL Database which has a user assigned to it
+4. Make sure you have installed a MariaDB 11.7 (or above) Database which has a user assigned to it
 	DO NOT USE YOUR ROOT USERNAME AND ROOT PASSWORD
 
 5. You should be taken to the installer page. Follow the on screen instructions.

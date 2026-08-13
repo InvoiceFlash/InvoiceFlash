@@ -73,7 +73,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or
 To use InvoiceFlash application you should have already installed:
 
 *   **PHP** >=5.0 
-*   **MySQL** >=4.1 server / MariaDB
+*   **MariaDB** >=11.7 server
 
 ### How to install
 Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=10" target="_blank">read this doc</a>.

@@ -64,7 +64,7 @@
           <th width="15%" align="center"><b>Status</b></th>
         </tr>
         <tr>
-          <td>MySQL:</td>
+          <td>MariaDB:</td>
           <td><?php echo extension_loaded('mysqli') ? 'On' : 'Off'; ?></td>
           <td>On</td>
           <td align="center"><?php echo extension_loaded('mysqli') ? '<img src="view/image/good.png" alt="Good" />' : '<img src="view/image/bad.png" alt="Bad" />'; ?></td>
