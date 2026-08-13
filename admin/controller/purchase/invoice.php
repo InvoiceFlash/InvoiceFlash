@@ -312,7 +312,7 @@ class ControllerPurchaseInvoice extends Controller {
 				'invoice_id'    => $result['invoice_id'],
 				'company'       => $result['company'],
 				'status'        => $result['status'],
-				'total'         => $this->currency->format($result['total']),
+				'total'         => $this->currency->format($result['total'], '', '', true, true),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'date_modified' => date($this->language->get('date_format_short') . ' H:i', strtotime($result['date_modified'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['invoice_id'], $this->request->post['selected']),

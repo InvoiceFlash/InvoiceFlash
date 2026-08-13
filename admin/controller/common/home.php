@@ -233,7 +233,7 @@ class ControllerCommonHome extends Controller {
 				'company'   => $result['company'],
 				'status'     => $result['status'],
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
-				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value']),
+				'total'      => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value'], true, true),
 				'action'     => $action
 			);
 		}

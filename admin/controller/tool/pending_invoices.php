@@ -198,6 +198,7 @@ class ControllerToolPendingInvoices extends Controller {
 		$this->data['button_incorporate'] = $this->language->get('button_incorporate');
 		$this->data['button_delete']      = $this->language->get('button_delete');
 		$this->data['button_view']        = $this->language->get('button_view');
+		$this->data['button_cancel']      = $this->language->get('button_cancel');
 
 		if (isset($this->session->data['success'])) {
 			$this->data['success'] = $this->session->data['success'];
@@ -266,6 +267,7 @@ class ControllerToolPendingInvoices extends Controller {
 
 		$this->data['token'] = $this->session->data['token'];
 		$this->data['delete'] = $this->url->link('tool/pending_invoices/delete', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['cancel'] = $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL');
 
 		$this->template = 'tool/pending_invoices_list.tpl';
 		$this->children = array(

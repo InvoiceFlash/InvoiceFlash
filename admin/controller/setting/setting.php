@@ -607,10 +607,8 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_supplier_invoice_pop_ssl'] = ($pop_ssl === null) ? '1' : $pop_ssl;
 		}
 
-		// Checkbox real (no radios Sí/No): un checkbox sin marcar no manda nada en el
-		// POST, así que hay que distinguir "GET, aún sin enviar" de "POST, desmarcado".
-		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-			$this->data['config_supplier_invoice_match_order'] = isset($this->request->post['config_supplier_invoice_match_order']) ? '1' : '0';
+		if (isset($this->request->post['config_supplier_invoice_match_order'])) {
+			$this->data['config_supplier_invoice_match_order'] = $this->request->post['config_supplier_invoice_match_order'];
 		} else {
 			$this->data['config_supplier_invoice_match_order'] = $this->config->get('config_supplier_invoice_match_order') ? '1' : '0';
 		}

@@ -5,6 +5,7 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-envelope-open-text"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+			<a href="<?php echo $cancel; ?>" class="btn btn-warning"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">

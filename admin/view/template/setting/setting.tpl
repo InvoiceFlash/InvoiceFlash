@@ -1030,11 +1030,13 @@
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_match_order; ?></label>
 							<div class="col-sm-6">
-								<div class="form-control-plaintext">
-									<label class="checkbox-inline">
-										<input type="checkbox" name="config_supplier_invoice_match_order" value="1"<?php echo $config_supplier_invoice_match_order ? ' checked=""' : ''; ?>>
-									</label>
-								</div>
+								<?php if ($config_supplier_invoice_match_order) { ?>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_match_order" value="1" checked=""><?php echo $text_yes; ?></label>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_match_order" value="0"><?php echo $text_no; ?></label>
+								<?php } else { ?>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_match_order" value="1"><?php echo $text_yes; ?></label>
+									<label class="radio-inline"><input type="radio" name="config_supplier_invoice_match_order" value="0" checked=""><?php echo $text_no; ?></label>
+								<?php } ?>
 							</div>
 						</div>
 					</div>
