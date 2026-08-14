@@ -99,12 +99,27 @@ $_['text_length_month']      = 'Month';
 $_['text_length_month_semi'] = 'Semi Month';
 $_['text_length_year']       = 'Year';
 
+// Documents
+$_['tab_documents']              = 'Documents';
+$_['button_document_upload']     = 'Upload';
+$_['column_document_name']       = 'File name';
+$_['column_document_date']       = 'Date';
+$_['text_no_documents']          = 'No documents attached to this product.';
+$_['text_save_product_first']    = 'Save the product first to be able to attach documents.';
+$_['text_document_deleted']      = 'Document deleted';
+
 // Error
 $_['error_warning']          = 'Warning: Please check the form carefully for errors!';
 $_['error_permission']       = 'Warning: You do not have permission to modify products!';
 $_['error_name']             = 'Product Name must be greater than 3 and less than 255 characters!';
 $_['error_model']            = 'Product Model must be greater than 3 and less than 64 characters!';
 $_['error_sku']              = 'SKU is required and must be less than 64 characters!';
+$_['error_document_no_product']    = 'Save the product first to be able to attach documents.';
+$_['error_document_no_file']       = 'Select at least one file.';
+$_['error_document_upload_failed'] = 'The file could not be uploaded.';
+$_['error_document_too_large']     = 'The file exceeds the maximum allowed size (20 MB).';
+$_['error_document_extension']     = 'File type not allowed.';
+$_['error_document_not_found']     = 'Document not found.';
 
 // Tab Log
 $_['column_table'] = 'Table Name';

@@ -2,6 +2,12 @@
 // Heading
 $_['heading_title']                    = 'Configuraci&oacute;n';
 
+// Tab (sobrescribe las claves globales de spanish.php solo para esta pantalla)
+$_['tab_general'] = 'Empresa';
+$_['tab_option'] = 'Opciones';
+$_['tab_image'] = 'Im&aacute;genes';
+$_['text_option_general'] = 'General';
+
 // Text
 $_['text_stores'] = 'Tiendas';
 $_['text_success'] = 'Genial: ha modificado la configuraci&oacute;n!';
@@ -23,8 +29,7 @@ $_['text_google_analytics'] = 'Google Analytics';
 $_['text_google_captcha'] = 'Google reCAPTCHA';
 
 // Entry
-$_['entry_name'] = 'Nombre de la tienda';
-$_['entry_owner'] = 'Propietario de la tienda';
+$_['entry_name'] = 'Nombre de la empresa';
 $_['entry_address'] = 'Direcci&oacute;n';
 $_['entry_geocode'] = 'Geocode';
 $_['entry_email'] = 'E-Mail';
@@ -50,8 +55,8 @@ $_['entry_decimal_point'] = 'Separador decimal';
 $_['entry_thousand_point'] = 'Separador de miles';
 $_['error_decimal_point'] = 'Introduce exactamente un car&aacute;cter.';
 $_['error_thousand_point'] = 'Introduce exactamente un car&aacute;cter, distinto del separador decimal.';
-$_['entry_length_class'] = 'Longitud Clase';
-$_['entry_weight_class'] = 'Peso Clase';
+$_['entry_length_class'] = 'Medir longitud en';
+$_['entry_weight_class'] = 'Medir peso en';
 $_['entry_product_limit'] = 'Productos por p&aacute;gina (Cat&aacute;logo)';
 $_['entry_product_description_length'] = 'Descripci&oacute;n L&iacute;mite (Cat&aacute;logo)';
 $_['entry_limit_admin'] = 'Productos por p&aacute;gina (admin)';
@@ -81,7 +86,7 @@ $_['entry_processing_status'] = 'Estados de Pedidos';
 $_['entry_complete_status'] = 'Estado del Pedido Completo';
 $_['entry_order_mail'] = 'Nuevo Pedido Alerta e-mail';
 $_['entry_mail_alert'] = 'Adicional Alerta E-Mails';
-$_['entry_stock_display'] = 'Mostrar en P&aacute; de Producto';
+$_['entry_stock_display'] = 'Mostrar Stock en la P&aacute;gina del Producto';
 $_['entry_stock_warning'] = 'Mostrar Producto Agotado';
 $_['entry_stock_checkout'] = 'Comprar Productos Agotados';
 $_['entry_affiliate_approval'] = 'Afiliado Requiere aprobaci&oacute;n';
@@ -204,8 +209,7 @@ $_['help_google_captcha'] = 'ir a <a href="https://www.google.com/recaptcha/intr
 // Error
 $_['error_warning'] = 'Advertencia: Por favor, consulte el formulario cuidadosamente de errores';
 $_['error_permission'] = 'Advertencia: Usted no tiene permiso para modificar la configuraci&oacute;n!';
-$_['error_name'] = 'Nombre de la tienda debe estar entre 3 y 32 caracteres!';
-$_['error_owner'] = 'tienda propietario debe tener entre 3 y 64 caracteres!';
+$_['error_name'] = 'Nombre de la empresa debe estar entre 3 y 32 caracteres!';
 $_['error_conta_ventas_account'] = 'La cuenta contable de ventas debe tener %d d&iacute;gitos!';
 $_['error_conta_cliente_account'] = 'La cuenta contable de clientes debe tener %d d&iacute;gitos!';
 $_['error_conta_result_account'] = 'La cuenta contable de resultado debe tener %d d&iacute;gitos!';
@@ -245,13 +249,15 @@ $_['entry_title'] = 'T&iacute;tulo:';
 $_['entry_vat_id'] = 'CIF/NIF:';
 $_['entry_catalog_limit'] = '<a data-toggle="tooltip" title="Determina cu&aacute;ntos art&iacute;culos del cat&aacute;logo se muestran por p&aacute;gina (productos, categor&iacute;as, etc.)"><i class="fas fa-question-circle"></i></a> Art&iacute;culos por P&aacute;gina por Defecto (Cat&aacute;logo):';
 $_['entry_admin_limit'] = '<a data-toggle="tooltip" title="Determina cu&aacute;ntos elementos de administraci&oacute;n se muestran por p&aacute;gina (pedidos, clientes, etc.)"><i class="fas fa-question-circle"></i></a> Art&iacute;culos por P&aacute;gina por Defecto (Admin):';
-$_['entry_open_next_convert'] = 'Open Next on convert:';
+$_['entry_open_next_convert'] = 'Abrir Siguiente al Convertir:';
+$_['text_open_next_convert_tooltip'] = 'Cuando conviertes un &uacute;nico presupuesto/pedido/albar&aacute;n/borrador al siguiente documento de la cadena (Presupuesto&rarr;Pedido&rarr;Albar&aacute;n&rarr;Factura) desde el listado, si esta opci&oacute;n est&aacute; en S&iacute;, la app abre autom&aacute;ticamente en una pesta&ntilde;a nueva la ficha del documento reci&eacute;n creado.';
 $_['entry_download'] = 'Permitir Descargas:';
-$_['entry_vat'] = '<a data-toggle="tooltip" title="Validar el n&uacute;mero de IVA con el servicio http://ec.europa.eu."><i class="fas fa-question-circle"></i></a> Validar N&uacute;mero de IVA:';
+$_['entry_vat'] = '<a data-toggle="tooltip" title="Validar el n&uacute;mero de IVA con el servicio http://ec.europa.eu."><i class="fas fa-question-circle"></i></a> Validar NIF:';
 $_['entry_quote_prefix'] = '<a data-toggle="tooltip" title="Encabezado usado para construir el ID del Presupuesto (ej. QUO-2026). El n&uacute;mero secuencial se a&ntilde;ade autom&aacute;ticamente."><i class="fas fa-question-circle"></i></a> Prefijo de Presupuesto:';
 $_['entry_purchase_invoice_prefix'] = '<a data-toggle="tooltip" title="Prefijo para las facturas de compra (p.ej. FRA-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Factura de Compra:';
 $_['entry_sales_invoice_prefix'] = '<a data-toggle="tooltip" title="Prefijo para las facturas de venta (p.ej. INV-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Factura de Venta:';
-$_['entry_sales_order_prefix'] = '<a data-toggle="tooltip" title="Prefijo para los pedidos de venta (p.ej. ORD-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Pedido de Venta:';
+$_['entry_sales_order_prefix'] = '<a data-toggle="tooltip" title="Prefijo para los pedidos de venta (p.ej. PED-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Pedido de Venta:';
+$_['entry_sales_delivery_prefix'] = '<a data-toggle="tooltip" title="Prefijo para los albaranes de venta (p.ej. ALB-2026-00)."><i class="fas fa-question-circle"></i></a> Prefijo de Albaranes de Venta:';
 $_['entry_guest_checkout'] = '<a data-toggle="tooltip" title="Permite a los clientes finalizar la compra sin crear una cuenta. No estar&aacute; disponible cuando haya un producto descargable en el carrito."><i class="fas fa-question-circle"></i></a> Compra como Invitado:';
 $_['entry_order_edit'] = '<a data-toggle="tooltip" title="N&uacute;mero de d&iacute;as permitidos para editar un pedido."><i class="fas fa-question-circle"></i></a> Edici&oacute;n de Pedidos:';
 $_['entry_stock_status'] = '<a data-toggle="tooltip" title="Establece el estado de sin stock seleccionado por defecto al editar un producto."><i class="fas fa-question-circle"></i></a> Estado de Sin Stock:';
@@ -287,6 +293,8 @@ $_['tab_fraud'] = 'Fraude';
 $_['tab_payroll'] = 'Bancos';
 $_['tab_accounting'] = 'Contabilidad';
 $_['tab_hacienda'] = 'Hacienda';
+$_['tab_recepciones'] = 'Recepciones';
+$_['text_recepciones_ai_note'] = 'S&oacute;lo se activar&aacute; si est&aacute; configurada la IA.';
 $_['tab_ia'] = 'IA';
 $_['entry_accounting_period_from'] = 'Periodo Contable desde:';
 $_['entry_accounting_period_to'] = 'Hasta:';
@@ -306,12 +314,18 @@ $_['entry_conta_digits'] = 'N&ordm; de d&iacute;gitos contabilidad';
 $_['entry_certificado'] = 'Certificado:';
 $_['entry_clave'] = 'Contrase&ntilde;a certificado:';
 $_['entry_aeat_active'] = 'Enviar facturas a la AEAT:';
+$_['entry_ai_enabled'] = 'Usar IA:';
+$_['error_ai_enabled'] = 'No se puede activar la IA: falta indicar el API KEY de Claude o la URL de Ollama, seg&uacute;n el motor seleccionado.';
 $_['entry_ai_provider'] = 'IA a utilizar:';
 $_['text_ai_claude'] = 'Claude (API KEY)';
 $_['text_ai_ollama'] = 'qwen3:1.7b (Ollama)';
 $_['entry_claude_api_key'] = 'API KEY Claude:';
 $_['entry_ollama_url'] = 'URL de Ollama:';
+$_['button_ai_test'] = 'Probar';
+$_['text_ai_test_ok'] = 'Ok';
+$_['text_ai_test_no_response'] = 'No responde';
 $_['entry_import_supplier_invoices'] = 'Importar facturas de proveedores:';
+$_['text_import_supplier_invoices_tooltip'] = 'Si tiene activa la IA permite integrar automáticamente las facturas de proveedores. Tienes que tener configurado el email.';
 $_['entry_supplier_invoice_email'] = 'Email de recepci&oacute;n de facturas de proveedores:';
 $_['entry_supplier_invoice_email_password'] = 'Contrase&ntilde;a del email de facturas de proveedores:';
 $_['entry_supplier_invoice_pop_host'] = 'Servidor POP3 (host):';

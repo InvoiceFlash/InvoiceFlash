@@ -101,6 +101,15 @@ $_['help_download'] = '(Autocompletar)';
 $_['help_related'] = '(Autocompletar)';
 $_['help_tag'] = 'separados por comas';
 
+// Documents
+$_['tab_documents'] = 'Documentos';
+$_['button_document_upload'] = 'Subir';
+$_['column_document_name'] = 'Nombre del archivo';
+$_['column_document_date'] = 'Fecha';
+$_['text_no_documents'] = 'No hay documentos adjuntos a este producto.';
+$_['text_save_product_first'] = 'Guarda el producto primero para poder adjuntar documentos.';
+$_['text_document_deleted'] = 'Documento eliminado';
+
 // Error
 $_['error_warning'] = 'Advertencia: Por favor, consulte el formulario cuidadosamente de errores';
 $_['error_permission'] = 'Advertencia: Usted no tiene permiso para modificar productos!';
@@ -109,3 +118,9 @@ $_['error_meta_title'] = 'Meta T&iacute;tulo debe ser superior a 3 y menos de 25
 $_['error_model'] = 'Modelo Producto debe ser mayor que 1 y menos de 64 caracteres!';
 $_['error_sku'] = 'El SKU es obligatorio y debe tener menos de 64 caracteres!';
 $_['error_keyword'] = 'palabra clave SEO ya en uso!';
+$_['error_document_no_product'] = 'Guarda el producto primero para poder adjuntar documentos.';
+$_['error_document_no_file'] = 'Selecciona al menos un archivo.';
+$_['error_document_upload_failed'] = 'No se pudo subir el archivo.';
+$_['error_document_too_large'] = 'El archivo supera el tama&ntilde;o m&aacute;ximo permitido (20 MB).';
+$_['error_document_extension'] = 'Tipo de archivo no permitido.';
+$_['error_document_not_found'] = 'Documento no encontrado.';

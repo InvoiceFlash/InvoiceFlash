@@ -22,6 +22,7 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-discount" data-bs-toggle="tab"><?php echo $tab_discount; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-special" data-bs-toggle="tab"><?php echo $tab_special; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-documents" data-bs-toggle="tab"><?php echo $tab_documents; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-bs-toggle="tab"><?php echo $tab_reward; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-design" data-bs-toggle="tab"><?php echo $tab_design; ?></a></li>
 		</ul>
@@ -775,6 +776,45 @@
 						</tfoot>
 					</table>
 				</div>
+				<div class="tab-pane" id="tab-documents">
+					<?php if (!$product_id) { ?>
+					<div class="alert alert-info"><?php echo $text_save_product_first; ?></div>
+					<?php } else { ?>
+					<div class="form-group row">
+						<div class="col-sm-8">
+							<input type="file" id="docupload-input" class="form-control" multiple>
+						</div>
+						<div class="col-sm-4">
+							<a onclick="docuploadStart();" class="btn btn-info"><i class="fa fa-upload"></i><span class="hidden-xs"> <?php echo $button_document_upload; ?></span></a>
+						</div>
+					</div>
+					<div id="docupload-progress" class="alert alert-danger" style="display:none;"></div>
+					<table id="documents" class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th><?php echo $column_document_name; ?></th>
+								<th><?php echo $column_document_date; ?></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody id="documents-tbody">
+							<?php if ($product_documents) { ?>
+							<?php foreach ($product_documents as $document) { ?>
+							<tr id="document-row<?php echo $document['product_document_id']; ?>">
+								<td><a href="<?php echo $document['view_url']; ?>" target="_blank"><?php echo $document['name']; ?></a></td>
+								<td><?php echo $document['date_added']; ?></td>
+								<td><a onclick="docdeleteRow(<?php echo $document['product_document_id']; ?>);" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
+							</tr>
+							<?php } ?>
+							<?php } else { ?>
+							<tr id="documents-empty-row">
+								<td colspan="3" class="text-center"><?php echo $text_no_documents; ?></td>
+							</tr>
+							<?php } ?>
+						</tbody>
+					</table>
+					<?php } ?>
+				</div>
 				<div class="tab-pane" id="tab-reward">
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_points; ?></label>
@@ -1068,6 +1108,79 @@ function addImage(){
 	$('#images tbody').append(html);
 	
 	image_row++;
+}
+</script>
+<script>
+function docdeleteRow(id) {
+	if (!confirm(text_confirm)) {
+		return;
+	}
+
+	$.ajax({
+		url: '<?php echo $docdelete_url; ?>',
+		type: 'post',
+		data: {product_document_id: id},
+		dataType: 'json',
+		success: function(json) {
+			if (json.error) {
+				alert(json.error);
+				return;
+			}
+
+			$('#document-row' + id).remove();
+
+			if (!$('#documents-tbody tr').length) {
+				$('#documents-tbody').html('<tr id="documents-empty-row"><td colspan="3" class="text-center"><?php echo $text_no_documents; ?></td></tr>');
+			}
+		}
+	});
+}
+
+function docuploadStart() {
+	var input = document.getElementById('docupload-input');
+
+	if (!input || !input.files.length) {
+		return;
+	}
+
+	var formData = new FormData();
+
+	for (var i = 0; i < input.files.length; i++) {
+		formData.append('file[]', input.files[i]);
+	}
+
+	formData.append('product_id', '<?php echo $product_id; ?>');
+
+	$('#docupload-progress').hide().html('');
+
+	$.ajax({
+		url: '<?php echo $docupload_url; ?>',
+		type: 'post',
+		data: formData,
+		dataType: 'json',
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(json) {
+			$('#documents-empty-row').remove();
+
+			(json.success || []).forEach(function(doc) {
+				var html = '<tr id="document-row' + doc.product_document_id + '">';
+				html += '<td><a href="' + doc.view_url + '" target="_blank">' + doc.name + '</a></td>';
+				html += '<td>' + doc.date_added + '</td>';
+				html += '<td><a onclick="docdeleteRow(' + doc.product_document_id + ');" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+				html += '</tr>';
+
+				$('#documents-tbody').append(html);
+			});
+
+			if (json.errors && json.errors.length) {
+				$('#docupload-progress').html(json.errors.join('<br>')).show();
+			}
+
+			input.value = '';
+		}
+	});
 }
 </script>
 <script>

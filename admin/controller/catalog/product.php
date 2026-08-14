@@ -799,6 +799,12 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['button_add_image'] = $this->language->get('button_add_image');
 		$this->data['button_remove'] = $this->language->get('button_remove');
 		$this->data['button_add_profile'] = $this->language->get('button_add_profile');
+		$this->data['button_document_upload'] = $this->language->get('button_document_upload');
+
+		$this->data['column_document_name'] = $this->language->get('column_document_name');
+		$this->data['column_document_date'] = $this->language->get('column_document_date');
+		$this->data['text_no_documents'] = $this->language->get('text_no_documents');
+		$this->data['text_save_product_first'] = $this->language->get('text_save_product_first');
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
 		$this->data['tab_data'] = $this->language->get('tab_data');
@@ -808,6 +814,7 @@ class ControllerCatalogProduct extends Controller {
 		$this->data['tab_discount'] = $this->language->get('tab_discount');
 		$this->data['tab_special'] = $this->language->get('tab_special');
 		$this->data['tab_image'] = $this->language->get('tab_image');
+		$this->data['tab_documents'] = $this->language->get('tab_documents');
 		$this->data['tab_links'] = $this->language->get('tab_links');
 		$this->data['tab_reward'] = $this->language->get('tab_reward');
 		$this->data['tab_design'] = $this->language->get('tab_design');
@@ -1419,6 +1426,25 @@ class ControllerCatalogProduct extends Controller {
 
 		$this->data['no_image'] = $this->model_tool_image->resize('no_image.jpg', 100, 100);
 
+		// Product documents
+		$this->data['product_documents'] = array();
+
+		if (isset($this->request->get['product_id'])) {
+			$documents = $this->model_catalog_product->getProductDocuments($this->request->get['product_id']);
+
+			foreach ($documents as $document) {
+				$this->data['product_documents'][] = array(
+					'product_document_id' => $document['product_document_id'],
+					'name'                => $document['name'],
+					'date_added'          => date('d-m-Y H:i', strtotime($document['date_added'])),
+					'view_url'            => html_entity_decode($this->url->link('catalog/product/viewDocument', 'token=' . $this->session->data['token'] . '&product_document_id=' . $document['product_document_id'], 'SSL'), ENT_QUOTES, 'UTF-8')
+				);
+			}
+		}
+
+		$this->data['docupload_url'] = html_entity_decode($this->url->link('catalog/product/uploadDocument', 'token=' . $this->session->data['token'], 'SSL'), ENT_QUOTES, 'UTF-8');
+		$this->data['docdelete_url'] = html_entity_decode($this->url->link('catalog/product/deleteDocument', 'token=' . $this->session->data['token'], 'SSL'), ENT_QUOTES, 'UTF-8');
+
 		// Downloads
 		$this->load->model('catalog/download');
 
@@ -1780,6 +1806,201 @@ class ControllerCatalogProduct extends Controller {
 	// Returns a product's name + description, used by the "view description"
 	// button on product lines in sale/purchase document forms (quote, order,
 	// delivery, draft, invoices...).
+	public function uploadDocument() {
+		ob_start();
+		$json = array('success' => array(), 'errors' => array());
+
+		$this->load->language('catalog/product');
+		$this->load->model('catalog/product');
+
+		if (!$this->user->hasPermission('modify', 'catalog/product')) {
+			$json['errors'][] = $this->language->get('error_permission');
+			ob_end_clean();
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$product_id = !empty($this->request->post['product_id']) ? (int)$this->request->post['product_id'] : 0;
+		$product_info = $product_id ? $this->model_catalog_product->getProduct($product_id) : false;
+
+		if (!$product_info) {
+			$json['errors'][] = $this->language->get('error_document_no_product');
+			ob_end_clean();
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$allowed_ext  = array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'png', 'jpg', 'jpeg');
+		$max_size     = 20 * 1024 * 1024;
+
+		$files = isset($this->request->files['file']) ? $this->request->files['file'] : array();
+
+		if (empty($files['name']) || (is_array($files['name']) && !array_filter($files['name']))) {
+			$json['errors'][] = $this->language->get('error_document_no_file');
+			ob_end_clean();
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$names     = (array)$files['name'];
+		$tmp_names = (array)$files['tmp_name'];
+		$errors    = (array)$files['error'];
+		$sizes     = (array)$files['size'];
+
+		$dir = $this->model_catalog_product->getProductDocumentsDir($product_id);
+
+		if (!is_dir($dir)) {
+			mkdir($dir, 0755, true);
+		}
+
+		foreach ($names as $index => $original_name) {
+			if ($original_name === '') {
+				continue;
+			}
+
+			if (!empty($errors[$index]) && $errors[$index] != UPLOAD_ERR_OK) {
+				$json['errors'][] = $original_name . ': ' . $this->language->get('error_document_upload_failed');
+				continue;
+			}
+
+			if (!is_uploaded_file($tmp_names[$index])) {
+				$json['errors'][] = $original_name . ': ' . $this->language->get('error_document_upload_failed');
+				continue;
+			}
+
+			if ($sizes[$index] > $max_size) {
+				$json['errors'][] = $original_name . ': ' . $this->language->get('error_document_too_large');
+				continue;
+			}
+
+			$ext = strtolower(pathinfo($original_name, PATHINFO_EXTENSION));
+
+			if (!in_array($ext, $allowed_ext)) {
+				$json['errors'][] = $original_name . ': ' . $this->language->get('error_document_extension');
+				continue;
+			}
+
+			$safe_name = preg_replace('/[^A-Za-z0-9_\-\.]/', '_', basename($original_name));
+			$filename  = uniqid() . '_' . $safe_name;
+
+			if (!move_uploaded_file($tmp_names[$index], $dir . $filename)) {
+				$json['errors'][] = $original_name . ': ' . $this->language->get('error_document_upload_failed');
+				continue;
+			}
+
+			$product_document_id = $this->model_catalog_product->addProductDocument($product_id, $filename, $original_name);
+
+			$json['success'][] = array(
+				'product_document_id' => $product_document_id,
+				'name'                => $original_name,
+				'date_added'          => date('d-m-Y H:i'),
+				'view_url'            => html_entity_decode($this->url->link('catalog/product/viewDocument', 'token=' . $this->session->data['token'] . '&product_document_id=' . $product_document_id, 'SSL'), ENT_QUOTES, 'UTF-8')
+			);
+		}
+
+		ob_end_clean();
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function deleteDocument() {
+		ob_start();
+		$json = array();
+
+		$this->load->language('catalog/product');
+		$this->load->model('catalog/product');
+
+		if (!$this->user->hasPermission('modify', 'catalog/product')) {
+			$json['error'] = $this->language->get('error_permission');
+			ob_end_clean();
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$product_document_id = !empty($this->request->post['product_document_id']) ? (int)$this->request->post['product_document_id'] : 0;
+		$document = $product_document_id ? $this->model_catalog_product->getProductDocument($product_document_id) : false;
+
+		if (!$document) {
+			$json['error'] = $this->language->get('error_document_not_found');
+			ob_end_clean();
+			$this->response->addHeader('Content-Type: application/json');
+			$this->response->setOutput(json_encode($json));
+			return;
+		}
+
+		$dir  = $this->model_catalog_product->getProductDocumentsDir($document['product_id']);
+		$file = $dir . $document['filename'];
+
+		if (is_file($file)) {
+			unlink($file);
+		}
+
+		$this->model_catalog_product->deleteProductDocument($product_document_id);
+
+		$json['success'] = $this->language->get('text_document_deleted');
+
+		ob_end_clean();
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function viewDocument() {
+		if (!$this->user->hasPermission('access', 'catalog/product')) {
+			http_response_code(403);
+			exit('Permission denied');
+		}
+
+		if (empty($this->request->get['product_document_id'])) {
+			http_response_code(400);
+			exit('Missing product_document_id');
+		}
+
+		$this->load->model('catalog/product');
+		$document = $this->model_catalog_product->getProductDocument((int)$this->request->get['product_document_id']);
+
+		if (!$document) {
+			http_response_code(404);
+			exit('Document not found');
+		}
+
+		$dir  = $this->model_catalog_product->getProductDocumentsDir($document['product_id']);
+		$file = $dir . $document['filename'];
+
+		if (!is_file($file)) {
+			http_response_code(404);
+			exit('Document not found');
+		}
+
+		$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+		$mime_types = array(
+			'pdf'  => 'application/pdf',
+			'jpg'  => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'png'  => 'image/png',
+			'gif'  => 'image/gif',
+			'txt'  => 'text/plain',
+			'doc'  => 'application/msword',
+			'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'xls'  => 'application/vnd.ms-excel',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		);
+
+		$content_type = isset($mime_types[$ext]) ? $mime_types[$ext] : 'application/octet-stream';
+
+		header('Content-Type: ' . $content_type);
+		header('Content-Disposition: inline; filename="' . basename($document['name']) . '"');
+		header('Content-Length: ' . filesize($file));
+		header('Cache-Control: private');
+		ob_end_clean();
+		readfile($file);
+		exit;
+	}
+
 	public function getDescription() {
 		ob_start();
 		$json = array();

@@ -84,6 +84,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['text_no'] = $this->language->get('text_no');
 		$this->data['text_aeat_test'] = $this->language->get('text_aeat_test');
 		$this->data['text_aeat_production'] = $this->language->get('text_aeat_production');
+		$this->data['text_option_general'] = $this->language->get('text_option_general');
 		$this->data['text_items'] = $this->language->get('text_items');
 		$this->data['text_product'] = $this->language->get('text_product');
 		$this->data['text_voucher'] = $this->language->get('text_voucher');
@@ -102,7 +103,6 @@ class ControllerSettingSetting extends Controller {
 		$this->data['text_smtp'] = $this->language->get('text_smtp');
 
 		$this->data['entry_name'] = $this->language->get('entry_name');
-		$this->data['entry_owner'] = $this->language->get('entry_owner');
 		$this->data['entry_address'] = $this->language->get('entry_address');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
@@ -127,6 +127,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_catalog_limit'] = $this->language->get('entry_catalog_limit');
 		$this->data['entry_admin_limit'] = $this->language->get('entry_admin_limit');
 		$this->data['entry_open_next_convert'] = $this->language->get('entry_open_next_convert');
+		$this->data['text_open_next_convert_tooltip'] = $this->language->get('text_open_next_convert_tooltip');
 		$this->data['entry_product_count'] = $this->language->get('entry_product_count');
 		$this->data['entry_review'] = $this->language->get('entry_review');
 		$this->data['entry_download'] = $this->language->get('entry_download');
@@ -145,6 +146,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_purchase_invoice_prefix'] = $this->language->get('entry_purchase_invoice_prefix');
 		$this->data['entry_sales_invoice_prefix']    = $this->language->get('entry_sales_invoice_prefix');
 		$this->data['entry_sales_order_prefix']      = $this->language->get('entry_sales_order_prefix');
+		$this->data['entry_sales_delivery_prefix']   = $this->language->get('entry_sales_delivery_prefix');
 		$this->data['entry_cart_weight'] = $this->language->get('entry_cart_weight');		
 		$this->data['entry_guest_checkout'] = $this->language->get('entry_guest_checkout');
 		$this->data['entry_checkout'] = $this->language->get('entry_checkout');		
@@ -230,12 +232,19 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_aeat_send'] = $this->language->get('entry_aeat_send');
 		$this->data['entry_aeat_ca_bundle'] = $this->language->get('entry_aeat_ca_bundle');
 		$this->data['text_aeat_ca_bundle_help'] = $this->language->get('text_aeat_ca_bundle_help');
+		$this->data['entry_ai_enabled'] = $this->language->get('entry_ai_enabled');
 		$this->data['entry_ai_provider'] = $this->language->get('entry_ai_provider');
 		$this->data['text_ai_claude'] = $this->language->get('text_ai_claude');
 		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
 		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
 		$this->data['entry_ollama_url'] = $this->language->get('entry_ollama_url');
+		$this->data['button_ai_test'] = $this->language->get('button_ai_test');
+		$this->data['text_ai_test_ok'] = $this->language->get('text_ai_test_ok');
+		$this->data['text_ai_test_no_response'] = $this->language->get('text_ai_test_no_response');
+		$this->data['ai_test_url'] = html_entity_decode($this->url->link('setting/setting/testAi', 'token=' . $this->session->data['token'], 'SSL'), ENT_QUOTES, 'UTF-8');
 		$this->data['entry_import_supplier_invoices'] = $this->language->get('entry_import_supplier_invoices');
+		$this->data['text_import_supplier_invoices_tooltip'] = $this->language->get('text_import_supplier_invoices_tooltip');
+		$this->data['text_recepciones_ai_note'] = $this->language->get('text_recepciones_ai_note');
 		$this->data['entry_supplier_invoice_email'] = $this->language->get('entry_supplier_invoice_email');
 		$this->data['entry_supplier_invoice_email_password'] = $this->language->get('entry_supplier_invoice_email_password');
 		$this->data['entry_supplier_invoice_pop_host'] = $this->language->get('entry_supplier_invoice_pop_host');
@@ -261,6 +270,7 @@ class ControllerSettingSetting extends Controller {
 		$this->data['tab_payroll'] = $this->language->get('tab_payroll');
 		$this->data['tab_accounting'] = $this->language->get('tab_accounting');
 		$this->data['tab_hacienda'] = $this->language->get('tab_hacienda');
+		$this->data['tab_recepciones'] = $this->language->get('tab_recepciones');
 		$this->data['tab_ia'] = $this->language->get('tab_ia');
 
 		if (isset($this->error['warning'])) {
@@ -273,12 +283,6 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_name'] = $this->error['name'];
 		} else {
 			$this->data['error_name'] = '';
-		}
-
-		if (isset($this->error['owner'])) {
-			$this->data['error_owner'] = $this->error['owner'];
-		} else {
-			$this->data['error_owner'] = '';
 		}
 
 		if (isset($this->error['address'])) {
@@ -443,6 +447,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_conta_result_account'] = '';
 		}
 
+		if (isset($this->error['ai_enabled'])) {
+			$this->data['error_ai_enabled'] = $this->error['ai_enabled'];
+		} else {
+			$this->data['error_ai_enabled'] = '';
+		}
+
 		if (isset($this->error['supplier_invoice_email'])) {
 			$this->data['error_supplier_invoice_email'] = $this->error['supplier_invoice_email'];
 		} else {
@@ -504,12 +514,6 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_name'] = $this->config->get('config_name');
 		}
 
-		if (isset($this->request->post['config_owner'])) {
-			$this->data['config_owner'] = $this->request->post['config_owner'];
-		} else {
-			$this->data['config_owner'] = $this->config->get('config_owner');
-		}
-
 		if (isset($this->request->post['config_address'])) {
 			$this->data['config_address'] = $this->request->post['config_address'];
 		} else {
@@ -550,6 +554,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_conta_result_account'] = $this->request->post['config_conta_result_account'];
 		} else {
 			$this->data['config_conta_result_account'] = $this->config->get('config_conta_result_account');
+		}
+
+		if (isset($this->request->post['config_ai_enabled'])) {
+			$this->data['config_ai_enabled'] = $this->request->post['config_ai_enabled'];
+		} else {
+			$this->data['config_ai_enabled'] = ($this->config->get('config_ai_enabled') !== null) ? $this->config->get('config_ai_enabled') : '1';
 		}
 
 		if (isset($this->request->post['config_claude_api_key'])) {
@@ -874,7 +884,7 @@ class ControllerSettingSetting extends Controller {
 		} elseif ($this->config->get('config_purchase_invoice_prefix')) {
 			$this->data['config_purchase_invoice_prefix'] = $this->config->get('config_purchase_invoice_prefix');
 		} else {
-			$this->data['config_purchase_invoice_prefix'] = 'FRA-' . date('Y') . '-00';
+			$this->data['config_purchase_invoice_prefix'] = 'FCO-' . date('Y') . '-00';
 		}
 
 		if (isset($this->request->post['config_sales_invoice_prefix'])) {
@@ -890,7 +900,15 @@ class ControllerSettingSetting extends Controller {
 		} elseif ($this->config->get('config_sales_order_prefix')) {
 			$this->data['config_sales_order_prefix'] = $this->config->get('config_sales_order_prefix');
 		} else {
-			$this->data['config_sales_order_prefix'] = 'ORD-' . date('Y') . '-00';
+			$this->data['config_sales_order_prefix'] = 'PED-' . date('Y') . '-00';
+		}
+
+		if (isset($this->request->post['config_sales_delivery_prefix'])) {
+			$this->data['config_sales_delivery_prefix'] = $this->request->post['config_sales_delivery_prefix'];
+		} elseif ($this->config->get('config_sales_delivery_prefix')) {
+			$this->data['config_sales_delivery_prefix'] = $this->config->get('config_sales_delivery_prefix');
+		} else {
+			$this->data['config_sales_delivery_prefix'] = 'ALB-' . date('Y') . '-00';
 		}
 
 		$this->load->model('catalog/information');
@@ -1459,14 +1477,6 @@ class ControllerSettingSetting extends Controller {
 			$this->error['name'] = $this->language->get('error_name');
 		}	
 
-		if ((utf8_strlen($this->request->post['config_owner']) < 3) || (utf8_strlen($this->request->post['config_owner']) > 64)) {
-			$this->error['owner'] = $this->language->get('error_owner');
-		}
-
-		if ((utf8_strlen($this->request->post['config_address']) < 3) || (utf8_strlen($this->request->post['config_address']) > 256)) {
-			$this->error['address'] = $this->language->get('error_address');
-		}
-
 		if ((utf8_strlen($this->request->post['config_email']) > 96) || !preg_match('/^[^\@]+@.*\.[a-z]{2,6}$/i', $this->request->post['config_email'])) {
 			$this->error['email'] = $this->language->get('error_email');
 		}
@@ -1474,10 +1484,6 @@ class ControllerSettingSetting extends Controller {
 		if ((utf8_strlen($this->request->post['config_telephone']) < 3) || (utf8_strlen($this->request->post['config_telephone']) > 32)) {
 			$this->error['telephone'] = $this->language->get('error_telephone');
 		}
-
-		if (!$this->request->post['config_title']) {
-			$this->error['title'] = $this->language->get('error_title');
-		}	
 
 		if (!empty($this->request->post['config_customer_group_display']) && !in_array($this->request->post['config_customer_group_id'], $this->request->post['config_customer_group_display'])) {
 			$this->error['customer_group_display'] = $this->language->get('error_customer_group_display');
@@ -1575,6 +1581,17 @@ class ControllerSettingSetting extends Controller {
 			$this->error['conta_result_account'] = sprintf($this->language->get('error_conta_result_account'), $conta_digits);
 		}
 
+		if (!empty($this->request->post['config_ai_enabled'])) {
+			$ai_provider = isset($this->request->post['config_ai_provider']) ? $this->request->post['config_ai_provider'] : 'claude';
+			$ai_claude_key = isset($this->request->post['config_claude_api_key']) ? trim($this->request->post['config_claude_api_key']) : '';
+			$ai_ollama_url = isset($this->request->post['config_ollama_url']) ? trim($this->request->post['config_ollama_url']) : '';
+
+			if ((($ai_provider == 'ollama') && ($ai_ollama_url === '')) || (($ai_provider != 'ollama') && ($ai_claude_key === ''))) {
+				$this->error['ai_enabled'] = $this->language->get('error_ai_enabled');
+				$this->request->post['config_ai_enabled'] = '0';
+			}
+		}
+
 		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_supplier_invoice_email'])) {
 			$this->error['supplier_invoice_email'] = $this->language->get('error_supplier_invoice_email');
 		}
@@ -1661,6 +1678,101 @@ class ControllerSettingSetting extends Controller {
         $mail->setText(html_entity_decode($this->language->get('text_mail_message'), ENT_QUOTES, 'UTF-8'));
 
 		$mail->send();
+	}
+
+	public function testAi() {
+		$this->response->addHeader('Content-Type: application/json');
+
+		if (!$this->user->hasPermission('modify', 'setting/setting')) {
+			$this->response->setOutput(json_encode(array('ok' => false)));
+			return;
+		}
+
+		$provider = isset($this->request->post['provider']) ? $this->request->post['provider'] : 'claude';
+
+		if ($provider == 'ollama') {
+			$ok = $this->testAiOllama();
+		} else {
+			$ok = $this->testAiClaude();
+		}
+
+		$this->response->setOutput(json_encode(array('ok' => $ok)));
+	}
+
+	private function testAiClaude() {
+		$api_key = isset($this->request->post['claude_api_key']) ? trim($this->request->post['claude_api_key']) : '';
+
+		if ($api_key === '') {
+			return false;
+		}
+
+		$payload = array(
+			'model'      => 'claude-opus-4-8',
+			'max_tokens' => 5,
+			'messages'   => array(array('role' => 'user', 'content' => 'ping'))
+		);
+
+		$ch = curl_init('https://api.anthropic.com/v1/messages');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Content-Type: application/json',
+			'x-api-key: ' . $api_key,
+			'anthropic-version: 2023-06-01'
+		));
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+		$raw       = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		if (($raw === false) || ($http_code != 200)) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		return !empty($resp['content']);
+	}
+
+	private function testAiOllama() {
+		$url = isset($this->request->post['ollama_url']) ? trim($this->request->post['ollama_url']) : '';
+
+		if ($url === '') {
+			$url = 'http://127.0.0.1:11434/api/chat';
+		}
+
+		$payload = array(
+			'model'    => 'qwen3:1.7b',
+			'messages' => array(array('role' => 'user', 'content' => 'ping')),
+			'think'    => false,
+			'stream'   => false,
+			'options'  => array('num_predict' => 5)
+		);
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 20);
+
+		$raw       = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		if (($raw === false) || ($http_code != 200)) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		return isset($resp['message']);
 	}
 }
 ?>

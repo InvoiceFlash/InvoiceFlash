@@ -302,7 +302,21 @@ class ModelCatalogProduct extends Model {
 	}
 
 	public function deleteProduct($product_id) {
+		$documents = $this->getProductDocuments($product_id);
+		$dir = $this->getProductDocumentsDir($product_id);
+
+		foreach ($documents as $document) {
+			if (is_file($dir . $document['filename'])) {
+				unlink($dir . $document['filename']);
+			}
+		}
+
+		if (is_dir($dir)) {
+			@rmdir($dir);
+		}
+
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product WHERE product_id = '" . (int)$product_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "product_document WHERE product_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_attribute WHERE product_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_description WHERE product_id = '" . (int)$product_id . "'");
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_discount WHERE product_id = '" . (int)$product_id . "'");
@@ -560,6 +574,34 @@ class ModelCatalogProduct extends Model {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_image WHERE product_id = '" . (int)$product_id . "'");
 
 		return $query->rows;
+	}
+
+	public function getProductDocumentsDir($product_id) {
+		$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
+
+		return $project_root . '/docs/products/' . (int)$product_id . '/';
+	}
+
+	public function getProductDocuments($product_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_document WHERE product_id = '" . (int)$product_id . "' ORDER BY date_added DESC");
+
+		return $query->rows;
+	}
+
+	public function getProductDocument($product_document_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "product_document WHERE product_document_id = '" . (int)$product_document_id . "'");
+
+		return $query->row;
+	}
+
+	public function addProductDocument($product_id, $filename, $name) {
+		$this->db->query("INSERT INTO " . DB_PREFIX . "product_document SET product_id = '" . (int)$product_id . "', filename = '" . $this->db->escape($filename) . "', name = '" . $this->db->escape($name) . "', date_added = NOW()");
+
+		return $this->db->getLastId();
+	}
+
+	public function deleteProductDocument($product_document_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "product_document WHERE product_document_id = '" . (int)$product_document_id . "'");
 	}
 
 	public function getProductDiscounts($product_id) {

@@ -1817,7 +1817,10 @@ CREATE TABLE `if_length_class_description` (
 INSERT INTO `if_length_class_description` (`length_class_id`, `language_id`, `title`, `unit`) VALUES
 (1, 1, 'Centimeter', 'cm'),
 (2, 1, 'Millimeter', 'mm'),
-(3, 1, 'Inch', 'in');
+(3, 1, 'Inch', 'in'),
+(1, 2, 'Centímetro', 'cm'),
+(2, 2, 'Milímetro', 'mm'),
+(3, 2, 'Pulgada', 'in');
 
 -- --------------------------------------------------------
 
@@ -3026,7 +3029,10 @@ CREATE TABLE `if_return_status` (
 INSERT INTO `if_return_status` (`return_status_id`, `language_id`, `name`) VALUES
 (1, 1, 'Pending'),
 (3, 1, 'Complete'),
-(2, 1, 'Awaiting Products');
+(2, 1, 'Awaiting Products'),
+(1, 2, 'Pendiente'),
+(3, 2, 'Completado'),
+(2, 2, 'Esperando Productos');
 
 -- --------------------------------------------------------
 
@@ -3172,7 +3178,8 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (94, 0, 'voucher', 'voucher_sort_order', '8', 0),
 (95, 0, 'voucher', 'voucher_status', '1', 0),
 (96, 0, 'config', 'config_length_class_id', '1', 0),
-(97, 0, 'config', 'config_invoice_prefix', 'INV-2019-00', 0),
+(97, 0, 'config', 'config_invoice_prefix', CONCAT('FRA-', YEAR(CURDATE()), '-00'), 0),
+(133, 0, 'config', 'config_quote_prefix', CONCAT('PRE-', YEAR(CURDATE()), '-00'), 0),
 (98, 0, 'config', 'config_tax', '1', 0),
 (99, 0, 'config', 'config_tax_customer', 'shipping', 0),
 (100, 0, 'config', 'config_tax_default', 'shipping', 0),
@@ -3185,7 +3192,7 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (107, 0, 'config', 'config_currency', 'EUR', 0),
 (108, 0, 'slideshow', 'slideshow_module', 'a:1:{i:0;a:8:{s:9:"banner_id";s:1:"7";s:5:"width";s:3:"980";s:6:"height";s:3:"280";s:11:"resize_type";s:7:"default";s:9:"layout_id";s:1:"1";s:8:"position";s:11:"content_top";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"1";}}', 1),
 (109, 0, 'banner', 'banner_module', 'a:1:{i:0;a:8:{s:9:"banner_id";s:1:"6";s:5:"width";s:3:"182";s:6:"height";s:3:"182";s:11:"resize_type";s:7:"default";s:9:"layout_id";s:1:"3";s:8:"position";s:11:"column_left";s:6:"status";s:1:"1";s:10:"sort_order";s:1:"3";}}', 1),
-(110, 0, 'config', 'config_name', 'Your Store', 0),
+(110, 0, 'config', 'config_name', 'Your Company', 0),
 (111, 0, 'config', 'config_owner', 'Your Name', 0),
 (112, 0, 'config', 'config_address', 'Address 1', 0),
 (113, 0, 'config', 'config_email', 'your@store.com', 0),
@@ -3195,8 +3202,8 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (117, 0, 'config', 'config_meta_description', 'My Store', 0),
 (118, 0, 'config', 'config_template', 'default', 0),
 (119, 0, 'config', 'config_layout_id', '4', 0),
-(120, 0, 'config', 'config_country_id', '222', 0),
-(121, 0, 'config', 'config_zone_id', '3563', 0),
+(120, 0, 'config', 'config_country_id', '195', 0),
+(121, 0, 'config', 'config_zone_id', '3021', 0),
 (122, 0, 'config', 'config_language', 'es', 0),
 (123, 0, 'config', 'config_admin_language', 'es', 0),
 (124, 0, 'config', 'config_order_edit', '100', 0),
@@ -3583,7 +3590,11 @@ INSERT INTO `if_weight_class_description` (`weight_class_id`, `language_id`, `ti
 (1, 1, 'Kilogram', 'kg'),
 (2, 1, 'Gram', 'g'),
 (5, 1, 'Pound ', 'lb'),
-(6, 1, 'Ounce', 'oz');
+(6, 1, 'Ounce', 'oz'),
+(1, 2, 'Kilogramo', 'kg'),
+(2, 2, 'Gramo', 'g'),
+(5, 2, 'Libra', 'lb'),
+(6, 2, 'Onza', 'oz');
 
 -- --------------------------------------------------------
 
@@ -7940,6 +7951,19 @@ CREATE TABLE `if_document_embedding_log` (
   PRIMARY KEY (`document_embedding_log_id`),
   UNIQUE KEY `document_id` (`document_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+/*Table structure for table `product_document` */
+
+DROP TABLE IF EXISTS `if_product_document`;
+CREATE TABLE `if_product_document` (
+  `product_document_id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`product_document_id`),
+  KEY `product_id` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Table structure for table `draft` */
 
