@@ -132,7 +132,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_review'] = $this->language->get('entry_review');
 		$this->data['entry_product_vector_embeddings'] = $this->language->get('entry_product_vector_embeddings');
 		$this->data['text_product_vector_embeddings_tooltip'] = $this->language->get('text_product_vector_embeddings_tooltip');
-		$this->data['text_product_vector_embeddings_tooltip'] = $this->language->get('text_product_vector_embeddings_tooltip');
+		$this->data['text_product_vector_embeddings_ai_warning'] = $this->language->get('error_product_vector_embeddings');
+		$this->data['text_import_supplier_invoices_ai_warning'] = $this->language->get('error_import_supplier_invoices_ai');
 		$this->data['entry_download'] = $this->language->get('entry_download');
 		$this->data['entry_voucher_min'] = $this->language->get('entry_voucher_min');
 		$this->data['entry_voucher_max'] = $this->language->get('entry_voucher_max');
@@ -256,6 +257,7 @@ class ControllerSettingSetting extends Controller {
 
 		//Button test
 		$this->data['button_test'] = $this->language->get('button_test');
+		$this->data['text_test_email_note'] = $this->language->get('text_test_email_note');
 
 		$this->data['tab_general'] = $this->language->get('tab_general');
 		$this->data['tab_store'] = $this->language->get('tab_store');
@@ -455,6 +457,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_product_vector_embeddings'] = $this->error['product_vector_embeddings'];
 		} else {
 			$this->data['error_product_vector_embeddings'] = '';
+		}
+
+		if (isset($this->error['import_supplier_invoices_ai'])) {
+			$this->data['error_import_supplier_invoices_ai'] = $this->error['import_supplier_invoices_ai'];
+		} else {
+			$this->data['error_import_supplier_invoices_ai'] = '';
 		}
 
 		if (isset($this->error['supplier_invoice_email'])) {
@@ -1583,6 +1591,11 @@ class ControllerSettingSetting extends Controller {
 			$this->request->post['config_product_vector_embeddings'] = '0';
 		}
 
+		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_ai_enabled'])) {
+			$this->error['import_supplier_invoices_ai'] = $this->language->get('error_import_supplier_invoices_ai');
+			$this->request->post['config_import_supplier_invoices'] = '0';
+		}
+
 		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_supplier_invoice_email'])) {
 			$this->error['supplier_invoice_email'] = $this->language->get('error_supplier_invoice_email');
 		}
@@ -1661,14 +1674,20 @@ class ControllerSettingSetting extends Controller {
         $mail->password = $_POST['password'];
         $mail->port = $_POST['port'];
 
-        $mail->setTo($_POST['usermame']);
+        $company_email = $this->config->get('config_email');
+
+        $mail->setTo($company_email ? $company_email : $_POST['usermame']);
         $mail->setFrom($_POST['usermame']);
 		$mail->setSender($_POST['usermame']);
 
         $mail->setSubject($this->language->get('text_mail_subject'));
         $mail->setText(html_entity_decode($this->language->get('text_mail_message'), ENT_QUOTES, 'UTF-8'));
 
-		$mail->send();
+		try {
+			$mail->send();
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 	}
 
 	public function testAi() {

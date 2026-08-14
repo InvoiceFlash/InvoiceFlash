@@ -242,8 +242,13 @@ class ModelCatalogMail extends Model {
 	
 	public function getMail($mail_id) {
 		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "mails where mail_id = " . $mail_id);
-		
+
 		return $query->row ;
+	}
+
+	// bleido: 0 = recibido, aun sin ver ("Ver" nunca pulsado); 1 = ya visto; 2 = borrado (ver deleteMails()).
+	public function markMailViewed($mail_id) {
+		$this->db->query("UPDATE " . DB_PREFIX . "mails SET bleido = 1 WHERE mail_id = " . (int)$mail_id . " AND bleido = 0");
 	}
 
 	public function addMailSended($data) {

@@ -163,9 +163,13 @@ class Mail {
 		ini_set('sendmail_from', $this->from);
 
 		if ($this->parameter) {
-			mail($to, $subject, $message, $header, $this->parameter);
+			$result = mail($to, $subject, $message, $header, $this->parameter);
 		} else {
-			mail($to, $subject, $message, $header);
+			$result = mail($to, $subject, $message, $header);
+		}
+
+		if (!$result) {
+			throw new Exception('No se pudo enviar el correo con la funcion mail() de PHP. Comprueba la configuracion de envio de correo del servidor (php.ini / sendmail), o usa el protocolo SMTP en Ajustes > Correo.');
 		}
 	}
 
@@ -281,7 +285,7 @@ class Mail {
 		if (!in_array((int)substr($reply, 0, 3), $codes)) {
 			fclose($handle);
 
-			throw new RuntimeException($error);
+			throw new RuntimeException($error . ' (' . trim($reply) . ')');
 		}
 
 		return $reply;

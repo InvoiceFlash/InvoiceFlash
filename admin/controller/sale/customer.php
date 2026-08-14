@@ -642,6 +642,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['column_ip'] = $this->language->get('column_ip');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
+		$this->data['column_date'] = $this->language->get('column_date');
 		$this->data['column_action'] = $this->language->get('column_action');
 		$this->data['column_product_id'] = $this->language->get('column_product_id');
 		$this->data['column_product_name'] = $this->language->get('column_product_name');
@@ -842,7 +843,7 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['error_address_zone'] = '';
 		}
 
-		if (empty($this->config->get('config_smtp_host')) || empty($this->config->get('config_smtp_username')) || empty($this->config->get('config_smtp_password'))){
+		if (($this->config->get('config_mail_protocol') == 'smtp') && (empty($this->config->get('config_smtp_host')) || empty($this->config->get('config_smtp_username')) || empty($this->config->get('config_smtp_password')))){
 			$this->data['error_server'] = $this->language->get('error_server') ;
 		}
 
@@ -921,6 +922,8 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['has_documents'] = false;
 		$this->data['add_contact'] = '';
 		$this->data['add_contract'] = '';
+		$this->data['banks'] = array();
+		$this->data['add_bank'] = '';
 
 		if (isset($this->request->get['customer_id'])){
 
@@ -932,18 +935,26 @@ class ControllerSaleCustomer extends Controller {
 				foreach ($results as $result) {
 					$sender = '';
 
-					$arr_sender = $this->model_sale_customer->getCustomerByEmail($result['client']);
-
-					if (empty($arr_sender)) {
-						$arr_sender = $this->model_sale_customer->getCustomerContactByEmail($result['client']);
-						
-						if (empty($arr_sender)) {
-							$sender = $result['client'];
-						} else {
-							$sender = $arr_sender['cname'] . ' (' . $arr_sender['cemail'] . ')';
-						}
+					if ($result['type'] == 'E') {
+						// Correo enviado por nosotros (ver Model->addMailSended()): 'client' guarda
+						// el destinatario, no el remitente - el remitente somos nosotros mismos.
+						$sender = $this->config->get('config_name') . ' (' . $this->config->get('config_email') . ')';
 					} else {
-						$sender = $arr_sender['company'] . ' (' . $arr_sender['email'] . ')';
+						// Correo recibido (importado por IMAP, ver ModelCatalogMail->getmails()):
+						// 'client' guarda de verdad la direccion de quien lo envio.
+						$arr_sender = $this->model_sale_customer->getCustomerByEmail($result['client']);
+
+						if (empty($arr_sender)) {
+							$arr_sender = $this->model_sale_customer->getCustomerContactByEmail($result['client']);
+
+							if (empty($arr_sender)) {
+								$sender = $result['client'];
+							} else {
+								$sender = $arr_sender['cname'] . ' (' . $arr_sender['cemail'] . ')';
+							}
+						} else {
+							$sender = $arr_sender['company'] . ' (' . $arr_sender['email'] . ')';
+						}
 					}
 
 					$message = html_entity_decode($result['message']);

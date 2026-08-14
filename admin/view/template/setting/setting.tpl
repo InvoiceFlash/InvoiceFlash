@@ -6,8 +6,8 @@
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-local" data-bs-toggle="tab"><?php echo $tab_local; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-mail" data-bs-toggle="tab"><?php echo $tab_mail; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-payroll" data-bs-toggle="tab"><?php echo $tab_payroll; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-accounting" data-bs-toggle="tab"><?php echo $tab_accounting; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-hacienda" data-bs-toggle="tab"><?php echo $tab_hacienda; ?></a></li>
@@ -458,6 +458,7 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_smtp_username; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_smtp_username" id="user" value="<?php echo $config_smtp_username; ?>" class="form-control">
+							<small class="text-muted">(<?php echo $text_test_email_note; ?>)</small>
 						</div>
 						<!-- Boton de testeo de correo -->
 						<span class="input-group-btn">
@@ -681,6 +682,9 @@
 								<?php } ?>
 							<?php if ($error_supplier_invoice_email) { ?>
 								<div class="help-block text-danger"><?php echo $error_supplier_invoice_email; ?></div>
+							<?php } ?>
+							<?php if ($error_import_supplier_invoices_ai) { ?>
+								<div class="help-block text-danger"><?php echo $error_import_supplier_invoices_ai; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -1457,6 +1461,20 @@
 	$('input[name="config_import_supplier_invoices"]').on('change', recepcionesUpdateLook);
 
 	recepcionesUpdateLook();
+
+	function aiDependentRadioGuard(name, warningText) {
+		var $radios = $('input[name="' + name + '"]');
+
+		$radios.on('change', function() {
+			if (($(this).val() == '1') && ($('#input-ai-enabled').val() == '0')) {
+				alert(warningText);
+				$radios.filter('[value="0"]').prop('checked', true).trigger('change');
+			}
+		});
+	}
+
+	aiDependentRadioGuard('config_import_supplier_invoices', <?php echo json_encode(html_entity_decode($text_import_supplier_invoices_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
+	aiDependentRadioGuard('config_product_vector_embeddings', <?php echo json_encode(html_entity_decode($text_product_vector_embeddings_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
 
 	function aiTest() {
 		var provider = $('input[name="config_ai_provider"]:checked').val();

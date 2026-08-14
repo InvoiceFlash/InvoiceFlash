@@ -5,7 +5,7 @@ $_['heading_title'] = 'OpenCart';
 // Text
 $_['text_select_warning'] = 'Selecciona primero un elemento.';
 $_['text_dashboard'] = 'Panel de control';
-$_['text_catalog'] = 'Cat&aacute;logo';
+$_['text_catalog'] = 'Ficheros';
 $_['text_sale'] = 'Ventas';
 $_['text_purchases'] = 'Compras';
 $_['text_reports'] = 'Informes';

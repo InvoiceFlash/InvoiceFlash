@@ -81,11 +81,13 @@ class ControllerCatalogMail extends Controller {
 			$page = 1;
 		}
 
-		if (isset($this->request->get['type'])) {
-			$type = $this->request->get['type'];
+		if (isset($this->request->get['type']) && ($this->request->get['type'] == 'out')) {
+			$type = 'out';
 		} else {
 			$type = 'in';
 		}
+
+		$this->data['active_type'] = $type;
 
 		if (isset($this->request->get['filter_company'])) {
 			$filter_company = $this->request->get['filter_company'];
@@ -159,6 +161,7 @@ class ControllerCatalogMail extends Controller {
 				'message'     => $result['message'],
 				'created'     => date($this->language->get('datetime_format'), strtotime($result['date_added'])),
 				'sel_mail_in'    => isset($this->request->post['sel_mail_in']) && in_array($result['mail_id'], $this->request->post['sel_mail_in']),
+				'unread'      => ((int)$result['bleido'] === 0),
 				'action'      => $action
 			);
 		}	
@@ -257,11 +260,13 @@ class ControllerCatalogMail extends Controller {
 			foreach ($this->request->post['sel_mail_out'] as $mail_id) {
 				$this->model_catalog_mail->deleteMails_out($mail_id);
 	  		}
-			
+
 		}
-		
-		$this->redirect($this->url->link('catalog/mail', 'token=' . $this->session->data['token'], 'SSL'));
-		
+
+		$mail_type = (isset($this->request->post['type']) && ($this->request->post['type'] == 'out')) ? 'out' : 'in';
+
+		$this->redirect($this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . '&type=' . $mail_type, 'SSL'));
+
 	}
 	
 	public function getmails() {
@@ -413,6 +418,8 @@ class ControllerCatalogMail extends Controller {
 		$this->load->model('catalog/mail');
 		
 		$mail = $this->model_catalog_mail->getMail($mail_id) ;
+
+		$this->model_catalog_mail->markMailViewed($mail_id);
 
 		$this->data['reply'] = $this->url->link('catalog/mail/reply', 'token=' . $this->session->data['token'] . '&mail_id=' . $mail_id, '');
 		

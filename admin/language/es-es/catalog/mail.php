@@ -7,7 +7,7 @@ $_['tab_outbox'] 			= 'Bandeja de Salida';
 
 //Columns
 $_['column_from'] 			= 'Empresa';
-$_['column_customer'] 		= 'Email';
+$_['column_customer'] 		= 'Email remitente';
 $_['column_subject'] 		= 'Asunto';
 $_['column_date'] 			= 'Fecha';
 $_['column_action'] 		= 'Acci&oacute;n';

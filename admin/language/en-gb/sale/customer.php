@@ -39,6 +39,7 @@ $_['column_status']         = 'Status';
 $_['column_login']          = 'Login into Store';
 
 $_['column_date_added']     = 'Date Added';
+$_['column_date']           = 'Date';
 
 $_['column_comment']        = 'Comment';
 

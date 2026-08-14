@@ -9,7 +9,7 @@
 		<div class="pull-right">
 			<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#NewEmailModal"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
 			<a href="<?php echo $getmail ?>" class="btn btn-primary"><i class="fa fa-sync-alt"></i><span class="hidden-xs"> <?php echo $button_reset ?></span></a>
-			<button type="submit" class="btn btn-danger" formaction="<?php echo $delete ?>" id="btn-delete" form="form"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+			<button type="submit" class="btn btn-danger" formaction="<?php echo $delete ?>" id="btn-delete-mail" form="form"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 			<a href="<?php echo $cancel ?>" class="btn btn-warning"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel ?></span></a>
 		</div>
 	</div>
@@ -19,6 +19,7 @@
 			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-out" class="nav-link"><?php echo $tab_out; ?></a></li>
 		</ul>
 		<form method="post" enctype="multipart/form-data" id="form">
+			<input type="hidden" name="type" id="input-mail-type" value="<?php echo $active_type; ?>">
 			<div class="tab-content mt-3">
 				<div class="tab-pane" id="tab-inbox">
 					<?php if ($error_imap) { ?>
@@ -46,7 +47,7 @@
 							</tr>
 							<?php if ($mails_ins) { ?>
 								<?php foreach ($mails_ins as $mail_in) { ?>
-									<tr>
+									<tr<?php echo ($mail_in['unread']) ? ' style="background-color:#fff9c4;"' : ''; ?>>
 									<td class="rowlink-skip text-center">
 										<input type="checkbox" name="sel_mail_in[]" value="<?php echo $mail_in['mail_id']; ?>" <?php echo ($mail_in['sel_mail_in'] ? 'checked' : '')?>>
 									</td>
@@ -238,6 +239,32 @@ document.getElementById('NewEmailModal').addEventListener('shown.bs.modal', func
 	}).on('instanceReady', function () {
 		this.focus();
 	});
+});
+</script>
+<script>
+$('a[href="#tab-inbox"]').on('shown.bs.tab', function() {
+	$('#input-mail-type').val('in');
+});
+$('a[href="#tab-out"]').on('shown.bs.tab', function() {
+	$('#input-mail-type').val('out');
+});
+
+<?php if ($active_type == 'out') { ?>
+$(document).ready(function() {
+	bootstrap.Tab.getOrCreateInstance($('a[href="#tab-out"]')[0]).show();
+});
+<?php } ?>
+
+$('#btn-delete-mail').on('click', function(e) {
+	e.preventDefault();
+
+	if (!$('input[name="sel_mail_in[]"]:checked').length && !$('input[name="sel_mail_out[]"]:checked').length) {
+		return;
+	}
+
+	if (confirm(text_confirm)) {
+		$('#form').attr('action', $(this).attr('formaction')).submit();
+	}
 });
 </script>
 <?php echo $footer ?>

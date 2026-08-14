@@ -56,6 +56,7 @@ $_['entry_review']       	       = '<a data-toggle="tooltip" title="Enable/Disab
 $_['entry_product_vector_embeddings'] = 'Save vector representation:';
 $_['text_product_vector_embeddings_tooltip'] = 'Adds vector representations of the text to the database for AI processing at the moment the document is attached to the product.';
 $_['error_product_vector_embeddings'] = 'To enable this you must first enable "Use AI" in the AI tab.';
+$_['error_import_supplier_invoices_ai'] = 'To enable this you must first enable "Use AI" in the AI tab.';
 $_['entry_download']               = 'Allow Downloads:';
 $_['entry_voucher_min']            = '<a data-toggle="tooltip" title="Minimum amount a customer can purchase a voucher for."><i class="fas fa-question-circle"></i></a> Voucher Min:';
 $_['entry_voucher_max']            = '<a data-toggle="tooltip" title="Maximum amount a customer can purchase a voucher for."><i class="fas fa-question-circle"></i></a> Voucher Max:';
@@ -167,6 +168,7 @@ $_['error_encryption']             = 'Encryption must be between 3 and 32 charac
 
 //Button test
 $_['button_test'] = 'Test Email';
+$_['text_test_email_note'] = 'Sends it to the company email';
 
 $_['text_mail_subject'] = 'Testing Email';
 $_['text_mail_message'] = 'Checking that emails are sent correctly.';

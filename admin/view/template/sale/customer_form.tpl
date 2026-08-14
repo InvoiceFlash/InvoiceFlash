@@ -586,7 +586,7 @@
 						<table class="table table-bordered table-striped table-hover">
 						<thead>
 							<tr>
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
+								<th class="hidden-xs"><?php echo $column_date; ?></th>
 								<th class="text-left"><?php echo $column_email_subject; ?></th>
 								<th class="text-left"><?php echo $column_email_sender; ?></th>
 								<th class="text-right"><?php echo $column_action; ?></th>

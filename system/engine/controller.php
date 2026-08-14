@@ -219,6 +219,13 @@ abstract class Controller {
 	// callers invoke over AJAX with dataType 'json', so the PHP error page
 	// broke JSON.parse on the client instead of surfacing a real message.
 	protected function sendnewmail($to,$subject,$text,$lcFile) {
+		// Cualquier E_WARNING/E_NOTICE que pueda emitir mail()/fsockopen() (p.ej.
+		// "mail(): Failed to connect to mailserver...") se imprime como HTML antes
+		// de que el controller llamante haga json_encode(), rompiendo el JSON de
+		// la respuesta AJAX igual que le pasaba a la excepcion sin capturar de
+		// arriba. Se descarta ese output accidental, no el de la app en general.
+		ob_start();
+
 		$mail = new Mail();
 
         $mail->protocol = $this->config->get('config_mail_protocol');
@@ -246,8 +253,12 @@ abstract class Controller {
 		} catch (Exception $e) {
 			$log->write($e->getMessage());
 
+			ob_end_clean();
+
 			return $e->getMessage();
 		}
+
+		ob_end_clean();
 
 		return null;
     }

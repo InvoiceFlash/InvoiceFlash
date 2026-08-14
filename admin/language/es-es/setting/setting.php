@@ -4,7 +4,7 @@ $_['heading_title']                    = 'Configuraci&oacute;n';
 
 // Tab (sobrescribe las claves globales de spanish.php solo para esta pantalla)
 $_['tab_general'] = 'Empresa';
-$_['tab_option'] = 'Opciones';
+$_['tab_option'] = 'Varios';
 $_['tab_image'] = 'Im&aacute;genes';
 $_['text_option_general'] = 'General';
 
@@ -65,6 +65,7 @@ $_['entry_review'] = 'Permitir comentarios';
 $_['entry_product_vector_embeddings'] = 'Guardar representaci&oacute;n vectorial';
 $_['text_product_vector_embeddings_tooltip'] = 'Incorpora a la base de datos representaciones vectoriales del texto para su tratamiento por la IA en el momento de incorporar el documento al art&iacute;culo.';
 $_['error_product_vector_embeddings'] = 'Para activar esto primero tienes que activar &quot;Usar IA&quot; en la pesta&ntilde;a IA.';
+$_['error_import_supplier_invoices_ai'] = 'Para activar esto primero tienes que activar &quot;Usar IA&quot; en la pesta&ntilde;a IA.';
 $_['entry_review_guest'] = 'Permitir Comentarios de invitados';
 $_['entry_review_mail'] = 'Nueva Revisi&oacute;n Alerta mail';
 $_['entry_voucher_min'] = 'Vale M&iacute;nimo';
@@ -281,6 +282,7 @@ $_['entry_file_extension_allowed'] = '<a data-toggle="tooltip" title="A&ntilde;a
 
 //Button test
 $_['button_test'] = 'Probar Email';
+$_['text_test_email_note'] = 'Lo env&iacute;a al correo de la empresa';
 
 $_['text_mail_subject'] = 'Email de Prueba';
 $_['text_mail_message'] = 'Comprobando que los emails se env&iacute;an correctamente.';

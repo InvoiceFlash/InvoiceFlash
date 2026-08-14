@@ -39,6 +39,7 @@ $_['column_status']         = 'Estado';
 $_['column_login']          = 'Iniciar sesi&oacute;n en la Tienda';
 
 $_['column_date_added']     = 'Fecha de Alta';
+$_['column_date']           = 'Fecha';
 
 $_['column_comment']        = 'Comentario';
 
@@ -253,7 +254,7 @@ $_['text_subject'] = 'Asunto:';
 $_['text_message'] = 'Mensaje:';
 
 $_['button_new_email'] = 'Nuevo Email';
-$_['button_sepa'] = 'SEPA B2B';
+$_['button_sepa'] = 'Impreso SEPA B2B';
 $_['button_send'] = 'Enviar';
 $_['button_upload'] = 'Subir';
 
