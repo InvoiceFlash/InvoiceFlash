@@ -14,7 +14,6 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-recepciones" data-bs-toggle="tab"><?php echo $tab_recepciones; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-option" data-bs-toggle="tab"><?php echo $tab_option; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-ftp" data-bs-toggle="tab"><?php echo $tab_ftp; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-fraud" data-bs-toggle="tab"><?php echo $tab_fraud; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li>
 				<li class="nav-item"><a class="nav-link" href="#tab-ia" data-bs-toggle="tab"><?php echo $tab_ia; ?></a></li></ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
@@ -671,7 +670,7 @@
 				</div>
 				<div id="tab-recepciones" class="tab-pane">
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_import_supplier_invoices; ?> <i class="fa fa-question-circle text-muted" data-toggle="tooltip" title="<?php echo $text_import_supplier_invoices_tooltip; ?>"></i></label>
+						<label class="col-form-label col-sm-10 col-md-2"><a data-toggle="tooltip" title="<?php echo $text_import_supplier_invoices_tooltip; ?>"><i class="fas fa-question-circle"></i></a> <?php echo $entry_import_supplier_invoices; ?></label>
 						<div class="col-sm-6">
 							<?php if ($config_import_supplier_invoices) { ?>
 								<label class="radio-inline"><input type="radio" name="config_import_supplier_invoices" value="1" checked=""><?php echo $text_yes; ?></label>
@@ -686,8 +685,14 @@
 						</div>
 					</div>
 
-					<div style="border:1px solid #ddd; border-radius:4px; background-color:#f5f5f5; padding:20px 15px 1px 15px; margin-bottom:1.5em;">
-						<p class="text-muted"><?php echo $text_recepciones_ai_note; ?></p>
+					<div id="recepciones-frame" style="border:1px solid #ddd; border-radius:4px; background-color:#f5f5f5; padding:20px 15px 1px 15px; margin-bottom:1.5em;">
+						<style>
+							#recepciones-frame.recepciones-frame-disabled {
+								opacity: 0.5;
+								pointer-events: none;
+							}
+						</style>
+						<p class="text-muted"><b><?php echo $text_recepciones_ai_note; ?></b></p>
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_supplier_invoice_email; ?></label>
 							<div class="col-sm-6">
@@ -749,7 +754,6 @@
 						<ul class="nav nav-tabs">
 							<li class="nav-item"><a class="nav-link" href="#tab-option-general" data-bs-toggle="tab"><?php echo $text_option_general; ?></a></li>
 							<li class="nav-item"><a class="nav-link" href="#tab-items" data-bs-toggle="tab"><?php echo $text_items; ?></a></li>
-							<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $text_product; ?></a></li>
 							<li class="nav-item d-none"><a class="nav-link" href="#tab-voucher" data-bs-toggle="tab"><?php echo $text_voucher; ?></a></li>
 							<li class="nav-item"><a class="nav-link" href="#tab-tax" data-bs-toggle="tab"><?php echo $text_tax; ?></a></li>
 							<li class="nav-item"><a class="nav-link" href="#tab-account" data-bs-toggle="tab"><?php echo $text_account; ?></a></li>
@@ -824,8 +828,6 @@
 										<?php } ?>
 									</div>
 								</div>
-							</div>
-							<div id="tab-product" class="tab-pane">
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_product_count; ?></label>
 									<div class="col-sm-6">
@@ -847,6 +849,21 @@
 										<?php } else { ?>
 										<label class="radio-inline"><input type="radio" name="config_review_status" value="1"><?php echo $text_yes; ?></label>
 										<label class="radio-inline"><input type="radio" name="config_review_status" value="0" checked=""><?php echo $text_no; ?></label>
+										<?php } ?>
+									</div>
+								</div>
+								<div class="form-group row">
+									<label class="col-form-label col-sm-10 col-md-2"><a data-toggle="tooltip" title="<?php echo $text_product_vector_embeddings_tooltip; ?>" style="display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;border-radius:50%;background-color:#2e8bcc;color:#fff;font-size:11px;font-weight:bold;text-decoration:none;">?</a> <?php echo $entry_product_vector_embeddings; ?></label>
+									<div class="col-sm-6">
+										<?php if ($config_product_vector_embeddings) { ?>
+										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="1" checked=""><?php echo $text_yes; ?></label>
+										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="0"><?php echo $text_no; ?></label>
+										<?php } else { ?>
+										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="1"><?php echo $text_yes; ?></label>
+										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="0" checked=""><?php echo $text_no; ?></label>
+										<?php } ?>
+										<?php if ($error_product_vector_embeddings) { ?>
+											<div class="help-block text-danger"><?php echo $error_product_vector_embeddings; ?></div>
 										<?php } ?>
 									</div>
 								</div>
@@ -935,7 +952,7 @@
 								</div>
 							</div>
 							<div id="tab-account" class="tab-pane">
-								<div class="form-group row">
+								<div class="form-group row" style="display:none;">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_online; ?></label>
 									<div class="col-sm-6">
 										<?php if ($config_customer_online) { ?>
@@ -984,7 +1001,7 @@
 										<?php } ?>
 									</div>
 								</div>
-								<div class="form-group row">
+								<div class="form-group row" style="display:none;">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_price; ?></label>
 									<div class="col-sm-6">
 										<?php if ($config_customer_price) { ?>
@@ -996,7 +1013,7 @@
 										<?php } ?>
 									</div>
 								</div>
-								<div class="form-group row">
+								<div class="form-group row" style="display:none;">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_account; ?></label>
 									<div class="col-sm-6">
 										<select name="config_account_id" class="form-control">
@@ -1013,7 +1030,7 @@
 								</div>
 							</div>
 							<div id="tab-checkout" class="tab-pane">
-								<div class="form-group row">
+								<div class="form-group row" style="display:none;">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_cart_weight; ?></label>
 									<div class="col-sm-6">
 										<?php if ($config_cart_weight) { ?>
@@ -1025,7 +1042,7 @@
 										<?php } ?>
 									</div>
 								</div>
-								<div class="form-group row">
+								<div class="form-group row" style="display:none;">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_guest_checkout; ?></label>
 									<div class="col-sm-6">
 										<?php if ($config_guest_checkout) { ?>
@@ -1199,46 +1216,6 @@
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-				</div>
-				<div id="tab-fraud" class="tab-pane">
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fraud_detection; ?></label>
-						<div class="col-sm-6">
-							<?php if ($config_fraud_detection) { ?>
-								<label class="radio-inline"><input type="radio" name="config_fraud_detection" value="1" checked=""><?php echo $text_yes; ?></label>
-								<label class="radio-inline"><input type="radio" name="config_fraud_detection" value="0"><?php echo $text_no; ?></label>
-								<?php } else { ?>
-								<label class="radio-inline"><input type="radio" name="config_fraud_detection" value="1"><?php echo $text_yes; ?></label>
-								<label class="radio-inline"><input type="radio" name="config_fraud_detection" value="0" checked=""><?php echo $text_no; ?></label>
-								<?php } ?>
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fraud_key; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_fraud_key" value="<?php echo $config_fraud_key; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fraud_score; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_fraud_score" value="<?php echo $config_fraud_score; ?>" class="form-control">
-						</div>
-					</div>
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_fraud_status; ?></label>
-						<div class="col-sm-6">
-							<select name="config_fraud_status_id" class="form-control">
-								<?php foreach ($order_statuses as $order_status) { ?>
-									<?php if ($order_status['order_status_id'] == $config_fraud_status_id) { ?>
-									<option value="<?php echo $order_status['order_status_id']; ?>" selected=""><?php echo $order_status['name']; ?></option>
-									<?php } else { ?>
-									<option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
-									<?php } ?>
-								<?php } ?>
-							</select>
 						</div>
 					</div>
 				</div>
@@ -1470,6 +1447,16 @@
 	$('#input-ai-enabled').on('change', aiEnabledUpdateLook);
 
 	aiEnabledUpdateLook();
+
+	function recepcionesUpdateLook() {
+		var enabled = ($('input[name="config_import_supplier_invoices"]:checked').val() == '1');
+
+		$('#recepciones-frame').toggleClass('recepciones-frame-disabled', !enabled);
+	}
+
+	$('input[name="config_import_supplier_invoices"]').on('change', recepcionesUpdateLook);
+
+	recepcionesUpdateLook();
 
 	function aiTest() {
 		var provider = $('input[name="config_ai_provider"]:checked').val();

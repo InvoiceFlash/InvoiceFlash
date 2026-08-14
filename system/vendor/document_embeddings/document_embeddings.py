@@ -181,7 +181,12 @@ def find_product(conn, stem):
 		return None, None
 
 	product_id = row[0]
+	product_name = get_product_name(conn, product_id)
 
+	return product_id, product_name
+
+
+def get_product_name(conn, product_id):
 	cur = conn.cursor()
 	cur.execute(
 		f"SELECT name FROM {table('product_description')} "
@@ -201,9 +206,7 @@ def find_product(conn, stem):
 
 	cur.close()
 
-	product_name = row[0] if row else None
-
-	return product_id, product_name
+	return row[0] if row else None
 
 
 def upsert_log(conn, document_id, fields):
@@ -261,10 +264,60 @@ def insert_chunk(conn, document_id, filename, product_id, product_name, page, ch
 
 
 # ============================================================
-# PROCESAR UN PDF
+# PROCESAR UN PDF (nucleo compartido por los dos modos de invocacion)
 # ============================================================
 
+def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_name, progress):
+	if not pdf_path.exists():
+		raise FileNotFoundError(f"No existe el archivo: {pdf_path}")
+
+	delete_existing_chunks(conn, document_id)
+
+	doc = fitz.open(pdf_path)
+	total_pages = len(doc)
+	progress["total_pages"] = total_pages
+	write_status(progress)
+
+	total_chunks = 0
+
+	for page_number, page in enumerate(doc, start=1):
+		progress["current_page"] = page_number
+		write_status(progress)
+
+		text = clean_text(page.get_text("text"))
+
+		if len(text) < MIN_TEXT_LENGTH:
+			image_bytes = pdf_page_to_image(page)
+			text = extract_text_with_vision(image_bytes)
+
+		if not text:
+			continue
+
+		chunks = create_chunks(text)
+
+		for chunk_number, chunk_text in enumerate(chunks, start=1):
+			embedding = generate_embedding(chunk_text)
+
+			if len(embedding) != EMBED_DIMENSIONS:
+				raise RuntimeError(
+					f"El modelo de embeddings devolvio {len(embedding)} dimensiones, "
+					f"se esperaban {EMBED_DIMENSIONS}."
+				)
+
+			insert_chunk(
+				conn, document_id, display_name, product_id, product_name,
+				page_number, chunk_number, chunk_text, embedding,
+			)
+			total_chunks += 1
+
+	doc.close()
+
+	return total_pages, total_chunks
+
+
 def process_file(conn, filename, progress):
+	"""Modo 'lote' (pantalla Tools > Importar Documentos): el archivo vive suelto en
+	DOCS_DIR y el producto se resuelve por SKU/Modelo == nombre de archivo sin extension."""
 	pdf_path = DOCS_DIR / filename
 	document_id = Path(filename).stem
 
@@ -289,9 +342,6 @@ def process_file(conn, filename, progress):
 	product_name = None
 
 	try:
-		if not pdf_path.exists():
-			raise FileNotFoundError(f"No existe el archivo: {pdf_path}")
-
 		product_id, product_name = find_product(conn, document_id)
 
 		if not product_id:
@@ -299,46 +349,9 @@ def process_file(conn, filename, progress):
 				f"No se ha encontrado ningun producto cuyo SKU o Modelo sea '{document_id}'."
 			)
 
-		delete_existing_chunks(conn, document_id)
-
-		doc = fitz.open(pdf_path)
-		total_pages = len(doc)
-		progress["total_pages"] = total_pages
-		write_status(progress)
-
-		total_chunks = 0
-
-		for page_number, page in enumerate(doc, start=1):
-			progress["current_page"] = page_number
-			write_status(progress)
-
-			text = clean_text(page.get_text("text"))
-
-			if len(text) < MIN_TEXT_LENGTH:
-				image_bytes = pdf_page_to_image(page)
-				text = extract_text_with_vision(image_bytes)
-
-			if not text:
-				continue
-
-			chunks = create_chunks(text)
-
-			for chunk_number, chunk_text in enumerate(chunks, start=1):
-				embedding = generate_embedding(chunk_text)
-
-				if len(embedding) != EMBED_DIMENSIONS:
-					raise RuntimeError(
-						f"El modelo de embeddings devolvio {len(embedding)} dimensiones, "
-						f"se esperaban {EMBED_DIMENSIONS}."
-					)
-
-				insert_chunk(
-					conn, document_id, filename, product_id, product_name,
-					page_number, chunk_number, chunk_text, embedding,
-				)
-				total_chunks += 1
-
-		doc.close()
+		total_pages, total_chunks = embed_pdf(
+			conn, document_id, filename, pdf_path, product_id, product_name, progress
+		)
 
 		upsert_log(conn, document_id, {
 			"filename": filename,
@@ -367,14 +380,113 @@ def process_file(conn, filename, progress):
 		write_status(progress)
 
 
+def process_product_document(conn, product_id, product_document_id, file_path, display_name, progress):
+	"""Modo 'adjunto directo' (subida de un documento desde la ficha de producto,
+	catalog/product/uploadDocument): el product_id ya se conoce con certeza, sin
+	necesidad de emparejar por SKU/Modelo."""
+	document_id = f"product_document_{product_document_id}"
+	pdf_path = Path(file_path)
+
+	progress["current_file"] = display_name
+	progress["current_page"] = 0
+	progress["total_pages"] = 0
+	write_status(progress)
+
+	upsert_log(conn, document_id, {
+		"filename": display_name,
+		"product_id": product_id,
+		"product_name": None,
+		"status": "processing",
+		"pages": 0,
+		"chunks": 0,
+		"error_message": None,
+		"date_started": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		"date_finished": None,
+	})
+
+	product_name = None
+
+	try:
+		product_name = get_product_name(conn, product_id)
+
+		total_pages, total_chunks = embed_pdf(
+			conn, document_id, display_name, pdf_path, product_id, product_name, progress
+		)
+
+		upsert_log(conn, document_id, {
+			"filename": display_name,
+			"product_id": product_id,
+			"product_name": product_name,
+			"status": "done",
+			"pages": total_pages,
+			"chunks": total_chunks,
+			"error_message": None,
+			"date_finished": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		})
+
+	except Exception as e:
+		upsert_log(conn, document_id, {
+			"filename": display_name,
+			"product_id": product_id,
+			"product_name": product_name,
+			"status": "error",
+			"pages": 0,
+			"chunks": 0,
+			"error_message": str(e)[:1000],
+			"date_finished": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		})
+
+		progress.setdefault("errors", []).append({"file": display_name, "error": str(e)})
+		write_status(progress)
+
+
 # ============================================================
 # MAIN
 # ============================================================
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("--files", required=True, help="Nombres de archivo separados por coma, relativos a DOCEMB_DOCS_DIR")
+	parser.add_argument("--files", help="Nombres de archivo separados por coma, relativos a DOCEMB_DOCS_DIR (modo lote)")
+	parser.add_argument("--product-id", type=int, help="ID del producto (modo adjunto directo)")
+	parser.add_argument("--product-document-id", type=int, help="ID de if_product_document (modo adjunto directo)")
+	parser.add_argument("--file", help="Ruta absoluta del PDF (modo adjunto directo)")
+	parser.add_argument("--original-name", help="Nombre original del archivo, para mostrar (modo adjunto directo)")
 	args = parser.parse_args()
+
+	if args.product_id and args.product_document_id and args.file:
+		display_name = args.original_name or Path(args.file).name
+
+		progress = {
+			"running": True,
+			"started_at": now_iso(),
+			"finished_at": None,
+			"total_files": 1,
+			"processed_files": 0,
+			"current_file": None,
+			"current_page": 0,
+			"total_pages": 0,
+			"errors": [],
+		}
+
+		write_status(progress)
+
+		conn = get_connection()
+
+		try:
+			process_product_document(conn, args.product_id, args.product_document_id, args.file, display_name, progress)
+			progress["processed_files"] = 1
+			write_status(progress)
+		finally:
+			conn.close()
+
+		progress["running"] = False
+		progress["current_file"] = None
+		progress["finished_at"] = now_iso()
+		write_status(progress)
+		return
+
+	if not args.files:
+		parser.error("Debes indicar --files, o bien --product-id/--product-document-id/--file")
 
 	files = [f.strip() for f in args.files.split(",") if f.strip()]
 

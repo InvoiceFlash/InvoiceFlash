@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title'] = 'Importar Documentos';
+$_['heading_title'] = 'Importar Documentos para crear Representaci&oacute;n vectorial';
 
 // Text
 $_['text_home'] = 'Inicio';

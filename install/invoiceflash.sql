@@ -1639,7 +1639,11 @@ INSERT INTO `if_information_description` (`information_id`, `language_id`, `titl
 (4, 1, 'About Us', '&lt;p&gt;\r\n	About Us&lt;/p&gt;\r\n'),
 (5, 1, 'Terms &amp; Conditions', '&lt;p&gt;\r\n	Terms &amp;amp; Conditions&lt;/p&gt;\r\n'),
 (3, 1, 'Privacy Policy', '&lt;p&gt;\r\n	Privacy Policy&lt;/p&gt;\r\n'),
-(6, 1, 'Delivery Information', '&lt;p&gt;\r\n	Delivery Information&lt;/p&gt;\r\n');
+(6, 1, 'Delivery Information', '&lt;p&gt;\r\n	Delivery Information&lt;/p&gt;\r\n'),
+(4, 2, 'Sobre Nosotros', '&lt;p&gt;\r\n	Sobre Nosotros&lt;/p&gt;\r\n'),
+(5, 2, 'T&eacute;rminos y Condiciones', '&lt;p&gt;\r\n	T&eacute;rminos y Condiciones&lt;/p&gt;\r\n'),
+(3, 2, 'Pol&iacute;tica de Privacidad', '&lt;p&gt;\r\n	Pol&iacute;tica de Privacidad&lt;/p&gt;\r\n'),
+(6, 2, 'Informaci&oacute;n de Entrega', '&lt;p&gt;\r\n	Informaci&oacute;n de Entrega&lt;/p&gt;\r\n');
 
 -- --------------------------------------------------------
 
@@ -3238,7 +3242,11 @@ INSERT INTO `if_stock_status` (`stock_status_id`, `language_id`, `name`) VALUES
 (7, 1, 'In Stock'),
 (8, 1, 'Pre-Order'),
 (5, 1, 'Out Of Stock'),
-(6, 1, '2 - 3 Days');
+(6, 1, '2 - 3 Days'),
+(7, 2, 'En Stock'),
+(8, 2, 'Reserva'),
+(5, 2, 'Agotado'),
+(6, 2, '2 - 3 Días');
 
 -- --------------------------------------------------------
 

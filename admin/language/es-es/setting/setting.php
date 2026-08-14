@@ -17,7 +17,7 @@ $_['text_review'] = 'Comentarios';
 $_['text_voucher'] = 'Vales';
 $_['text_tax'] = 'Impuestos';
 $_['text_account'] = 'Cuenta';
-$_['text_checkout'] = 'Pagar';
+$_['text_checkout'] = 'Pagos';
 $_['text_stock'] = 'Stock';
 $_['text_affiliate'] = 'Afiliados';
 $_['text_return'] = 'Devoluciones';
@@ -62,6 +62,9 @@ $_['entry_product_description_length'] = 'Descripci&oacute;n L&iacute;mite (Cat&
 $_['entry_limit_admin'] = 'Productos por p&aacute;gina (admin)';
 $_['entry_product_count'] = 'Categor&iacute;a de producto';
 $_['entry_review'] = 'Permitir comentarios';
+$_['entry_product_vector_embeddings'] = 'Guardar representaci&oacute;n vectorial';
+$_['text_product_vector_embeddings_tooltip'] = 'Incorpora a la base de datos representaciones vectoriales del texto para su tratamiento por la IA en el momento de incorporar el documento al art&iacute;culo.';
+$_['error_product_vector_embeddings'] = 'Para activar esto primero tienes que activar &quot;Usar IA&quot; en la pesta&ntilde;a IA.';
 $_['entry_review_guest'] = 'Permitir Comentarios de invitados';
 $_['entry_review_mail'] = 'Nueva Revisi&oacute;n Alerta mail';
 $_['entry_voucher_min'] = 'Vale M&iacute;nimo';
@@ -331,7 +334,7 @@ $_['entry_supplier_invoice_email_password'] = 'Contrase&ntilde;a del email de fa
 $_['entry_supplier_invoice_pop_host'] = 'Servidor POP3 (host):';
 $_['entry_supplier_invoice_pop_port'] = 'Puerto POP3:';
 $_['entry_supplier_invoice_pop_ssl'] = '&iquest;Usar SSL/TLS?';
-$_['entry_supplier_invoice_match_order'] = '<a data-toggle="tooltip" title="S&oacute;lo incluir autom&aacute;ticamente los invoices que coinciden 100% en el NIF y en el total con un Purchase Order."><i class="fas fa-question-circle"></i></a> Solo coincide con Order:';
+$_['entry_supplier_invoice_match_order'] = '<a data-toggle="tooltip" title="S&oacute;lo incluir autom&aacute;ticamente los invoices que coinciden 100% en el NIF y en el total con un Purchase Order."><i class="fas fa-question-circle"></i></a> Solo coincide con el Importe del Pedido:';
 $_['error_supplier_invoice_email'] = 'Debes indicar un email en la pesta&ntilde;a Mail para poder importar facturas de proveedores.';
 $_['error_supplier_invoice_pop_host'] = 'Debes indicar el servidor POP3 en la pesta&ntilde;a Mail para poder importar facturas de proveedores.';
 $_['entry_aeat_send'] = 'Modo de Env&iacute;o:';

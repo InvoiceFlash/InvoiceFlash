@@ -1893,6 +1893,10 @@ class ControllerCatalogProduct extends Controller {
 
 			$product_document_id = $this->model_catalog_product->addProductDocument($product_id, $filename, $original_name);
 
+			if (($ext == 'pdf') && $this->config->get('config_product_vector_embeddings') && $this->config->get('config_ai_enabled')) {
+				$this->spawnProductDocumentEmbedding($product_id, $product_document_id, $dir . $filename, $original_name);
+			}
+
 			$json['success'][] = array(
 				'product_document_id' => $product_document_id,
 				'name'                => $original_name,
@@ -1904,6 +1908,110 @@ class ControllerCatalogProduct extends Controller {
 		ob_end_clean();
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
+	}
+
+	// Lanza en segundo plano la generacion de la representacion vectorial (RAG) del
+	// documento recien adjuntado a un producto, si "Guardar representacion vectorial"
+	// esta activo (comprueba tambien "Usar IA", ver setting/setting::validate()).
+	private function spawnProductDocumentEmbedding($product_id, $product_document_id, $abs_file_path, $original_name) {
+		$python = $this->findPythonForEmbeddings();
+
+		if (!$python) {
+			return false;
+		}
+
+		$script_path = DIR_SYSTEM . 'vendor/document_embeddings/document_embeddings.py';
+		$status_dir  = DIR_SYSTEM . 'vendor/document_embeddings/';
+
+		if (!is_dir($status_dir)) {
+			mkdir($status_dir, 0755, true);
+		}
+
+		$status_file = $status_dir . 'status_product_' . (int)$product_document_id . '.json';
+		$log_file    = $status_dir . 'last_run_product_' . (int)$product_document_id . '.log';
+
+		$env = array(
+			'DOCEMB_DB_HOST'     => DB_HOSTNAME,
+			'DOCEMB_DB_PORT'     => (string)DB_PORT,
+			'DOCEMB_DB_USER'     => DB_USERNAME,
+			'DOCEMB_DB_PASSWORD' => DB_PASSWORD,
+			'DOCEMB_DB_NAME'     => DB_DATABASE,
+			'DOCEMB_DB_PREFIX'   => DB_PREFIX,
+			'DOCEMB_LANGUAGE_ID' => (string)(int)$this->config->get('config_language_id'),
+			'DOCEMB_STATUS_FILE' => $status_file,
+		);
+
+		$args = '--product-id ' . (int)$product_id
+			. ' --product-document-id ' . (int)$product_document_id
+			. ' --file ' . escapeshellarg($abs_file_path)
+			. ' --original-name ' . escapeshellarg($original_name);
+
+		if (stripos(PHP_OS, 'WIN') === 0) {
+			foreach ($env as $key => $value) {
+				putenv($key . '=' . $value);
+			}
+
+			$cmd = 'start /B "" ' . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+				. ' > ' . escapeshellarg($log_file) . ' 2>&1';
+
+			$handle = popen('cmd /c ' . $cmd, 'r');
+
+			foreach ($env as $key => $value) {
+				putenv($key);
+			}
+
+			if ($handle === false) {
+				return false;
+			}
+
+			pclose($handle);
+
+			return true;
+		}
+
+		$env_prefix = '';
+		foreach ($env as $key => $value) {
+			$env_prefix .= $key . '=' . escapeshellarg($value) . ' ';
+		}
+
+		$cmd = $env_prefix . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+			. ' > ' . escapeshellarg($log_file) . ' 2>&1 &';
+
+		exec($cmd, $out, $code);
+
+		return true;
+	}
+
+	private function findPythonForEmbeddings() {
+		$candidates = array(
+			'C:\\Users\\AlcuinoGarcia\\AppData\\Local\\Programs\\Python\\Python313\\python.exe',
+			'python3',
+			'python',
+		);
+
+		foreach ($candidates as $candidate) {
+			if (stripos(PHP_OS, 'WIN') === 0 && strpos($candidate, ':\\') === false) {
+				exec('where ' . escapeshellarg($candidate) . ' 2>NUL', $out, $code);
+				if ($code === 0) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			if (strpos($candidate, ':\\') !== false) {
+				if (file_exists($candidate)) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			exec('command -v ' . escapeshellarg($candidate) . ' 2>/dev/null', $out, $code);
+			if ($code === 0) {
+				return $candidate;
+			}
+		}
+
+		return null;
 	}
 
 	public function deleteDocument() {
