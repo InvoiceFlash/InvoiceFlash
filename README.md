@@ -1,4 +1,4 @@
-# InvoiceFlash
+# InvoiceFlash ERP RAG
 
 ![InvoiceFlash](https://www.invoiceflash.com/github/logo/png/screen.gif)
 
