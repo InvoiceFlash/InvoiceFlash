@@ -707,6 +707,27 @@ Responde siempre en español, de forma breve y clara.';
 		);
 	}
 
+	// Igual que getCustomerDocumentSearchToolDef() pero para proveedores: documentos
+	// (antes "contratos", ver nota en purchase/supplier.php) y notas indexados con
+	// supplier_id/supplier_name en if_document_chunks. Mismo criterio de exposicion:
+	// solo se ofrece en ollamaChat(), nunca en claudeChat().
+	private function getSupplierDocumentSearchToolDef() {
+		return array(
+			'name'        => 'search_supplier_documents',
+			'description' => 'Semantic search over a specific supplier\'s indexed documents: uploaded documents/contracts and internal notes. Requires a supplier_id. Use it when the user asks what a given supplier said, agreed to, or was noted about, instead of query_database (that content is not stored as structured rows).',
+			'parameters'  => array(
+				'type'       => 'object',
+				'properties' => array(
+					'query'         => array('type' => 'string', 'description' => 'Natural language search query, in the same language as the documents (Spanish).'),
+					'supplier_id'   => array('type' => 'integer', 'description' => 'Required: restrict the search to this supplier_id.'),
+					'document_type' => array('type' => 'string', 'enum' => array('supplier_document', 'supplier_note'), 'description' => 'Optional: restrict to one document type.'),
+					'limit'         => array('type' => 'integer', 'description' => 'Optional: max number of passages to return, default 5, max 20.')
+				),
+				'required'   => array('query', 'supplier_id')
+			)
+		);
+	}
+
 	// json_decode(..., true) convierte "arguments":{} en un array PHP vacío,
 	// indistinguible de un array indexado vacío — al reenviar ese historial con
 	// json_encode() saldría como [] en vez de {} y Ollama rechaza la petición con
@@ -751,7 +772,7 @@ Responde siempre en español, de forma breve y clara.';
 		if (!$messages) {
 			$messages[] = array(
 				'role'    => 'system',
-				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 5 herramientas: list_tables, describe_table, query_database, search_product_documents y search_customer_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents o search_customer_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
+				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 6 herramientas: list_tables, describe_table, query_database, search_product_documents, search_customer_documents y search_supplier_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Cuando el usuario pregunte qué dijo, acordó o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier) en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents, search_customer_documents o search_supplier_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
 			);
 		}
 
@@ -759,10 +780,10 @@ Responde siempre en español, de forma breve y clara.';
 
 		$tools = array();
 
-		// search_product_documents/search_customer_documents solo se ofrecen aqui
-		// (rama Ollama/qwen3:1.7b), no en claudeChat() — no forman parte de
-		// getHomeChatToolDefs() a proposito.
-		$tool_defs = array_merge($this->getHomeChatToolDefs(), array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef()));
+		// search_product_documents/search_customer_documents/search_supplier_documents
+		// solo se ofrecen aqui (rama Ollama/qwen3:1.7b), no en claudeChat() — no forman
+		// parte de getHomeChatToolDefs() a proposito.
+		$tool_defs = array_merge($this->getHomeChatToolDefs(), array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
 
 		foreach ($tool_defs as $def) {
 			$tools[] = array(
@@ -944,6 +965,29 @@ Responde siempre en español, de forma breve y clara.';
 
 				return json_encode(array('results' => $result['rows']));
 
+			case 'search_supplier_documents':
+				$query         = isset($tool_input['query']) ? trim((string)$tool_input['query']) : '';
+				$supplier_id   = !empty($tool_input['supplier_id']) ? (int)$tool_input['supplier_id'] : 0;
+				$document_type = isset($tool_input['document_type']) ? trim((string)$tool_input['document_type']) : '';
+				$limit         = isset($tool_input['limit']) ? (int)$tool_input['limit'] : 5;
+				$limit         = min(max($limit, 1), 20);
+
+				if ($query === '') {
+					return json_encode(array('error' => 'Missing query.'));
+				}
+
+				if ($supplier_id <= 0) {
+					return json_encode(array('error' => 'Missing or invalid supplier_id.'));
+				}
+
+				$result = $this->searchSupplierDocuments($query, $supplier_id, $document_type, $limit);
+
+				if (isset($result['error'])) {
+					return json_encode($result);
+				}
+
+				return json_encode(array('results' => $result['rows']));
+
 			default:
 				return json_encode(array('error' => 'Unknown tool: ' . $tool_name));
 		}
@@ -992,6 +1036,32 @@ Responde siempre en español, de forma breve y clara.';
 			VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "')) AS distance
 			FROM `" . DB_PREFIX . "document_chunks`
 			WHERE customer_id = '" . (int)$customer_id . "'";
+
+		if ($document_type !== '') {
+			$sql .= " AND document_type = '" . $this->db->escape($document_type) . "'";
+		}
+
+		$sql .= " ORDER BY distance ASC LIMIT " . (int)$limit;
+
+		return $this->safeQuery($sql);
+	}
+
+	// Igual que searchCustomerDocuments() pero acotada a un supplier_id concreto
+	// (documentos y notas de purchase/supplier). supplier_id NUNCA es opcional aqui,
+	// mismo motivo que customer_id en searchCustomerDocuments().
+	private function searchSupplierDocuments($query, $supplier_id, $document_type = '', $limit = 5) {
+		$embedding = $this->generateEmbedding($query);
+
+		if ($embedding === false) {
+			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado).');
+		}
+
+		$vector_text = '[' . implode(',', array_map(function ($v) { return (float)$v; }, $embedding)) . ']';
+
+		$sql = "SELECT document, document_type, supplier_id, supplier_name, page, chunk_text,
+			VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "')) AS distance
+			FROM `" . DB_PREFIX . "document_chunks`
+			WHERE supplier_id = '" . (int)$supplier_id . "'";
 
 		if ($document_type !== '') {
 			$sql .= " AND document_type = '" . $this->db->escape($document_type) . "'";
