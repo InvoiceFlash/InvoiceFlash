@@ -682,6 +682,31 @@ Responde siempre en español, de forma breve y clara.';
 		);
 	}
 
+	// Herramienta de busqueda semantica sobre if_document_chunks acotada a UN
+	// cliente (documentos de contrato, notas y emails enviados/recibidos, ver
+	// admin/model/sale/customer.php y admin/model/catalog/mail.php). customer_id
+	// es OBLIGATORIO en el schema: if_document_chunks es un indice compartido por
+	// TODOS los clientes y productos (ver searchProductDocuments() arriba), asi
+	// que sin ese filtro una busqueda devolveria pasajes de cualquier otro
+	// cliente. Mismo criterio de exposicion que search_product_documents: solo
+	// se ofrece en ollamaChat(), nunca en claudeChat().
+	private function getCustomerDocumentSearchToolDef() {
+		return array(
+			'name'        => 'search_customer_documents',
+			'description' => 'Semantic search over a specific customer\'s indexed documents: uploaded contracts/files, internal notes, and sent/received emails. Requires a customer_id. Use it when the user asks what a given customer said, agreed to, or asked about in a note, contract or email, instead of query_database (that data is not stored as structured rows).',
+			'parameters'  => array(
+				'type'       => 'object',
+				'properties' => array(
+					'query'         => array('type' => 'string', 'description' => 'Natural language search query, in the same language as the documents (Spanish).'),
+					'customer_id'   => array('type' => 'integer', 'description' => 'Required: restrict the search to this customer_id.'),
+					'document_type' => array('type' => 'string', 'enum' => array('customer_document', 'customer_note', 'email_sent', 'email_received'), 'description' => 'Optional: restrict to one document type.'),
+					'limit'         => array('type' => 'integer', 'description' => 'Optional: max number of passages to return, default 5, max 20.')
+				),
+				'required'   => array('query', 'customer_id')
+			)
+		);
+	}
+
 	// json_decode(..., true) convierte "arguments":{} en un array PHP vacío,
 	// indistinguible de un array indexado vacío — al reenviar ese historial con
 	// json_encode() saldría como [] en vez de {} y Ollama rechaza la petición con
@@ -726,7 +751,7 @@ Responde siempre en español, de forma breve y clara.';
 		if (!$messages) {
 			$messages[] = array(
 				'role'    => 'system',
-				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 4 herramientas: list_tables, describe_table, query_database y search_product_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico que no venga literalmente del resultado de search_product_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
+				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 5 herramientas: list_tables, describe_table, query_database, search_product_documents y search_customer_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents o search_customer_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
 			);
 		}
 
@@ -734,9 +759,10 @@ Responde siempre en español, de forma breve y clara.';
 
 		$tools = array();
 
-		// search_product_documents solo se ofrece aqui (rama Ollama/qwen3:1.7b), no en
-		// claudeChat() — no forma parte de getHomeChatToolDefs() a proposito.
-		$tool_defs = array_merge($this->getHomeChatToolDefs(), array($this->getDocumentSearchToolDef()));
+		// search_product_documents/search_customer_documents solo se ofrecen aqui
+		// (rama Ollama/qwen3:1.7b), no en claudeChat() — no forman parte de
+		// getHomeChatToolDefs() a proposito.
+		$tool_defs = array_merge($this->getHomeChatToolDefs(), array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef()));
 
 		foreach ($tool_defs as $def) {
 			$tools[] = array(
@@ -895,6 +921,29 @@ Responde siempre en español, de forma breve y clara.';
 
 				return json_encode(array('results' => $result['rows']));
 
+			case 'search_customer_documents':
+				$query         = isset($tool_input['query']) ? trim((string)$tool_input['query']) : '';
+				$customer_id   = !empty($tool_input['customer_id']) ? (int)$tool_input['customer_id'] : 0;
+				$document_type = isset($tool_input['document_type']) ? trim((string)$tool_input['document_type']) : '';
+				$limit         = isset($tool_input['limit']) ? (int)$tool_input['limit'] : 5;
+				$limit         = min(max($limit, 1), 20);
+
+				if ($query === '') {
+					return json_encode(array('error' => 'Missing query.'));
+				}
+
+				if ($customer_id <= 0) {
+					return json_encode(array('error' => 'Missing or invalid customer_id.'));
+				}
+
+				$result = $this->searchCustomerDocuments($query, $customer_id, $document_type, $limit);
+
+				if (isset($result['error'])) {
+					return json_encode($result);
+				}
+
+				return json_encode(array('results' => $result['rows']));
+
 			default:
 				return json_encode(array('error' => 'Unknown tool: ' . $tool_name));
 		}
@@ -918,6 +967,34 @@ Responde siempre en español, de forma breve y clara.';
 
 		if ($product_id) {
 			$sql .= " WHERE product_id = '" . (int)$product_id . "'";
+		}
+
+		$sql .= " ORDER BY distance ASC LIMIT " . (int)$limit;
+
+		return $this->safeQuery($sql);
+	}
+
+	// Igual que searchProductDocuments() pero acotada a un customer_id concreto
+	// (documentos, notas y emails de sale/customer/update). customer_id NUNCA es
+	// opcional aqui (a diferencia de product_id en la busqueda de producto): al
+	// ser if_document_chunks un indice compartido por todos los clientes, omitir
+	// el filtro expondria pasajes de otros clientes en la respuesta del chat.
+	private function searchCustomerDocuments($query, $customer_id, $document_type = '', $limit = 5) {
+		$embedding = $this->generateEmbedding($query);
+
+		if ($embedding === false) {
+			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado).');
+		}
+
+		$vector_text = '[' . implode(',', array_map(function ($v) { return (float)$v; }, $embedding)) . ']';
+
+		$sql = "SELECT document, document_type, customer_id, customer_name, page, chunk_text,
+			VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "')) AS distance
+			FROM `" . DB_PREFIX . "document_chunks`
+			WHERE customer_id = '" . (int)$customer_id . "'";
+
+		if ($document_type !== '') {
+			$sql .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
 		$sql .= " ORDER BY distance ASC LIMIT " . (int)$limit;

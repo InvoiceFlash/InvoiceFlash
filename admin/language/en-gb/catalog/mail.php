@@ -13,6 +13,7 @@ $_['column_date'] 			= 'Date';
 $_['column_action'] 		= 'Action';
 $_['column_received'] 		= 'Received';
 $_['column_to'] 	    	= 'To';
+$_['column_rag_indexed'] 	= 'RAG Indexed';
 
 //Texts
 $_['text_no_results'] 		= 'No results found!';

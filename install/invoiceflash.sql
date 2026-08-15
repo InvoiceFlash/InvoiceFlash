@@ -7930,6 +7930,8 @@ CREATE TABLE `if_document_chunks` (
   `product_id` int(11) DEFAULT NULL,
   `customer_id` int(11) DEFAULT NULL,
   `customer_name` varchar(500) DEFAULT NULL,
+  `supplier_id` int(11) DEFAULT NULL,
+  `supplier_name` varchar(500) DEFAULT NULL,
   `product_name` varchar(500) DEFAULT NULL,
   `page` int(11) NOT NULL,
   `chunk_number` int(11) NOT NULL,
@@ -7941,6 +7943,7 @@ CREATE TABLE `if_document_chunks` (
   KEY `idx_document_id` (`document_id`),
   KEY `idx_product_id` (`product_id`),
   KEY `idx_customer_id` (`customer_id`),
+  KEY `idx_supplier_id` (`supplier_id`),
   VECTOR INDEX (`embedding`) M=8 DISTANCE=cosine
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -7954,6 +7957,8 @@ CREATE TABLE `if_document_embedding_log` (
   `product_id` int(11) DEFAULT NULL,
   `customer_id` int(11) DEFAULT NULL,
   `customer_name` varchar(500) DEFAULT NULL,
+  `supplier_id` int(11) DEFAULT NULL,
+  `supplier_name` varchar(500) DEFAULT NULL,
   `product_name` varchar(500) DEFAULT NULL,
   `status` enum('pending','processing','done','error') NOT NULL DEFAULT 'pending',
   `pages` int(11) NOT NULL DEFAULT 0,
@@ -8386,6 +8391,18 @@ CREATE TABLE `if_supplier_contracts` (
   KEY `nproveedor` (`supplier_id`),
   KEY `narticulo` (`narticulo`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS `if_supplier_document`;
+CREATE TABLE `if_supplier_document` (
+  `document_id` int(11) NOT NULL AUTO_INCREMENT,
+  `supplier_id` int(11) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `stored_filename` varchar(255) NOT NULL,
+  `date_added` datetime NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`document_id`),
+  KEY `supplier_id` (`supplier_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 DROP TABLE IF EXISTS `if_shipping_methods`;
 CREATE TABLE `if_shipping_methods` (

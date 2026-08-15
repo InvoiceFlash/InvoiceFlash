@@ -57,7 +57,7 @@ $_['button_add_note']          = 'A&ntilde;adir Nota';
 $_['tab_general']              = 'General';
 $_['tab_notes']                 = 'Notas';
 $_['tab_contacts']              = 'Contactos';
-$_['tab_contracts']             = 'Contratos';
+$_['tab_contracts']             = 'Documentos';
 $_['tab_products']             = 'Productos';
 $_['tab_invoices']             = 'Facturas';
 
@@ -83,17 +83,39 @@ $_['entry_notas']                = 'Notas:';
 $_['text_delete']               = 'Eliminar';
 $_['text_edit']                 = 'Editar';
 
-// Contracts
-$_['heading_title_contract']   = 'Contratos';
-$_['column_article']           = 'Art&iacute;culo';
-$_['column_quantity']          = 'Cantidad';
-$_['column_end_support']       = 'Fin de Soporte';
-$_['button_add_contract']      = 'A&ntilde;adir Contrato';
-$_['entry_article']            = 'Art&iacute;culo:';
-$_['entry_quantity']           = 'Cantidad:';
-$_['entry_date']                = 'Fecha de Compra:';
-$_['entry_end_support']         = 'Fin de Soporte:';
-$_['entry_notes']               = 'Notas:';
+// Documents (antes "Contracts" - mismo patron que sale/customer.php)
+$_['heading_title_contract']   = 'Documentos';
+$_['column_filename']          = 'Nombre de Archivo';
+$_['button_add_contract']      = 'A&ntilde;adir Documento';
+$_['entry_document']           = 'Documento (PDF o XLSX):';
+$_['button_upload']            = 'Subir';
+$_['button_view']              = 'Ver';
+$_['text_no_documents']        = 'No hay documentos adjuntos';
+$_['error_upload']             = 'Advertencia: &iexcl;Debe seleccionar un archivo!';
+$_['error_document_type']      = 'Advertencia: &iexcl;Solo se permiten archivos PDF o XLSX!';
+$_['error_document_upload']    = 'Advertencia: &iexcl;No se pudo subir el archivo!';
+
+// Emails (mismo patron que sale/customer.php)
+$_['tab_email']                 = 'Emails';
+$_['column_email_subject']      = 'Asunto';
+$_['column_email_sender']       = 'Remitente';
+$_['text_to']                   = 'Para:';
+$_['text_subject']              = 'Asunto:';
+$_['text_message']              = 'Mensaje:';
+$_['button_new_email']          = 'Nuevo Email';
+$_['button_send']               = 'Enviar';
+$_['text_success_email']        = 'Correo enviado correctamente al proveedor';
+$_['error_to']                  = '&iexcl;El email de destino no es v&aacute;lido!';
+$_['error_subject']             = '&iexcl;El asunto no puede estar vac&iacute;o!';
+$_['error_message']             = '&iexcl;El mensaje no puede estar vac&iacute;o!';
+$_['error_permission_email']    = 'Advertencia: &iexcl;No tiene permiso para enviar emails!';
+
+// Pedidos / Recepciones (mismo patron que sale/customer.php: reutiliza purchase_order,
+// "Recepciones" filtra a los ya recibidos - ver ModelPurchaseSupplier)
+$_['tab_orders']                = 'Pedidos';
+$_['tab_recepciones']           = 'Recepciones';
+$_['column_order']              = 'N&ordm; Pedido';
+$_['column_quantity']           = 'Cantidad';
 
 // Error
 $_['error_warning']            = 'Advertencia: &iexcl;Por favor, revise el formulario cuidadosamente en busca de errores!';

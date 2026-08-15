@@ -22,6 +22,7 @@ class ControllerCatalogMail extends Controller {
 		$this->data['column_to'] = $this->language->get('column_to');
 		$this->data['column_received'] = $this->language->get('column_received');
 		$this->data['column_from'] = $this->language->get('column_from');
+		$this->data['column_rag_indexed'] = $this->language->get('column_rag_indexed');
 	
 		$this->data['text_customer'] = $this->language->get('text_customer');
 		$this->data['text_select'] = $this->language->get('text_select');
@@ -162,6 +163,7 @@ class ControllerCatalogMail extends Controller {
 				'created'     => date($this->language->get('datetime_format'), strtotime($result['date_added'])),
 				'sel_mail_in'    => isset($this->request->post['sel_mail_in']) && in_array($result['mail_id'], $this->request->post['sel_mail_in']),
 				'unread'      => ((int)$result['bleido'] === 0),
+				'rag_indexed' => !empty($result['rag_indexed']),
 				'action'      => $action
 			);
 		}	
@@ -192,6 +194,7 @@ class ControllerCatalogMail extends Controller {
 				'message'     => $result['message'],
 				'date_added'  => date($this->language->get('datetime_format'), strtotime($result['date_added'])),
 				'sel_mail_out'=> isset($this->request->post['sel_mail_out']) && in_array($result['mail_id'], $this->request->post['sel_mail_out']),
+				'rag_indexed' => !empty($result['rag_indexed']),
 				'action'      => $action
 			);
 		}	
@@ -362,6 +365,10 @@ class ControllerCatalogMail extends Controller {
 					'company'    => !empty($customer) ? $customer['company'] : $data['to'],
 					'subject'    => $data['subject'],
 					'date_added' => date($this->language->get('datetime_format')),
+					// El indexado RAG (si esta activado) se lanza en segundo plano al
+					// guardar el email — en el instante de esta respuesta AJAX todavia
+					// no ha podido terminar, asi que la fila nueva sale siempre sin marcar.
+					'rag_indexed' => false,
 					// url->link() HTML-escapes '&' to '&amp;' for embedding in an
 					// href="" attribute. This URL instead goes out as a raw JSON
 					// string that JS assigns straight to .attr('href', ...), so

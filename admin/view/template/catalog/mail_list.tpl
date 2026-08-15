@@ -33,6 +33,7 @@
 								<th class="d-none d-md-table-cell"><?php echo $column_customer; ?></th>
 								<th class="d-none d-sm-table-cell"><?php echo $column_subject; ?></th>
 								<th class="d-none d-md-table-cell"><?php echo $column_received; ?></th>
+								<th class="text-center"><?php echo $column_rag_indexed; ?></th>
 								<th class="text-right"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
@@ -43,6 +44,7 @@
 								<td class="d-none d-md-table-cell"><input type="text" name="filter_email" value="<?php echo $filter_email; ?>" class="form-control"></td>
 								<td class="d-none d-sm-table-cell"></td>
 								<td class="d-none d-md-table-cell"></td>
+								<td class="text-center"></td>
 								<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
 							</tr>
 							<?php if ($mails_ins) { ?>
@@ -55,6 +57,7 @@
 									<td class="d-none d-md-table-cell"><?php echo $mail_in['mailfrom']; ?></td>
 									<td class="d-none d-sm-table-cell"><?php echo $mail_in['title']; ?></td>
 									<td class="d-none d-md-table-cell"><?php echo $mail_in['created']; ?></td>
+									<td class="rowlink-skip text-center"><input type="checkbox" disabled <?php echo ($mail_in['rag_indexed'] ? 'checked' : ''); ?>></td>
 									<td class="text-right"><?php foreach ($mail_in['action'] as $action) { ?>
 									<a class="btn btn-info" href="<?php echo $action['href']; ?>"><i class="fas fa-eye"></i><span class="d-none d-md-inline"> <?php echo $action['text']; ?></span></a>
 									<?php } ?></td>
@@ -62,7 +65,7 @@
 								<?php } ?>
 							<?php } else { ?>
 								<tr>
-								<td colspan="6" class="text-center"><?php echo $text_no_results; ?></td>
+								<td colspan="7" class="text-center"><?php echo $text_no_results; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
@@ -77,6 +80,7 @@
 								<th><?php echo $column_to; ?></th>
 								<th class="d-none d-sm-table-cell"><?php echo $column_subject; ?></th>
 								<th class="d-none d-md-table-cell"><?php echo $column_date; ?></th>
+								<th class="text-center"><?php echo $column_rag_indexed; ?></th>
 								<th><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
@@ -90,6 +94,7 @@
 										<td><?php echo $mails_out['company']; ?></td>
 										<td class="d-none d-sm-table-cell"><?php echo $mails_out['subject']; ?></td>
 										<td class="d-none d-md-table-cell"><?php echo $mails_out['date_added']; ?></td>
+										<td class="rowlink-skip text-center"><input type="checkbox" disabled <?php echo ($mails_out['rag_indexed'] ? 'checked' : ''); ?>></td>
 										<td class="text-right"><?php foreach ($mails_out['action'] as $action) { ?>
 											<a class="btn btn-info" href="<?php echo $action['href']; ?>"><i class="fas fa-eye"></i><span class="d-none d-md-inline"> <?php echo $action['text']; ?></span></a>
 										<?php } ?></td>
@@ -97,7 +102,7 @@
 								<?php } ?>
 							<?php } else { ?>
 								<tr id="out-no-results">
-								<td colspan="6" class="text-center"><?php echo $text_no_results; ?></td>
+								<td colspan="7" class="text-center"><?php echo $text_no_results; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
@@ -207,6 +212,7 @@ $('#btn-send').on('click',function(e){
 					row.append($('<td>').text(out.company));
 					row.append($('<td class="d-none d-sm-table-cell">').text(out.subject));
 					row.append($('<td class="d-none d-md-table-cell">').text(out.date_added));
+					row.append($('<td class="rowlink-skip text-center">').append($('<input type="checkbox" disabled>')));
 
 					var action = $('<td class="text-right">');
 					var link = $('<a class="btn btn-info">').attr('href', out.href);

@@ -57,6 +57,55 @@ class ModelPurchaseSupplier extends Model {
 		return $query->row;
 	}
 
+	// Pestaña "Pedidos" (mismo patron que ModelSaleCustomer::getordersCustomer()).
+	public function getPurchaseOrdersSupplier($supplier_id) {
+		$query = $this->db->query("SELECT po.purchase_order_id, po.po_number, po.total, po.currency_code, po.currency_value, po.date_added, pos.name AS status
+			FROM " . DB_PREFIX . "purchase_order po
+			LEFT JOIN " . DB_PREFIX . "purchase_order_status pos ON po.purchase_order_status_id = pos.purchase_order_status_id AND pos.language_id = '" . (int)$this->config->get('config_language_id') . "'
+			WHERE po.supplier_id = '" . (int)$supplier_id . "'
+			ORDER BY po.date_added DESC");
+
+		return $query->rows;
+	}
+
+	// Pestaña "Recepciones": mismos Pedidos de Compra pero solo los que ya tienen
+	// mercancia recibida (total o parcialmente) - no existe un documento de "albaran de
+	// compra" propio en este proyecto, se reutiliza purchase_order filtrando por estado.
+	// Se resuelven los status_id dinamicamente por nombre (idioma 1, canonico) en vez de
+	// asumir que "Received"/"Partially Received" son siempre los ids 3 y 4.
+	public function getReceivedPurchaseOrdersSupplier($supplier_id) {
+		$query = $this->db->query("SELECT po.purchase_order_id, po.po_number, po.total, po.currency_code, po.currency_value, po.date_added, pos.name AS status
+			FROM " . DB_PREFIX . "purchase_order po
+			LEFT JOIN " . DB_PREFIX . "purchase_order_status pos ON po.purchase_order_status_id = pos.purchase_order_status_id AND pos.language_id = '" . (int)$this->config->get('config_language_id') . "'
+			WHERE po.supplier_id = '" . (int)$supplier_id . "'
+			AND po.purchase_order_status_id IN (
+				SELECT purchase_order_status_id FROM " . DB_PREFIX . "purchase_order_status WHERE language_id = 1 AND name IN ('Received', 'Partially Received')
+			)
+			ORDER BY po.date_added DESC");
+
+		return $query->rows;
+	}
+
+	public function getSupplierByEmail($email) {
+		$query = $this->db->query("SELECT DISTINCT * FROM " . DB_PREFIX . "supplier WHERE LCASE(email) = '" . $this->db->escape(utf8_strtolower($email)) . "'");
+
+		return $query->row;
+	}
+
+	public function getSupplierContactByEmail($email) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_contacts WHERE LCASE(cemail) = '" . $this->db->escape(strtolower($email)) . "'");
+
+		return $query->row;
+	}
+
+	// Mismo patron que ModelSaleCustomer::getEmailsByCustomerId() - if_mails ya tiene
+	// columna supplier_id (compartida con customer_id/potential_id).
+	public function getEmailsBySupplierId($supplier_id) {
+		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "mails` WHERE bleido != 2 AND supplier_id=" . (int)$supplier_id . " ORDER BY date_added DESC");
+
+		return $query->rows;
+	}
+
 	public function getSuppliersByIds($supplier_ids) {
 		if (!$supplier_ids) {
 			return array();
@@ -211,53 +260,42 @@ class ModelPurchaseSupplier extends Model {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "supplier_contacts WHERE supplier_contacts_id = " . (int)$supplier_contacts_id);
 	}
 
-	public function getSupplierContracts($supplier_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_contracts WHERE supplier_id = " . (int)$supplier_id);
+	public function getSupplierDocuments($supplier_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_document WHERE supplier_id = '" . (int)$supplier_id . "' ORDER BY date_added DESC");
 
 		return $query->rows;
 	}
 
-	public function getSupplierContract($contracts_id) {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
+	public function getSupplierDocument($document_id) {
+		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "supplier_document WHERE document_id = '" . (int)$document_id . "'");
 
 		return $query->row;
 	}
 
-	public function getSupplierContractStatus() {
-		$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "contracts_status");
+	public function addSupplierDocument($supplier_id, $filename, $stored_filename) {
+		$this->db->query("INSERT INTO " . DB_PREFIX . "supplier_document SET
+			supplier_id = '" . (int)$supplier_id . "',
+			filename = '" . $this->db->escape($filename) . "',
+			stored_filename = '" . $this->db->escape($stored_filename) . "',
+			date_added = NOW(),
+			user_id = '" . (int)$this->user->getId() . "'");
 
-		return $query->rows;
+		return $this->db->getLastId();
 	}
 
-	public function addSupplierContract($data, $supplier_id) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "supplier_contracts SET
-			supplier_id = " . (int)$supplier_id . ",
-			narticulo = " . (int)$data['product_id'] . ",
-			quantity = " . (int)$data['quantity'] . ",
-			dcompra = DATE('" . $this->db->escape($data['date_purchased']) . "'),
-			dfinsoport = DATE('" . $this->db->escape($data['end_support']) . "'),
-			mnotas = '" . $this->db->escape($data['notes']) . "',
-			contract_status = " . (int)$data['contract_status_id'] . ",
-			talta = now(),
-			nusualta = " . (int)$this->user->getID() . ",
-			caplalta = 'web'");
+	public function deleteSupplierDocument($document_id) {
+		$this->db->query("DELETE FROM " . DB_PREFIX . "supplier_document WHERE document_id = '" . (int)$document_id . "'");
 	}
 
-	public function editSupplierContract($data, $contracts_id) {
-		$this->db->query("UPDATE " . DB_PREFIX . "supplier_contracts SET
-			narticulo = " . (int)$data['product_id'] . ",
-			quantity = " . (int)$data['quantity'] . ",
-			dcompra = DATE('" . $this->db->escape($data['date_purchased']) . "'),
-			dfinsoport = DATE('" . $this->db->escape($data['end_support']) . "'),
-			mnotas = '" . $this->db->escape($data['notes']) . "',
-			contract_status = " . (int)$data['contract_status_id'] . ",
-			tultmod = now(),
-			nusuultmod = " . (int)$this->user->getID() . ",
-			caplultmod = 'web' WHERE contracts_id = " . (int)$contracts_id);
-	}
+	// Limpia los fragmentos/embeddings RAG generados para este documento de proveedor
+	// (ver document_embeddings.py, document_id = "supplier_document_<id>") - se llama
+	// antes de borrar la fila de supplier_document. Mismo patron que
+	// ModelSaleCustomer::deleteCustomerDocumentEmbeddings().
+	public function deleteSupplierDocumentEmbeddings($document_id) {
+		$doc_id = 'supplier_document_' . (int)$document_id;
 
-	public function deleteSupplierContract($contracts_id) {
-		$this->db->query("DELETE FROM " . DB_PREFIX . "supplier_contracts WHERE contracts_id = " . (int)$contracts_id);
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_chunks WHERE document_id = '" . $this->db->escape($doc_id) . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_embedding_log WHERE document_id = '" . $this->db->escape($doc_id) . "'");
 	}
 
 	public function addSupplierNote($data, $supplier_id) {
@@ -268,12 +306,25 @@ class ModelPurchaseSupplier extends Model {
 			`comment` = '" . $this->db->escape($data['comment']) . "',
 			`date_added` = NOW(),
 			`user_id` = '" . (int)$this->user->getId() . "'");
+
+		return $this->db->getLastId();
 	}
 
 	public function deleteSupplierNote($note_id) {
 		$this->installNotes();
 
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "supplier_history` WHERE supplier_history_id = '" . (int)$note_id . "'");
+	}
+
+	// Limpia los fragmentos/embeddings RAG generados para esta nota concreta (ver
+	// document_embeddings.py::process_supplier_note(), document_id =
+	// "supplier_note_<id>") - se llama antes de borrar la fila de supplier_history.
+	// Mismo patron que deleteSupplierDocumentEmbeddings().
+	public function deleteSupplierNoteEmbeddings($note_id) {
+		$doc_id = 'supplier_note_' . (int)$note_id;
+
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_chunks WHERE document_id = '" . $this->db->escape($doc_id) . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_embedding_log WHERE document_id = '" . $this->db->escape($doc_id) . "'");
 	}
 
 	public function getSupplierNotes($supplier_id) {

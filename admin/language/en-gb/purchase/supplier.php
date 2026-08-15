@@ -57,7 +57,7 @@ $_['button_add_note']          = 'Add Note';
 $_['tab_general']              = 'General';
 $_['tab_notes']                 = 'Notes';
 $_['tab_contacts']              = 'Contacts';
-$_['tab_contracts']             = 'Contracts';
+$_['tab_contracts']             = 'Documents';
 $_['tab_products']             = 'Products';
 $_['tab_invoices']             = 'Invoices';
 
@@ -83,17 +83,39 @@ $_['entry_notas']                = 'Notes:';
 $_['text_delete']               = 'Delete';
 $_['text_edit']                 = 'Edit';
 
-// Contracts
-$_['heading_title_contract']   = 'Contracts';
-$_['column_article']           = 'Article';
-$_['column_quantity']          = 'Quantity';
-$_['column_end_support']       = 'End Support';
-$_['button_add_contract']      = 'Add Contract';
-$_['entry_article']            = 'Article:';
-$_['entry_quantity']           = 'Quantity:';
-$_['entry_date']                = 'Date Purchased:';
-$_['entry_end_support']         = 'End Support:';
-$_['entry_notes']               = 'Notes:';
+// Documents (previously "Contracts" - same pattern as sale/customer.php)
+$_['heading_title_contract']   = 'Documents';
+$_['column_filename']          = 'Filename';
+$_['button_add_contract']      = 'Add Document';
+$_['entry_document']           = 'Document (PDF or XLSX):';
+$_['button_upload']            = 'Upload';
+$_['button_view']              = 'View';
+$_['text_no_documents']        = 'No documents attached';
+$_['error_upload']             = 'Warning: You must select a file!';
+$_['error_document_type']      = 'Warning: Only PDF or XLSX files are allowed!';
+$_['error_document_upload']    = 'Warning: The file could not be uploaded!';
+
+// Emails (same pattern as sale/customer.php)
+$_['tab_email']                 = 'Emails';
+$_['column_email_subject']      = 'Subject';
+$_['column_email_sender']       = 'Sender';
+$_['text_to']                   = 'To:';
+$_['text_subject']              = 'Subject:';
+$_['text_message']              = 'Message:';
+$_['button_new_email']          = 'New Email';
+$_['button_send']               = 'Send';
+$_['text_success_email']        = 'Email successfully sent to the supplier';
+$_['error_to']                  = 'The destination email is not valid!';
+$_['error_subject']             = 'The subject cannot be empty!';
+$_['error_message']             = 'The message cannot be empty!';
+$_['error_permission_email']    = 'Warning: You do not have permission to send emails!';
+
+// Orders / Receipts (same pattern as sale/customer.php: reuses purchase_order,
+// "Receipts" filters to the ones already received - see ModelPurchaseSupplier)
+$_['tab_orders']                = 'Orders';
+$_['tab_recepciones']           = 'Receipts';
+$_['column_order']              = 'Order No.';
+$_['column_quantity']           = 'Quantity';
 
 // Error
 $_['error_warning']            = 'Warning: Please check the form carefully for errors!';

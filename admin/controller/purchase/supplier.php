@@ -401,6 +401,9 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['tab_notes'] = $this->language->get('tab_notes');
 		$this->data['tab_contacts'] = $this->language->get('tab_contacts');
 		$this->data['tab_contracts'] = $this->language->get('tab_contracts');
+		$this->data['tab_email'] = $this->language->get('tab_email');
+		$this->data['tab_orders'] = $this->language->get('tab_orders');
+		$this->data['tab_recepciones'] = $this->language->get('tab_recepciones');
 		$this->data['tab_products'] = $this->language->get('tab_products');
 		$this->data['tab_invoices'] = $this->language->get('tab_invoices');
 
@@ -408,24 +411,36 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['column_product_name'] = $this->language->get('column_product_name');
 		$this->data['column_invoice'] = $this->language->get('column_invoice');
 		$this->data['column_invoice_date'] = $this->language->get('column_invoice_date');
+		$this->data['column_order'] = $this->language->get('column_order');
+		$this->data['column_status'] = $this->language->get('column_status');
+		$this->data['column_quantity'] = $this->language->get('column_quantity');
 		$this->data['column_total'] = $this->language->get('column_total');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
 		$this->data['column_action'] = $this->language->get('column_action');
+		$this->data['column_email_subject'] = $this->language->get('column_email_subject');
+		$this->data['column_email_sender'] = $this->language->get('column_email_sender');
+		$this->data['text_view'] = $this->language->get('text_view');
 
 		$this->data['column_contact_name'] = $this->language->get('column_contact_name');
 		$this->data['column_contact_email'] = $this->language->get('column_contact_email');
 		$this->data['column_telephone'] = $this->language->get('column_telephone');
-		$this->data['column_article'] = $this->language->get('column_article');
-		$this->data['column_quantity'] = $this->language->get('column_quantity');
-		$this->data['column_end_support'] = $this->language->get('column_end_support');
+		$this->data['column_filename'] = $this->language->get('column_filename');
 		$this->data['column_comment'] = $this->language->get('column_comment');
 		$this->data['column_user'] = $this->language->get('column_user');
 		$this->data['column_date'] = $this->language->get('column_date');
+
+		// New Email (Modal)
+		$this->data['text_to'] = $this->language->get('text_to');
+		$this->data['text_subject'] = $this->language->get('text_subject');
+		$this->data['text_message'] = $this->language->get('text_message');
+		$this->data['button_new_email'] = $this->language->get('button_new_email');
+		$this->data['button_send'] = $this->language->get('button_send');
 
 		$this->data['button_save'] = $this->language->get('button_save');
 		$this->data['button_cancel'] = $this->language->get('button_cancel');
 		$this->data['button_add_contact'] = $this->language->get('button_add_contact');
 		$this->data['button_add_contract'] = $this->language->get('button_add_contract');
+		$this->data['button_view'] = $this->language->get('button_view');
 		$this->data['button_add_note'] = $this->language->get('button_add_note');
 
 		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
@@ -486,6 +501,54 @@ class ControllerPurchaseSupplier extends Controller {
 
 		$this->data['countries'] = $this->model_localisation_country->getCountries();
 
+		// Emails (mismo patron que ControllerSaleCustomer::getForm())
+		$this->data['emails'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getEmailsBySupplierId($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$sender = '';
+
+				if ($result['type'] == 'E') {
+					// Correo enviado por nosotros (ver ModelCatalogMail->addMailSended()): 'client'
+					// guarda el destinatario, no el remitente - el remitente somos nosotros mismos.
+					$sender = $this->config->get('config_name') . ' (' . $this->config->get('config_email') . ')';
+				} else {
+					// Correo recibido (importado por IMAP, ver ModelCatalogMail->getmails()):
+					// 'client' guarda de verdad la direccion de quien lo envio.
+					$arr_sender = $this->model_purchase_supplier->getSupplierByEmail($result['client']);
+
+					if (empty($arr_sender)) {
+						$arr_sender = $this->model_purchase_supplier->getSupplierContactByEmail($result['client']);
+
+						if (empty($arr_sender)) {
+							$sender = $result['client'];
+						} else {
+							$sender = $arr_sender['cname'] . ' (' . $arr_sender['cemail'] . ')';
+						}
+					} else {
+						$sender = $arr_sender['company'] . ' (' . $arr_sender['email'] . ')';
+					}
+				}
+
+				$message = html_entity_decode($result['message']);
+
+				$message = strip_tags($message, '<br>');
+				$message = str_replace("\n", "<br />", $message);
+
+				$this->data['emails'][] = array(
+					'mail_id'    => $result['mail_id'],
+					'sender'     => $sender,
+					'subject'    => $result['title'],
+					'text'       => $message,
+					'date_added' => date($this->language->get('datetime_format'), strtotime($result['date_added']))
+				);
+			}
+		}
+
+		$this->data['new_email'] = $this->url->link('purchase/supplier/new_email', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
+
 		$this->data['contacts'] = array();
 
 		if (!empty($supplier_info)) {
@@ -536,44 +599,87 @@ class ControllerPurchaseSupplier extends Controller {
 
 		$this->data['add_note'] = $this->url->link('purchase/supplier/insertNote', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
 
+		// Documentos (mismo patron que sale/customer: ver ModelSaleCustomer::getCustomerDocuments()
+		// y el tab #tab-contracts de customer_form.tpl)
 		$this->data['contracts'] = array();
 
 		if (!empty($supplier_info)) {
-			$results = $this->model_purchase_supplier->getSupplierContracts($supplier_info['supplier_id']);
+			$results = $this->model_purchase_supplier->getSupplierDocuments($supplier_info['supplier_id']);
 
 			foreach ($results as $result) {
 				$action = array();
 
-				$link = $this->url->link('purchase/supplier/updateContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&supplier_id=' . $supplier_info['supplier_id'], 'SSL');
+				$link = $this->url->link('purchase/supplier/viewContract', 'token=' . $this->session->data['token'] . '&document_id=' . $result['document_id'], 'SSL');
 				$action[] = array(
-					'link' => '<a class="btn btn-default" href="' . $link . '"><i class="fa fa-edit"></i> <span class="hidden-xs">' . $this->language->get('text_edit') . '</span></a>'
+					'link' => '<a class="btn btn-default" href="' . $link . '" target="_blank"><i class="fa fa-eye"></i> <span class="hidden-xs">' . $this->language->get('button_view') . '</span></a>'
 				);
 
-				$link = $this->url->link('purchase/supplier/deleteContract', 'token=' . $this->session->data['token'] . '&contracts_id=' . $result['contracts_id'] . '&supplier_id=' . $supplier_info['supplier_id'], 'SSL');
+				$link = $this->url->link('purchase/supplier/deleteContract', 'token=' . $this->session->data['token'] . '&document_id=' . $result['document_id'] . '&supplier_id=' . $supplier_info['supplier_id'], 'SSL');
 				$action[] = array(
-					'link' => '<a class="btn btn-danger" href="' . $link . '"><i class="fa fa-trash"></i> <span class="hidden-xs">' . $this->language->get('text_delete') . '</span></a>'
+					'link' => '<a class="btn btn-danger" href="' . $link . '" onclick="return confirm(text_confirm);"><i class="fa fa-trash"></i> <span class="hidden-xs">' . $this->language->get('text_delete') . '</span></a>'
 				);
-
-				$this->load->model('catalog/product');
-
-				if ($result['narticulo'] > 0) {
-					$product = $this->model_catalog_product->getProduct($result['narticulo']);
-					$product_name = $product['name'];
-				} else {
-					$product_name = '';
-				}
 
 				$this->data['contracts'][] = array(
-					'contracts_id' => $result['contracts_id'],
-					'product'      => $product_name,
-					'quantity'     => $result['quantity'],
-					'end_support'  => date($this->language->get('date_format_short'), strtotime($result['dfinsoport'])),
-					'action'       => $action
+					'document_id' => $result['document_id'],
+					'filename'    => $result['filename'],
+					'date_added'  => date($this->language->get('date_format_short') . ' H:i', strtotime($result['date_added'])),
+					'action'      => $action
 				);
 			}
 		}
 
+		$this->data['has_documents'] = !empty($this->data['contracts']);
+
 		$this->data['add_contract'] = $this->url->link('purchase/supplier/insertContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->data['supplier_id'], 'SSL');
+
+		// Pedidos (Purchase Orders de este proveedor - mismo patron que tab_orders de cliente)
+		$this->data['orders'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getPurchaseOrdersSupplier($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$action = array();
+
+				$action[] = array(
+					'text' => $this->language->get('text_edit'),
+					'href' => $this->url->link('purchase/purchase_order/update', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $result['purchase_order_id'], 'SSL')
+				);
+
+				$this->data['orders'][] = array(
+					'order_id' => $result['purchase_order_id'],
+					'status'   => $result['status'],
+					'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'action'   => $action,
+					'total'    => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value'])
+				);
+			}
+		}
+
+		// Recepciones (mismos Pedidos de Compra, filtrados a los ya recibidos - no hay un
+		// documento de "albaran de compra" propio, ver ModelPurchaseSupplier::getReceivedPurchaseOrdersSupplier())
+		$this->data['receptions'] = array();
+
+		if (!empty($supplier_info)) {
+			$results = $this->model_purchase_supplier->getReceivedPurchaseOrdersSupplier($supplier_info['supplier_id']);
+
+			foreach ($results as $result) {
+				$action = array();
+
+				$action[] = array(
+					'text' => $this->language->get('text_edit'),
+					'href' => $this->url->link('purchase/purchase_order/update', 'token=' . $this->session->data['token'] . '&purchase_order_id=' . $result['purchase_order_id'], 'SSL')
+				);
+
+				$this->data['receptions'][] = array(
+					'order_id' => $result['purchase_order_id'],
+					'status'   => $result['status'],
+					'date'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+					'action'   => $action,
+					'total'    => $this->currency->format($result['total'], $result['currency_code'], $result['currency_value'])
+				);
+			}
+		}
 
 		$this->data['products'] = array();
 
@@ -623,6 +729,67 @@ class ControllerPurchaseSupplier extends Controller {
 		);
 
 		$this->response->setOutput($this->render());
+	}
+
+	// Mismo patron que ControllerSaleCustomer::new_email() - el permiso se comprueba
+	// contra catalog/mail (enviar correo), no purchase/supplier.
+	public function new_email() {
+		$this->language->load('purchase/supplier');
+		$json = array();
+
+		if ($this->user->hasPermission('modify', 'catalog/mail')) {
+
+			if ($this->request->post['to'] == '' || filter_var($this->request->post['to'], FILTER_VALIDATE_EMAIL) == false) {
+				$json['error']['to'] = $this->language->get('error_to');
+			}
+
+			if ($this->request->post['subject'] == '') {
+				$json['error']['subject'] = $this->language->get('error_subject');
+			}
+
+			if ($this->request->post['message'] == '') {
+				$json['error']['message'] = $this->language->get('error_message');
+			}
+
+			if (empty($json['error'])) {
+				$data['customer_id'] = 0;
+				$data['potential_id'] = 0;
+				$data['supplier_id'] = $this->request->get['supplier_id'];
+
+				$data['to'] = $this->request->post['to'];
+				$data['subject'] = $this->request->post['subject'];
+
+				$data['text'] = $this->request->post['message'];
+				$data['code'] = md5($this->request->post['message']);
+
+				$data['file'] = '';
+				if (is_file($this->request->post['filename'])) {
+					$data['file'] = DIR_DOWNLOAD . $this->request->post['filename'];
+
+					$newName = substr($data['file'], 0, strripos($data['file'], '.'));
+
+					if (rename($data['file'], $newName)) {
+						$data['file'] = $newName;
+					}
+				}
+
+				$mail_error = $this->sendnewmail($data['to'], $data['subject'], $data['text'], $data['file']);
+
+				if ($mail_error) {
+					$json['error']['message'] = $mail_error;
+				} else {
+					$this->load->model('catalog/mail');
+
+					$this->model_catalog_mail->addMailSended($data);
+
+					$json['success'] = $this->language->get('text_success_email');
+				}
+			}
+		} else {
+			$json['error']['permission'] = $this->language->get('error_permission_email');
+		}
+
+		$this->response->setOutput(json_encode($json));
 	}
 
 	private function validateForm() {
@@ -819,6 +986,152 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->response->setOutput($this->render());
 	}
 
+	// Documentos de proveedor: mismo patron que ControllerSaleCustomer (insertContract/
+	// deleteContract/viewContract/getContractForm conservan el nombre historico "Contract",
+	// pero desde aqui en adelante es un adjunto de fichero, no una ficha de contrato).
+	private function getSupplierDocumentDir($company) {
+		$accents = array(
+			'á'=>'a','é'=>'e','í'=>'i','ó'=>'o','ú'=>'u','ñ'=>'n','ü'=>'u',
+			'Á'=>'A','É'=>'E','Í'=>'I','Ó'=>'O','Ú'=>'U','Ñ'=>'N','Ü'=>'U',
+			'à'=>'a','è'=>'e','ì'=>'i','ò'=>'o','ù'=>'u','ç'=>'c','Ç'=>'C',
+		);
+
+		$company_sanitized = trim(preg_replace('/[^A-Za-z0-9]+/', '_', strtr(trim((string)$company), $accents)), '_');
+
+		if ($company_sanitized === '') {
+			$company_sanitized = 'SIN_NOMBRE';
+		}
+
+		$first_char = strtoupper(substr($company_sanitized, 0, 1));
+
+		if (!preg_match('/^[A-Z0-9]$/', $first_char)) {
+			$first_char = '_';
+		}
+
+		$project_root = rtrim(str_replace('\\', '/', dirname(DIR_APPLICATION)), '/');
+
+		return $project_root . '/docs/supplier/' . $first_char . '/' . $company_sanitized . '/';
+	}
+
+	private function findPythonForEmbeddings() {
+		$candidates = array(
+			'C:\\Users\\AlcuinoGarcia\\AppData\\Local\\Programs\\Python\\Python313\\python.exe',
+			'python3',
+			'python',
+		);
+
+		foreach ($candidates as $candidate) {
+			if (stripos(PHP_OS, 'WIN') === 0 && strpos($candidate, ':\\') === false) {
+				exec('where ' . escapeshellarg($candidate) . ' 2>NUL', $out, $code);
+				if ($code === 0) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			if (strpos($candidate, ':\\') !== false) {
+				if (file_exists($candidate)) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			exec('command -v ' . escapeshellarg($candidate) . ' 2>/dev/null', $out, $code);
+			if ($code === 0) {
+				return $candidate;
+			}
+		}
+
+		return null;
+	}
+
+	private function spawnEmbeddingScript($status_suffix, $args) {
+		$python = $this->findPythonForEmbeddings();
+
+		if (!$python) {
+			return false;
+		}
+
+		$script_path = DIR_SYSTEM . 'vendor/document_embeddings/document_embeddings.py';
+		$status_dir  = DIR_SYSTEM . 'vendor/document_embeddings/';
+
+		if (!is_dir($status_dir)) {
+			mkdir($status_dir, 0755, true);
+		}
+
+		$status_file = $status_dir . 'status_' . $status_suffix . '.json';
+		$log_file    = $status_dir . 'last_run_' . $status_suffix . '.log';
+
+		$env = array(
+			'DOCEMB_DB_HOST'     => DB_HOSTNAME,
+			'DOCEMB_DB_PORT'     => (string)DB_PORT,
+			'DOCEMB_DB_USER'     => DB_USERNAME,
+			'DOCEMB_DB_PASSWORD' => DB_PASSWORD,
+			'DOCEMB_DB_NAME'     => DB_DATABASE,
+			'DOCEMB_DB_PREFIX'   => DB_PREFIX,
+			'DOCEMB_LANGUAGE_ID' => (string)(int)$this->config->get('config_language_id'),
+			'DOCEMB_STATUS_FILE' => $status_file,
+		);
+
+		if (stripos(PHP_OS, 'WIN') === 0) {
+			foreach ($env as $key => $value) {
+				putenv($key . '=' . $value);
+			}
+
+			$cmd = 'start /B "" ' . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+				. ' > ' . escapeshellarg($log_file) . ' 2>&1';
+
+			$handle = popen('cmd /c ' . $cmd, 'r');
+
+			foreach ($env as $key => $value) {
+				putenv($key);
+			}
+
+			if ($handle === false) {
+				return false;
+			}
+
+			pclose($handle);
+
+			return true;
+		}
+
+		$env_prefix = '';
+		foreach ($env as $key => $value) {
+			$env_prefix .= $key . '=' . escapeshellarg($value) . ' ';
+		}
+
+		$cmd = $env_prefix . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+			. ' > ' . escapeshellarg($log_file) . ' 2>&1 &';
+
+		exec($cmd, $out, $code);
+
+		return true;
+	}
+
+	// Lanza en segundo plano la indexacion RAG de un documento (PDF) recien adjuntado a
+	// un proveedor, si "Guardar representacion vectorial" + "Usar IA" estan activos y
+	// Ollama tiene el modelo de embeddings disponible. Mismo patron que
+	// ControllerSaleCustomer::spawnCustomerDocumentEmbedding().
+	private function spawnSupplierDocumentEmbedding($supplier_id, $document_id, $abs_file_path, $original_name) {
+		$args = '--supplier-id ' . (int)$supplier_id
+			. ' --supplier-document-id ' . (int)$document_id
+			. ' --file ' . escapeshellarg($abs_file_path)
+			. ' --original-name ' . escapeshellarg($original_name);
+
+		return $this->spawnEmbeddingScript('supplier_' . (int)$document_id, $args);
+	}
+
+	// Lanza en segundo plano la indexacion RAG de una nota de proveedor recien
+	// creada, si "Guardar representacion vectorial" + "Usar IA" estan activos y
+	// Ollama tiene el modelo de embeddings disponible. Mismo patron que
+	// ControllerSaleCustomer::spawnCustomerNoteEmbedding().
+	private function spawnSupplierNoteEmbedding($supplier_id, $note_id) {
+		$args = '--supplier-id ' . (int)$supplier_id . ' --supplier-note-id ' . (int)$note_id;
+
+		return $this->spawnEmbeddingScript('supplier_note_' . (int)$note_id, $args);
+	}
+
 	public function insertContract() {
 		$this->load->language('purchase/supplier');
 
@@ -826,30 +1139,51 @@ class ControllerPurchaseSupplier extends Controller {
 
 		$this->load->model('purchase/supplier');
 
-		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-			$this->model_purchase_supplier->addSupplierContract($this->request->post, $this->request->get['supplier_id']);
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->user->hasPermission('modify', 'purchase/supplier')) {
+			$supplier_id = (int)$this->request->get['supplier_id'];
 
-			$this->session->data['success'] = $this->language->get('text_success');
+			if (!isset($_FILES['document']) || empty($_FILES['document']['tmp_name']) || !is_uploaded_file($_FILES['document']['tmp_name'])) {
+				$this->error['warning'] = $this->language->get('error_upload');
+			} else {
+				$ext = strtolower(pathinfo($_FILES['document']['name'], PATHINFO_EXTENSION));
 
-			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL'));
-		}
+				if (!in_array($ext, array('pdf', 'xlsx'))) {
+					$this->error['warning'] = $this->language->get('error_document_type');
+				} else {
+					$supplier_info = $this->model_purchase_supplier->getSupplier($supplier_id);
+					$dir = $this->getSupplierDocumentDir($supplier_info ? $supplier_info['company'] : '');
 
-		$this->getContractForm();
-	}
+					if (!is_dir($dir)) {
+						mkdir($dir, 0755, true);
+					}
 
-	public function updateContract() {
-		$this->load->language('purchase/supplier');
+					$safe_name = preg_replace('/[^A-Za-z0-9_.\-]/', '_', basename($_FILES['document']['name']));
+					if ($safe_name === '' || $safe_name === '.' . $ext) {
+						$safe_name = 'documento.' . $ext;
+					}
 
-		$this->document->setTitle($this->language->get('heading_title'));
+					// No pisar un documento distinto que por casualidad tenga el mismo nombre
+					// (un proveedor puede tener varios documentos).
+					$path = $dir . $safe_name;
+					if (is_file($path)) {
+						$path = $dir . pathinfo($safe_name, PATHINFO_FILENAME) . '_' . date('YmdHis') . '.' . $ext;
+					}
 
-		$this->load->model('purchase/supplier');
+					if (move_uploaded_file($_FILES['document']['tmp_name'], $path)) {
+						$document_id = $this->model_purchase_supplier->addSupplierDocument($supplier_id, $_FILES['document']['name'], $path);
 
-		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-			$this->model_purchase_supplier->editSupplierContract($this->request->post, $this->request->get['contracts_id']);
+						if (($ext == 'pdf') && $this->config->get('config_product_vector_embeddings') && $this->config->get('config_ai_enabled') && $this->isOllamaEmbeddingModelAvailable()) {
+							$this->spawnSupplierDocumentEmbedding($supplier_id, $document_id, $path, $_FILES['document']['name']);
+						}
 
-			$this->session->data['success'] = $this->language->get('text_success');
+						$this->session->data['success'] = $this->language->get('text_success');
 
-			$this->redirect($this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'] . '&contracts_id=' . $this->request->get['contracts_id'], 'SSL'));
+						$this->redirect($this->url->link('purchase/supplier/insertContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $supplier_id, 'SSL'));
+					} else {
+						$this->error['warning'] = $this->language->get('error_document_upload');
+					}
+				}
+			}
 		}
 
 		$this->getContractForm();
@@ -862,8 +1196,17 @@ class ControllerPurchaseSupplier extends Controller {
 
 		$this->load->model('purchase/supplier');
 
-		if (isset($this->request->get['contracts_id']) && $this->validateDelete()) {
-			$this->model_purchase_supplier->deleteSupplierContract($this->request->get['contracts_id']);
+		if (isset($this->request->get['document_id']) && $this->validateDelete()) {
+			$document_info = $this->model_purchase_supplier->getSupplierDocument($this->request->get['document_id']);
+
+			if ($document_info) {
+				if (is_file($document_info['stored_filename'])) {
+					@unlink($document_info['stored_filename']);
+				}
+
+				$this->model_purchase_supplier->deleteSupplierDocumentEmbeddings($this->request->get['document_id']);
+				$this->model_purchase_supplier->deleteSupplierDocument($this->request->get['document_id']);
+			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -873,22 +1216,67 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->getForm();
 	}
 
+	public function viewContract() {
+		if (!$this->user->hasPermission('access', 'purchase/supplier')) {
+			http_response_code(403);
+			exit('Permission denied');
+		}
+
+		if (empty($this->request->get['document_id'])) {
+			http_response_code(400);
+			exit('Missing document_id');
+		}
+
+		$this->load->model('purchase/supplier');
+
+		$document_info = $this->model_purchase_supplier->getSupplierDocument((int)$this->request->get['document_id']);
+
+		if (!$document_info) {
+			http_response_code(404);
+			exit('Document not found');
+		}
+
+		$file = $document_info['stored_filename'];
+
+		if (!is_file($file)) {
+			http_response_code(404);
+			exit('File not found');
+		}
+
+		$ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+		$mime_types = array(
+			'pdf'  => 'application/pdf',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		);
+
+		$content_type = isset($mime_types[$ext]) ? $mime_types[$ext] : 'application/octet-stream';
+
+		while (ob_get_level() > 0) {
+			ob_end_clean();
+		}
+
+		header('Content-Type: ' . $content_type);
+		header('Content-Disposition: inline; filename="' . basename($document_info['filename']) . '"');
+		header('Content-Length: ' . filesize($file));
+		header('Cache-Control: private');
+		readfile($file);
+		exit;
+	}
+
 	protected function getContractForm() {
 		$this->load->model('purchase/supplier');
 
 		$this->data['heading_title'] = $this->language->get('heading_title_contract');
 
-		$this->data['entry_article'] = $this->language->get('entry_article');
-		$this->data['entry_quantity'] = $this->language->get('entry_quantity');
-		$this->data['entry_date'] = $this->language->get('entry_date');
-		$this->data['entry_end_support'] = $this->language->get('entry_end_support');
-		$this->data['entry_notes'] = $this->language->get('entry_notes');
-		$this->data['entry_status'] = $this->language->get('entry_status');
-
-		$this->data['button_save'] = $this->language->get('button_save');
-		$this->data['button_cancel'] = $this->language->get('button_cancel');
-
-		$this->data['text_select'] = $this->language->get('text_select');
+		$this->data['entry_document'] = $this->language->get('entry_document');
+		$this->data['button_upload']  = $this->language->get('button_upload');
+		$this->data['button_view']    = $this->language->get('button_view');
+		$this->data['button_cancel']  = $this->language->get('button_cancel');
+		$this->data['column_filename'] = $this->language->get('column_filename');
+		$this->data['column_date_added'] = $this->language->get('column_date_added');
+		$this->data['column_action']  = $this->language->get('column_action');
+		$this->data['text_no_documents'] = $this->language->get('text_no_documents');
 
 		$this->data['breadcrumbs'] = array(
 			array(
@@ -903,83 +1291,34 @@ class ControllerPurchaseSupplier extends Controller {
 			)
 		);
 
-		if (isset($this->request->get['contracts_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
-			$contract_info = $this->model_purchase_supplier->getSupplierContract($this->request->get['contracts_id']);
-		}
-
-		if (isset($this->request->get['contracts_id'])) {
-			$this->data['contracts_id'] = $this->request->get['contracts_id'];
-		} else {
-			$this->data['contracts_id'] = 0;
-		}
-
 		$this->data['error_warning'] = isset($this->error['warning']) ? $this->error['warning'] : '';
 
-		$this->load->model('catalog/product');
-		$this->data['products'] = $this->model_catalog_product->getProducts();
+		$supplier_id = (int)$this->request->get['supplier_id'];
 
-		if (isset($this->request->post['product_id'])) {
-			$this->data['product_id'] = $this->request->post['product_id'];
-		} elseif (isset($contract_info)) {
-			$this->data['product_id'] = $contract_info['narticulo'];
-		} else {
-			$this->data['product_id'] = 0;
+		$this->data['supplier_id'] = $supplier_id;
+
+		$documents = $this->model_purchase_supplier->getSupplierDocuments($supplier_id);
+
+		$this->data['documents'] = array();
+
+		foreach ($documents as $document) {
+			$this->data['documents'][] = array(
+				'document_id' => $document['document_id'],
+				'filename'    => $document['filename'],
+				'date_added'  => date($this->language->get('date_format_short') . ' H:i', strtotime($document['date_added'])),
+				'view'        => $this->url->link('purchase/supplier/viewContract', 'token=' . $this->session->data['token'] . '&document_id=' . $document['document_id'], 'SSL'),
+				'delete'      => $this->url->link('purchase/supplier/deleteContract', 'token=' . $this->session->data['token'] . '&document_id=' . $document['document_id'] . '&supplier_id=' . $supplier_id, 'SSL')
+			);
 		}
 
-		if (isset($this->request->post['quantity'])) {
-			$this->data['quantity'] = $this->request->post['quantity'];
-		} elseif (isset($contract_info)) {
-			$this->data['quantity'] = $contract_info['quantity'];
-		} else {
-			$this->data['quantity'] = 1;
-		}
+		$this->data['action'] = $this->url->link('purchase/supplier/insertContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $supplier_id, 'SSL');
 
-		if (isset($this->request->post['date_purchased'])) {
-			$this->data['date_purchased'] = $this->request->post['date_purchased'];
-		} elseif (isset($contract_info)) {
-			$this->data['date_purchased'] = $contract_info['dcompra'];
-		} else {
-			$this->data['date_purchased'] = '';
-		}
-
-		if (isset($this->request->post['end_support'])) {
-			$this->data['end_support'] = $this->request->post['end_support'];
-		} elseif (isset($contract_info)) {
-			$this->data['end_support'] = $contract_info['dfinsoport'];
-		} else {
-			$this->data['end_support'] = '';
-		}
-
-		if (isset($this->request->post['notes'])) {
-			$this->data['notes'] = $this->request->post['notes'];
-		} elseif (isset($contract_info)) {
-			$this->data['notes'] = $contract_info['mnotas'];
-		} else {
-			$this->data['notes'] = '';
-		}
-
-		$this->data['contract_statuses'] = $this->model_purchase_supplier->getSupplierContractStatus();
-
-		if (isset($this->request->post['contract_status_id'])) {
-			$this->data['contract_status_id'] = $this->request->post['contract_status_id'];
-		} elseif (isset($contract_info)) {
-			$this->data['contract_status_id'] = $contract_info['contract_status'];
-		} else {
-			$this->data['contract_status_id'] = 0;
-		}
-
-		if ($this->data['contracts_id'] == 0) {
-			$this->data['action'] = $this->url->link('purchase/supplier/insertContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
-		} else {
-			$this->data['action'] = $this->url->link('purchase/supplier/updateContract', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'] . '&contracts_id=' . $this->data['contracts_id'], 'SSL');
-		}
-
-		$this->data['cancel'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $this->request->get['supplier_id'], 'SSL');
+		$this->data['cancel'] = $this->url->link('purchase/supplier/update', 'token=' . $this->session->data['token'] . '&supplier_id=' . $supplier_id, 'SSL');
 
 		$this->template = 'purchase/supplier_contract.tpl';
 		$this->children = array(
 			'common/header',
-			'common/footer'
+			'common/footer',
 		);
 
 		$this->response->setOutput($this->render());
@@ -991,7 +1330,12 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->load->model('purchase/supplier');
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-			$this->model_purchase_supplier->addSupplierNote($this->request->post, $this->request->get['supplier_id']);
+			$supplier_id = (int)$this->request->get['supplier_id'];
+			$note_id = $this->model_purchase_supplier->addSupplierNote($this->request->post, $supplier_id);
+
+			if ($this->config->get('config_product_vector_embeddings') && $this->config->get('config_ai_enabled') && $this->isOllamaEmbeddingModelAvailable()) {
+				$this->spawnSupplierNoteEmbedding($supplier_id, $note_id);
+			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -1007,6 +1351,7 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->load->model('purchase/supplier');
 
 		if (isset($this->request->get['note_id']) && $this->validateDelete()) {
+			$this->model_purchase_supplier->deleteSupplierNoteEmbeddings($this->request->get['note_id']);
 			$this->model_purchase_supplier->deleteSupplierNote($this->request->get['note_id']);
 
 			$this->session->data['success'] = $this->language->get('text_success');

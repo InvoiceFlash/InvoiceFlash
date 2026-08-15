@@ -30,9 +30,12 @@ class ControllerToolSystem extends Controller {
 
 		$this->data['text_php_version'] = $this->language->get('text_php_version');
 		$this->data['text_db_version'] = $this->language->get('text_db_version');
+		$this->data['text_ram'] = $this->language->get('text_ram');
+		$this->data['text_gpu'] = $this->language->get('text_gpu');
 		$this->data['text_ollama_status'] = $this->language->get('text_ollama_status');
 		$this->data['text_ai_model'] = $this->language->get('text_ai_model');
 		$this->data['text_rag_status'] = $this->language->get('text_rag_status');
+		$this->data['text_not_available'] = $this->language->get('text_not_available');
 
 		$this->data['text_yes'] = $this->language->get('text_yes');
 		$this->data['text_no'] = $this->language->get('text_no');
@@ -55,6 +58,18 @@ class ControllerToolSystem extends Controller {
 		$this->data['ai_enabled'] = $this->config->get('config_ai_enabled') !== '0';
 		$this->data['rag_enabled'] = $this->data['ai_enabled'] && $this->config->get('config_product_vector_embeddings');
 
+		$ram_bytes = $this->getTotalRam();
+		$this->data['ram_total'] = ($ram_bytes !== null) ? $this->formatBytesToGb($ram_bytes) : '';
+
+		$this->data['gpus'] = array();
+
+		foreach ($this->getGpuInfo() as $gpu) {
+			$this->data['gpus'][] = array(
+				'name' => $gpu['name'],
+				'vram' => ($gpu['vram_bytes'] !== null) ? $this->formatBytesToGb($gpu['vram_bytes']) : '',
+			);
+		}
+
 		$this->template = 'tool/system_list.tpl';
 		$this->children = array(
 			'common/header',
@@ -72,6 +87,72 @@ class ControllerToolSystem extends Controller {
 		} catch (\Throwable $e) {
 			return '';
 		}
+	}
+
+	// RAM total en bytes (null si no se puede determinar, p.ej. fuera de Windows).
+	private function getTotalRam() {
+		if (stripos(PHP_OS, 'WIN') !== 0) {
+			return null;
+		}
+
+		$out = @shell_exec('powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory"');
+		$out = trim((string)$out);
+
+		if (($out === '') || !ctype_digit($out)) {
+			return null;
+		}
+
+		return (float)$out;
+	}
+
+	// Lista de GPUs: cada una con 'name' y 'vram_bytes' (null si AdapterRAM no lo reporta,
+	// o si el valor parece el desbordamiento de 32 bits conocido de WMI para tarjetas con
+	// mas de ~4GB de VRAM, en cuyo caso se marca como no fiable en vez de mostrar un dato falso).
+	private function getGpuInfo() {
+		if (stripos(PHP_OS, 'WIN') !== 0) {
+			return array();
+		}
+
+		$out = @shell_exec('powershell -NoProfile -Command "Get-CimInstance Win32_VideoController | ForEach-Object { $_.Name + \'|\' + $_.AdapterRAM }"');
+
+		if ($out === null) {
+			return array();
+		}
+
+		$gpus = array();
+
+		foreach (preg_split('/\r\n|\r|\n/', trim($out)) as $line) {
+			$line = trim($line);
+
+			if ($line === '') {
+				continue;
+			}
+
+			$parts = explode('|', $line);
+			$name = trim($parts[0]);
+			$ram_raw = isset($parts[1]) ? trim($parts[1]) : '';
+
+			$vram_bytes = null;
+
+			if (ctype_digit($ram_raw) && ((int)$ram_raw > 0)) {
+				// AdapterRAM es un entero de 32 bits con signo en WMI: para VRAM >= 4GB
+				// el valor se desborda y ya no es fiable (valores cercanos a 4294967295,
+				// o que tras interpretarse como negativo dan un numero absurdo).
+				$reliable = ((int)$ram_raw < 4294967295);
+				$vram_bytes = $reliable ? (float)$ram_raw : null;
+			}
+
+			$gpus[] = array(
+				'name'       => $name,
+				'vram_bytes' => $vram_bytes,
+			);
+		}
+
+		return $gpus;
+	}
+
+	private function formatBytesToGb($bytes) {
+		return number_format($bytes / 1073741824, 1) . ' GB';
 	}
 
 	private function isOllamaReachable($base_url) {

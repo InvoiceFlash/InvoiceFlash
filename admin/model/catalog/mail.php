@@ -35,9 +35,12 @@ class ModelCatalogMail extends Model {
 	}
 	
 	public function getmails_in($data = array()) {
-	
-		$sql = "SELECT mails.*, c.company FROM " . DB_PREFIX . "mails AS mails  
-					LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = mails.customer_id 
+
+		$sql = "SELECT mails.*, c.company,
+					(log.document_embedding_log_id IS NOT NULL) AS rag_indexed
+				FROM " . DB_PREFIX . "mails AS mails
+					LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = mails.customer_id
+					LEFT JOIN " . DB_PREFIX . "document_embedding_log log ON log.document_id = CONCAT('mail_', mails.mail_id) AND log.status = 'done'
 					WHERE type= 'R' AND bleido <> 2";
 
 		if ($data['filter_company'] != '') {
@@ -87,7 +90,8 @@ class ModelCatalogMail extends Model {
 		$this->load->library('util');
 		$ut = Util::get_instance($this->registry);
 		
-		$sql = "SELECT m.mail_id, 
+		$sql = "SELECT m.mail_id,
+			(log.document_embedding_log_id IS NOT NULL) AS rag_indexed,
 			CASE
 			WHEN m.customer_id != 0 THEN c.company";
 			
@@ -101,9 +105,10 @@ class ModelCatalogMail extends Model {
 
 		$sql .= " ELSE `client`
 			END AS company
-			, m.title, m.message, m.date_added 
-			FROM " . DB_PREFIX . "mails AS m 
-			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id";
+			, m.title, m.message, m.date_added
+			FROM " . DB_PREFIX . "mails AS m
+			LEFT JOIN " . DB_PREFIX . "customer c ON c.customer_id = m.customer_id
+			LEFT JOIN " . DB_PREFIX . "document_embedding_log log ON log.document_id = CONCAT('mail_', m.mail_id) AND log.status = 'done'";
 			
 		if ($ut->checkTableExists('c_supplier')) {	
 			$sql .= " LEFT JOIN " . DB_PREFIX . "supplier s ON s.supplier_id = m.supplier_id";

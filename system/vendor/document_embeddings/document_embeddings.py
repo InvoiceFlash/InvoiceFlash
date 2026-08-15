@@ -118,10 +118,16 @@ def strip_html_tags(text):
 	if not text:
 		return ""
 
+	# Algunos mensajes de `mails` llegan con las etiquetas ya escapadas como
+	# entidades (&lt;p&gt;...&lt;/p&gt;) en vez de HTML literal - hay que
+	# desescapar ANTES de aplicar el regex, o el regex no las reconoce como
+	# etiquetas y el unescape final las revela sin haberlas podido quitar.
+	text = html.unescape(text)
+
 	text = re.sub(r"<(br|p|div|tr|li)[^>]*>", "\n", text, flags=re.IGNORECASE)
 	text = re.sub(r"<[^>]+>", " ", text)
 
-	return html.unescape(text)
+	return text
 
 
 def clean_text(text):
@@ -232,6 +238,18 @@ def get_customer_name(conn, customer_id):
 	return row[0] if row else None
 
 
+def get_supplier_name(conn, supplier_id):
+	cur = conn.cursor()
+	cur.execute(
+		f"SELECT company FROM {table('supplier')} WHERE supplier_id = ? LIMIT 1",
+		(supplier_id,),
+	)
+	row = cur.fetchone()
+	cur.close()
+
+	return row[0] if row else None
+
+
 def upsert_log(conn, document_id, fields):
 	cur = conn.cursor()
 
@@ -261,7 +279,7 @@ def delete_existing_chunks(conn, document_id):
 
 
 def insert_chunk(conn, document_id, filename, product_id, product_name, customer_id, customer_name,
-				  page, chunk_number, text, embedding, document_type):
+				  page, chunk_number, text, embedding, document_type, supplier_id=None, supplier_name=None):
 	vector_text = "[" + ",".join(str(float(x)) for x in embedding) + "]"
 
 	cur = conn.cursor()
@@ -269,8 +287,8 @@ def insert_chunk(conn, document_id, filename, product_id, product_name, customer
 		f"""
 		INSERT INTO {table('document_chunks')}
 		(document_id, document, product_id, product_name, customer_id, customer_name,
-		 page, chunk_number, chunk_text, document_type, embedding)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, VEC_FromText(?))
+		 supplier_id, supplier_name, page, chunk_number, chunk_text, document_type, embedding)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, VEC_FromText(?))
 		""",
 		(
 			document_id,
@@ -279,6 +297,8 @@ def insert_chunk(conn, document_id, filename, product_id, product_name, customer
 			product_name,
 			customer_id,
 			customer_name,
+			supplier_id,
+			supplier_name,
 			page,
 			chunk_number,
 			text,
@@ -295,7 +315,8 @@ def insert_chunk(conn, document_id, filename, product_id, product_name, customer
 # ============================================================
 
 def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_name,
-			  customer_id=None, customer_name=None, document_type=DOCUMENT_TYPE, progress=None):
+			  customer_id=None, customer_name=None, supplier_id=None, supplier_name=None,
+			  document_type=DOCUMENT_TYPE, progress=None):
 	if not pdf_path.exists():
 		raise FileNotFoundError(f"No existe el archivo: {pdf_path}")
 
@@ -335,6 +356,7 @@ def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_nam
 			insert_chunk(
 				conn, document_id, display_name, product_id, product_name, customer_id, customer_name,
 				page_number, chunk_number, chunk_text, embedding, document_type,
+				supplier_id=supplier_id, supplier_name=supplier_name,
 			)
 			total_chunks += 1
 
@@ -344,9 +366,11 @@ def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_nam
 
 
 def embed_text(conn, document_id, display_name, text, product_id, product_name,
-				customer_id, customer_name, document_type, progress):
-	"""Igual que embed_pdf() pero para texto plano ya disponible (notas de cliente),
-	sin PDF/OCR de por medio - todo el texto se trata como una unica 'pagina' 1."""
+				customer_id, customer_name, document_type, progress,
+				supplier_id=None, supplier_name=None):
+	"""Igual que embed_pdf() pero para texto plano ya disponible (notas de cliente/
+	proveedor), sin PDF/OCR de por medio - todo el texto se trata como una unica
+	'pagina' 1."""
 	delete_existing_chunks(conn, document_id)
 
 	progress["total_pages"] = 1
@@ -371,6 +395,7 @@ def embed_text(conn, document_id, display_name, text, product_id, product_name,
 			insert_chunk(
 				conn, document_id, display_name, product_id, product_name, customer_id, customer_name,
 				1, chunk_number, chunk_text, embedding, document_type,
+				supplier_id=supplier_id, supplier_name=supplier_name,
 			)
 			total_chunks += 1
 
@@ -563,6 +588,67 @@ def process_customer_document(conn, customer_id, customer_document_id, file_path
 		write_status(progress)
 
 
+def process_supplier_document(conn, supplier_id, supplier_document_id, file_path, display_name, progress):
+	"""Modo 'adjunto directo de proveedor' (purchase/supplier/insertContract): mismo
+	patron que process_customer_document() pero indexado por supplier_id."""
+	document_id = f"supplier_document_{supplier_document_id}"
+	pdf_path = Path(file_path)
+
+	progress["current_file"] = display_name
+	progress["current_page"] = 0
+	progress["total_pages"] = 0
+	write_status(progress)
+
+	upsert_log(conn, document_id, {
+		"filename": display_name,
+		"supplier_id": supplier_id,
+		"supplier_name": None,
+		"status": "processing",
+		"pages": 0,
+		"chunks": 0,
+		"error_message": None,
+		"date_started": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		"date_finished": None,
+	})
+
+	supplier_name = None
+
+	try:
+		supplier_name = get_supplier_name(conn, supplier_id)
+
+		total_pages, total_chunks = embed_pdf(
+			conn, document_id, display_name, pdf_path, None, None,
+			supplier_id=supplier_id, supplier_name=supplier_name,
+			document_type="supplier_document", progress=progress,
+		)
+
+		upsert_log(conn, document_id, {
+			"filename": display_name,
+			"supplier_id": supplier_id,
+			"supplier_name": supplier_name,
+			"status": "done",
+			"pages": total_pages,
+			"chunks": total_chunks,
+			"error_message": None,
+			"date_finished": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		})
+
+	except Exception as e:
+		upsert_log(conn, document_id, {
+			"filename": display_name,
+			"supplier_id": supplier_id,
+			"supplier_name": supplier_name,
+			"status": "error",
+			"pages": 0,
+			"chunks": 0,
+			"error_message": str(e)[:1000],
+			"date_finished": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		})
+
+		progress.setdefault("errors", []).append({"file": display_name, "error": str(e)})
+		write_status(progress)
+
+
 def process_customer_note(conn, customer_id, customer_note_id, progress):
 	"""Modo 'nota de cliente' (sale/customer/insertNote): no hay fichero, el texto ya
 	esta en la BD (customer_history.comment) - se embebe directamente, sin PDF/OCR."""
@@ -623,6 +709,78 @@ def process_customer_note(conn, customer_id, customer_note_id, progress):
 			"filename": display_name,
 			"customer_id": customer_id,
 			"customer_name": customer_name,
+			"status": "error",
+			"pages": 0,
+			"chunks": 0,
+			"error_message": str(e)[:1000],
+			"date_finished": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		})
+
+		progress.setdefault("errors", []).append({"file": display_name, "error": str(e)})
+		write_status(progress)
+
+
+def process_supplier_note(conn, supplier_id, supplier_note_id, progress):
+	"""Modo 'nota de proveedor' (purchase/supplier/insertNote): mismo patron que
+	process_customer_note() pero indexado por supplier_id, sin fichero de por medio."""
+	document_id = f"supplier_note_{supplier_note_id}"
+	display_name = f"Nota #{supplier_note_id}"
+
+	progress["current_file"] = display_name
+	progress["current_page"] = 0
+	progress["total_pages"] = 0
+	write_status(progress)
+
+	upsert_log(conn, document_id, {
+		"filename": display_name,
+		"supplier_id": supplier_id,
+		"supplier_name": None,
+		"status": "processing",
+		"pages": 0,
+		"chunks": 0,
+		"error_message": None,
+		"date_started": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		"date_finished": None,
+	})
+
+	supplier_name = None
+
+	try:
+		cur = conn.cursor()
+		cur.execute(
+			f"SELECT comment FROM {table('supplier_history')} WHERE supplier_history_id = ? LIMIT 1",
+			(supplier_note_id,),
+		)
+		row = cur.fetchone()
+		cur.close()
+
+		if not row:
+			raise ValueError(f"No existe la nota supplier_history_id={supplier_note_id}.")
+
+		supplier_name = get_supplier_name(conn, supplier_id)
+
+		total_pages, total_chunks = embed_text(
+			conn, document_id, display_name, row[0], None, None,
+			None, None, "supplier_note", progress,
+			supplier_id=supplier_id, supplier_name=supplier_name,
+		)
+
+		upsert_log(conn, document_id, {
+			"filename": display_name,
+			"supplier_id": supplier_id,
+			"supplier_name": supplier_name,
+			"status": "done",
+			"pages": total_pages,
+			"chunks": total_chunks,
+			"error_message": None,
+			"date_finished": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+		})
+
+	except Exception as e:
+		upsert_log(conn, document_id, {
+			"filename": display_name,
+			"supplier_id": supplier_id,
+			"supplier_name": supplier_name,
 			"status": "error",
 			"pages": 0,
 			"chunks": 0,
@@ -712,6 +870,116 @@ def process_mail(conn, mail_id, progress):
 
 
 # ============================================================
+# MODO LOTE GENERICO (pantalla setting/document_embeddings: combo de tipo +
+# checkboxes de "no indexados todavia" + boton Indexar). A diferencia de los modos
+# anteriores (invocados por PHP con todos los datos ya resueltos, p.ej. product_id +
+# ruta absoluta), aqui PHP solo conoce el id de la fila (product_document_id,
+# document_id de customer_document/supplier_document, etc.) - estos resolvers
+# recuperan el resto (ruta de fichero, product_id/customer_id/supplier_id) de la
+# propia BD antes de reutilizar las funciones process_* de siempre.
+# ============================================================
+
+def resolve_product_document(conn, product_document_id):
+	cur = conn.cursor()
+	cur.execute(
+		f"SELECT product_id, filename, name FROM {table('product_document')} WHERE product_document_id = ? LIMIT 1",
+		(product_document_id,),
+	)
+	row = cur.fetchone()
+	cur.close()
+
+	if not row:
+		raise ValueError(f"No existe product_document_id={product_document_id}.")
+
+	product_id, stored_filename, display_name = row
+	file_path = str(DOCS_DIR / str(product_id) / stored_filename)
+
+	return product_id, file_path, display_name
+
+
+def resolve_customer_document(conn, customer_document_id):
+	cur = conn.cursor()
+	cur.execute(
+		f"SELECT customer_id, filename, stored_filename FROM {table('customer_document')} WHERE document_id = ? LIMIT 1",
+		(customer_document_id,),
+	)
+	row = cur.fetchone()
+	cur.close()
+
+	if not row:
+		raise ValueError(f"No existe customer_document con document_id={customer_document_id}.")
+
+	customer_id, display_name, file_path = row
+
+	return customer_id, file_path, display_name
+
+
+def resolve_supplier_document(conn, supplier_document_id):
+	cur = conn.cursor()
+	cur.execute(
+		f"SELECT supplier_id, filename, stored_filename FROM {table('supplier_document')} WHERE document_id = ? LIMIT 1",
+		(supplier_document_id,),
+	)
+	row = cur.fetchone()
+	cur.close()
+
+	if not row:
+		raise ValueError(f"No existe supplier_document con document_id={supplier_document_id}.")
+
+	supplier_id, display_name, file_path = row
+
+	return supplier_id, file_path, display_name
+
+
+def process_batch_item(conn, item_type, item_id, progress):
+	if item_type == "product_document":
+		product_id, file_path, display_name = resolve_product_document(conn, item_id)
+		process_product_document(conn, product_id, item_id, file_path, display_name, progress)
+
+	elif item_type == "customer_document":
+		customer_id, file_path, display_name = resolve_customer_document(conn, item_id)
+		process_customer_document(conn, customer_id, item_id, file_path, display_name, progress)
+
+	elif item_type == "customer_note":
+		cur = conn.cursor()
+		cur.execute(
+			f"SELECT customer_id FROM {table('customer_history')} WHERE customer_history_id = ? LIMIT 1",
+			(item_id,),
+		)
+		row = cur.fetchone()
+		cur.close()
+
+		if not row:
+			raise ValueError(f"No existe la nota customer_history_id={item_id}.")
+
+		process_customer_note(conn, row[0], item_id, progress)
+
+	elif item_type == "supplier_document":
+		supplier_id, file_path, display_name = resolve_supplier_document(conn, item_id)
+		process_supplier_document(conn, supplier_id, item_id, file_path, display_name, progress)
+
+	elif item_type == "supplier_note":
+		cur = conn.cursor()
+		cur.execute(
+			f"SELECT supplier_id FROM {table('supplier_history')} WHERE supplier_history_id = ? LIMIT 1",
+			(item_id,),
+		)
+		row = cur.fetchone()
+		cur.close()
+
+		if not row:
+			raise ValueError(f"No existe la nota supplier_history_id={item_id}.")
+
+		process_supplier_note(conn, row[0], item_id, progress)
+
+	elif item_type == "mail":
+		process_mail(conn, item_id, progress)
+
+	else:
+		raise ValueError(f"Tipo de lote desconocido: {item_type}")
+
+
+# ============================================================
 # MAIN
 # ============================================================
 
@@ -723,9 +991,17 @@ def main():
 	parser.add_argument("--customer-id", type=int, help="ID del cliente (modo documento/nota de cliente)")
 	parser.add_argument("--customer-document-id", type=int, help="ID de if_customer_document (modo documento de cliente)")
 	parser.add_argument("--customer-note-id", type=int, help="ID de if_customer_history (modo nota de cliente)")
+	parser.add_argument("--supplier-id", type=int, help="ID del proveedor (modo documento/nota de proveedor)")
+	parser.add_argument("--supplier-document-id", type=int, help="ID de if_supplier_document (modo adjunto directo de proveedor)")
+	parser.add_argument("--supplier-note-id", type=int, help="ID de if_supplier_history (modo nota de proveedor)")
 	parser.add_argument("--mail-id", type=int, help="ID de if_mails (modo email de cliente, enviado o recibido)")
 	parser.add_argument("--file", help="Ruta absoluta del PDF (modo adjunto directo)")
 	parser.add_argument("--original-name", help="Nombre original del archivo, para mostrar (modo adjunto directo)")
+	parser.add_argument("--batch-type", choices=[
+		"product_document", "customer_document", "customer_note",
+		"supplier_document", "supplier_note", "mail",
+	], help="Tipo de elemento para el modo lote de setting/document_embeddings (Generador Representacion vectorial)")
+	parser.add_argument("--batch-ids", help="IDs de fila separados por coma para --batch-type")
 	args = parser.parse_args()
 
 	if args.product_id and args.product_document_id and args.file:
@@ -792,6 +1068,38 @@ def main():
 		write_status(progress)
 		return
 
+	if args.supplier_id and args.supplier_document_id and args.file:
+		display_name = args.original_name or Path(args.file).name
+
+		progress = {
+			"running": True,
+			"started_at": now_iso(),
+			"finished_at": None,
+			"total_files": 1,
+			"processed_files": 0,
+			"current_file": None,
+			"current_page": 0,
+			"total_pages": 0,
+			"errors": [],
+		}
+
+		write_status(progress)
+
+		conn = get_connection()
+
+		try:
+			process_supplier_document(conn, args.supplier_id, args.supplier_document_id, args.file, display_name, progress)
+			progress["processed_files"] = 1
+			write_status(progress)
+		finally:
+			conn.close()
+
+		progress["running"] = False
+		progress["current_file"] = None
+		progress["finished_at"] = now_iso()
+		write_status(progress)
+		return
+
 	if args.customer_id and args.customer_note_id:
 		progress = {
 			"running": True,
@@ -811,6 +1119,36 @@ def main():
 
 		try:
 			process_customer_note(conn, args.customer_id, args.customer_note_id, progress)
+			progress["processed_files"] = 1
+			write_status(progress)
+		finally:
+			conn.close()
+
+		progress["running"] = False
+		progress["current_file"] = None
+		progress["finished_at"] = now_iso()
+		write_status(progress)
+		return
+
+	if args.supplier_id and args.supplier_note_id:
+		progress = {
+			"running": True,
+			"started_at": now_iso(),
+			"finished_at": None,
+			"total_files": 1,
+			"processed_files": 0,
+			"current_file": None,
+			"current_page": 0,
+			"total_pages": 0,
+			"errors": [],
+		}
+
+		write_status(progress)
+
+		conn = get_connection()
+
+		try:
+			process_supplier_note(conn, args.supplier_id, args.supplier_note_id, progress)
 			progress["processed_files"] = 1
 			write_status(progress)
 		finally:
@@ -852,11 +1190,60 @@ def main():
 		write_status(progress)
 		return
 
+	if args.batch_type and args.batch_ids:
+		ids = [int(x.strip()) for x in args.batch_ids.split(",") if x.strip()]
+
+		progress = {
+			"running": True,
+			"started_at": now_iso(),
+			"finished_at": None,
+			"total_files": len(ids),
+			"processed_files": 0,
+			"current_file": None,
+			"current_page": 0,
+			"total_pages": 0,
+			"errors": [],
+		}
+
+		write_status(progress)
+
+		conn = get_connection()
+
+		try:
+			for item_id in ids:
+				try:
+					process_batch_item(conn, args.batch_type, item_id, progress)
+				except Exception as e:
+					document_id = f"{args.batch_type}_{item_id}"
+					upsert_log(conn, document_id, {
+						"filename": document_id,
+						"status": "error",
+						"pages": 0,
+						"chunks": 0,
+						"error_message": str(e)[:1000],
+						"date_finished": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+					})
+					progress.setdefault("errors", []).append({"file": document_id, "error": str(e)})
+					write_status(progress)
+
+				progress["processed_files"] += 1
+				write_status(progress)
+		finally:
+			conn.close()
+
+		progress["running"] = False
+		progress["current_file"] = None
+		progress["finished_at"] = now_iso()
+		write_status(progress)
+		return
+
 	if not args.files:
 		parser.error(
 			"Debes indicar --files, o bien --product-id/--product-document-id/--file, "
 			"o bien --customer-id + (--customer-document-id/--file | --customer-note-id), "
-			"o bien --mail-id"
+			"o bien --supplier-id/--supplier-document-id/--file, "
+			"o bien --mail-id, "
+			"o bien --batch-type/--batch-ids"
 		)
 
 	files = [f.strip() for f in args.files.split(",") if f.strip()]

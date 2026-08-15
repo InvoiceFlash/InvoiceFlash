@@ -4,6 +4,7 @@
 	<div class="card-header">
 		<div class="float-left h2"><i class="hidden-xs fa fa-truck"></i><span> <?php echo $heading_title; ?></span></div>
 		<div class="float-right">
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email; ?></span></button>
 			<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
 			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
@@ -12,7 +13,10 @@
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-contacts" data-bs-toggle="tab"><?php echo $tab_contacts; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"><?php echo $tab_contracts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-contracts" data-bs-toggle="tab"<?php if ($has_documents) { ?> style="background-color:#c3e6cb;color:#fff;"<?php } ?>><?php echo $tab_contracts; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-email" data-bs-toggle="tab"><?php echo $tab_email; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-orders" data-bs-toggle="tab"><?php echo $tab_orders; ?></a></li>
+			<li class="nav-item"><a class="nav-link" href="#tab-recepciones" data-bs-toggle="tab"><?php echo $tab_recepciones; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-products" data-bs-toggle="tab"><?php echo $tab_products; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-invoices" data-bs-toggle="tab"><?php echo $tab_invoices; ?></a></li>
 		</ul>
@@ -201,9 +205,8 @@
 					<table class="table table-bordered table-striped table-hover">
 						<thead>
 							<tr>
-								<th><?php echo $column_article; ?></th>
-								<th><?php echo $column_quantity; ?></th>
-								<th><?php echo $column_end_support; ?></th>
+								<th><?php echo $column_filename; ?></th>
+								<th><?php echo $column_date_added; ?></th>
 								<th></th>
 							</tr>
 						</thead>
@@ -211,24 +214,120 @@
 							<?php if ($contracts) { ?>
 							<?php foreach ($contracts as $contract) { ?>
 							<tr>
-								<td><?php echo $contract['product']; ?></td>
-								<td><?php echo $contract['quantity']; ?></td>
-								<td><?php echo $contract['end_support']; ?></td>
+								<td><?php echo $contract['filename']; ?></td>
+								<td><?php echo $contract['date_added']; ?></td>
 								<td class="text-right"><?php foreach ($contract['action'] as $action) { ?>
 									<?php echo $action['link']; ?>
 								<?php } ?></td>
 							</tr>
 							<?php } ?>
 							<?php } else { ?>
-							<tr><td colspan="4" class="text-center"><?php echo $text_no_results; ?></td></tr>
+							<tr><td colspan="3" class="text-center"><?php echo $text_no_results; ?></td></tr>
 							<?php } ?>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td class="text-right" colspan="4"><a href="<?php echo $add_contract; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contract; ?></a></td>
+								<td class="text-right" colspan="3"><a href="<?php echo $add_contract; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contract; ?></a></td>
 							</tr>
 						</tfoot>
 					</table>
+				</div>
+				<div class="tab-pane" id="tab-email">
+					<table class="table table-bordered table-striped table-hover">
+					<thead>
+						<tr>
+							<th class="hidden-xs"><?php echo $column_date; ?></th>
+							<th class="text-left"><?php echo $column_email_subject; ?></th>
+							<th class="text-left"><?php echo $column_email_sender; ?></th>
+							<th class="text-right"><?php echo $column_action; ?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php if ($emails) { ?>
+					 <?php foreach ($emails as $email) { ?>
+						<tr>
+							<td class="text-left"><?php echo $email['date_added']; ?></td>
+							<td class="text-left"><?php echo $email['subject']; ?></td>
+							<td class="text-left"><?php echo $email['sender']; ?></td>
+							<td class="d-none" id="mail-<?php echo $email['mail_id']; ?>"><?php echo $email['text']; ?></td>
+							<td class="text-right">
+								<button type="button" class="btn btn-info" onclick="viewMessage(<?php echo $email['mail_id']; ?>);">
+									<i class="fa fa-eye"></i> <?php echo $text_view; ?>
+								</button>
+							</td>
+						</tr>
+						<?php } ?>
+					<?php } else { ?>
+						<tr>
+							<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+						</tr>
+					<?php } ?>
+					</tbody>
+				</table>
+				</div>
+				<div class="tab-pane" id="tab-orders">
+					<table class="table table-bordered table-striped table-hover">
+					<thead>
+						<tr>
+							<th><?php echo $column_order; ?></th>
+							<th><?php echo $column_status; ?></th>
+							<th class="hidden-xs"><?php echo $column_date_added; ?></th>
+							<th class="text-right"><?php echo $column_total; ?></th>
+							<th class="text-right"><?php echo $column_action; ?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php if ($orders) { ?>
+					<?php foreach ($orders as $order) { ?>
+						<tr>
+							<td class="left"><?php echo $order['order_id']; ?></td>
+							<td class="left"><?php echo $order['status']; ?></td>
+							<td class="left"><?php echo $order['date']; ?></td>
+							<td class="text-right hidden-xs"><?php echo $order['total']; ?></td>
+							<td class="text-right"><?php foreach ($order['action'] as $action) { ?>
+							  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+							<?php } ?></td>
+						</tr>
+						<?php } ?>
+					<?php } else { ?>
+						<tr>
+							<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+						</tr>
+					<?php } ?>
+					</tbody>
+				</table>
+				</div>
+				<div class="tab-pane" id="tab-recepciones">
+					<table class="table table-bordered table-striped table-hover">
+					<thead>
+						<tr>
+							<th><?php echo $column_order; ?></th>
+							<th><?php echo $column_status; ?></th>
+							<th class="hidden-xs"><?php echo $column_date_added; ?></th>
+							<th class="text-right"><?php echo $column_total; ?></th>
+							<th class="text-right"><?php echo $column_action; ?></th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php if ($receptions) { ?>
+					<?php foreach ($receptions as $order) { ?>
+						<tr>
+							<td class="left"><?php echo $order['order_id']; ?></td>
+							<td class="left"><?php echo $order['status']; ?></td>
+							<td class="left"><?php echo $order['date']; ?></td>
+							<td class="text-right hidden-xs"><?php echo $order['total']; ?></td>
+							<td class="text-right"><?php foreach ($order['action'] as $action) { ?>
+							  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
+							<?php } ?></td>
+						</tr>
+						<?php } ?>
+					<?php } else { ?>
+						<tr>
+							<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+						</tr>
+					<?php } ?>
+					</tbody>
+				</table>
 				</div>
 				<div class="tab-pane" id="tab-products">
 					<table class="table table-bordered table-striped table-hover">
@@ -294,6 +393,72 @@
 		</form>
 	</div>
 </div>
+<!-- MessagePopUp -->
+<div id="MessagePopUp" class="modal fade" tabindex="-1" role="dialog">
+<div class="modal-dialog">
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+		</div>
+		<div class="modal-body"><textarea readonly class="form-control-plaintext" id="message" rows="30"></textarea></div>
+	</div>
+</div>
+</div>
+<!-- Modal -->
+<div id="EmailModal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+	<?php if (isset($error_server)) { ?>
+		<center><span class="label label-danger"><?php echo $error_server; ?></span>
+	<?php } ?>
+        <form class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
+            <div class="form-group row">
+              <label for="to" class="control-label col-sm-3"><?php echo $text_to ?></label>
+              <div class="col-sm-9">
+                <input type="email" name="to" id="to" class="form-control" value="<?php echo $to; ?>">
+								<span class="text-danger" id="error-to"></span>
+              </div>
+            </div>
+        <div class="form-group row">
+          <label class="control-label col-sm-3" for="subject"><?php echo $text_subject ?></label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="subject" name="subject">
+						<span class="text-danger" id="error-subject"></span>
+          </div>
+          </div>
+          <div class="form-group row">
+            <label for="message" class="control-label col-sm-3"><?php echo $text_message ?></label>
+            <div class="col-sm-9"><textarea name="message" class="ckeditor form-control" spellcheck="false" id="message"></textarea>
+						<span class="text-danger" id="error-message"></span></div>
+          </div>
+          <div class="form-group row">
+          	<label class="control-label col-sm-3">Attachment:</label>
+          	<div class="control-field col-sm-9">
+          		<div class="input-group">
+          			<span class="input-group-btn">
+          				<button type="button" id="button-upload" class="btn btn-info">
+          					<i class="fa fa-upload"></i> Upload
+          				</button>
+          			</span>
+          			<input type="hidden" name="filename" id="input-filename" class="form-control">
+          			<input type="text" name="mask" id="mask"class="form-control">
+          		</div>
+          	</div>
+          </div>
+         </form>
+      </div>
+      <div class="modal-footer">
+			<button type="button" id="send" class="btn btn-default"> <?php echo $button_send; ?></button>
+         	<button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
 $('#supplier-country').on('change', function() {
 	var $this = $(this);
@@ -349,5 +514,59 @@ $('#button-web').click(function(){
 $(document).ready(function() {
 	$('#input-company').trigger('focus');
 });
+
+document.getElementById('EmailModal').addEventListener('shown.bs.modal', function () {
+	$('#subject').trigger('focus');
+});
+</script>
+<script>
+$('#send').on('click',function(e){
+	var to = $('#to').val();
+	var subject = $('#subject').val();
+
+	var editor = CKEDITOR.instances.message;
+	var message = editor.getData();
+
+	var filename = $('#input-filename').val();
+
+	$.ajax({
+		url:'index.php?route=purchase/supplier/new_email&token=<?php echo $token; ?>&supplier_id=<?php echo $supplier_id; ?>',
+		type:'post',
+		dataType:'json',
+		data:'to='+encodeURIComponent(to)+'&subject='+encodeURIComponent(subject)+'&message='+encodeURIComponent(message)+'&filename='+encodeURIComponent(filename),
+		beforeSend:function(){
+			$('#send').button('loading');
+			$('#send').append($('<i>', {class:'icon-loading'}));
+		},
+		success:function(json){
+			$('#send').button('reset');
+			if(json['error']){
+				if(json['error']['to']){ $('#error-to').html(json['error']['to']); }
+				if(json['error']['subject']){ $('#error-subject').html(json['error']['subject']); }
+				if(json['error']['message']){ $('#error-message').html(json['error']['message']); }
+				if(json['error']['permission']) {
+					var emailModalInstanceErr = bootstrap.Modal.getInstance(document.getElementById('EmailModal'));
+					if (emailModalInstanceErr) {
+						emailModalInstanceErr.hide();
+					}
+					alertMessage('danger', json['error']['permission']);
+				}
+			}
+			if(json['success']){
+				var emailModalInstance = bootstrap.Modal.getInstance(document.getElementById('EmailModal'));
+				if (emailModalInstance) {
+					emailModalInstance.hide();
+				}
+				alertMessage('success',json['success']);
+			}
+		}
+	});
+});
+</script>
+<script>
+function viewMessage(mail_id) {
+	$('#message').html($('#mail-'+mail_id).text());
+	bootstrap.Modal.getOrCreateInstance(document.getElementById('MessagePopUp')).show();
+}
 </script>
 <?php echo $footer; ?>
