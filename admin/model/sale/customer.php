@@ -135,6 +135,24 @@ class ModelSaleCustomer extends Model {
 
 	public function deleteCustomer($customer_id) {
 
+		// Documentos (ficheros fisicos + fila) y sus embeddings RAG, si los tuviera.
+		foreach ($this->getCustomerDocuments($customer_id) as $document) {
+			if (is_file($document['stored_filename'])) {
+				@unlink($document['stored_filename']);
+			}
+
+			$this->deleteCustomerDocumentEmbeddings($document['document_id']);
+		}
+
+		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_document WHERE customer_id = " . (int)$customer_id);
+
+		// Notas y sus embeddings RAG, si los tuviera.
+		foreach ($this->getCustomerNotes($customer_id) as $note) {
+			$this->deleteCustomerNoteEmbeddings($note['customer_history_id']);
+		}
+
+		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_history WHERE customer_id = " . (int)$customer_id);
+
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer WHERE customer_id = '" . (int)$customer_id . "'");
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_reward WHERE customer_id = '" . (int)$customer_id . "'");
@@ -1098,16 +1116,38 @@ class ModelSaleCustomer extends Model {
 	public function deleteCustomerDocument($document_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "customer_document WHERE document_id = '" . (int)$document_id . "'");
 	}
- 
+
+	// Limpia los fragmentos/embeddings RAG generados para este documento de cliente
+	// (ver document_embeddings.py::process_customer_document(), document_id =
+	// "customer_document_<id>") - se llama antes de borrar la fila de customer_document.
+	public function deleteCustomerDocumentEmbeddings($document_id) {
+		$doc_id = 'customer_document_' . (int)$document_id;
+
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_chunks WHERE document_id = '" . $this->db->escape($doc_id) . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_embedding_log WHERE document_id = '" . $this->db->escape($doc_id) . "'");
+	}
+
  	function addCustomerNote($data, $customer_id) {
- 		$sql = "INSERT INTO `" . DB_PREFIX . "customer_history` SET 
-			`customer_id` = '" . (int)$customer_id . "', 
-			`comment` = '" . $this->db->escape($data['comment']) . "', 
-			`date_added` = NOW(), 
+ 		$sql = "INSERT INTO `" . DB_PREFIX . "customer_history` SET
+			`customer_id` = '" . (int)$customer_id . "',
+			`comment` = '" . $this->db->escape($data['comment']) . "',
+			`date_added` = NOW(),
 			`user_id` = '" . (int)$this->user->getID() . "'";
 
  		$query = $this->db->query($sql);
+
+ 		return $this->db->getLastId();
  	}
+
+	// Limpia los fragmentos/embeddings RAG generados para esta nota de cliente
+	// (ver document_embeddings.py::process_customer_note(), document_id =
+	// "customer_note_<id>") - se llama antes de borrar la fila de customer_history.
+	public function deleteCustomerNoteEmbeddings($note_id) {
+		$doc_id = 'customer_note_' . (int)$note_id;
+
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_chunks WHERE document_id = '" . $this->db->escape($doc_id) . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_embedding_log WHERE document_id = '" . $this->db->escape($doc_id) . "'");
+	}
 
  	function deleteCustomerNote($note_id) {
  		$sql = "DELETE FROM `" . DB_PREFIX . "customer_history` WHERE customer_history_id = '" . (int)$note_id . "'";

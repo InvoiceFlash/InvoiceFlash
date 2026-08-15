@@ -218,10 +218,14 @@ class ModelCatalogMail extends Model {
 							 '" . $this->db->escape($body) . "','" . date('Y-m-d H:i:s', strtotime($date) ). "', 'R', '" . $customer_id . "')" ;
 					
 				$this->db->query($sql);
+
+				if ($customer_id != 0) {
+					$this->spawnMailEmbeddingIfEnabled($this->db->getLastId());
+				}
 			}
 
 		};
-	
+
 	}
 	
 	public function editconfig($key, $value){
@@ -231,11 +235,13 @@ class ModelCatalogMail extends Model {
 	}
 	
 	public function deleteMails($mail_id) {
+		$this->deleteMailEmbeddings($mail_id);
 		$this->db->query("UPDATE " . DB_PREFIX . "mails SET bleido = 2 WHERE mail_id = " . (int)$mail_id);
 		$this->db->query("DELETE FROM " . DB_PREFIX . "mail_files WHERE mail_id = " . (int)$mail_id);
 	}
-	
+
 	public function deleteMails_out($mail_id) {
+		$this->deleteMailEmbeddings($mail_id);
 		$this->db->query("DELETE FROM " . DB_PREFIX . "mails WHERE mail_id = " . (int)$mail_id);
 		$this->db->query("DELETE FROM " . DB_PREFIX . "mail_files WHERE mail_id = " . (int)$mail_id);
 	}
@@ -266,7 +272,172 @@ class ModelCatalogMail extends Model {
 		
 		$this->db->query($sql);
 
-		return $this->db->getLastId();
+		$mail_id = $this->db->getLastId();
+
+		if (isset($data['customer_id']) && $data['customer_id'] != 0) {
+			$this->spawnMailEmbeddingIfEnabled($mail_id);
+		}
+
+		return $mail_id;
+	}
+
+	// RAG: si "Activar RAG" + "Usar IA" estan activos y Ollama tiene el modelo de
+	// embeddings disponible, indexa este email en segundo plano. Compartido por los
+	// dos orígenes de filas en `mails` - enviados (addMailSended(), mas arriba,
+	// llamado desde sale/customer, sale/quote, sale/order, sale/delivery,
+	// sale/invoice y sale/draft) y recibidos (getmails(), mas abajo).
+	private function spawnMailEmbeddingIfEnabled($mail_id) {
+		if (!$this->config->get('config_product_vector_embeddings') || !$this->config->get('config_ai_enabled')) {
+			return;
+		}
+
+		if (!$this->isOllamaEmbeddingModelAvailable()) {
+			return;
+		}
+
+		$this->spawnEmbeddingScript('mail_' . (int)$mail_id, '--mail-id ' . (int)$mail_id);
+	}
+
+	private function isOllamaEmbeddingModelAvailable() {
+		$chat_url = (string)$this->config->get('config_ollama_url');
+
+		if ($chat_url === '') {
+			$chat_url = 'http://127.0.0.1:11434/api/chat';
+		}
+
+		$base_url = preg_replace('#/api/.*$#', '', $chat_url);
+
+		$ch = curl_init($base_url . '/api/tags');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+
+		$raw = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		if (($raw === false) || ($http_code != 200)) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		if (empty($resp['models'])) {
+			return false;
+		}
+
+		foreach ($resp['models'] as $model) {
+			if (isset($model['name']) && (stripos($model['name'], 'nomic-embed-text') === 0)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private function findPythonForEmbeddings() {
+		$candidates = array(
+			'C:\\Users\\AlcuinoGarcia\\AppData\\Local\\Programs\\Python\\Python313\\python.exe',
+			'python3',
+			'python',
+		);
+
+		foreach ($candidates as $candidate) {
+			if (stripos(PHP_OS, 'WIN') === 0 && strpos($candidate, ':\\') === false) {
+				exec('where ' . escapeshellarg($candidate) . ' 2>NUL', $out, $code);
+				if ($code === 0) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			if (strpos($candidate, ':\\') !== false) {
+				if (file_exists($candidate)) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			exec('command -v ' . escapeshellarg($candidate) . ' 2>/dev/null', $out, $code);
+			if ($code === 0) {
+				return $candidate;
+			}
+		}
+
+		return null;
+	}
+
+	private function spawnEmbeddingScript($status_suffix, $args) {
+		$python = $this->findPythonForEmbeddings();
+
+		if (!$python) {
+			return false;
+		}
+
+		$script_path = DIR_SYSTEM . 'vendor/document_embeddings/document_embeddings.py';
+		$status_dir  = DIR_SYSTEM . 'vendor/document_embeddings/';
+
+		if (!is_dir($status_dir)) {
+			mkdir($status_dir, 0755, true);
+		}
+
+		$status_file = $status_dir . 'status_' . $status_suffix . '.json';
+		$log_file    = $status_dir . 'last_run_' . $status_suffix . '.log';
+
+		$env = array(
+			'DOCEMB_DB_HOST'     => DB_HOSTNAME,
+			'DOCEMB_DB_PORT'     => (string)DB_PORT,
+			'DOCEMB_DB_USER'     => DB_USERNAME,
+			'DOCEMB_DB_PASSWORD' => DB_PASSWORD,
+			'DOCEMB_DB_NAME'     => DB_DATABASE,
+			'DOCEMB_DB_PREFIX'   => DB_PREFIX,
+			'DOCEMB_LANGUAGE_ID' => (string)(int)$this->config->get('config_language_id'),
+			'DOCEMB_STATUS_FILE' => $status_file,
+		);
+
+		if (stripos(PHP_OS, 'WIN') === 0) {
+			foreach ($env as $key => $value) {
+				putenv($key . '=' . $value);
+			}
+
+			$cmd = 'start /B "" ' . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+				. ' > ' . escapeshellarg($log_file) . ' 2>&1';
+
+			$handle = popen('cmd /c ' . $cmd, 'r');
+
+			foreach ($env as $key => $value) {
+				putenv($key);
+			}
+
+			if ($handle === false) {
+				return false;
+			}
+
+			pclose($handle);
+
+			return true;
+		}
+
+		$env_prefix = '';
+		foreach ($env as $key => $value) {
+			$env_prefix .= $key . '=' . escapeshellarg($value) . ' ';
+		}
+
+		$cmd = $env_prefix . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+			. ' > ' . escapeshellarg($log_file) . ' 2>&1 &';
+
+		exec($cmd, $out, $code);
+
+		return true;
+	}
+
+	// Limpia los fragmentos/embeddings RAG de un email (ver document_embeddings.py::
+	// process_mail(), document_id = "mail_<id>") - llamar antes de borrar/ocultar la fila.
+	public function deleteMailEmbeddings($mail_id) {
+		$doc_id = 'mail_' . (int)$mail_id;
+
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_chunks WHERE document_id = '" . $this->db->escape($doc_id) . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_embedding_log WHERE document_id = '" . $this->db->escape($doc_id) . "'");
 	}
 
 }

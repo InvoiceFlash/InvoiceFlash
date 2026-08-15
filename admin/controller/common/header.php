@@ -1201,6 +1201,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Sistema
+			if ($this->user->hasPermission('access', 'tool/system')) {
+				$tools[] = array(
+					'name' => $this->language->get('text_system_info'),
+					'href' => $this->url->link('tool/system', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($tools) {
 				$this->data['menus'][] = array(
 					'id' => 'tools',

@@ -263,5 +263,48 @@ abstract class Controller {
 		return null;
     }
 	//end
+
+	// "Ollama activo y algun modelo": comprueba de verdad que el servidor Ollama
+	// responde y que tiene descargado un modelo con soporte de embeddings, en vez
+	// de fiarse solo del toggle "Usar IA"/de que config_ai_provider sea 'ollama' -
+	// el pipeline de embeddings usa Ollama siempre, independientemente de que el
+	// chat de IA este configurado con Claude u Ollama. Compartido por cualquier
+	// controller que dispare auto-indexado RAG (catalog/product, sale/customer...).
+	protected function isOllamaEmbeddingModelAvailable() {
+		$chat_url = (string)$this->config->get('config_ollama_url');
+
+		if ($chat_url === '') {
+			$chat_url = 'http://127.0.0.1:11434/api/chat';
+		}
+
+		$base_url = preg_replace('#/api/.*$#', '', $chat_url);
+
+		$ch = curl_init($base_url . '/api/tags');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+
+		$raw = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		if (($raw === false) || ($http_code != 200)) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		if (empty($resp['models'])) {
+			return false;
+		}
+
+		foreach ($resp['models'] as $model) {
+			if (isset($model['name']) && (stripos($model['name'], 'nomic-embed-text') === 0)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
 ?>

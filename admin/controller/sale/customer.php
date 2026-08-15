@@ -2400,6 +2400,123 @@ class ControllerSaleCustomer extends Controller {
 		return $project_root . '/docs/customer/' . $first_char . '/' . $company_sanitized . '/';
 	}
 
+	private function findPythonForEmbeddings() {
+		$candidates = array(
+			'C:\\Users\\AlcuinoGarcia\\AppData\\Local\\Programs\\Python\\Python313\\python.exe',
+			'python3',
+			'python',
+		);
+
+		foreach ($candidates as $candidate) {
+			if (stripos(PHP_OS, 'WIN') === 0 && strpos($candidate, ':\\') === false) {
+				exec('where ' . escapeshellarg($candidate) . ' 2>NUL', $out, $code);
+				if ($code === 0) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			if (strpos($candidate, ':\\') !== false) {
+				if (file_exists($candidate)) {
+					return $candidate;
+				}
+				continue;
+			}
+
+			exec('command -v ' . escapeshellarg($candidate) . ' 2>/dev/null', $out, $code);
+			if ($code === 0) {
+				return $candidate;
+			}
+		}
+
+		return null;
+	}
+
+	private function spawnEmbeddingScript($status_suffix, $args) {
+		$python = $this->findPythonForEmbeddings();
+
+		if (!$python) {
+			return false;
+		}
+
+		$script_path = DIR_SYSTEM . 'vendor/document_embeddings/document_embeddings.py';
+		$status_dir  = DIR_SYSTEM . 'vendor/document_embeddings/';
+
+		if (!is_dir($status_dir)) {
+			mkdir($status_dir, 0755, true);
+		}
+
+		$status_file = $status_dir . 'status_' . $status_suffix . '.json';
+		$log_file    = $status_dir . 'last_run_' . $status_suffix . '.log';
+
+		$env = array(
+			'DOCEMB_DB_HOST'     => DB_HOSTNAME,
+			'DOCEMB_DB_PORT'     => (string)DB_PORT,
+			'DOCEMB_DB_USER'     => DB_USERNAME,
+			'DOCEMB_DB_PASSWORD' => DB_PASSWORD,
+			'DOCEMB_DB_NAME'     => DB_DATABASE,
+			'DOCEMB_DB_PREFIX'   => DB_PREFIX,
+			'DOCEMB_LANGUAGE_ID' => (string)(int)$this->config->get('config_language_id'),
+			'DOCEMB_STATUS_FILE' => $status_file,
+		);
+
+		if (stripos(PHP_OS, 'WIN') === 0) {
+			foreach ($env as $key => $value) {
+				putenv($key . '=' . $value);
+			}
+
+			$cmd = 'start /B "" ' . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+				. ' > ' . escapeshellarg($log_file) . ' 2>&1';
+
+			$handle = popen('cmd /c ' . $cmd, 'r');
+
+			foreach ($env as $key => $value) {
+				putenv($key);
+			}
+
+			if ($handle === false) {
+				return false;
+			}
+
+			pclose($handle);
+
+			return true;
+		}
+
+		$env_prefix = '';
+		foreach ($env as $key => $value) {
+			$env_prefix .= $key . '=' . escapeshellarg($value) . ' ';
+		}
+
+		$cmd = $env_prefix . escapeshellarg($python) . ' ' . escapeshellarg($script_path) . ' ' . $args
+			. ' > ' . escapeshellarg($log_file) . ' 2>&1 &';
+
+		exec($cmd, $out, $code);
+
+		return true;
+	}
+
+	// Lanza en segundo plano la indexacion RAG de un documento (PDF) recien adjuntado
+	// a un cliente, si "Activar RAG" + "Usar IA" estan activos y Ollama tiene el
+	// modelo de embeddings disponible (ver isOllamaEmbeddingModelAvailable() en la
+	// clase base Controller, compartida con catalog/product).
+	private function spawnCustomerDocumentEmbedding($customer_id, $document_id, $abs_file_path, $original_name) {
+		$args = '--customer-id ' . (int)$customer_id
+			. ' --customer-document-id ' . (int)$document_id
+			. ' --file ' . escapeshellarg($abs_file_path)
+			. ' --original-name ' . escapeshellarg($original_name);
+
+		return $this->spawnEmbeddingScript('customer_' . (int)$document_id, $args);
+	}
+
+	// Igual que spawnCustomerDocumentEmbedding() pero para una nota de cliente (texto
+	// ya guardado en customer_history, sin fichero de por medio).
+	private function spawnCustomerNoteEmbedding($customer_id, $note_id) {
+		$args = '--customer-id ' . (int)$customer_id . ' --customer-note-id ' . (int)$note_id;
+
+		return $this->spawnEmbeddingScript('customer_note_' . (int)$note_id, $args);
+	}
+
 	public function insertContract() {
 		$this->load->language('sale/customer');
 
@@ -2438,7 +2555,11 @@ class ControllerSaleCustomer extends Controller {
 					}
 
 					if (move_uploaded_file($_FILES['document']['tmp_name'], $path)) {
-						$this->model_sale_customer->addCustomerDocument($customer_id, $_FILES['document']['name'], $path);
+						$document_id = $this->model_sale_customer->addCustomerDocument($customer_id, $_FILES['document']['name'], $path);
+
+						if (($ext == 'pdf') && $this->config->get('config_product_vector_embeddings') && $this->config->get('config_ai_enabled') && $this->isOllamaEmbeddingModelAvailable()) {
+							$this->spawnCustomerDocumentEmbedding($customer_id, $document_id, $path, $_FILES['document']['name']);
+						}
 
 						$this->session->data['success'] = $this->language->get('text_success');
 
@@ -2468,6 +2589,7 @@ class ControllerSaleCustomer extends Controller {
 					@unlink($document_info['stored_filename']);
 				}
 
+				$this->model_sale_customer->deleteCustomerDocumentEmbeddings($this->request->get['document_id']);
 				$this->model_sale_customer->deleteCustomerDocument($this->request->get['document_id']);
 			}
 
@@ -2598,7 +2720,12 @@ class ControllerSaleCustomer extends Controller {
 		$this->load->model('sale/customer');
 
 		if ($this->request->server['REQUEST_METHOD'] == 'POST') {
-			$this->model_sale_customer->addCustomerNote($this->request->post, $this->request->get['customer_id']);
+			$customer_id = (int)$this->request->get['customer_id'];
+			$note_id = $this->model_sale_customer->addCustomerNote($this->request->post, $customer_id);
+
+			if ($this->config->get('config_product_vector_embeddings') && $this->config->get('config_ai_enabled') && $this->isOllamaEmbeddingModelAvailable()) {
+				$this->spawnCustomerNoteEmbedding($customer_id, $note_id);
+			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -2614,6 +2741,7 @@ class ControllerSaleCustomer extends Controller {
 		$this->load->model('sale/customer');
 
 		if (isset($this->request->get['note_id'])) {
+			$this->model_sale_customer->deleteCustomerNoteEmbeddings($this->request->get['note_id']);
 			$this->model_sale_customer->deleteCustomerNote($this->request->get['note_id']);
 
 			$this->session->data['success'] = $this->language->get('text_success');

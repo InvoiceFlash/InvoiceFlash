@@ -856,21 +856,6 @@
 										<?php } ?>
 									</div>
 								</div>
-								<div class="form-group row">
-									<label class="col-form-label col-sm-10 col-md-2"><a data-toggle="tooltip" title="<?php echo $text_product_vector_embeddings_tooltip; ?>" style="display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;border-radius:50%;background-color:#2e8bcc;color:#fff;font-size:11px;font-weight:bold;text-decoration:none;">?</a> <?php echo $entry_product_vector_embeddings; ?></label>
-									<div class="col-sm-6">
-										<?php if ($config_product_vector_embeddings) { ?>
-										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="1" checked=""><?php echo $text_yes; ?></label>
-										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="0"><?php echo $text_no; ?></label>
-										<?php } else { ?>
-										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="1"><?php echo $text_yes; ?></label>
-										<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="0" checked=""><?php echo $text_no; ?></label>
-										<?php } ?>
-										<?php if ($error_product_vector_embeddings) { ?>
-											<div class="help-block text-danger"><?php echo $error_product_vector_embeddings; ?></div>
-										<?php } ?>
-									</div>
-								</div>
 								<input type="hidden" name="config_download" value="<?php echo $config_download; ?>">
 							</div>
 							<div id="tab-voucher" class="tab-pane">
@@ -1409,6 +1394,24 @@
 						<div class="col-sm-6">
 							<a onclick="aiTest();" id="button-ai-test" class="btn btn-default"><i class="fa fa-bolt"></i> <?php echo $button_ai_test; ?></a>
 							<span id="ai-test-result" style="margin-left:10px;"></span>
+						</div>
+					</div>
+
+					<hr>
+
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><a data-toggle="tooltip" title="<?php echo $text_product_vector_embeddings_tooltip; ?>" style="display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;border-radius:50%;background-color:#2e8bcc;color:#fff;font-size:11px;font-weight:bold;text-decoration:none;">?</a> <?php echo $entry_product_vector_embeddings; ?></label>
+						<div class="col-sm-6">
+							<?php if ($config_product_vector_embeddings) { ?>
+							<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="1" checked=""><?php echo $text_yes; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="0"><?php echo $text_no; ?></label>
+							<?php } else { ?>
+							<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="1"><?php echo $text_yes; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="0" checked=""><?php echo $text_no; ?></label>
+							<?php } ?>
+							<?php if ($error_product_vector_embeddings) { ?>
+								<div class="help-block text-danger"><?php echo $error_product_vector_embeddings; ?></div>
+							<?php } ?>
 						</div>
 					</div>
 				</div>

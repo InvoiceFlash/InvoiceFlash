@@ -337,6 +337,13 @@ class ModelCatalogProduct extends Model {
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id. "'");
 
+		// Limpieza de embeddings RAG asociados a este producto: cubre tanto los
+		// documentos adjuntados desde esta ficha (document_id = "product_document_<id>")
+		// como los emparejados por SKU/Modelo desde setting/document_embeddings - ambos
+		// guardan product_id, así que un solo DELETE por product_id vale para los dos.
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_chunks WHERE product_id = '" . (int)$product_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_embedding_log WHERE product_id = '" . (int)$product_id . "'");
+
 		$this->cache->delete('product');
 	}
 
@@ -602,6 +609,16 @@ class ModelCatalogProduct extends Model {
 
 	public function deleteProductDocument($product_document_id) {
 		$this->db->query("DELETE FROM " . DB_PREFIX . "product_document WHERE product_document_id = '" . (int)$product_document_id . "'");
+	}
+
+	// Limpia los fragmentos/embeddings RAG generados para este documento concreto
+	// (ver document_embeddings.py::process_product_document(), document_id =
+	// "product_document_<id>") - se llama antes de borrar la fila de product_document.
+	public function deleteProductDocumentEmbeddings($product_document_id) {
+		$document_id = 'product_document_' . (int)$product_document_id;
+
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_chunks WHERE document_id = '" . $this->db->escape($document_id) . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "document_embedding_log WHERE document_id = '" . $this->db->escape($document_id) . "'");
 	}
 
 	public function getProductDiscounts($product_id) {

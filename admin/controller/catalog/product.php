@@ -1893,7 +1893,7 @@ class ControllerCatalogProduct extends Controller {
 
 			$product_document_id = $this->model_catalog_product->addProductDocument($product_id, $filename, $original_name);
 
-			if (($ext == 'pdf') && $this->config->get('config_product_vector_embeddings') && $this->config->get('config_ai_enabled')) {
+			if (($ext == 'pdf') && $this->config->get('config_product_vector_embeddings') && $this->config->get('config_ai_enabled') && $this->isOllamaEmbeddingModelAvailable()) {
 				$this->spawnProductDocumentEmbedding($product_id, $product_document_id, $dir . $filename, $original_name);
 			}
 
@@ -2047,6 +2047,7 @@ class ControllerCatalogProduct extends Controller {
 			unlink($file);
 		}
 
+		$this->model_catalog_product->deleteProductDocumentEmbeddings($product_document_id);
 		$this->model_catalog_product->deleteProductDocument($product_document_id);
 
 		$json['success'] = $this->language->get('text_document_deleted');
