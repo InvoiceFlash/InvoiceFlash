@@ -82,7 +82,21 @@ class ControllerSaleCustomer extends Controller {
 		$this->load->model('sale/customer');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+			$customer_before = $this->model_sale_customer->getCustomer($this->request->get['customer_id']);
+
+			// El unico campo del formulario cuyo nombre no coincide con la columna real
+			// (todos los demas, p.ej. nif/bank_cc/contable_account, son iguales en POST
+			// y en la fila de getCustomer()): el input se llama "web" pero la columna en
+			// BD es "cwww" (ModelSaleCustomer::editCustomer(), $data['web'] -> `cwww`).
+			// diffFields() compara por nombre de clave, asi que sin este alias el campo
+			// se saltaria en silencio del diff aunque cambiase de verdad.
+			if (isset($customer_before['cwww'])) {
+				$customer_before['web'] = $customer_before['cwww'];
+			}
+
 			$this->model_sale_customer->editCustomer($this->request->get['customer_id'], $this->request->post);
+
+			$diff = $this->diffFields($customer_before, $this->request->post);
 
 			$this->load->model('tool/user_logs');
 			$this->model_tool_user_logs->addLog(array(
@@ -92,6 +106,8 @@ class ControllerSaleCustomer extends Controller {
 				'document_type' => 'customer',
 				'document_id'   => (int)$this->request->get['customer_id'],
 				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				'original'      => $diff['original'],
+				'cambiado'      => $diff['changed'],
 			));
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -224,8 +240,19 @@ class ControllerSaleCustomer extends Controller {
 		$this->load->model('sale/customer');
 
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
+			$this->load->model('tool/user_logs');
+
 			foreach ($this->request->post['selected'] as $customer_id) {
 				$this->model_sale_customer->deleteCustomer($customer_id);
+
+				$this->model_tool_user_logs->addLog(array(
+					'user_id'       => $this->user->getId(),
+					'username'      => $this->user->getUserName(),
+					'action'        => 'delete',
+					'document_type' => 'customer',
+					'document_id'   => (int)$customer_id,
+					'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				));
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');

@@ -100,8 +100,26 @@ class ControllerSaledelivery extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 
+			$delivery_before = $this->model_sale_delivery->getDelivery($this->request->get['delivery_id']);
+			$products_before = $this->model_sale_delivery->getDeliveryProducts($this->request->get['delivery_id']);
+
 			$this->model_sale_delivery->editdelivery($this->request->get['delivery_id'], $this->request->post);
-	  		
+
+			$diff         = $this->diffFields($delivery_before, $this->request->post);
+			$product_diff = $this->diffDeliveryProducts($products_before, isset($this->request->post['delivery_product']) ? $this->request->post['delivery_product'] : array());
+
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'edit',
+				'document_type' => 'sale_delivery',
+				'document_id'   => (int)$this->request->get['delivery_id'],
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				'original'      => array_merge($diff['original'], $product_diff['original']),
+				'cambiado'      => array_merge($diff['changed'], $product_diff['changed']),
+			));
+
 			$this->session->data['success'] = $this->language->get('text_success');
 	  
 			$url = '';
@@ -162,8 +180,19 @@ class ControllerSaledelivery extends Controller {
 		$this->load->model('sale/delivery');
 
     	if (isset($this->request->post['selected']) && ($this->validateDelete())) {
+			$this->load->model('tool/user_logs');
+
 			foreach ($this->request->post['selected'] as $delivery_id) {
 				$this->model_sale_delivery->deletedelivery($delivery_id);
+
+				$this->model_tool_user_logs->addLog(array(
+					'user_id'       => $this->user->getId(),
+					'username'      => $this->user->getUserName(),
+					'action'        => 'delete',
+					'document_type' => 'sale_delivery',
+					'document_id'   => (int)$delivery_id,
+					'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				));
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -1541,6 +1570,45 @@ class ControllerSaledelivery extends Controller {
 	  		return false;
 		}
     }
+
+	// Igual que ControllerSaleDraft::diffDraftProducts() (mismo criterio de emparejar
+	// por posicion + product_id, no por delivery_product_id: el recalculo AJAX de
+	// precio/cantidad reconstruye la tabla de lineas desde el carrito de sesion y lo
+	// deja vacio en cada edicion).
+	private function diffDeliveryProducts($old_products, $new_products) {
+		$original = array();
+		$changed  = array();
+
+		$old_products = array_values($old_products);
+		$new_products = array_values($new_products);
+
+		foreach ($new_products as $i => $product) {
+			if (!isset($old_products[$i]) || (int)$old_products[$i]['product_id'] !== (int)$product['product_id']) {
+				continue;
+			}
+
+			$old   = $old_products[$i];
+			$label = 'Producto: ' . $old['name'];
+
+			$old_price = number_format((float)preg_replace('/[^-0-9\.]/', '', $old['price']), 2, '.', '');
+			$new_price = number_format((float)preg_replace('/[^-0-9\.]/', '', $product['price']), 2, '.', '');
+
+			if ($old_price !== $new_price) {
+				$original[$label . ' > Precio'] = $old_price;
+				$changed[$label . ' > Precio']  = $new_price;
+			}
+
+			$old_qty = (string)(int)$old['quantity'];
+			$new_qty = (string)(int)$product['quantity'];
+
+			if ($old_qty !== $new_qty) {
+				$original[$label . ' > Cantidad'] = $old_qty;
+				$changed[$label . ' > Cantidad']  = $new_qty;
+			}
+		}
+
+		return array('original' => $original, 'changed' => $changed);
+	}
 
     public function info() {
 		$this->load->model('sale/delivery');

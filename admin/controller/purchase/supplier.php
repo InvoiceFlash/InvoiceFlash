@@ -55,7 +55,11 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->load->model('purchase/supplier');
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+			$supplier_before = $this->model_purchase_supplier->getSupplier($this->request->get['supplier_id']);
+
 			$this->model_purchase_supplier->editSupplier($this->request->get['supplier_id'], $this->request->post);
+
+			$diff = $this->diffFields($supplier_before, $this->request->post);
 
 			$this->load->model('tool/user_logs');
 			$this->model_tool_user_logs->addLog(array(
@@ -65,6 +69,8 @@ class ControllerPurchaseSupplier extends Controller {
 				'document_type' => 'supplier',
 				'document_id'   => (int)$this->request->get['supplier_id'],
 				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				'original'      => $diff['original'],
+				'cambiado'      => $diff['changed'],
 			));
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -89,8 +95,19 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->load->model('purchase/supplier');
 
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
+			$this->load->model('tool/user_logs');
+
 			foreach ($this->request->post['selected'] as $supplier_id) {
 				$this->model_purchase_supplier->deleteSupplier($supplier_id);
+
+				$this->model_tool_user_logs->addLog(array(
+					'user_id'       => $this->user->getId(),
+					'username'      => $this->user->getUserName(),
+					'action'        => 'delete',
+					'document_type' => 'supplier',
+					'document_id'   => (int)$supplier_id,
+					'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				));
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
