@@ -50,6 +50,7 @@ $_['text_report_sale_tax'] = 'Impuestos';
 $_['text_report_sale_shipping'] = 'Env&iacute;os';
 $_['text_report_sale_return'] = 'Devoluciones';
 $_['text_report_sale_coupon'] = 'Cupones';
+$_['text_report_stock_movement'] = 'Kardex de Almac&eacute;n';
 $_['text_setting'] = 'Ajustes';
 $_['text_module'] = 'M&oacute;dulos';
 $_['text_invoice_design'] = 'Dise&ntilde;o de Factura';

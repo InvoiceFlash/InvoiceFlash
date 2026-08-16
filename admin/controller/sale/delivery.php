@@ -38,7 +38,17 @@ class ControllerSaledelivery extends Controller {
 				'document_id'   => (int)$new_delivery_id,
 				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 			));
-			
+
+			// Un albarán es la salida real de mercancía de almacén — descuenta stock
+			// y deja rastro en el kardex (tool/stock_movement).
+			$this->adjustDeliveryStock(
+				$new_delivery_id,
+				array(),
+				isset($this->request->post['delivery_product']) ? $this->request->post['delivery_product'] : array(),
+				isset($this->request->post['customer_id']) ? $this->request->post['customer_id'] : 0,
+				isset($this->request->post['payment_company']) ? $this->request->post['payment_company'] : ''
+			);
+
 			$this->session->data['success'] = $this->language->get('text_success');
 		  
 			$url = '';
@@ -120,6 +130,17 @@ class ControllerSaledelivery extends Controller {
 				'cambiado'      => array_merge($diff['changed'], $product_diff['changed']),
 			));
 
+			// Ajusta el stock por la diferencia neta de cantidades por producto entre
+			// las líneas antiguas y las nuevas (nunca se borra el kardex, solo se
+			// añade un movimiento con el neto).
+			$this->adjustDeliveryStock(
+				$this->request->get['delivery_id'],
+				$products_before,
+				isset($this->request->post['delivery_product']) ? $this->request->post['delivery_product'] : array(),
+				isset($this->request->post['customer_id']) ? $this->request->post['customer_id'] : 0,
+				isset($this->request->post['payment_company']) ? $this->request->post['payment_company'] : ''
+			);
+
 			$this->session->data['success'] = $this->language->get('text_success');
 	  
 			$url = '';
@@ -183,7 +204,20 @@ class ControllerSaledelivery extends Controller {
 			$this->load->model('tool/user_logs');
 
 			foreach ($this->request->post['selected'] as $delivery_id) {
+				$delivery_info     = $this->model_sale_delivery->getDelivery($delivery_id);
+				$delivery_products = $this->model_sale_delivery->getDeliveryProducts($delivery_id);
+
 				$this->model_sale_delivery->deletedelivery($delivery_id);
+
+				// Al borrar el albarán se revierte la salida de stock que provocó —
+				// se devuelve a almacén la cantidad de cada línea.
+				$this->adjustDeliveryStock(
+					$delivery_id,
+					$delivery_products,
+					array(),
+					$delivery_info ? $delivery_info['customer_id'] : 0,
+					$delivery_info ? $delivery_info['payment_company'] : ''
+				);
 
 				$this->model_tool_user_logs->addLog(array(
 					'user_id'       => $this->user->getId(),
@@ -241,6 +275,54 @@ class ControllerSaledelivery extends Controller {
     	$this->getList();
       }
       
+	// Registra en el kardex la diferencia neta de stock (por product_id, sumando
+	// todas las líneas del mismo producto) entre $old_products y $new_products —
+	// nunca se borran ni mutan movimientos ya guardados, solo se añade uno de
+	// ajuste con el neto. Reutilizado por insert() ($old_products = []),
+	// update() (diff real) y delete() ($new_products = [], reversión completa).
+	private function adjustDeliveryStock($delivery_id, $old_products, $new_products, $party_id, $party_name) {
+		$this->load->model('tool/stock_movement');
+
+		$old_qty = array();
+		$new_qty = array();
+		$product_meta = array();
+
+		foreach ($old_products as $product) {
+			$product_id = (int)$product['product_id'];
+			$old_qty[$product_id] = (isset($old_qty[$product_id]) ? $old_qty[$product_id] : 0) + (int)$product['quantity'];
+			$product_meta[$product_id] = array('name' => $product['name'], 'model' => $product['model']);
+		}
+
+		foreach ($new_products as $product) {
+			$product_id = (int)$product['product_id'];
+			$new_qty[$product_id] = (isset($new_qty[$product_id]) ? $new_qty[$product_id] : 0) + (int)$product['quantity'];
+			$product_meta[$product_id] = array('name' => $product['name'], 'model' => $product['model']);
+		}
+
+		foreach (array_unique(array_merge(array_keys($old_qty), array_keys($new_qty))) as $product_id) {
+			$delta = (isset($new_qty[$product_id]) ? $new_qty[$product_id] : 0) - (isset($old_qty[$product_id]) ? $old_qty[$product_id] : 0);
+
+			if (!$delta) {
+				continue;
+			}
+
+			$this->model_tool_stock_movement->registerMovement(array(
+				'product_id'    => $product_id,
+				'product_name'  => $product_meta[$product_id]['name'],
+				'model'         => $product_meta[$product_id]['model'],
+				'movement_type' => ($delta > 0) ? 'out' : 'in',
+				'quantity'      => abs($delta),
+				'document_type' => 'sale_delivery',
+				'document_id'   => (int)$delivery_id,
+				'party_type'    => 'customer',
+				'party_id'      => $party_id,
+				'party_name'    => $party_name,
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+			));
+		}
+	}
+
   	private function getDraftProductsForDelivery($delivery_id) {
 		$draft_products = array();
 

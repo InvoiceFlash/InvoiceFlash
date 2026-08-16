@@ -581,6 +581,13 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
+			if ($this->user->hasPermission('access', 'report/stock_movement')) {
+				$r_products[] = array(
+					'name' => $this->language->get('text_report_stock_movement'),
+					'href' => $this->url->link('report/stock_movement', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 
 			if ($r_products) {
 				$reports[] = array(

@@ -58,6 +58,7 @@ $_['text_report_sale_tax']             = 'Tax';
 $_['text_report_sale_shipping']        = 'Shipping';
 $_['text_report_sale_return']          = 'Returns';
 $_['text_report_sale_coupon']          = 'Coupons';
+$_['text_report_stock_movement']       = 'Warehouse Kardex';
 $_['text_report_product_viewed']       = 'Viewed';
 $_['text_report_product_purchased']    = 'Purchased';
 $_['text_report_customer_online']      = 'Customers Online';

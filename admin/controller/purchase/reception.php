@@ -33,6 +33,16 @@ class ControllerPurchaseReception extends Controller {
 				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 			));
 
+			// Una recepción es la entrada real de mercancía en almacén — suma stock
+			// y deja rastro en el kardex (tool/stock_movement).
+			$this->adjustReceptionStock(
+				$reception_id,
+				array(),
+				isset($this->request->post['reception_product']) ? $this->request->post['reception_product'] : array(),
+				isset($this->request->post['supplier_id']) ? $this->request->post['supplier_id'] : 0,
+				isset($this->request->post['supplier']) ? $this->request->post['supplier'] : ''
+			);
+
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$this->redirect($this->url->link('purchase/reception', 'token=' . $this->session->data['token'], 'SSL'));
@@ -75,6 +85,17 @@ class ControllerPurchaseReception extends Controller {
 				'cambiado'      => array_merge($diff['changed'], $product_diff['changed']),
 			));
 
+			// Ajusta el stock por la diferencia neta de cantidades por producto entre
+			// las líneas antiguas y las nuevas (nunca se borra el kardex, solo se
+			// añade un movimiento con el neto).
+			$this->adjustReceptionStock(
+				$this->request->get['reception_id'],
+				$products_before,
+				isset($this->request->post['reception_product']) ? $this->request->post['reception_product'] : array(),
+				isset($this->request->post['supplier_id']) ? $this->request->post['supplier_id'] : 0,
+				isset($this->request->post['supplier']) ? $this->request->post['supplier'] : ''
+			);
+
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$this->redirect($this->url->link('purchase/reception', 'token=' . $this->session->data['token'], 'SSL'));
@@ -100,7 +121,20 @@ class ControllerPurchaseReception extends Controller {
 			$this->load->model('tool/user_logs');
 
 			foreach ($this->request->post['selected'] as $reception_id) {
+				$reception_info     = $this->model_purchase_reception->getReception($reception_id);
+				$reception_products = $this->model_purchase_reception->getReceptionProducts($reception_id);
+
 				$this->model_purchase_reception->deleteReception($reception_id);
+
+				// Al borrar la recepción se revierte la entrada de stock que
+				// provocó — se descuenta de almacén la cantidad de cada línea.
+				$this->adjustReceptionStock(
+					$reception_id,
+					$reception_products,
+					array(),
+					$reception_info ? $reception_info['supplier_id'] : 0,
+					$reception_info ? $reception_info['supplier_company'] : ''
+				);
 
 				$this->model_tool_user_logs->addLog(array(
 					'user_id'       => $this->user->getId(),
@@ -650,6 +684,56 @@ class ControllerPurchaseReception extends Controller {
 		}
 
 		return array('original' => $original, 'changed' => $changed);
+	}
+
+	// Registra en el kardex la diferencia neta de stock (por product_id, sumando
+	// todas las líneas del mismo producto) entre $old_products y $new_products —
+	// nunca se borran ni mutan movimientos ya guardados, solo se añade uno de
+	// ajuste con el neto. Reutilizado por insert() ($old_products = []),
+	// update() (diff real) y delete() ($new_products = [], reversión completa).
+	// Mismo patrón que ControllerSaledelivery::adjustDeliveryStock(), con la
+	// dirección invertida (una recepción suma stock, no lo resta).
+	private function adjustReceptionStock($reception_id, $old_products, $new_products, $party_id, $party_name) {
+		$this->load->model('tool/stock_movement');
+
+		$old_qty = array();
+		$new_qty = array();
+		$product_meta = array();
+
+		foreach ($old_products as $product) {
+			$product_id = (int)$product['product_id'];
+			$old_qty[$product_id] = (isset($old_qty[$product_id]) ? $old_qty[$product_id] : 0) + (int)$product['quantity'];
+			$product_meta[$product_id] = array('name' => $product['name'], 'model' => $product['model']);
+		}
+
+		foreach ($new_products as $product) {
+			$product_id = (int)$product['product_id'];
+			$new_qty[$product_id] = (isset($new_qty[$product_id]) ? $new_qty[$product_id] : 0) + (int)$product['quantity'];
+			$product_meta[$product_id] = array('name' => $product['name'], 'model' => $product['model']);
+		}
+
+		foreach (array_unique(array_merge(array_keys($old_qty), array_keys($new_qty))) as $product_id) {
+			$delta = (isset($new_qty[$product_id]) ? $new_qty[$product_id] : 0) - (isset($old_qty[$product_id]) ? $old_qty[$product_id] : 0);
+
+			if (!$delta) {
+				continue;
+			}
+
+			$this->model_tool_stock_movement->registerMovement(array(
+				'product_id'    => $product_id,
+				'product_name'  => $product_meta[$product_id]['name'],
+				'model'         => $product_meta[$product_id]['model'],
+				'movement_type' => ($delta > 0) ? 'in' : 'out',
+				'quantity'      => abs($delta),
+				'document_type' => 'purchase_reception',
+				'document_id'   => (int)$reception_id,
+				'party_type'    => 'supplier',
+				'party_id'      => $party_id,
+				'party_name'    => $party_name,
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+			));
+		}
 	}
 
 	public function info() {
