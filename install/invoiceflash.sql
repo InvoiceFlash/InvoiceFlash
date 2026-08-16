@@ -3218,7 +3218,8 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (129, 0, 'config', 'config_password', '1', 0),
 (130, 0, 'config', 'config_product_count', '1', 0),
 (131, 0, 'discount', 'discount_sort_order', '1', 0),
-(132, 0, 'discount', 'discount_status', '1', 0);
+(132, 0, 'discount', 'discount_status', '1', 0),
+(134, 0, 'config', 'config_ai_enabled', '0', 0);
 
 -- --------------------------------------------------------
 

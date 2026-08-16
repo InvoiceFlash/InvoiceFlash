@@ -89,12 +89,21 @@ class ControllerToolSystem extends Controller {
 		}
 	}
 
-	// RAM total en bytes (null si no se puede determinar, p.ej. fuera de Windows).
+	// RAM total en bytes (null si no se puede determinar - SO no soportado, o el
+	// metodo del SO soportado falla).
 	private function getTotalRam() {
-		if (stripos(PHP_OS, 'WIN') !== 0) {
-			return null;
+		if (stripos(PHP_OS, 'WIN') === 0) {
+			return $this->getTotalRamWindows();
 		}
 
+		if (stripos(PHP_OS, 'Linux') === 0) {
+			return $this->getTotalRamLinux();
+		}
+
+		return null;
+	}
+
+	private function getTotalRamWindows() {
 		$out = @shell_exec('powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory"');
 		$out = trim((string)$out);
 
@@ -105,14 +114,41 @@ class ControllerToolSystem extends Controller {
 		return (float)$out;
 	}
 
-	// Lista de GPUs: cada una con 'name' y 'vram_bytes' (null si AdapterRAM no lo reporta,
-	// o si el valor parece el desbordamiento de 32 bits conocido de WMI para tarjetas con
-	// mas de ~4GB de VRAM, en cuyo caso se marca como no fiable en vez de mostrar un dato falso).
-	private function getGpuInfo() {
-		if (stripos(PHP_OS, 'WIN') !== 0) {
-			return array();
+	// /proc/meminfo siempre esta disponible en Linux (es un pseudo-archivo del kernel,
+	// no depende de que este instalado ningun binario como "free"). MemTotal viene en
+	// kB con precision de 1 kB, aqui se convierte a bytes.
+	private function getTotalRamLinux() {
+		$meminfo = @file_get_contents('/proc/meminfo');
+
+		if ($meminfo === false) {
+			return null;
 		}
 
+		if (!preg_match('/^MemTotal:\s*(\d+)\s*kB/mi', $meminfo, $matches)) {
+			return null;
+		}
+
+		return (float)$matches[1] * 1024;
+	}
+
+	// Lista de GPUs: cada una con 'name' y 'vram_bytes' (null si no se pudo determinar
+	// de forma fiable).
+	private function getGpuInfo() {
+		if (stripos(PHP_OS, 'WIN') === 0) {
+			return $this->getGpuInfoWindows();
+		}
+
+		if (stripos(PHP_OS, 'Linux') === 0) {
+			return $this->getGpuInfoLinux();
+		}
+
+		return array();
+	}
+
+	// vram_bytes es null si AdapterRAM no lo reporta, o si el valor parece el
+	// desbordamiento de 32 bits conocido de WMI para tarjetas con mas de ~4GB de
+	// VRAM, en cuyo caso se marca como no fiable en vez de mostrar un dato falso.
+	private function getGpuInfoWindows() {
 		$out = @shell_exec('powershell -NoProfile -Command "Get-CimInstance Win32_VideoController | ForEach-Object { $_.Name + \'|\' + $_.AdapterRAM }"');
 
 		if ($out === null) {
@@ -145,6 +181,65 @@ class ControllerToolSystem extends Controller {
 			$gpus[] = array(
 				'name'       => $name,
 				'vram_bytes' => $vram_bytes,
+			);
+		}
+
+		return $gpus;
+	}
+
+	// nvidia-smi da la VRAM exacta, pero solo existe si hay una GPU NVIDIA con drivers
+	// propietarios instalados (lo habitual en una maquina que sirve modelos locales
+	// con Ollama). Si no esta disponible, se cae a "lspci" solo para el nombre - no
+	// hay forma portable de sacar la VRAM de una GPU no-NVIDIA sin herramientas
+	// adicionales (lshw, glxinfo...) que no se puede asumir que esten instaladas.
+	private function getGpuInfoLinux() {
+		$gpus = array();
+
+		$out = @shell_exec('nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits 2>/dev/null');
+
+		if (($out !== null) && (trim($out) !== '')) {
+			foreach (preg_split('/\r\n|\r|\n/', trim($out)) as $line) {
+				$line = trim($line);
+
+				if ($line === '') {
+					continue;
+				}
+
+				$parts = explode(',', $line);
+				$name = trim($parts[0]);
+				$vram_mib = isset($parts[1]) ? trim($parts[1]) : '';
+
+				$gpus[] = array(
+					'name'       => $name,
+					'vram_bytes' => ctype_digit($vram_mib) ? ((float)$vram_mib * 1048576) : null,
+				);
+			}
+
+			if ($gpus) {
+				return $gpus;
+			}
+		}
+
+		$out = @shell_exec('lspci 2>/dev/null | grep -Ei "VGA compatible controller|3D controller"');
+
+		if ($out === null) {
+			return array();
+		}
+
+		foreach (preg_split('/\r\n|\r|\n/', trim($out)) as $line) {
+			$line = trim($line);
+
+			if ($line === '') {
+				continue;
+			}
+
+			// Formato de "lspci": "01:00.0 VGA compatible controller: <fabricante y modelo>"
+			$pos = strpos($line, ': ');
+			$name = ($pos !== false) ? trim(substr($line, $pos + 2)) : $line;
+
+			$gpus[] = array(
+				'name'       => $name,
+				'vram_bytes' => null,
 			);
 		}
 
