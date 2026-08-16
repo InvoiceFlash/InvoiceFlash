@@ -8,12 +8,16 @@
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ---
-### 0.0.13
+### 0.0.14
   - [] Edit language
   - [] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-  - [] Upgrade database a MariaDB
-  - [] products documents, customer notes, customer documents, emails in and out to RAG
   - [] Multi Store
+  - [] Item movement tracking
+  
+### 0.0.13
+  - [x] Upgrade database a MariaDB
+  - [x] RAG
+
     
 ### 0.0.12
   - [x] OCR invoice supplier

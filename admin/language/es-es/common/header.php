@@ -28,6 +28,7 @@ $_['text_receipt'] = 'Recibos';
 $_['text_remmitance'] = 'Remesas';
 $_['text_supplier'] = 'Proveedores';
 $_['text_purchase_order'] = 'Pedidos de Compra';
+$_['text_purchase_reception'] = 'Recepciones';
 $_['text_purchase_invoice'] = 'Facturas';
 $_['text_accounting'] = 'Contabilidad';
 $_['text_chart_of_accounts'] = 'Plan Contable';

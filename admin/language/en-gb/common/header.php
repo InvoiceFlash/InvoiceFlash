@@ -125,6 +125,7 @@ $_['text_export_import']               = 'Export / Import';
 $_['text_mail']                        = 'Mails';
 $_['text_purchases']                   = 'Purchases';
 $_['text_purchase_order']              = 'Purchase Orders';
+$_['text_purchase_reception']          = 'Receptions';
 $_['text_purchase_invoice']            = 'Invoices';
 $_['text_accounting']                  = 'Accounting';
 $_['text_chart_of_accounts']           = 'Chart of Accounts';

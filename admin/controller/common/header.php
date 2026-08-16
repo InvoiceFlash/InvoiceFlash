@@ -389,6 +389,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Purchases - Receptions
+			if ($this->user->hasPermission('access', 'purchase/reception')) {
+				$purchases[] = array(
+					'name' => $this->language->get('text_purchase_reception'),
+					'href' => $this->url->link('purchase/reception', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			// Purchases - Invoices
 			if ($this->user->hasPermission('access', 'purchase/invoice')) {
 				$purchases[] = array(
