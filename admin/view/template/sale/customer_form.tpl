@@ -301,6 +301,12 @@
 											</select>
 										</div>
 									</div>
+									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_credit_limit; ?></label>
+										<div class="col-sm-3">
+											<input type="text" inputmode="decimal" name="credit_limit" value="<?php echo $credit_limit; ?>" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+										</div>
+									</div>
 								</div>
 								<div class="tab-pane fade" role="tab-panel" id="tab-info">
 									<div class="form-group row">

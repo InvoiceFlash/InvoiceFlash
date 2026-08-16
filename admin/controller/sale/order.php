@@ -39,6 +39,8 @@ class ControllerSaleOrder extends Controller {
 				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 			));
 
+			$this->checkCreditLimit();
+
 			$this->session->data['success'] = $this->language->get('text_success');
 		  
 			$url = '';
@@ -120,34 +122,36 @@ class ControllerSaleOrder extends Controller {
 				'cambiado'      => array_merge($diff['changed'], $product_diff['changed']),
 			));
 
+			$this->checkCreditLimit();
+
 			$this->session->data['success'] = $this->language->get('text_success');
-	  
+
 			$url = '';
 
 			if (isset($this->request->get['filter_order_id'])) {
 				$url .= '&filter_order_id=' . $this->request->get['filter_order_id'];
 			}
-			
+
 			if (isset($this->request->get['filter_company'])) {
 				$url .= '&filter_company=' . urlencode(html_entity_decode($this->request->get['filter_company'], ENT_QUOTES, 'UTF-8'));
 			}
-												
+
 			if (isset($this->request->get['filter_order_status_id'])) {
 				$url .= '&filter_order_status_id=' . $this->request->get['filter_order_status_id'];
 			}
-			
+
 			if (isset($this->request->get['filter_total'])) {
 				$url .= '&filter_total=' . $this->request->get['filter_total'];
 			}
-						
+
 			if (isset($this->request->get['filter_date_added'])) {
 				$url .= '&filter_date_added=' . $this->request->get['filter_date_added'];
 			}
-			
+
 			if (isset($this->request->get['filter_date_modified'])) {
 				$url .= '&filter_date_modified=' . $this->request->get['filter_date_modified'];
 			}
-													
+
 			if (isset($this->request->get['sort'])) {
 				$url .= '&sort=' . $this->request->get['sort'];
 			}
@@ -159,19 +163,19 @@ class ControllerSaleOrder extends Controller {
 			if (isset($this->request->get['page'])) {
 				$url .= '&page=' . $this->request->get['page'];
 			}
-			
+
 			$this->redirect($this->url->link('sale/order', 'token=' . $this->session->data['token'] . $url, 'SSL'));
 		}
-		
+
     	if (!$this->user->hasPermission('modify', 'sale/order')) {
 			$this->error['warning'] = $this->language->get('error_permission');
-		
+
 			$this->getList();
 		}else{
 			$this->getForm();
 		}
   	}
-	
+
   	public function delete() {
 		$this->load->language('sale/order');
 
@@ -758,6 +762,14 @@ class ControllerSaleOrder extends Controller {
 			unset($this->session->data['success']);
 		} else {
 			$this->data['success'] = '';
+		}
+
+		if (isset($this->session->data['warning'])) {
+			$this->data['warning'] = $this->session->data['warning'];
+
+			unset($this->session->data['warning']);
+		} else {
+			$this->data['warning'] = '';
 		}
 
 		if (isset($this->session->data['open_next_url'])) {
@@ -1514,6 +1526,49 @@ class ControllerSaleOrder extends Controller {
 	// por posicion + product_id, no por order_product_id: el recalculo AJAX de
 	// precio/cantidad reconstruye la tabla de lineas desde el carrito de sesion y lo
 	// deja vacio en cada edicion).
+	// Aviso (no bloqueante) de límite de crédito: si el cliente tiene un
+	// credit_limit configurado (> 0) y su deuda pendiente de cobro (facturas sin
+	// cobrar, ver ModelSaleCustomer::getCustomerOutstandingBalance()) más el
+	// total de este pedido lo supera, deja un mensaje en sesión que se muestra
+	// en el listado tras el redirect. El pedido se guarda igualmente.
+	private function checkCreditLimit() {
+		if (empty($this->request->post['customer_id'])) {
+			return;
+		}
+
+		$order_total = 0;
+
+		if (isset($this->request->post['order_total'])) {
+			foreach ($this->request->post['order_total'] as $order_total_row) {
+				if ($order_total_row['code'] == 'total') {
+					$order_total = (float)$order_total_row['value'];
+					break;
+				}
+			}
+		}
+
+		$this->load->model('sale/customer');
+
+		$customer_info = $this->model_sale_customer->getCustomer($this->request->post['customer_id']);
+
+		if (!$customer_info || (float)$customer_info['credit_limit'] <= 0) {
+			return;
+		}
+
+		$outstanding = $this->model_sale_customer->getCustomerOutstandingBalance($this->request->post['customer_id']);
+		$projected   = $outstanding + $order_total;
+
+		if ($projected > (float)$customer_info['credit_limit']) {
+			$this->session->data['warning'] = sprintf(
+				$this->language->get('text_credit_limit_exceeded'),
+				$customer_info['company'],
+				$this->currency->format($customer_info['credit_limit'], '', '', true, true),
+				$this->currency->format($projected, '', '', true, true),
+				$this->currency->format($projected - $customer_info['credit_limit'], '', '', true, true)
+			);
+		}
+	}
+
 	private function diffOrderProducts($old_products, $new_products) {
 		$original = array();
 		$changed  = array();

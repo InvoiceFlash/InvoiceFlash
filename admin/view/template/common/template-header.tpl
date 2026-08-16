@@ -15,3 +15,6 @@
 <?php if (!empty($success)) { ?>
 <div class="alert alert-success alert-dismissable"><?php echo $success; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
 <?php } ?>
+<?php if (!empty($warning)) { ?>
+<div class="alert alert-warning alert-dismissable"><?php echo $warning; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
+<?php } ?>

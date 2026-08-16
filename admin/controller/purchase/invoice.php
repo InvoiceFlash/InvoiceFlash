@@ -16,6 +16,10 @@ class ControllerPurchaseInvoice extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$new_invoice_id = $this->model_purchase_invoice->addInvoice($this->request->post);
+
+			$this->load->model('accounting/auto_entry');
+			$this->model_accounting_auto_entry->postPurchaseInvoice((int)$new_invoice_id, array('user_id' => $this->user->getId(), 'username' => $this->user->getUserName()));
+
 			$this->load->model('tool/user_logs');
 			$inv = $this->model_purchase_invoice->getInvoice((int)$new_invoice_id);
 			$this->model_tool_user_logs->addLog(array(
@@ -49,6 +53,9 @@ class ControllerPurchaseInvoice extends Controller {
 			$products_before = $this->model_purchase_invoice->getInvoiceProducts($this->request->get['invoice_id']);
 
 			$this->model_purchase_invoice->editInvoice($this->request->get['invoice_id'], $this->request->post);
+
+			$this->load->model('accounting/auto_entry');
+			$this->model_accounting_auto_entry->postPurchaseInvoice((int)$this->request->get['invoice_id'], array('user_id' => $this->user->getId(), 'username' => $this->user->getUserName()));
 
 			$diff         = $this->diffFields($invoice_before, $this->request->post);
 			$product_diff = $this->diffInvoiceProducts($products_before, isset($this->request->post['invoice_product']) ? $this->request->post['invoice_product'] : array());
@@ -86,7 +93,13 @@ class ControllerPurchaseInvoice extends Controller {
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
 			$this->load->model('tool/user_logs');
 
+			$this->load->model('accounting/auto_entry');
+
 			foreach ($this->request->post['selected'] as $invoice_id) {
+				// Captura y borra el asiento ANTES del DELETE real de la factura -
+				// tras borrarla ya no se podria localizar su entry_id.
+				$this->model_accounting_auto_entry->removeEntry('purchase_invoice', $invoice_id);
+
 				$this->model_purchase_invoice->deleteInvoice($invoice_id);
 
 				$this->model_tool_user_logs->addLog(array(

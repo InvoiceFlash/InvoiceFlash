@@ -130,6 +130,7 @@ $_['entry_web']            = 'Web:';
 $_['button_web']            = 'Go to web';
 $_['error_web']            = 'Error: Enter a valid url!';
 $_['entry_vat_regime']      = 'VAT Regime:';
+$_['entry_credit_limit']    = 'Credit Limit:';
 $_['text_vat_regime_general'] = 'General';
 $_['text_vat_regime_comunitario'] = 'Intra-community';
 $_['text_vat_regime_internacional'] = 'International';

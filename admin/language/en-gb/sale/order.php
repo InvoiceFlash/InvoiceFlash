@@ -7,6 +7,7 @@ $_['heading_title']                           = 'Orders';
 $_['text_amazon_order_id']                    = 'Amazon Order ID:';
 $_['text_name']                               = 'Name:';
 $_['text_success']                            = 'Success: You have modified orders!';
+$_['text_credit_limit_exceeded']              = 'Warning: customer <b>%s</b> exceeds their credit limit (%s). Outstanding balance + this order: %s (over by %s).';
 $_['text_order_id']                           = 'Order ID:';
 $_['text_invoice_no']                         = 'Delivery No.:';
 $_['text_invoice_date']                       = 'Date:';

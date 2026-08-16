@@ -30,6 +30,7 @@ $_['entry_lastname']           = 'Last Name:';
 $_['entry_company']            = 'Company:';
 $_['entry_company_id']         = 'Company ID:';
 $_['entry_tax_id']             = 'Tax ID:';
+$_['entry_contable_account']   = 'Accounting Account:';
 $_['entry_email']              = 'E-Mail:';
 $_['entry_telephone']          = 'Telephone:';
 $_['entry_fax']                = 'Fax:';

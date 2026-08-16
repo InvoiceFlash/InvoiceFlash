@@ -60,6 +60,12 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_contable_account; ?></label>
+										<div class="col-sm-6">
+											<input type="text" name="contable_account" value="<?php echo $contable_account; ?>" maxlength="<?php echo $contable_account_maxlength; ?>" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="form-control" placeholder="400000000">
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_telephone; ?></label>
 										<div class="col-sm-6">
 											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">

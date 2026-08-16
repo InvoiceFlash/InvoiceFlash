@@ -37,6 +37,9 @@ class ControllerSaleInvoice extends Controller {
 
 			$this->autoSendAeat($new_invoice_id);
 
+			$this->load->model('accounting/auto_entry');
+			$this->model_accounting_auto_entry->postSaleInvoice($new_invoice_id, array('user_id' => $this->user->getId(), 'username' => $this->user->getUserName()));
+
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
@@ -99,6 +102,9 @@ class ControllerSaleInvoice extends Controller {
 			$products_before = $this->model_sale_invoice->getInvoiceProducts($this->request->get['invoice_id']);
 
 			$this->model_sale_invoice->editInvoice($this->request->get['invoice_id'], $this->request->post);
+
+			$this->load->model('accounting/auto_entry');
+			$this->model_accounting_auto_entry->postSaleInvoice((int)$this->request->get['invoice_id'], array('user_id' => $this->user->getId(), 'username' => $this->user->getUserName()));
 
 			$diff         = $this->diffFields($invoice_before, $this->request->post);
 			$product_diff = $this->diffInvoiceProducts($products_before, isset($this->request->post['invoice_product']) ? $this->request->post['invoice_product'] : array());
@@ -203,6 +209,12 @@ class ControllerSaleInvoice extends Controller {
 						'document_id'   => (int)$negative_invoice_id,
 						'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 					));
+
+					// La factura original conserva su asiento tal cual (createNegativeInvoice()
+					// no la toca) - solo la rectificativa nueva necesita su propio asiento,
+					// que sale invertido solo (importes negativos) via addBalancedLine().
+					$this->load->model('accounting/auto_entry');
+					$this->model_accounting_auto_entry->postSaleInvoice((int)$negative_invoice_id, array('user_id' => $this->user->getId(), 'username' => $this->user->getUserName()));
 				}
 			}
 

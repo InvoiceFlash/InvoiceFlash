@@ -1126,6 +1126,7 @@ CREATE TABLE `if_customer` (
   `crazonsoci` char(60) DEFAULT NULL,
   `digital_invoice` tinyint(1) DEFAULT '0',
   `vat_regime` varchar(20) NOT NULL DEFAULT 'general',
+  `credit_limit` decimal(15,4) NOT NULL DEFAULT '0.0000',
   `nusuultmod` int(11) DEFAULT NULL,
   `address` varchar(128) DEFAULT NULL,
   `city` varchar(128) DEFAULT NULL,
@@ -3219,7 +3220,12 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (130, 0, 'config', 'config_product_count', '1', 0),
 (131, 0, 'discount', 'discount_sort_order', '1', 0),
 (132, 0, 'discount', 'discount_status', '1', 0),
-(134, 0, 'config', 'config_ai_enabled', '0', 0);
+(134, 0, 'config', 'config_ai_enabled', '0', 0),
+(135, 0, 'config', 'config_conta_enabled', '0', 0),
+(136, 0, 'config', 'config_conta_compras_account', '6000000000', 0),
+(137, 0, 'config', 'config_conta_proveedor_account', '4000000000', 0),
+(138, 0, 'config', 'config_conta_iva_repercutido_account', '4770000021', 0),
+(139, 0, 'config', 'config_conta_iva_soportado_account', '4720000021', 0);
 
 -- --------------------------------------------------------
 
@@ -7711,6 +7717,7 @@ CREATE TABLE `if_invoice` (
   `aeat_notice` text,
   `aeat_csv` varchar(100) DEFAULT NULL,
   `aeat_hash` char(64) DEFAULT NULL,
+  `entry_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`invoice_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -7839,6 +7846,7 @@ CREATE TABLE `if_purchase_invoice` (
   `currency_value` decimal(15,8) NOT NULL DEFAULT '1.0000',
   `date_added` datetime NOT NULL,
   `date_modified` datetime NOT NULL,
+  `entry_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`invoice_id`),
   KEY `supplier_id` (`supplier_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -8736,6 +8744,7 @@ CREATE TABLE `if_supplier` (
   `company` varchar(92) NOT NULL,
   `company_id` varchar(32) NOT NULL,
   `tax_id` varchar(32) NOT NULL,
+  `contable_account` decimal(10,0) DEFAULT NULL,
   `email` varchar(96) NOT NULL,
   `telephone` varchar(32) NOT NULL,
   `fax` varchar(32) NOT NULL,

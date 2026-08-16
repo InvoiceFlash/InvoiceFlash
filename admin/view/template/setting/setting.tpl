@@ -553,6 +553,15 @@
 				</div>
 				<div id="tab-accounting" class="tab-pane">
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_enabled; ?></label>
+						<div class="col-sm-2">
+							<select name="config_conta_enabled" id="input-conta-enabled" class="form-control" style="width:120px;">
+								<option value="1"<?php echo ($config_conta_enabled) ? ' selected="selected"' : ''; ?>><?php echo $text_yes; ?></option>
+								<option value="0"<?php echo (!$config_conta_enabled) ? ' selected="selected"' : ''; ?>><?php echo $text_no; ?></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period_from ?></label>
 						<div class="col-sm-2">
 							<div class="input-group">
@@ -606,6 +615,42 @@
 							<input type="text" name="config_conta_result_account" id="config_conta_result_account" value="<?php echo $config_conta_result_account; ?>" class="form-control conta-account" placeholder="1290000000" style="width: 160px;">
 							<?php if ($error_conta_result_account) { ?>
 								<div class="help-block text-danger"><?php echo $error_conta_result_account; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_compras_account; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_conta_compras_account" id="config_conta_compras_account" value="<?php echo $config_conta_compras_account; ?>" class="form-control conta-account" placeholder="6000000000" style="width: 160px;">
+							<?php if ($error_conta_compras_account) { ?>
+								<div class="help-block text-danger"><?php echo $error_conta_compras_account; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_proveedor_account; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_conta_proveedor_account" id="config_conta_proveedor_account" value="<?php echo $config_conta_proveedor_account; ?>" class="form-control conta-account" placeholder="4000000000" style="width: 160px;">
+							<?php if ($error_conta_proveedor_account) { ?>
+								<div class="help-block text-danger"><?php echo $error_conta_proveedor_account; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_iva_repercutido_account; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_conta_iva_repercutido_account" id="config_conta_iva_repercutido_account" value="<?php echo $config_conta_iva_repercutido_account; ?>" class="form-control conta-account" placeholder="4770000021" style="width: 160px;">
+							<?php if ($error_conta_iva_repercutido_account) { ?>
+								<div class="help-block text-danger"><?php echo $error_conta_iva_repercutido_account; ?></div>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_iva_soportado_account; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_conta_iva_soportado_account" id="config_conta_iva_soportado_account" value="<?php echo $config_conta_iva_soportado_account; ?>" class="form-control conta-account" placeholder="4720000021" style="width: 160px;">
+							<?php if ($error_conta_iva_soportado_account) { ?>
+								<div class="help-block text-danger"><?php echo $error_conta_iva_soportado_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>

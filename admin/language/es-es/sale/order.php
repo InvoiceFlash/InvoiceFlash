@@ -4,6 +4,7 @@ $_['heading_title']            = 'Pedidos';
 
 // Text
 $_['text_success'] = '&Eacute;xito: &iexcl;Ha modificado los pedidos!';
+$_['text_credit_limit_exceeded'] = 'Aviso: el cliente <b>%s</b> supera su l&iacute;mite de cr&eacute;dito (%s). Deuda pendiente + este pedido: %s (excedido en %s).';
 $_['text_list'] = 'Lista de Pedidos';
 $_['text_add'] = 'A&nacute;adir Pedidos ';
 $_['text_edit'] = 'Editar Pedidos';

@@ -706,6 +706,8 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['text_vat_regime_comunitario'] = $this->language->get('text_vat_regime_comunitario');
 		$this->data['text_vat_regime_internacional'] = $this->language->get('text_vat_regime_internacional');
 
+		$this->data['entry_credit_limit'] = $this->language->get('entry_credit_limit');
+
 		$this->data['text_datecreated'] = $this->language->get('text_datecreated');
 		$this->data['text_date_modified'] = $this->language->get('text_date_modified');
 		$this->data['text_last_modified_by'] = $this->language->get('text_last_modified_by');
@@ -1446,6 +1448,14 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['vat_regime'] = $customer_info['vat_regime'];
 		} else {
 			$this->data['vat_regime'] = 'general';
+		}
+
+		if (isset($this->request->post['credit_limit'])) {
+			$this->data['credit_limit'] = $this->request->post['credit_limit'];
+		} elseif (!empty($customer_info) && !empty($customer_info['credit_limit'])) {
+			$this->data['credit_limit'] = number_format((float)$customer_info['credit_limit'], 2, '.', '');
+		} else {
+			$this->data['credit_limit'] = '';
 		}
 
 		$this->load->model('sale/customer_group');

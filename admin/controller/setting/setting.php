@@ -222,9 +222,14 @@ class ControllerSettingSetting extends Controller {
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 		$this->data['entry_creditor_id'] = $this->language->get('entry_creditor_id');
 		$this->data['text_creditor_id_tooltip'] = $this->language->get('text_creditor_id_tooltip');
+		$this->data['entry_conta_enabled'] = $this->language->get('entry_conta_enabled');
 		$this->data['entry_conta_ventas_account'] = $this->language->get('entry_conta_ventas_account');
 		$this->data['entry_conta_cliente_account'] = $this->language->get('entry_conta_cliente_account');
 		$this->data['entry_conta_result_account'] = $this->language->get('entry_conta_result_account');
+		$this->data['entry_conta_compras_account'] = $this->language->get('entry_conta_compras_account');
+		$this->data['entry_conta_proveedor_account'] = $this->language->get('entry_conta_proveedor_account');
+		$this->data['entry_conta_iva_repercutido_account'] = $this->language->get('entry_conta_iva_repercutido_account');
+		$this->data['entry_conta_iva_soportado_account'] = $this->language->get('entry_conta_iva_soportado_account');
 		$this->data['entry_conta_digits'] = $this->language->get('entry_conta_digits');
 		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
@@ -447,6 +452,30 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_conta_result_account'] = '';
 		}
 
+		if (isset($this->error['conta_compras_account'])) {
+			$this->data['error_conta_compras_account'] = $this->error['conta_compras_account'];
+		} else {
+			$this->data['error_conta_compras_account'] = '';
+		}
+
+		if (isset($this->error['conta_proveedor_account'])) {
+			$this->data['error_conta_proveedor_account'] = $this->error['conta_proveedor_account'];
+		} else {
+			$this->data['error_conta_proveedor_account'] = '';
+		}
+
+		if (isset($this->error['conta_iva_repercutido_account'])) {
+			$this->data['error_conta_iva_repercutido_account'] = $this->error['conta_iva_repercutido_account'];
+		} else {
+			$this->data['error_conta_iva_repercutido_account'] = '';
+		}
+
+		if (isset($this->error['conta_iva_soportado_account'])) {
+			$this->data['error_conta_iva_soportado_account'] = $this->error['conta_iva_soportado_account'];
+		} else {
+			$this->data['error_conta_iva_soportado_account'] = '';
+		}
+
 		if (isset($this->error['ai_enabled'])) {
 			$this->data['error_ai_enabled'] = $this->error['ai_enabled'];
 		} else {
@@ -550,6 +579,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_vat_id'] = $this->config->get('config_vat_id');
 		}
 
+		if (isset($this->request->post['config_conta_enabled'])) {
+			$this->data['config_conta_enabled'] = $this->request->post['config_conta_enabled'];
+		} else {
+			$this->data['config_conta_enabled'] = ($this->config->get('config_conta_enabled') !== null) ? $this->config->get('config_conta_enabled') : '0';
+		}
+
 		if (isset($this->request->post['config_conta_ventas_account'])) {
 			$this->data['config_conta_ventas_account'] = $this->request->post['config_conta_ventas_account'];
 		} else {
@@ -566,6 +601,30 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_conta_result_account'] = $this->request->post['config_conta_result_account'];
 		} else {
 			$this->data['config_conta_result_account'] = $this->config->get('config_conta_result_account');
+		}
+
+		if (isset($this->request->post['config_conta_compras_account'])) {
+			$this->data['config_conta_compras_account'] = $this->request->post['config_conta_compras_account'];
+		} else {
+			$this->data['config_conta_compras_account'] = $this->config->get('config_conta_compras_account');
+		}
+
+		if (isset($this->request->post['config_conta_proveedor_account'])) {
+			$this->data['config_conta_proveedor_account'] = $this->request->post['config_conta_proveedor_account'];
+		} else {
+			$this->data['config_conta_proveedor_account'] = $this->config->get('config_conta_proveedor_account');
+		}
+
+		if (isset($this->request->post['config_conta_iva_repercutido_account'])) {
+			$this->data['config_conta_iva_repercutido_account'] = $this->request->post['config_conta_iva_repercutido_account'];
+		} else {
+			$this->data['config_conta_iva_repercutido_account'] = $this->config->get('config_conta_iva_repercutido_account');
+		}
+
+		if (isset($this->request->post['config_conta_iva_soportado_account'])) {
+			$this->data['config_conta_iva_soportado_account'] = $this->request->post['config_conta_iva_soportado_account'];
+		} else {
+			$this->data['config_conta_iva_soportado_account'] = $this->config->get('config_conta_iva_soportado_account');
 		}
 
 		if (isset($this->request->post['config_ai_enabled'])) {
@@ -1573,6 +1632,22 @@ class ControllerSettingSetting extends Controller {
 
 		if ($this->request->post['config_conta_result_account'] && (utf8_strlen($this->request->post['config_conta_result_account']) != $conta_digits)) {
 			$this->error['conta_result_account'] = sprintf($this->language->get('error_conta_result_account'), $conta_digits);
+		}
+
+		if ($this->request->post['config_conta_compras_account'] && (utf8_strlen($this->request->post['config_conta_compras_account']) != $conta_digits)) {
+			$this->error['conta_compras_account'] = sprintf($this->language->get('error_conta_compras_account'), $conta_digits);
+		}
+
+		if ($this->request->post['config_conta_proveedor_account'] && (utf8_strlen($this->request->post['config_conta_proveedor_account']) != $conta_digits)) {
+			$this->error['conta_proveedor_account'] = sprintf($this->language->get('error_conta_proveedor_account'), $conta_digits);
+		}
+
+		if ($this->request->post['config_conta_iva_repercutido_account'] && (utf8_strlen($this->request->post['config_conta_iva_repercutido_account']) != $conta_digits)) {
+			$this->error['conta_iva_repercutido_account'] = sprintf($this->language->get('error_conta_iva_repercutido_account'), $conta_digits);
+		}
+
+		if ($this->request->post['config_conta_iva_soportado_account'] && (utf8_strlen($this->request->post['config_conta_iva_soportado_account']) != $conta_digits)) {
+			$this->error['conta_iva_soportado_account'] = sprintf($this->language->get('error_conta_iva_soportado_account'), $conta_digits);
 		}
 
 		if (!empty($this->request->post['config_ai_enabled'])) {
