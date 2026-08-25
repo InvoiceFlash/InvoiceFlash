@@ -123,3 +123,10 @@ $_['text_invoiceflash'] = 'P&aacute;gina Principal';
 $_['text_support'] = 'Foro de Apoyo';
 $_['text_documentation'] = 'documentaci&oacute;n';
 $_['text_logout'] = 'Salir';
+
+// Update notice
+$_['text_update_available']            = 'Hay una actualizaci&oacute;n disponible.';
+$_['text_update_upgrade']              = 'Actualizar ahora';
+$_['text_update_view']                 = 'Ver cambios';
+$_['text_update_dismiss']              = 'Descartar';
+$_['text_update_confirm']              = 'Esto descargar&aacute; y aplicar&aacute; la &uacute;ltima versi&oacute;n desde GitHub. Se guardar&aacute; una copia de seguridad de los archivos sustituidos en system/backup/. &iquest;Continuar?';
