@@ -34,7 +34,7 @@
 						<div class="col-xs-4 col-sm-3">
 							<div class="nav flex-column" id="vtabs-address">
 								<a href="#tab-customer" class="nav-link active" role="tab" aria-selected="true" data-bs-toggle="pill"><?php echo $tab_general; ?></a>
-								<a href="#tab-notas" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_notes; ?></a>
+								<a href="#tab-notas" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"<?php if ($notes) { ?> style="background-color:#fff9c4;"<?php } ?>><?php echo $tab_notes; ?></a>
 								<a href="#tab-various" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_various; ?></a>
 								<a href="#tab-info" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><?php echo $tab_info; ?></a>
 								<?php $address_row=1; ?>

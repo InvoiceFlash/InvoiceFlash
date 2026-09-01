@@ -17,7 +17,7 @@
       </div>
       <div class="form-group">
         <label for="" class="control-label col-sm-2"><?php echo $entry_comment; ?></label>
-        <div class="control-field col-sm-4"><textarea name="comment" id="" cols="30" rows="10" class="form-control"><?php echo $comment ?></textarea></div>
+        <div class="control-field col-sm-4"><textarea name="comment" id="" cols="30" rows="10" class="form-control" autofocus><?php echo $comment ?></textarea></div>
       </div>
     </form>
   </div>
