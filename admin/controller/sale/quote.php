@@ -636,6 +636,23 @@ class ControllerSaleQuote extends Controller {
       $this->data['copy'] = $this->url->link('sale/quote/copy', 'token=' . $this->session->data['token'] . $url, 'SSL');
       $this->data['delete'] = $this->url->link('sale/quote/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
+      // add print selection
+      $reports = array_slice(scandir(DIR_TEMPLATE . 'sale/reports'), 2);
+
+      $this->data['reports'] = array();
+
+      foreach ($reports as $report) {
+          $name = ucfirst(str_replace('_', ' ', str_replace('.tpl', '', str_replace('_quote', '', $report))));
+
+          if (strpos($name, 'Quote')!==FALSE) {
+              $this->data['reports'][] = array(
+                  'name' => $name,
+                  'report' => $report
+              );
+          }
+      }
+      // end add
+
       $this->data['quotes'] = array();
 
       $data = array(
@@ -1676,9 +1693,27 @@ class ControllerSaleQuote extends Controller {
 			);
 
 			$this->data['printPDF'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=pdf', 'SSL');
+			$this->data['print'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=pdf', 'SSL');
 			$this->data['invoice'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=view', 'SSL');
 			$this->data['sendEmail'] = $this->url->link('sale/quote/document', 'token=' . $this->session->data['token'] . '&quote_id=' . (int)$this->request->get['quote_id'] . '&format=email', 'SSL');
 			$this->data['cancel'] = $this->url->link('sale/quote', 'token=' . $this->session->data['token'] . $url, 'SSL');
+
+			// add print selection
+			$reports = array_slice(scandir(DIR_TEMPLATE . 'sale/reports'), 2);
+
+			$this->data['reports'] = array();
+
+			foreach ($reports as $report) {
+				$name = ucfirst(str_replace('_', ' ', str_replace('.tpl', '', str_replace('_quote', '', $report))));
+
+				if (strpos($name, 'Quote')!==FALSE) {
+					$this->data['reports'][] = array(
+						'name' => $name,
+						'report' => $report
+					);
+				}
+			}
+			// end add
 			
 			$this->data['quote_id'] = $this->request->get['quote_id'];
 			
@@ -2071,7 +2106,21 @@ class ControllerSaleQuote extends Controller {
 		}
 
 		$quotes = array_unique($quotes);
-		
+
+		// add print selection
+		if (isset($this->request->post['report'])) {
+			$lcReport = $this->request->post['report'];
+		} elseif (isset($this->request->get['report'])) {
+			$lcReport = $this->request->get['report'];
+		} else {
+			$lcReport = '';
+		}
+
+		if ($lcReport !== '' && (!preg_match('/^[A-Za-z0-9_-]+\.tpl$/', $lcReport) || !is_file(DIR_TEMPLATE . 'sale/reports/' . $lcReport))) {
+			$lcReport = '';
+		}
+		// end add
+
 		foreach ($quotes as $quote_id) {
 			$quote_info = $this->model_sale_quote->getQuote($quote_id);
 
@@ -2367,12 +2416,16 @@ class ControllerSaleQuote extends Controller {
 
 			$this->response->setOutput(json_encode($json));
 		} else {
-			$this->template = 'sale/quote_print.tpl';
-			
+			if ($lcReport == '') {
+				$this->template = 'sale/quote_print.tpl';
+			} else {
+				$this->template = 'sale/reports/' . $lcReport;
+			}
+
 			$this->response->setOutput($this->render());
 		}
     }
-    
+
     public function checkQuote() {
 		$this->load->language('sale/quote');
 

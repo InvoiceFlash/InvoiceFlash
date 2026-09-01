@@ -5,7 +5,7 @@
 		<div class="pull-left h2"><i class="hidden-xs fa fa-edit"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
-			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitQuotes(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
+			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="openPrintModal(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_order; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
@@ -75,6 +75,7 @@
 		<div class="pagination"><?php echo str_replace('....','',$pagination); ?></div>
 	</div>
 </div>
+<?php include DIR_TEMPLATE . 'sale/print_modal.tpl'; ?>
 <script>
 function submitQuotes(url) {
 	if (!$('input[type="checkbox"]').is(':checked')) {
@@ -86,6 +87,26 @@ function submitQuotes(url) {
 		document.form.submit();
 	}
 }
+function openPrintModal(url) {
+	if (!$('input[type="checkbox"]').is(':checked')) {
+		alert('<?php echo $error_no_selection; ?>');
+	} else {
+		$('#formPrint input[name="selected[]"]').remove();
+
+		$('input[type="checkbox"]:checked').each(function(){
+			$('<input type="hidden" name="selected[]" value="'+$(this).val()+'">').appendTo('#formPrint');
+		});
+
+		$('#formPrint').attr('action', url);
+
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('PrintModal')).toggle();
+	}
+}
+$(document).ready(function(){
+     $("#PrintModal").on('hidden.bs.modal', function () {
+        $('#formPrint>input[name="selected[]"]').remove();
+    });
+});
 
 var configOpenNextConvert = <?php echo $config_open_next_convert ? 'true' : 'false'; ?>;
 
