@@ -125,7 +125,9 @@ class ModelLocalisationCurrency extends Model {
 
 			$content = curl_exec($curl);
 
-			curl_close($curl);
+			if (!PHP_VERSION_ID || PHP_VERSION_ID < 80000) {
+				curl_close($curl);
+			}
 
 			$lines = explode("\n", trim($content));
 
