@@ -63,10 +63,15 @@ $registry->set('log', $log);
 function error_handler($errno, $errstr, $errfile, $errline) {
 	global $log, $config;
 
-	// Respeta el operador @ (error_reporting() vuelve a 0 mientras dura la llamada suprimida) -
-	// sin esto, cualquier @funcion() de la app se ignoraba y el aviso se mostraba/logueaba igual.
-	if (error_reporting() === 0) {
-		return false;
+	// Respeta el operador @. Desde PHP 8, @ NO pone error_reporting() a 0 durante la llamada
+	// suprimida (queda en un valor "especial" que excluye el tipo de error real, pero no es
+	// cero) - comparar con === 0 nunca se cumple en PHP 8+ y el guard no hace nada. La forma
+	// correcta (documentada en el manual de PHP, funciona igual en PHP 5/7/8) es bit a bit:
+	// si $errno no esta incluido en error_reporting() actual, la llamada estaba suprimida.
+	// Importante: devolver true, no false - si el handler devuelve false, PHP invoca ADEMAS
+	// el handler nativo (que si respeta html_errors/display_errors), mostrando el aviso igual.
+	if (!(error_reporting() & $errno)) {
+		return true;
 	}
 
 	switch ($errno) {
