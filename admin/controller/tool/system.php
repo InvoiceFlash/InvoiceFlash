@@ -104,6 +104,10 @@ class ControllerToolSystem extends Controller {
 	}
 
 	private function getTotalRamWindows() {
+		if (!function_exists('shell_exec') || !$this->isFunctionAllowed('shell_exec')) {
+			return null;
+		}
+
 		$out = @shell_exec('powershell -NoProfile -Command "(Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory"');
 		$out = trim((string)$out);
 
@@ -149,6 +153,10 @@ class ControllerToolSystem extends Controller {
 	// desbordamiento de 32 bits conocido de WMI para tarjetas con mas de ~4GB de
 	// VRAM, en cuyo caso se marca como no fiable en vez de mostrar un dato falso.
 	private function getGpuInfoWindows() {
+		if (!function_exists('shell_exec') || !$this->isFunctionAllowed('shell_exec')) {
+			return array();
+		}
+
 		$out = @shell_exec('powershell -NoProfile -Command "Get-CimInstance Win32_VideoController | ForEach-Object { $_.Name + \'|\' + $_.AdapterRAM }"');
 
 		if ($out === null) {
@@ -194,6 +202,12 @@ class ControllerToolSystem extends Controller {
 	// adicionales (lshw, glxinfo...) que no se puede asumir que esten instaladas.
 	private function getGpuInfoLinux() {
 		$gpus = array();
+
+		// shell_exec() puede estar deshabilitada en el php.ini del hosting (disable_functions);
+		// llamarla igualmente no es un Warning suprimible con @, es un Fatal Error -> 500.
+		if (!function_exists('shell_exec') || !$this->isFunctionAllowed('shell_exec')) {
+			return array();
+		}
 
 		$out = @shell_exec('nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits 2>/dev/null');
 
@@ -246,12 +260,27 @@ class ControllerToolSystem extends Controller {
 		return $gpus;
 	}
 
+	// function_exists() devuelve true incluso para funciones listadas en disable_functions
+	// del php.ini (siguen "existiendo", solo lanzan un Fatal Error al invocarlas) - hay que
+	// comprobar esa lista aparte, no basta con function_exists().
+	private function isFunctionAllowed($name) {
+		$disabled = ini_get('disable_functions');
+
+		if (!$disabled) {
+			return true;
+		}
+
+		$disabled = array_map('trim', explode(',', $disabled));
+
+		return !in_array($name, $disabled, true);
+	}
+
 	private function formatBytesToGb($bytes) {
 		return number_format($bytes / 1073741824, 1) . ' GB';
 	}
 
 	private function isOllamaReachable($base_url) {
-		if (!function_exists('curl_init')) {
+		if (!function_exists('curl_init') || !$this->isFunctionAllowed('curl_init')) {
 			return false;
 		}
 
