@@ -39,8 +39,10 @@ class ControllerUpgrade extends Controller {
 	}
 
 	private function validate() {
-		if (DB_DRIVER == 'mysql') {		
-			if (!$connection = @mysql_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD)) {
+		if (DB_DRIVER == 'mysql') {
+			if (!function_exists('mysql_connect')) {
+				$this->error['warning'] = 'Error: The "mysql" driver is not available in this PHP version! Try using MySQLi.';
+			} elseif (!$connection = @mysql_connect(DB_HOSTNAME, DB_USERNAME, DB_PASSWORD)) {
 				$this->error['warning'] = 'Error: Could not connect to the database please make sure the database server, username and password is correct in the config.php file!';
 			} else {
 				if (!mysql_select_db(DB_DATABASE, $connection)) {

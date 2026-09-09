@@ -307,7 +307,9 @@ class ModelToolUpgrade extends Model {
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		$failed = curl_errno($ch) || ($http_code >= 400);
 
-		curl_close($ch);
+		if (PHP_VERSION_ID < 80000) {
+			curl_close($ch);
+		}
 		fclose($fp);
 
 		if ($failed) {
@@ -359,7 +361,9 @@ class ModelToolUpgrade extends Model {
 
 		$failed = $errno || !$response;
 
-		curl_close($ch);
+		if (PHP_VERSION_ID < 80000) {
+			curl_close($ch);
+		}
 
 		return $failed ? false : $response;
 	}

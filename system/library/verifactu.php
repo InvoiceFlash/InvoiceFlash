@@ -318,7 +318,9 @@ class Verifactu {
 		$responseBody = curl_exec($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		$curlError = curl_error($ch);
-		curl_close($ch);
+		if (PHP_VERSION_ID < 80000) {
+			curl_close($ch);
+		}
 
 		if ($responseBody === false) {
 			throw new VerifactuException('cURL request to AEAT failed: ' . $curlError);
