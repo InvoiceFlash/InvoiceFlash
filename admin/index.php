@@ -62,7 +62,13 @@ $registry->set('log', $log);
 
 function error_handler($errno, $errstr, $errfile, $errline) {
 	global $log, $config;
-	
+
+	// Respeta el operador @ (error_reporting() vuelve a 0 mientras dura la llamada suprimida) -
+	// sin esto, cualquier @funcion() de la app se ignoraba y el aviso se mostraba/logueaba igual.
+	if (error_reporting() === 0) {
+		return false;
+	}
+
 	switch ($errno) {
 		case E_NOTICE:
 		case E_USER_NOTICE:
