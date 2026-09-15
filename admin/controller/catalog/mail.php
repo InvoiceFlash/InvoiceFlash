@@ -141,7 +141,7 @@ class ControllerCatalogMail extends Controller {
 		);
 		
 		$this->data['mails_ins'] = array();
-		
+
 		$mails_in_total = $this->model_catalog_mail->getTotalmails_in($data);
 	
 		$results = $this->model_catalog_mail->getmails_in($data);

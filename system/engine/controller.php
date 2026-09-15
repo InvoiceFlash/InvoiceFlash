@@ -226,6 +226,14 @@ abstract class Controller {
 		// arriba. Se descarta ese output accidental, no el de la app en general.
 		ob_start();
 
+		$signature = $this->getUserEmailSignature();
+
+		if ($signature === '') {
+			$signature = "-----------\n" . $this->config->get('config_name');
+		}
+
+		$text .= '<br><br>' . nl2br($signature);
+
 		$mail = new Mail();
 
         $mail->protocol = $this->config->get('config_mail_protocol');
@@ -263,6 +271,24 @@ abstract class Controller {
 		return null;
     }
 	//end
+
+	// Firma de email del usuario que envia (user.signature, pestaña
+	// user/user/update) - ya viene escapada como entidades HTML (Request::clean()),
+	// mismo convenio que el resto del proyecto, asi que se concatena tal cual junto
+	// a $text (tambien escapado) antes del html_entity_decode() de sendnewmail().
+	private function getUserEmailSignature() {
+		if (!$this->user->getId()) {
+			return '';
+		}
+
+		$query = $this->db->query("SELECT signature FROM " . DB_PREFIX . "user WHERE user_id = '" . (int)$this->user->getId() . "'");
+
+		if ($query->num_rows && $query->row['signature'] !== null) {
+			return trim($query->row['signature']);
+		}
+
+		return '';
+	}
 
 	// "Ollama activo y algun modelo": comprueba de verdad que el servidor Ollama
 	// responde y que tiene descargado un modelo con soporte de embeddings, en vez

@@ -248,11 +248,13 @@ class ControllerSaleCustomer extends Controller {
 				$this->model_tool_user_logs->addLog(array(
 					'user_id'       => $this->user->getId(),
 					'username'      => $this->user->getUserName(),
+                    //'username'      => '',
 					'action'        => 'delete',
 					'document_type' => 'customer',
 					'document_id'   => (int)$customer_id,
 					'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 				));
+
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -343,7 +345,7 @@ class ControllerSaleCustomer extends Controller {
 		} else {
 			$filter_company = null;
 		}
-		
+
 		if (isset($this->request->get['filter_telephone'])) {
 			$filter_telephone = $this->request->get['filter_telephone'];
 		} else {

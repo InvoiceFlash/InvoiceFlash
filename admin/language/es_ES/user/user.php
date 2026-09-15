@@ -22,6 +22,7 @@ $_['entry_confirm'] = 'Confirmar';
 $_['entry_firstname'] = 'Nombre';
 $_['entry_lastname'] = 'apellido';
 $_['entry_email'] = 'E-Mail';
+$_['entry_signature'] = 'Firma de email';
 $_['entry_image'] = 'Imagen';
 $_['entry_status'] = 'Estado';
 

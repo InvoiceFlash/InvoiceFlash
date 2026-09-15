@@ -38,6 +38,12 @@
 				</div>
 			</div>
 			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_signature; ?></label>
+				<div class="col-sm-6">
+					<textarea name="signature" class="form-control" rows="5"><?php echo $signature; ?></textarea>
+				</div>
+			</div>
+			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_user_group; ?></label>
 				<div class="col-sm-6">
 					<select name="user_group_id" class="form-control">
