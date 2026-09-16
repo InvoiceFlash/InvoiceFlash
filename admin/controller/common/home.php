@@ -55,13 +55,11 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_view_inbox'] = $this->language->get('text_view_inbox');
 		$this->data['text_new_invoice'] = $this->language->get('text_new_invoice');
 		$this->data['text_add_product'] = $this->language->get('text_add_product');
-		$this->data['text_pending_invoices'] = $this->language->get('text_pending_invoices');
 
 		$this->data['add_customer'] = $this->url->link('sale/customer/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['view_inbox'] = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['new_invoice'] = $this->url->link('sale/invoice/insert', 'token=' . $this->session->data['token'], 'SSL');
 		$this->data['add_product'] = $this->url->link('catalog/product/insert', 'token=' . $this->session->data['token'], 'SSL');
-		$this->data['pending_invoices'] = $this->url->link('tool/pending_invoices', 'token=' . $this->session->data['token'], 'SSL');
 
 		// Check javascript
 		$this->data['error_javascript'] = $this->language->get('error_javascript');
@@ -261,8 +259,6 @@ class ControllerCommonHome extends Controller {
 
 		// Latest Invoices
 		$this->data['view']['last_invoice'] = $this->user->hasPermission('access', 'common/home_latest_invoices');
-
-		$this->data['view']['pending_invoices'] = $this->user->hasPermission('access', 'tool/pending_invoices');
 
 		$this->template = 'common/home.tpl';
 		$this->children = array(

@@ -25,29 +25,20 @@ class ModelToolUserLogs extends Model {
 		$sql = "SELECT l.*,
 			CASE l.document_type
 				WHEN 'sale_invoice'     THEN CONCAT(si.invoice_prefix, LPAD(si.invoice_no, 5, '0'))
-				WHEN 'purchase_invoice' THEN CONCAT(pi.invoice_prefix, LPAD(pi.invoice_no, 5, '0'))
 				WHEN 'quote'            THEN CONCAT('#', q.quote_id)
 				WHEN 'sale_order'       THEN CONCAT('#', o.order_id)
 				WHEN 'customer'         THEN c.company
-				WHEN 'supplier'         THEN s.company
-				WHEN 'purchase_order'   THEN po.po_number
 				ELSE ''
 			END AS document_ref
 			FROM `" . DB_PREFIX . "user_activity_log` l
 			LEFT JOIN `" . DB_PREFIX . "invoice` si
 				ON l.document_type = 'sale_invoice' AND l.document_id = si.invoice_id
-			LEFT JOIN `" . DB_PREFIX . "purchase_invoice` pi
-				ON l.document_type = 'purchase_invoice' AND l.document_id = pi.invoice_id
 			LEFT JOIN `" . DB_PREFIX . "quote` q
 				ON l.document_type = 'quote' AND l.document_id = q.quote_id
 			LEFT JOIN `" . DB_PREFIX . "order` o
 				ON l.document_type = 'sale_order' AND l.document_id = o.order_id
 			LEFT JOIN `" . DB_PREFIX . "customer` c
 				ON l.document_type = 'customer' AND l.document_id = c.customer_id
-			LEFT JOIN `" . DB_PREFIX . "supplier` s
-				ON l.document_type = 'supplier' AND l.document_id = s.supplier_id
-			LEFT JOIN `" . DB_PREFIX . "purchase_order` po
-				ON l.document_type = 'purchase_order' AND l.document_id = po.purchase_order_id
 			WHERE 1";
 
 		if (!empty($data['filter_username'])) {

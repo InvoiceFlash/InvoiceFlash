@@ -60,5 +60,4 @@ $_['text_add_customer']             = 'Add Customer';
 $_['text_view_inbox']                = 'View Email Inbox';
 $_['text_new_invoice']              = 'Create Invoice';
 $_['text_add_product']              = 'Add Product';
-$_['text_pending_invoices']          = 'Unprocessed Received Invoices';
 ?>
