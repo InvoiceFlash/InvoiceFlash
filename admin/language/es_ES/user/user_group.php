@@ -10,10 +10,10 @@ $_['text_edit'] = 'Grupo Editar usuario';
 
 // Columna
 $_['column_name'] = 'Nombre de Usuario Grupo';
-$_['column_action'] = 'Acción';
+$_['column_action'] = 'Acciï¿½n';
 
 // Entrada
-$_['nombre_entrada'] = 'Nombre de Usuario Grupo';
+$_['entry_name'] = 'Nombre de Usuario Grupo';
 $_['entry_access'] = 'Permiso de acceso';
 $_['entry_modify'] = 'Modificar Permiso';
 

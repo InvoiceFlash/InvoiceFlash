@@ -43,19 +43,8 @@ class ControllerCommonHeader extends Controller {
 
 			$this->data['home'] = $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL');
 
-			// Check GitHub for a newer commit on master than the one currently deployed
-			$this->load->model('tool/upgrade');
+			// Aviso de "hay una actualización disponible" desactivado a petición del usuario.
 
-			$status = $this->model_tool_upgrade->getStatus();
-
-			if ($status['latest_commit'] && $status['current_commit'] && ($status['latest_commit'] != $status['current_commit'])) {
-				$this->data['update_available'] = true;
-				$this->data['update_compare_url'] = $this->model_tool_upgrade->getCompareUrl($status);
-				$this->data['update_can_upgrade'] = $this->user->hasPermission('modify', 'tool/upgrade');
-				$this->data['update_url'] = $this->url->link('tool/upgrade/upgrade', 'token=' . $this->session->data['token'], 'SSL');
-				$this->data['update_latest_short'] = substr($status['latest_commit'], 0, 7);
-			}
-		
 			// Sistema de menu de open2302
 			$this->data['menus'] = array();
 
