@@ -43,6 +43,8 @@ import json
 import os
 import poplib
 import re
+import shutil
+import subprocess
 import sys
 import unicodedata
 import urllib.error
@@ -74,6 +76,15 @@ MAX_IMAGE_DIMENSION = 1600
 MAX_ATTEMPTS = 3
 
 STATUS_FILE = os.environ.get("STATUS_FILE", "")
+
+# Candidatos de binario PHP para disparar post_accounting_entry.php (mismo
+# patrón que findPython()/findPythonForEmbeddings() en el lado PHP de este
+# proyecto, pero al revés: aquí es Python el que busca un php.exe/php).
+PHP_BINARY_CANDIDATES = (
+    os.environ.get("PHP_BINARY", ""),
+    r"C:\Program Files (x86)\EasyPHP-Devserver-17\eds-binaries\php\php833vs16x86x260226173203\php.exe",
+    "php",
+)
 
 
 # ---------------------------------------------------------------------------
@@ -1097,6 +1108,58 @@ def upsert_log(conn, mailbox, message_uid, **fields):
 # Guardado del adjunto original
 # ---------------------------------------------------------------------------
 
+_php_binary_cache = None
+
+
+def find_php_binary():
+    """Localiza un binario PHP para disparar post_accounting_entry.php.
+    Cachea el resultado para no repetir la búsqueda en cada mensaje."""
+    global _php_binary_cache
+    if _php_binary_cache is not None:
+        return _php_binary_cache
+
+    for candidate in PHP_BINARY_CANDIDATES:
+        if not candidate:
+            continue
+        if os.path.sep in candidate or (os.name == "nt" and ":" in candidate):
+            if os.path.isfile(candidate):
+                _php_binary_cache = candidate
+                return candidate
+            continue
+        if shutil.which(candidate):
+            _php_binary_cache = candidate
+            return candidate
+
+    _php_binary_cache = ""
+    return ""
+
+
+def post_accounting_entry(invoice_id, invoice_type="purchase_invoice"):
+    """Dispara la contabilización automática de la factura recién creada,
+    reutilizando ModelAccountingAutoEntry::postPurchaseInvoice() vía
+    post_accounting_entry.php (mismo directorio que este script) en vez de
+    reimplementar la lógica contable en Python. Si el módulo Contabilidad no
+    está instalado, o no hay PHP disponible, o algo falla, no se propaga el
+    error — es un extra "best effort" que nunca debe impedir que la factura
+    ya creada se dé por buena ni que el email se borre del buzón."""
+    php = find_php_binary()
+    if not php:
+        return
+
+    script = os.path.join(os.path.dirname(os.path.abspath(__file__)), "post_accounting_entry.php")
+    if not os.path.isfile(script):
+        return
+
+    try:
+        subprocess.run(
+            [php, script, "--type=" + invoice_type, "--invoice-id=" + str(invoice_id)],
+            timeout=30,
+            capture_output=True,
+        )
+    except Exception as exc:
+        log("Aviso: no se pudo disparar la contabilización automática de la factura #{}: {}".format(invoice_id, exc))
+
+
 def save_attachment(filename, data, invoice_id):
     """<ATTACHMENT_DIR>/<YYYY-MM>/<invoice_id>/<archivo original>. ATTACHMENT_DIR
     lo fija system/vendor/cron/supplier_invoice_import.php (docs/purchases/invoices/
@@ -1248,6 +1311,8 @@ def process_message(conn, pop, mailbox, msgnum, uidl, raw_bytes, counters, own_c
             extraction_method=method, error_message="",
             increment_attempt=True,
         )
+
+        post_accounting_entry(invoice_id)
 
         pop.dele(msgnum)
 
