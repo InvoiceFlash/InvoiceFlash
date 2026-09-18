@@ -58,6 +58,9 @@ body, input, select, textarea, button, .btn, .form-control, .form-select,
 .alert, .badge, .tooltip, .popover, .card, .pagination, .well {
 	font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
+svg.bi{width:1em;height:1em;fill:currentColor;vertical-align:-.125em;display:inline-block}
+.bi-spin{animation:bi-spin 1s linear infinite}
+@keyframes bi-spin{to{transform:rotate(360deg)}}
 body { -webkit-font-smoothing: antialiased; }
 .navbar .nav-link, .navbar .dropdown-item, .navbar .dropdown-toggle {
 	font-size: 0.875rem;

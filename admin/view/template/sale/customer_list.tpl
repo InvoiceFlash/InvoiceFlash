@@ -2,7 +2,7 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-user"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><i class="hidden-xs fas fa-user-tie"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
 			<button type="submit" form="form" formaction="<?php echo $export; ?>" id="btn-export" class="btn btn-success"><i class="fa fa-file-excel"></i><span class="hidden-xs"> <?php echo $button_export; ?></span></button>
 			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>

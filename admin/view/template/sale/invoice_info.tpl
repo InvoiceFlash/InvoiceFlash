@@ -2,13 +2,13 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-text"/></svg> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><i class="fa fa-file-code"></i><span class="hidden-xs"> Facturae</span></button>
-			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></a>
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
-			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-eye"></i><span class="hidden-xs"> View</span></a>
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-code"/></svg><span class="hidden-xs"> Facturae</span></button>
+			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="hidden-xs"> PDF</span></a>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#envelope"/></svg><span class="hidden-xs"> Email</span></button>
+			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="hidden-xs"> View</span></a>
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -220,7 +220,7 @@
 						</div>
 						<div class="form-group row">
 							<div class="col-sm-6">
-								<button type="button" id="button-history" data-action="invoice" data-target="sale" data-id="<?php echo $invoice_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_history; ?></button>
+								<button type="button" id="button-history" data-action="invoice" data-target="sale" data-id="<?php echo $invoice_id; ?>" class="btn btn-info"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <?php echo $button_add_history; ?></button>
 							</div>
 						</div>
 					</div>
@@ -251,7 +251,7 @@
 							<td id="aeat-csv"><?php echo $aeat_csv; ?></td>
 						</tr>
 					</table>
-					<button type="button" id="button-aeat-resend" class="btn btn-primary"><i class="fa fa-paper-plane"></i> <?php echo $button_resend_aeat; ?></button>
+					<button type="button" id="button-aeat-resend" class="btn btn-primary"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#send"/></svg> <?php echo $button_resend_aeat; ?></button>
 				</div>
 			</div>
 		</div>
@@ -287,7 +287,7 @@ $('#button-aeat-resend').on('click',function(e){
 	var button = $(this);
 
 	button.prop('disabled', true);
-	button.find('i').removeClass('fa-paper-plane').addClass('fa-spinner fa-spin');
+	button.find('svg.bi').addClass('bi-spin').find('use').attr('href', 'view/image/bootstrap-icons.svg#arrow-repeat');
 
 	$.ajax({
 		url:'index.php?route=sale/invoice/resendAeat&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>',
@@ -311,7 +311,7 @@ $('#button-aeat-resend').on('click',function(e){
 		},
 		complete:function(){
 			button.prop('disabled', false);
-			button.find('i').removeClass('fa-spinner fa-spin').addClass('fa-paper-plane');
+			button.find('svg.bi').removeClass('bi-spin').find('use').attr('href', 'view/image/bootstrap-icons.svg#send');
 		}
 	});
 });

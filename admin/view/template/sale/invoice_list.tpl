@@ -2,12 +2,12 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-text"/></svg> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitInvoices(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
-			<button onclick="validate();" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
-			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirmCopy();" id="btn-copy-invoice" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger" data-toggle="tooltip" title="<?php echo $text_void_tooltip; ?>"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitInvoices(this.dataset.url);" class="btn btn-default btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
+			<button onclick="validate();" class="btn btn-default btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="hidden-xs"> PDF</span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirmCopy();" id="btn-copy-invoice" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#copy"/></svg><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger" data-toggle="tooltip" title="<?php echo $text_void_tooltip; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#trash3"/></svg><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -16,7 +16,7 @@
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-						<th width="40" class="text-center hidden-xs"><i class="fas fa-qrcode"></i></th>
+						<th width="40" class="text-center hidden-xs"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#qr-code"/></svg></th>
 						<th class="text-right"><a href="<?php echo $sort_invoice; ?>"><?php echo $column_invoice_id; echo ($sort == 'o.invoice_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_customer; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
@@ -27,7 +27,7 @@
 				</thead>
 				<tbody data-link="row" class="rowlink">
 					<tr id="filter" class="info">
-						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/invoice&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/invoice&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#power"/></svg></a></td>
 						<td class="hidden-xs"></td>
 						<td class="text-right"><input type="text" name="filter_invoice_id" value="<?php echo $filter_invoice_id; ?>" class="form-control text-right"></td>
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
@@ -45,10 +45,10 @@
 						<td class="hidden-xs"><div class="input-group">
 							<input type="text" name="filter_date_added" class="form-control date"/>
 							<div class="input-group-append">
-							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
+							<div class="input-group-text"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></div>
 							</div>
 						</div></td>
-						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#search"/></svg><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
 					</tr>
 					<?php if ($invoices) { ?>
 					<?php foreach ($invoices as $invoice) { ?>
@@ -59,9 +59,9 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $invoice['invoice_id']; ?>">
 							<?php } ?></td>
 						<td class="text-center hidden-xs"><?php if ($invoice['aeat_ok']) { ?>
-							<i class="fas fa-qrcode text-success" data-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"></i>
+							<svg class="bi text-success" data-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"><use href="view/image/bootstrap-icons.svg#qr-code"/></svg>
 							<?php } else { ?>
-							<i class="fas fa-qrcode" style="color:#000;" <?php if ($invoice['aeat_status']) { ?>data-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"<?php } ?>></i>
+							<svg class="bi" style="color:#000;" <?php if ($invoice['aeat_status']) { ?>data-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"<?php } ?>><use href="view/image/bootstrap-icons.svg#qr-code"/></svg>
 							<?php } ?></td>
 						<td class="text-right"><?php echo $invoice['invoice_id']; ?></td>
 						<td><?php echo $invoice['company']; ?></td>

@@ -2,14 +2,14 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button type="button" onclick="draftOpenPrintModal('');" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
-			<button type="button" onclick="draftOpenPrintModal('pdf');" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> <?php echo $button_print; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert; ?></span></button>
-			<a href="<?php echo $insert; ?>" class="btn btn-primary"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+			<button type="button" onclick="draftOpenPrintModal('');" class="btn btn-default btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
+			<button type="button" onclick="draftOpenPrintModal('pdf');" class="btn btn-default btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="hidden-xs"> <?php echo $button_print; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#copy"/></svg><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-left-right"/></svg><span class="hidden-xs"> <?php echo $button_convert; ?></span></button>
+			<a href="<?php echo $insert; ?>" class="btn btn-primary"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#trash3"/></svg><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -29,7 +29,7 @@
 				</thead>
 				<tbody data-link="row" class="rowlink">
 					<tr id="filter" class="info">
-						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/draft&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/draft&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#power"/></svg></a></td>
 						<td class="text-right"><input type="text" name="filter_draft_id" value="<?php echo $filter_draft_id; ?>" class="form-control text-right"></td>
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
 						<td class="hidden-xs"></td>
@@ -37,16 +37,16 @@
 						<td class="hidden-xs"><div class="input-group">
 							<input type="text" name="filter_date_added" class="form-control date"/>
 							<div class="input-group-append">
-							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
+							<div class="input-group-text"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></div>
 							</div>
 						</div></td>
 						<td class="hidden-xs"><div class="input-group">
 							<input type="text" name="filter_date_modified" class="form-control date"/>
 							<div class="input-group-append">
-							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
+							<div class="input-group-text"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></div>
 							</div>
 						</div></td>
-						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#search"/></svg><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
 					</tr>
 					<?php if ($drafts) { ?>
 					<?php foreach ($drafts as $draft) { ?>
@@ -94,10 +94,10 @@ function draftOpenPrintModal(format) {
 
 		if (format === 'pdf') {
 			$('#PrintModal .modal-title').text('PDF Select');
-			$('#PrintModal #send').html('<i class="fa fa-file-pdf"></i> PDF').removeClass('btn-success').addClass('btn-default');
+			$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg> PDF').removeClass('btn-success').addClass('btn-default');
 		} else {
 			$('#PrintModal .modal-title').text('View Select');
-			$('#PrintModal #send').html('<i class="fa fa-eye"></i> View').removeClass('btn-success').addClass('btn-default');
+			$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg> View').removeClass('btn-success').addClass('btn-default');
 		}
 
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('PrintModal')).toggle();

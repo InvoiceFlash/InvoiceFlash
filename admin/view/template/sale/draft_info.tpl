@@ -2,12 +2,12 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
+		<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
-			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-eye"></i><span class="hidden-xs"> Ver</span></button>
-			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('pdf');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#envelope"/></svg><span class="hidden-xs"> Email</span></button>
+			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="hidden-xs"> Ver</span></button>
+			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('pdf');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="hidden-xs"> PDF</span></button>
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="panel-body">
@@ -191,7 +191,7 @@
 						</div>
 						<div class="form-group row">
 							<div class="col-sm-6">
-								<button type="button" id="button-history" data-action="draft" data-target="sale" data-id="<?php echo $draft_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_history; ?></button>
+								<button type="button" id="button-history" data-action="draft" data-target="sale" data-id="<?php echo $draft_id; ?>" class="btn btn-info"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <?php echo $button_add_history; ?></button>
 							</div>
 						</div>
 					</div>
@@ -212,10 +212,10 @@ function draftSetPrintFormat(format) {
 
 	if (format === 'pdf') {
 		$('#PrintModal .modal-title').text('PDF Select');
-		$('#PrintModal #send').html('<i class="fa fa-file-pdf"></i> PDF').removeClass('btn-success').addClass('btn-default');
+		$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg> PDF').removeClass('btn-success').addClass('btn-default');
 	} else {
 		$('#PrintModal .modal-title').text('View Select');
-		$('#PrintModal #send').html('<i class="fa fa-eye"></i> View').removeClass('btn-success').addClass('btn-default');
+		$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg> View').removeClass('btn-success').addClass('btn-default');
 	}
 }
 $('#send').on('click',function(e){

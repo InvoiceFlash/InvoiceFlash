@@ -2,10 +2,10 @@
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
 	<div class="panel-heading clearfix">
-	<div class="pull-left h2"><i class="hidden-xs fa fa-file-alt"></i> <?php echo ($draft_id) ? sprintf($text_heading_draft_no, $draft_id) : $heading_title; ?></div>
+	<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo ($draft_id) ? sprintf($text_heading_draft_no, $draft_id) : $heading_title; ?></div>
 	<div class="pull-right">
-		<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
-		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+		<button type="submit" form="form" class="btn btn-primary"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#floppy"/></svg><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
+		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 	</div>
 </div>
 	<div class="panel-body">
@@ -13,7 +13,7 @@
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
-					<button class="btn btn-warning pull-right" type="button" title="<?php echo $title_pending_deliveries; ?>" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs"><?php echo $text_pending_deliveries; ?></span></button>
+					<button class="btn btn-warning pull-right" type="button" title="<?php echo $title_pending_deliveries; ?>" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#card-list"/></svg> <span class="hidden-xs"><?php echo $text_pending_deliveries; ?></span></button>
 					<input type="hidden" name="comment" value="<?php echo $comment; ?>">
 				</div>
 				<div class="card-body">
@@ -39,8 +39,8 @@
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
-								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="<?php echo $title_search_customer; ?>"><i class="fa fa-search"></i></button></div>
-								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><i class="fa fa-eye"></i></button></div>
+								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="<?php echo $title_search_customer; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#search"/></svg></button></div>
+								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg></button></div>
 							</div>
 						</div>
 						<div class="form-group col-sm-2">
@@ -114,7 +114,7 @@
 			<div class="card" id="tab-product" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_product; ?>
-					<button class="btn btn-info pull-right" type="button" id="addProduct"><i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span></button>
+					<button class="btn btn-info pull-right" type="button" id="addProduct"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <span class="hidden-xs"><?php echo $button_add_product; ?></span></button>
 				</div>
 				<div class="card-body">
 					<table class="table table-bordered table-striped table-hover">
@@ -134,7 +134,7 @@
 							<?php if ($draft_products) { ?>
 							<?php foreach ($draft_products as $draft_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
-								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-draft-product').click();"><i class="fa fa-trash"></i></a></td>
+								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-draft-product').click();"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#trash3"/></svg></a></td>
 								<td>
 									<input type="text" class="form-control draft-name" data-catalog-name="<?php echo htmlspecialchars((string)$draft_product['catalog_name'], ENT_QUOTES, 'UTF-8'); ?>" name="draft_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$draft_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][draft_product_id]" value="<?php echo $draft_product['draft_product_id']; ?>">
@@ -361,7 +361,7 @@
 						<div class="modal-footer">
 							<div class="control-field col-sm-4 col-sm-offset-2">
 								<button type="button" id="button-draft-product" class="btn btn-info pull-right">
-									<i class="fa fa-plus-circle"></i> <span class="hidden-xs"><?php echo $button_add_product; ?></span>
+									<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <span class="hidden-xs"><?php echo $button_add_product; ?></span>
 								</button>
 							</div>
 						</div>
@@ -671,8 +671,8 @@ $('#CustomerSearchModal').on('shown.bs.modal', function() {
 function csDoSearch() {
 	var btn = $('#cs-search');
 	var searching = $('#text_searching').val();
-	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> ' + searching);
-	$('#cs-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
+	btn.prop('disabled', true).html('<svg class="bi bi-spin" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-repeat"/></svg> ' + searching);
+	$('#cs-results').html('<tr><td colspan="4" class="text-center"><svg class="bi bi-spin" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-repeat"/></svg> ' + searching + '</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/customer/searchCustomers', 'token=' . $this->session->data['token'], 'SSL')); ?>',
@@ -768,8 +768,8 @@ $('#CustomerSearchModal').on('hidden.bs.modal', function() {
 function osDoSearch() {
 	var btn = $('#os-search');
 	var searching = $('#text_searching').val();
-	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> ' + searching);
-	$('#os-results').html('<tr><td colspan="5" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
+	btn.prop('disabled', true).html('<svg class="bi bi-spin" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-repeat"/></svg> ' + searching);
+	$('#os-results').html('<tr><td colspan="5" class="text-center"><svg class="bi bi-spin" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-repeat"/></svg> ' + searching + '</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('sale/draft/searchOrders', 'token=' . $this->session->data['token'], 'SSL')); ?>',
@@ -890,8 +890,8 @@ $('#addProduct').click(function(e) {
 function psDoSearch() {
 	var btn = $('#ps-search');
 	var searching = $('#text_searching').val();
-	btn.prop('disabled', true).html('<i class="fa fa-spinner fa-spin"></i> ' + searching);
-	$('#ps-results').html('<tr><td colspan="4" class="text-center"><i class="fa fa-spinner fa-spin"></i> ' + searching + '</td></tr>');
+	btn.prop('disabled', true).html('<svg class="bi bi-spin" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-repeat"/></svg> ' + searching);
+	$('#ps-results').html('<tr><td colspan="4" class="text-center"><svg class="bi bi-spin" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-repeat"/></svg> ' + searching + '</td></tr>');
 
 	$.ajax({
 		url: '<?php echo str_replace('&amp;', '&', $this->url->link('catalog/product/searchProducts', 'token=' . $this->session->data['token'], 'SSL')); ?>',
@@ -973,7 +973,7 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 					html += '<div class="checkbox"><label><input type="checkbox" name="option[' + o.product_option_id + '][]" value="' + o.option_value[j].product_option_value_id + '"> ' + o.option_value[j].name + '</label></div>';
 				}
 			} else if (o.type == 'date' || o.type == 'datetime') {
-				html += '<div class="input-group"><input type="text" name="option[' + o.product_option_id + ']" value="' + psToday + '" class="form-control date" placeholder="DD-MM-YYYY"><div class="input-group-append"><button class="btn btn-default" type="button" onclick="$(this).closest(\'.input-group\').find(\'.date\').focus();"><i class="fa fa-calendar"></i></button></div></div>';
+				html += '<div class="input-group"><input type="text" name="option[' + o.product_option_id + ']" value="' + psToday + '" class="form-control date" placeholder="DD-MM-YYYY"><div class="input-group-append"><button class="btn btn-default" type="button" onclick="$(this).closest(\'.input-group\').find(\'.date\').focus();"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></button></div></div>';
 			} else if (o.type == 'time') {
 				html += '<input type="text" name="option[' + o.product_option_id + ']" value="" class="form-control">';
 			} else if (o.type == 'textarea') {

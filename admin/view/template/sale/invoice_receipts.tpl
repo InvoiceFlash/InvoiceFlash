@@ -16,9 +16,9 @@
 			<td class="text-right"><?php echo $receipt['total']; ?></td>
 			<td class="text-center">
 				<?php if ($receipt['paid']) { ?>
-				<span class="badge badge-success"><i class="fa fa-check"></i> <?php echo $text_paid; ?></span>
+				<span class="badge badge-success"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#check-lg"/></svg> <?php echo $text_paid; ?></span>
 				<?php } else { ?>
-				<span class="badge badge-danger"><i class="fa fa-clock"></i> <?php echo $text_pending; ?></span>
+				<span class="badge badge-danger"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#clock"/></svg> <?php echo $text_pending; ?></span>
 				<?php } ?>
 			</td>
 		</tr>
