@@ -8017,6 +8017,64 @@ CREATE TABLE `if_stock_movement` (
   KEY `document_type` (`document_type`,`document_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+/*Table structure for table `kanban_card` */
+
+DROP TABLE IF EXISTS `if_kanban_card`;
+CREATE TABLE `if_kanban_card` (
+  `kanban_card_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `kanban_project_id` int(11) NOT NULL DEFAULT 0,
+  `title` varchar(255) NOT NULL,
+  `description` longtext,
+  `status` varchar(20) NOT NULL DEFAULT 'pending',
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`kanban_card_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `kanban_project` */
+
+DROP TABLE IF EXISTS `if_kanban_project`;
+CREATE TABLE `if_kanban_project` (
+  `kanban_project_id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `date_start` date DEFAULT NULL,
+  `date_end` date DEFAULT NULL,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`kanban_project_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `kanban_share` */
+
+DROP TABLE IF EXISTS `if_kanban_share`;
+CREATE TABLE `if_kanban_share` (
+  `kanban_share_id` int(11) NOT NULL AUTO_INCREMENT,
+  `kanban_card_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`kanban_share_id`),
+  UNIQUE KEY `card_user` (`kanban_card_id`,`user_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+/*Table structure for table `kanban_attachment` */
+
+DROP TABLE IF EXISTS `if_kanban_attachment`;
+CREATE TABLE `if_kanban_attachment` (
+  `kanban_attachment_id` int(11) NOT NULL AUTO_INCREMENT,
+  `kanban_card_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `type` varchar(10) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`kanban_attachment_id`),
+  KEY `kanban_card_id` (`kanban_card_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 /*Table structure for table `draft` */
 
 DROP TABLE IF EXISTS `if_draft`;

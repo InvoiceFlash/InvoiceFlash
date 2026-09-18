@@ -49,6 +49,22 @@ class ControllerCommonHome extends Controller {
 		$this->data['claude_chat_url'] = str_replace('&amp;', '&', $this->url->link('common/home/claudeChat', 'token=' . $this->session->data['token'], 'SSL'));
 		$this->data['ai_chat_model'] = ($this->config->get('config_ai_provider') == 'ollama') ? 'qwen3:1.7b' : 'claude-opus-4-8';
 
+		$this->data['text_view_kanban'] = $this->language->get('text_view_kanban');
+		$this->data['text_kanban'] = $this->language->get('text_kanban');
+		$this->data['text_kanban_new_placeholder'] = $this->language->get('text_kanban_new_placeholder');
+		$this->data['text_kanban_add'] = $this->language->get('text_kanban_add');
+		$this->data['text_kanban_delete_confirm'] = $this->language->get('text_kanban_delete_confirm');
+		$this->data['kanban_columns'] = array(
+			'pending'     => $this->language->get('text_kanban_pending'),
+			'in_progress' => $this->language->get('text_kanban_in_progress'),
+			'done'        => $this->language->get('text_kanban_done')
+		);
+		foreach (array('attach', 'text', 'photo', 'document', 'photos', 'documents', 'save', 'close', 'upload', 'choose_type', 'text_placeholder', 'no_files', 'delete_file', 'projects', 'project_new', 'project_name', 'project_start', 'project_end', 'project_delete_confirm', 'shared_with_me', 'share', 'share_no_users', 'owner', 'project') as $k) {
+			$this->data['text_kanban_' . $k] = $this->language->get('text_kanban_' . $k);
+		}
+		$this->data['kanban_upload_url'] = str_replace('&amp;', '&', $this->url->link('common/home/kanbanUpload', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['kanban_url'] = str_replace('&amp;', '&', $this->url->link('common/home/kanban', 'token=' . $this->session->data['token'], 'SSL'));
+
 		// Actions
 		$this->data['text_actions'] = $this->language->get('text_actions');
 		$this->data['text_add_customer'] = $this->language->get('text_add_customer');
@@ -267,6 +283,284 @@ class ControllerCommonHome extends Controller {
 		);
 
 		$this->response->setOutput($this->render());
+	}
+
+	private function isKanbanAdmin($user_id) {
+		$q = $this->db->query("SELECT user_group_id FROM " . DB_PREFIX . "user WHERE user_id = '" . (int)$user_id . "'");
+		return $q->num_rows && (int)$q->row['user_group_id'] == 1;
+	}
+
+	// Devuelve la tarjeta si el usuario puede verla (propietaria, compartida con el o administrador), con 'can_manage'.
+	private function getKanbanCard($card_id, $user_id) {
+		$q = $this->db->query("SELECT kanban_card_id, user_id, kanban_project_id, status FROM " . DB_PREFIX . "kanban_card WHERE kanban_card_id = '" . (int)$card_id . "'");
+		if (!$q->num_rows) {
+			return false;
+		}
+		$card = $q->row;
+		$admin = $this->isKanbanAdmin($user_id);
+		$card['can_manage'] = ((int)$card['user_id'] == (int)$user_id) || $admin;
+		if (!$card['can_manage']) {
+			$s = $this->db->query("SELECT 1 FROM " . DB_PREFIX . "kanban_share WHERE kanban_card_id = '" . (int)$card_id . "' AND user_id = '" . (int)$user_id . "'");
+			if (!$s->num_rows) {
+				return false;
+			}
+		}
+		return $card;
+	}
+
+	private function deleteKanbanCardRows($card_id, $owner_id) {
+		$atts = $this->db->query("SELECT filename FROM " . DB_PREFIX . "kanban_attachment WHERE kanban_card_id = '" . (int)$card_id . "'");
+		foreach ($atts->rows as $att) {
+			@unlink($this->getKanbanDir($owner_id) . $att['filename']);
+		}
+		$this->db->query("DELETE FROM " . DB_PREFIX . "kanban_attachment WHERE kanban_card_id = '" . (int)$card_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "kanban_share WHERE kanban_card_id = '" . (int)$card_id . "'");
+		$this->db->query("DELETE FROM " . DB_PREFIX . "kanban_card WHERE kanban_card_id = '" . (int)$card_id . "'");
+	}
+
+	public function kanban() {
+		$user_id = (int)$this->user->getId();
+		$statuses = array('pending', 'in_progress', 'done');
+		$action = isset($this->request->post['action']) ? $this->request->post['action'] : 'list';
+		$id = isset($this->request->post['id']) ? (int)$this->request->post['id'] : 0;
+		$project_id = isset($this->request->post['project_id']) ? (int)$this->request->post['project_id'] : 0;
+		$json = array();
+
+		if ($user_id) {
+			$has = $this->db->query("SELECT COUNT(*) AS t FROM " . DB_PREFIX . "kanban_project WHERE user_id = '" . $user_id . "'");
+			if (!(int)$has->row['t']) {
+				$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_project SET user_id = '" . $user_id . "', name = 'General', date_added = NOW()");
+				$this->db->query("UPDATE " . DB_PREFIX . "kanban_card SET kanban_project_id = '" . (int)$this->db->getLastId() . "' WHERE user_id = '" . $user_id . "' AND kanban_project_id = 0");
+			}
+		}
+
+		$card = ($user_id && $id) ? $this->getKanbanCard($id, $user_id) : false;
+
+		if (!$user_id) {
+			$json['error'] = 'Not logged in';
+		} elseif ($action == 'project_save' || $action == 'project_delete') {
+			$name = isset($this->request->post['name']) ? trim(html_entity_decode($this->request->post['name'], ENT_QUOTES, 'UTF-8')) : '';
+			$dates = array();
+			foreach (array('date_start', 'date_end') as $k) {
+				$v = isset($this->request->post[$k]) ? $this->request->post[$k] : '';
+				$dates[$k] = preg_match('/^\d{4}-\d{2}-\d{2}$/', $v) ? "'" . $v . "'" : 'NULL';
+			}
+			if ($action == 'project_delete') {
+				$cards = $this->db->query("SELECT kanban_card_id FROM " . DB_PREFIX . "kanban_card WHERE kanban_project_id = '" . $id . "' AND user_id = '" . $user_id . "'");
+				foreach ($cards->rows as $c) {
+					$this->deleteKanbanCardRows((int)$c['kanban_card_id'], $user_id);
+				}
+				$this->db->query("DELETE FROM " . DB_PREFIX . "kanban_project WHERE kanban_project_id = '" . $id . "' AND user_id = '" . $user_id . "'");
+				if ($project_id == $id) { $project_id = 0; }
+			} elseif ($name !== '') {
+				if ($id) {
+					$this->db->query("UPDATE " . DB_PREFIX . "kanban_project SET name = '" . $this->db->escape($name) . "', date_start = " . $dates['date_start'] . ", date_end = " . $dates['date_end'] . " WHERE kanban_project_id = '" . $id . "' AND user_id = '" . $user_id . "'");
+				} else {
+					$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_project SET user_id = '" . $user_id . "', name = '" . $this->db->escape($name) . "', date_start = " . $dates['date_start'] . ", date_end = " . $dates['date_end'] . ", date_added = NOW()");
+					$project_id = (int)$this->db->getLastId();
+				}
+			}
+		} elseif ($action == 'add') {
+			$title = isset($this->request->post['title']) ? trim(html_entity_decode($this->request->post['title'], ENT_QUOTES, 'UTF-8')) : '';
+			$owned = $this->db->query("SELECT kanban_project_id FROM " . DB_PREFIX . "kanban_project WHERE kanban_project_id = '" . $project_id . "' AND user_id = '" . $user_id . "'");
+			if ($title !== '' && $owned->num_rows) {
+				$max = $this->db->query("SELECT MAX(sort_order) AS m FROM " . DB_PREFIX . "kanban_card WHERE user_id = '" . $user_id . "' AND kanban_project_id = '" . $project_id . "' AND status = 'pending'");
+				$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_card SET user_id = '" . $user_id . "', kanban_project_id = '" . $project_id . "', title = '" . $this->db->escape($title) . "', status = 'pending', sort_order = '" . ((int)$max->row['m'] + 1) . "', date_added = NOW()");
+			}
+		} elseif ($action == 'move') {
+			$status = isset($this->request->post['status']) ? $this->request->post['status'] : '';
+			$order = (isset($this->request->post['order']) && is_array($this->request->post['order'])) ? $this->request->post['order'] : array();
+			if ($card && $card['can_manage'] && in_array($status, $statuses)) {
+				$this->db->query("UPDATE " . DB_PREFIX . "kanban_card SET status = '" . $this->db->escape($status) . "' WHERE kanban_card_id = '" . $id . "'");
+				$own = $this->isKanbanAdmin($user_id) ? '1' : "user_id = '" . $user_id . "'";
+				foreach (array_values($order) as $pos => $card_id) {
+					$this->db->query("UPDATE " . DB_PREFIX . "kanban_card SET sort_order = '" . (int)$pos . "' WHERE kanban_card_id = '" . (int)$card_id . "' AND " . $own);
+				}
+			}
+		} elseif ($action == 'delete') {
+			if ($card && $card['can_manage']) {
+				$this->deleteKanbanCardRows($id, (int)$card['user_id']);
+			}
+		} elseif ($action == 'detail') {
+			$json['detail'] = true;
+			if ($card) {
+				$d = $this->db->query("SELECT description FROM " . DB_PREFIX . "kanban_card WHERE kanban_card_id = '" . $id . "'");
+				$json['text'] = html_entity_decode((string)$d->row['description'], ENT_QUOTES, 'UTF-8');
+				$json['attachments'] = $this->getKanbanAttachments($id);
+				$json['can_manage'] = $card['can_manage'];
+			} else {
+				$json['text'] = '';
+				$json['attachments'] = array();
+			}
+		} elseif ($action == 'save_text') {
+			if ($card && $card['can_manage']) {
+				$text = isset($this->request->post['text']) ? html_entity_decode($this->request->post['text'], ENT_QUOTES, 'UTF-8') : '';
+				$this->db->query("UPDATE " . DB_PREFIX . "kanban_card SET description = '" . $this->db->escape($text) . "' WHERE kanban_card_id = '" . $id . "'");
+			}
+		} elseif ($action == 'att_delete') {
+			$att = $this->db->query("SELECT filename, kanban_card_id FROM " . DB_PREFIX . "kanban_attachment WHERE kanban_attachment_id = '" . $id . "'");
+			$acard = $att->num_rows ? $this->getKanbanCard($att->row['kanban_card_id'], $user_id) : false;
+			$json['detail'] = true;
+			if ($acard && $acard['can_manage']) {
+				@unlink($this->getKanbanDir((int)$acard['user_id']) . $att->row['filename']);
+				$this->db->query("DELETE FROM " . DB_PREFIX . "kanban_attachment WHERE kanban_attachment_id = '" . $id . "'");
+				$json['attachments'] = $this->getKanbanAttachments((int)$acard['kanban_card_id']);
+			} else {
+				$json['attachments'] = array();
+			}
+		} elseif ($action == 'share_get') {
+			$json['detail'] = true;
+			$json['users'] = array();
+			if ($card && (int)$card['user_id'] == $user_id) {
+				$shared = array();
+				foreach ($this->db->query("SELECT user_id FROM " . DB_PREFIX . "kanban_share WHERE kanban_card_id = '" . $id . "'")->rows as $r) {
+					$shared[(int)$r['user_id']] = true;
+				}
+				foreach ($this->db->query("SELECT user_id, username FROM " . DB_PREFIX . "user WHERE status = '1' AND user_id <> '" . $user_id . "' ORDER BY username ASC")->rows as $u) {
+					$json['users'][] = array('id' => (int)$u['user_id'], 'username' => $u['username'], 'checked' => isset($shared[(int)$u['user_id']]));
+				}
+			}
+		} elseif ($action == 'share_save') {
+			if ($card && (int)$card['user_id'] == $user_id) {
+				$ids = (isset($this->request->post['users']) && is_array($this->request->post['users'])) ? $this->request->post['users'] : array();
+				$this->db->query("DELETE FROM " . DB_PREFIX . "kanban_share WHERE kanban_card_id = '" . $id . "'");
+				foreach (array_unique(array_map('intval', $ids)) as $uid) {
+					if ($uid && $uid != $user_id) {
+						$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_share SET kanban_card_id = '" . $id . "', user_id = '" . $uid . "'");
+					}
+				}
+			}
+		}
+
+		if (empty($json['detail']) && $user_id) {
+			$json['projects'] = array();
+			$pq = $this->db->query("SELECT kanban_project_id, name, date_start, date_end FROM " . DB_PREFIX . "kanban_project WHERE user_id = '" . $user_id . "' ORDER BY sort_order ASC, kanban_project_id ASC");
+			foreach ($pq->rows as $p) {
+				$json['projects'][] = array('id' => (int)$p['kanban_project_id'], 'name' => $p['name'], 'date_start' => (string)$p['date_start'], 'date_end' => (string)$p['date_end']);
+			}
+			$valid = ($project_id == -1);
+			foreach ($json['projects'] as $p) {
+				if ($p['id'] == $project_id) { $valid = true; }
+			}
+			if (!$valid && $json['projects']) { $project_id = $json['projects'][0]['id']; }
+			$json['project_id'] = $project_id;
+
+			$sc = $this->db->query("SELECT COUNT(*) AS t FROM " . DB_PREFIX . "kanban_share WHERE user_id = '" . $user_id . "'");
+			$json['shared_total'] = (int)$sc->row['t'];
+
+			$is_admin = $this->isKanbanAdmin($user_id);
+			$select = "SELECT c.kanban_card_id, c.user_id, c.title, c.status, u.username AS owner, p.name AS project_name, (c.description IS NOT NULL AND c.description <> '') AS has_text, (SELECT COUNT(*) FROM " . DB_PREFIX . "kanban_attachment a WHERE a.kanban_card_id = c.kanban_card_id AND a.type = 'photo') AS photos, (SELECT COUNT(*) FROM " . DB_PREFIX . "kanban_attachment a WHERE a.kanban_card_id = c.kanban_card_id AND a.type = 'document') AS docs, (SELECT COUNT(*) FROM " . DB_PREFIX . "kanban_share s WHERE s.kanban_card_id = c.kanban_card_id) AS shares FROM " . DB_PREFIX . "kanban_card c LEFT JOIN " . DB_PREFIX . "user u ON u.user_id = c.user_id LEFT JOIN " . DB_PREFIX . "kanban_project p ON p.kanban_project_id = c.kanban_project_id";
+			if ($project_id == -1) {
+				$query = $this->db->query($select . " WHERE c.kanban_card_id IN (SELECT kanban_card_id FROM " . DB_PREFIX . "kanban_share WHERE user_id = '" . $user_id . "') ORDER BY c.sort_order ASC, c.kanban_card_id ASC");
+			} else {
+				$query = $this->db->query($select . " WHERE c.user_id = '" . $user_id . "' AND c.kanban_project_id = '" . (int)$project_id . "' ORDER BY c.sort_order ASC, c.kanban_card_id ASC");
+			}
+			$json['cards'] = array();
+			foreach ($query->rows as $row) {
+				$mine = ((int)$row['user_id'] == $user_id);
+				$json['cards'][] = array(
+					'id'         => (int)$row['kanban_card_id'],
+					'title'      => $row['title'],
+					'status'     => $row['status'],
+					'has_text'   => (int)$row['has_text'],
+					'photos'     => (int)$row['photos'],
+					'docs'       => (int)$row['docs'],
+					'shares'     => (int)$row['shares'],
+					'owner'      => $mine ? '' : $row['owner'],
+					'project'    => $mine ? '' : (string)$row['project_name'],
+					'is_owner'   => $mine,
+					'can_manage' => ($mine || $is_admin)
+				);
+			}
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
+	private function getKanbanDir($user_id) {
+		return dirname(DIR_APPLICATION) . '/docs/kanban/' . (int)$user_id . '/';
+	}
+
+	private function getKanbanAttachments($card_id) {
+		$out = array();
+		$query = $this->db->query("SELECT kanban_attachment_id, type, name FROM " . DB_PREFIX . "kanban_attachment WHERE kanban_card_id = '" . (int)$card_id . "' ORDER BY kanban_attachment_id ASC");
+		foreach ($query->rows as $row) {
+			$out[] = array(
+				'id'   => (int)$row['kanban_attachment_id'],
+				'type' => $row['type'],
+				'name' => $row['name'],
+				'url'  => str_replace('&amp;', '&', $this->url->link('common/home/kanbanFile', 'token=' . $this->session->data['token'] . '&id=' . (int)$row['kanban_attachment_id'], 'SSL'))
+			);
+		}
+		return $out;
+	}
+
+	public function kanbanUpload() {
+		$user_id = (int)$this->user->getId();
+		$card_id = isset($this->request->post['id']) ? (int)$this->request->post['id'] : 0;
+		$type = (isset($this->request->post['type']) && $this->request->post['type'] == 'photo') ? 'photo' : 'document';
+		$allowed = ($type == 'photo') ? array('jpg', 'jpeg', 'png', 'gif', 'webp') : array('pdf', 'doc', 'docx', 'xls', 'xlsx', 'txt', 'csv');
+		$json = array('errors' => array());
+
+		$card = $user_id ? $this->getKanbanCard($card_id, $user_id) : false;
+
+		if (!$card || !$card['can_manage']) {
+			$json['errors'][] = 'Invalid card';
+		} elseif (!empty($this->request->files['file']['name'][0])) {
+			$owner_id = (int)$card['user_id'];
+			$dir = $this->getKanbanDir($owner_id);
+			if (!is_dir($dir)) {
+				@mkdir($dir, 0777, true);
+			}
+			$files = $this->request->files['file'];
+			foreach ($files['name'] as $i => $original) {
+				$ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
+				if ($files['error'][$i] == UPLOAD_ERR_INI_SIZE || $files['error'][$i] == UPLOAD_ERR_FORM_SIZE) {
+					$json['errors'][] = $original . ' (max ' . ini_get('upload_max_filesize') . ')';
+				} elseif ((int)$files['error'][$i] !== UPLOAD_ERR_OK) {
+					$json['errors'][] = $original . ' (upload error ' . (int)$files['error'][$i] . ')';
+				} elseif (!is_uploaded_file(html_entity_decode($files['tmp_name'][$i], ENT_COMPAT, 'UTF-8'))) {
+					$json['errors'][] = $original . ' (not a valid upload: ' . $files['tmp_name'][$i] . ')';
+				} elseif (!in_array($ext, $allowed) || $files['size'][$i] > 20 * 1024 * 1024) {
+					$json['errors'][] = $original . ' (type/size)';
+				} else {
+					$stored = uniqid() . '.' . $ext;
+					if (move_uploaded_file(html_entity_decode($files['tmp_name'][$i], ENT_COMPAT, 'UTF-8'), $dir . $stored)) {
+						$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_attachment SET kanban_card_id = '" . $card_id . "', user_id = '" . $owner_id . "', type = '" . $type . "', filename = '" . $this->db->escape($stored) . "', name = '" . $this->db->escape($original) . "', date_added = NOW()");
+					} else {
+						$json['errors'][] = $original . ' (cannot save to ' . $dir . (is_dir($dir) ? ', dir not writable' : ', dir missing') . ')';
+					}
+				}
+			}
+		}
+
+		$json['attachments'] = $card ? $this->getKanbanAttachments($card_id) : array();
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function kanbanFile() {
+		$user_id = (int)$this->user->getId();
+		$id = isset($this->request->get['id']) ? (int)$this->request->get['id'] : 0;
+		$att = $this->db->query("SELECT filename, name, kanban_card_id FROM " . DB_PREFIX . "kanban_attachment WHERE kanban_attachment_id = '" . $id . "'");
+		$card = ($user_id && $att->num_rows) ? $this->getKanbanCard($att->row['kanban_card_id'], $user_id) : false;
+		$path = $card ? $this->getKanbanDir((int)$card['user_id']) . $att->row['filename'] : '';
+
+		if (!$path || !is_file($path)) {
+			header('HTTP/1.1 404 Not Found');
+			exit;
+		}
+
+		$ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+		$mimes = array('jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif', 'webp' => 'image/webp', 'pdf' => 'application/pdf', 'txt' => 'text/plain', 'csv' => 'text/csv', 'doc' => 'application/msword', 'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'xls' => 'application/vnd.ms-excel', 'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		$inline = in_array($ext, array('jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'txt'));
+
+		if (ob_get_level()) { ob_end_clean(); }
+		header('Content-Type: ' . (isset($mimes[$ext]) ? $mimes[$ext] : 'application/octet-stream'));
+		header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment') . '; filename="' . str_replace('"', '', basename($att->row['name'])) . '"');
+		header('X-Content-Type-Options: nosniff');
+		header('Content-Length: ' . filesize($path));
+		readfile($path);
+		exit;
 	}
 
 	public function chart() {

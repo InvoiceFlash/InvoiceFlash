@@ -24,6 +24,7 @@ $_['entry_lastname'] = 'apellido';
 $_['entry_email'] = 'E-Mail';
 $_['entry_signature'] = 'Firma de email';
 $_['entry_image'] = 'Imagen';
+$_['entry_language'] = 'Idioma';
 $_['entry_status'] = 'Estado';
 
 // Error
