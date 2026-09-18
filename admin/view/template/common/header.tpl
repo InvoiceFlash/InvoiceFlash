@@ -32,7 +32,9 @@
 	var text_confirm='<?php echo $text_confirm; ?>';
 	var text_select_warning='<?php echo $text_select_warning; ?>';
 	</script>
-	<link rel="shortcut icon" href="view/image/setting.png">
+	<?php if ($favicon) { ?>
+	<link rel="shortcut icon" href="<?php echo $favicon; ?>">
+	<?php } ?>
 </head>
 <body>
 <?php if ($logged) { ?>

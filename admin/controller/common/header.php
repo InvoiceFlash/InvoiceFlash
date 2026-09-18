@@ -11,11 +11,21 @@ class ControllerCommonHeader extends Controller {
 
 		$this->data['description'] = $this->document->getDescription();
 		$this->data['keywords'] = $this->document->getKeywords();
-		$this->data['links'] = $this->document->getLinks();	
+		$this->data['links'] = $this->document->getLinks();
 		$this->data['styles'] = $this->document->getStyles();
 		$this->data['scripts'] = $this->document->getScripts();
 		$this->data['lang'] = $this->language->get('code');
 		$this->data['direction'] = $this->language->get('direction');
+
+		$this->load->model('tool/image');
+
+		$icon = $this->config->get('config_icon');
+
+		if ($icon && file_exists(DIR_IMAGE . $icon)) {
+			$this->data['favicon'] = $this->model_tool_image->resize($icon, 32, 32);
+		} else {
+			$this->data['favicon'] = '';
+		}
 
 		$this->language->load('common/header');
 	
