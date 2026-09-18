@@ -1527,6 +1527,126 @@ class ControllerSaleQuote extends Controller {
 		return array('original' => $original, 'changed' => $changed);
 	}
 
+	// Crea (o localiza) en el Kanban de la pantalla de inicio una tarjeta con los datos del presupuesto,
+	// dentro del proyecto "Potenciales" del usuario actual (se crea si no existe).
+	public function kanbanCard() {
+		$this->load->language('sale/quote');
+		$this->load->model('sale/quote');
+
+		$json = array();
+
+		if (!$this->user->hasPermission('modify', 'sale/quote')) {
+			$json['error'] = $this->language->get('error_kanban_permission');
+		} else {
+			$quote_id = isset($this->request->post['quote_id']) ? (int)$this->request->post['quote_id'] : 0;
+			$note = isset($this->request->post['note']) ? trim($this->request->post['note']) : '';
+			$quote_info = $quote_id ? $this->model_sale_quote->getQuote($quote_id) : false;
+
+			if (!$quote_info) {
+				$json['error'] = $this->language->get('error_kanban_permission');
+			}
+		}
+
+		if (!$json) {
+			$user_id = (int)$this->user->getId();
+
+			$quote_prefix = $this->config->get('config_quote_prefix');
+
+			if (!$quote_prefix) {
+				$quote_prefix = 'QUO-' . date('Y', strtotime($quote_info['date_added']));
+			}
+
+			$quote_no = $quote_prefix . '-' . sprintf('%03d', $quote_id);
+			$company = html_entity_decode($quote_info['company'], ENT_QUOTES, 'UTF-8');
+
+			// Presupuestos de un potencial (CRM): el nombre no viene del cliente, se toma del potencial
+			if ($company === '' && !empty($quote_info['potencial_id'])) {
+				$pot = $this->db->query("SELECT company FROM " . DB_PREFIX . "potenciales WHERE potencial_id = '" . (int)$quote_info['potencial_id'] . "'");
+
+				if ($pot->num_rows) {
+					$company = html_entity_decode($pot->row['company'], ENT_QUOTES, 'UTF-8');
+				}
+			}
+
+			if ($company === '' && !empty($quote_info['payment_company'])) {
+				$company = html_entity_decode($quote_info['payment_company'], ENT_QUOTES, 'UTF-8');
+			}
+			$title = $quote_no . ' - ' . $company;
+
+			$project = $this->db->query("SELECT kanban_project_id FROM " . DB_PREFIX . "kanban_project WHERE user_id = '" . $user_id . "' AND name = 'Potenciales' LIMIT 1");
+
+			if ($project->num_rows) {
+				$project_id = (int)$project->row['kanban_project_id'];
+			} else {
+				$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_project SET user_id = '" . $user_id . "', name = 'Potenciales', date_added = NOW()");
+				$project_id = (int)$this->db->getLastId();
+			}
+
+			$exists = $this->db->query("SELECT kanban_card_id FROM " . DB_PREFIX . "kanban_card WHERE user_id = '" . $user_id . "' AND kanban_project_id = '" . $project_id . "' AND title = '" . $this->db->escape($title) . "' LIMIT 1");
+
+			if ($exists->num_rows) {
+				$json['exists'] = $this->language->get('text_kanban_exists');
+			} else {
+				$total = html_entity_decode($this->currency->format($quote_info['total'], $quote_info['currency_code'], $quote_info['currency_value'], true, true), ENT_QUOTES, 'UTF-8');
+
+				$lines = array(
+					'Nombre: ' . $company,
+					'Email: ' . $quote_info['email'],
+					'Tel' . "\xc3\xa9" . 'fono: ' . $quote_info['telephone'],
+					'Presupuesto: ' . $quote_no . ' (' . $total . ')'
+				);
+
+				if ($note !== '') {
+					$lines[] = '';
+					$lines[] = 'Nota: ' . $note;
+				}
+
+				$max = $this->db->query("SELECT MAX(sort_order) AS m FROM " . DB_PREFIX . "kanban_card WHERE user_id = '" . $user_id . "' AND kanban_project_id = '" . $project_id . "' AND status = 'pending'");
+
+				$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_card SET user_id = '" . $user_id . "', kanban_project_id = '" . $project_id . "', title = '" . $this->db->escape($title) . "', description = '" . $this->db->escape(implode("\n", $lines)) . "', status = 'pending', sort_order = '" . ((int)$max->row['m'] + 1) . "', date_added = NOW()");
+
+				$card_id = (int)$this->db->getLastId();
+
+				// Adjunta el PDF del presupuesto a la tarjeta (mismo PDF que "PDF"/"Email": document() en modo
+				// 'email' lo deja en DIR_DOWNLOAD; los campos de envio vacios hacen que no se mande ningun correo).
+				try {
+					$this->request->get['quote_id'] = $quote_id;
+					$this->request->get['format'] = 'email';
+					$this->request->post['to'] = '';
+					$this->request->post['subject'] = '';
+					$this->request->post['message'] = '';
+
+					$this->document();
+
+					$source = DIR_DOWNLOAD . 'quote_' . $quote_id . '.pdf';
+
+					if ($card_id && is_file($source)) {
+						$dir = dirname(DIR_APPLICATION) . '/docs/kanban/' . $user_id . '/';
+
+						if (!is_dir($dir)) {
+							@mkdir($dir, 0777, true);
+						}
+
+						$stored = uniqid() . '.pdf';
+
+						if (copy($source, $dir . $stored)) {
+							$this->db->query("INSERT INTO " . DB_PREFIX . "kanban_attachment SET kanban_card_id = '" . $card_id . "', user_id = '" . $user_id . "', type = 'document', filename = '" . $this->db->escape($stored) . "', name = '" . $this->db->escape($quote_no . '.pdf') . "', date_added = NOW()");
+						}
+
+						@unlink($source);
+					}
+				} catch (\Throwable $e) {
+					// La tarjeta ya esta creada; si falla el PDF simplemente no se adjunta.
+				}
+
+				$json['success'] = $this->language->get('text_kanban_created');
+			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
     public function info() {
 		$this->load->model('sale/quote');
 
@@ -1629,6 +1749,13 @@ class ControllerSaleQuote extends Controller {
 			$this->data['button_cancel'] = $this->language->get('button_cancel');
 			$this->data['button_add_history'] = $this->language->get('button_add_history');
 			$this->data['button_generate'] = $this->language->get('button_generate');
+			$this->data['button_kanban'] = $this->language->get('button_kanban');
+			$this->data['text_kanban_title'] = $this->language->get('text_kanban_title');
+			$this->data['text_kanban_note'] = $this->language->get('text_kanban_note');
+			$this->data['text_kanban_note_placeholder'] = $this->language->get('text_kanban_note_placeholder');
+			$this->data['text_kanban_save'] = $this->language->get('text_kanban_save');
+			$this->data['text_kanban_close'] = $this->language->get('text_kanban_close');
+			$this->data['kanban_card_url'] = str_replace('&amp;', '&', $this->url->link('sale/quote/kanbanCard', 'token=' . $this->session->data['token'], 'SSL'));
 
 			$this->data['tab_quote'] = $this->language->get('tab_quote');
 			$this->data['tab_payment'] = $this->language->get('tab_payment');

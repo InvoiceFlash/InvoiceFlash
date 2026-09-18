@@ -177,4 +177,14 @@ $_['error_to']                                = 'Error: &iexcl;El email de desti
 $_['error_subject']                           = 'Error: &iexcl;El asunto no puede estar vac&iacute;o!';
 $_['error_message']                           = 'Error: &iexcl;El mensaje no puede estar vac&iacute;o!';
 
+$_['button_kanban'] = 'Kanban';
+$_['text_kanban_title'] = 'Crear tarjeta en Kanban';
+$_['text_kanban_note'] = 'Nota';
+$_['text_kanban_note_placeholder'] = 'Nota para la tarjeta (opcional)...';
+$_['text_kanban_created'] = 'Tarjeta creada en el proyecto &quot;Potenciales&quot;.';
+$_['text_kanban_exists'] = 'Ya existe una tarjeta de este presupuesto en el proyecto &quot;Potenciales&quot;.';
+$_['text_kanban_save'] = 'Crear tarjeta';
+$_['text_kanban_close'] = 'Cerrar';
+$_['error_kanban_permission'] = 'Advertencia: &iexcl;No tiene permiso para modificar presupuestos!';
+
 ?>

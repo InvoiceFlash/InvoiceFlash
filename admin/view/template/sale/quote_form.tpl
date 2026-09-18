@@ -353,7 +353,7 @@
 			<!-- Fin Modal Descripción de Producto -->
 			<!-- Modal Customer -->
 			<div class="modal" tabindex="-1" role="dialog" id="CustomerModal">
-				<div class="modal-dialog" role="document">
+				<div class="modal-dialog modal-lg" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><?php echo $tab_customer; ?></h5>

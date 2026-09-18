@@ -176,4 +176,14 @@ $_['error_to']                                = 'Error: E-mail to does no seem t
 $_['error_subject']                           = 'Error: Subject can not be empty!';
 $_['error_message']                           = 'Error: Message can not be empty!';
 
+$_['button_kanban'] = 'Kanban';
+$_['text_kanban_title'] = 'Create Kanban card';
+$_['text_kanban_note'] = 'Note';
+$_['text_kanban_note_placeholder'] = 'Note for the card (optional)...';
+$_['text_kanban_created'] = 'Card created in the &quot;Potenciales&quot; project.';
+$_['text_kanban_exists'] = 'A card for this quote already exists in the &quot;Potenciales&quot; project.';
+$_['text_kanban_save'] = 'Create card';
+$_['text_kanban_close'] = 'Close';
+$_['error_kanban_permission'] = 'Warning: You do not have permission to modify quotes!';
+
 ?>

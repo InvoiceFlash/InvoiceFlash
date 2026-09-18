@@ -4,6 +4,7 @@
 	<div class="panel-heading clearfix">
 		<div class="pull-left h2"><i class="hidden-xs fa fa-edit"></i> <?php echo $heading_title; ?></div>
 		<div class="pull-right">
+			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#KanbanCardModal"><i class="fa fa-columns"></i><span class="hidden-xs"> <?php echo $button_kanban; ?></span></button>
 			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
 			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-eye"></i><span class="hidden-xs"> View</span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
@@ -507,6 +508,42 @@ $('#send').on('click',function(e){
 				}
 				alertMessage('success',json['success']);
 			}
+		}
+	});
+});
+</script>
+<div class="modal fade" id="KanbanCardModal" tabindex="-1"><div class="modal-dialog"><div class="modal-content">
+	<div class="modal-header"><h5 class="modal-title"><i class="fa fa-columns"></i> <?php echo $text_kanban_title; ?></h5><button type="button" class="btn btn-default btn-sm" data-bs-dismiss="modal">&times;</button></div>
+	<div class="modal-body">
+		<label for="kanban-card-note"><?php echo $text_kanban_note; ?></label>
+		<textarea id="kanban-card-note" class="form-control" rows="4" placeholder="<?php echo $text_kanban_note_placeholder; ?>"></textarea>
+	</div>
+	<div class="modal-footer"><button type="button" class="btn btn-default" data-bs-dismiss="modal"><?php echo $text_kanban_close; ?></button><button type="button" class="btn btn-info" id="kanban-card-save"><?php echo $text_kanban_save; ?></button></div>
+</div></div></div>
+<script>
+$('#kanban-card-save').on('click', function() {
+	var $btn = $(this).prop('disabled', true);
+
+	$.ajax({
+		url: '<?php echo $kanban_card_url; ?>',
+		type: 'post',
+		data: { quote_id: <?php echo (int)$quote_id; ?>, note: $('#kanban-card-note').val() },
+		dataType: 'json',
+		success: function(json) {
+			$btn.prop('disabled', false);
+			bootstrap.Modal.getInstance(document.getElementById('KanbanCardModal')).hide();
+
+			if (json.error) {
+				alertMessage('danger', json.error);
+			} else if (json.exists) {
+				alertMessage('warning', json.exists);
+			} else {
+				$('#kanban-card-note').val('');
+				alertMessage('success', json.success);
+			}
+		},
+		error: function() {
+			$btn.prop('disabled', false);
 		}
 	});
 });
