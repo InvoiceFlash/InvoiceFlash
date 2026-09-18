@@ -1,5 +1,25 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
+<style>
+/* Solo tipografia: fuente Inter + escala de tamanos coherente (acotado a esta pagina) */
+#home-type {
+	font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+	font-size: 0.9375rem;
+	line-height: 1.5;
+	letter-spacing: -0.005em;
+	-webkit-font-smoothing: antialiased;
+}
+#home-type h5, #home-type .h2 { font-size: 1rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
+#home-type .panel-heading { font-weight: 600; }
+#home-type .table { font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+#home-type .table th { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; }
+#home-type .font-weight-bold { font-weight: 600 !important; }
+#home-type .btn, #home-type .form-control, #home-type .input-group-text { font-family: inherit; font-size: 0.875rem; }
+#home-type .btn { font-weight: 500; }
+#home-type h5.buton { font-size: 0.875rem; font-weight: 500; }
+#home-type .nav-tabs .nav-link { font-size: 0.875rem; font-weight: 500; }
+</style>
+<div id="home-type">
 <?php if ($error_install) { ?>
 <div class="alert alert-danger"><?php echo $error_install; ?></div>
 <?php } ?>
@@ -401,4 +421,5 @@ $('#claude-chat-input').on('keypress', function(e) {
 	}
 });
 </script>
+</div><!-- /#home-type -->
 <?php echo $footer; ?>
