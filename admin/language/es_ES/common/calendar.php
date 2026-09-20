@@ -1,0 +1,27 @@
+<?php
+$_['heading_title']     = 'Calendario';
+$_['text_home']         = 'Inicio';
+$_['text_new_event']    = 'Nuevo evento';
+$_['text_edit_event']   = 'Editar evento';
+$_['text_calendars']    = 'Calendarios';
+$_['text_new_calendar'] = 'Nuevo calendario';
+$_['text_confirm']      = '¿Está seguro?';
+$_['text_today']        = 'Hoy';
+$_['text_month']        = 'Mes';
+$_['text_week']         = 'Semana';
+$_['text_day']          = 'Día';
+$_['text_list']         = 'Agenda';
+$_['entry_title']       = 'Título:';
+$_['entry_calendar']    = 'Calendario:';
+$_['entry_start']       = 'Inicio:';
+$_['entry_end']         = 'Fin:';
+$_['entry_all_day']     = 'Todo el día';
+$_['entry_location']    = 'Lugar:';
+$_['entry_description'] = 'Descripción:';
+$_['entry_name']        = 'Nombre:';
+$_['entry_color']       = 'Color:';
+$_['button_save']       = 'Guardar';
+$_['button_delete']     = 'Eliminar';
+$_['button_close']      = 'Cerrar';
+$_['error_title']       = 'Indica un título, un calendario y una fecha de inicio válidos.';
+$_['error_permission']  = 'No tienes permiso para modificar el calendario.';

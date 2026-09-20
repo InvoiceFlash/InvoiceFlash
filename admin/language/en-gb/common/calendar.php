@@ -1,0 +1,27 @@
+<?php
+$_['heading_title']     = 'Calendar';
+$_['text_home']         = 'Home';
+$_['text_new_event']    = 'New event';
+$_['text_edit_event']   = 'Edit event';
+$_['text_calendars']    = 'Calendars';
+$_['text_new_calendar'] = 'New calendar';
+$_['text_confirm']      = 'Are you sure?';
+$_['text_today']        = 'Today';
+$_['text_month']        = 'Month';
+$_['text_week']         = 'Week';
+$_['text_day']          = 'Day';
+$_['text_list']         = 'Agenda';
+$_['entry_title']       = 'Title:';
+$_['entry_calendar']    = 'Calendar:';
+$_['entry_start']       = 'Start:';
+$_['entry_end']         = 'End:';
+$_['entry_all_day']     = 'All day';
+$_['entry_location']    = 'Location:';
+$_['entry_description'] = 'Description:';
+$_['entry_name']        = 'Name:';
+$_['entry_color']       = 'Colour:';
+$_['button_save']       = 'Save';
+$_['button_delete']     = 'Delete';
+$_['button_close']      = 'Close';
+$_['error_title']       = 'Enter a valid title, calendar and start date.';
+$_['error_permission']  = 'You do not have permission to modify the calendar.';

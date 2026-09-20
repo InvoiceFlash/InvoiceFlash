@@ -41,6 +41,7 @@ class ControllerCommonHome extends Controller {
 		$this->data['button_search'] = $this->language->get('button_search');
 
 		$this->data['text_view_dashboard'] = $this->language->get('text_view_dashboard');
+		$this->data['text_view_calendar'] = $this->language->get('text_view_calendar');
 		$this->data['text_view_claude_chat'] = $this->language->get('text_view_claude_chat');
 		$this->data['text_claude_chat'] = $this->language->get('text_claude_chat');
 		$this->data['text_claude_chat_placeholder'] = $this->language->get('text_claude_chat_placeholder');
@@ -752,6 +753,7 @@ class ControllerCommonHome extends Controller {
 
 			$ignore = array(
 				'common/home',
+				'common/calendar',
 				'common/login',
 				'common/logout',
 				'common/forgotten',

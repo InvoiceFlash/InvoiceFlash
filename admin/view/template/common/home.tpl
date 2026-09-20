@@ -49,6 +49,7 @@
 				<div class="pull-right">
 					<button type="button" id="btn-view-kanban" class="btn btn-default btn-sm" data-toggle="tooltip" title="<?php echo $text_view_kanban; ?>"><i class="fa fa-columns"></i></button>
 						<button type="button" id="btn-view-dashboard" class="btn btn-default btn-sm active" data-toggle="tooltip" title="<?php echo $text_view_dashboard; ?>"><i class="fa fa-chart-bar"></i></button>
+						<a href="<?php echo $this->url->link('common/calendar', 'token=' . $this->session->data['token'], 'SSL'); ?>" id="btn-view-calendar" class="btn btn-default btn-sm" data-toggle="tooltip" title="<?php echo $text_view_calendar; ?>"><i class="fa fa-calendar"></i></a>
 					<button type="button" id="btn-view-claude-chat" class="btn btn-default btn-sm" data-toggle="tooltip" title="<?php echo $text_view_claude_chat; ?>"><i class="fa fa-robot"></i></button>
 				</div>
 			</div>
