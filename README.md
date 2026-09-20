@@ -9,10 +9,10 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or
 
 ---
 ### 0.0.14
-  - [] Edit language
-  - [] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
-  - [] Multi Store
-  - [] Item movement tracking
+  - [x] Creation modules
+  - [x] Module CRM
+  - [x] Module web
+  - [x] Module Presence control
   
 ### 0.0.13
   - [x] Upgrade database a MariaDB
