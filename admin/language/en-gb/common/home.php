@@ -48,6 +48,7 @@ $_['text_search_product']           = 'Search Product';
 $_['button_search']                 = 'Search Now';
 $_['text_view_dashboard']           = 'View Dashboard';
 $_['text_view_calendar']            = 'View Calendar';
+$_['text_pending_invoices']          = 'Unprocessed Received Invoices';
 $_['text_view_claude_chat']         = 'View AI Chat';
 $_['text_claude_chat']              = 'AI Chat';
 $_['text_claude_chat_placeholder']  = 'Hi, I\'m the InvoiceFlash assistant. I can answer questions about the app and look up data in your account (invoices, customers, sales...). How can I help?';

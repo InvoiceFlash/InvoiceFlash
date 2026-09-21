@@ -21,6 +21,10 @@
 						<td><?php echo $db_version; ?></td>
 					</tr>
 					<tr>
+						<td><?php echo $text_db_name; ?></td>
+						<td><?php echo $db_name; ?></td>
+					</tr>
+					<tr>
 						<td><?php echo $text_ram; ?></td>
 						<td><?php echo $ram_total ? $ram_total : $text_not_available; ?></td>
 					</tr>

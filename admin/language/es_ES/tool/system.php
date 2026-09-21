@@ -9,6 +9,7 @@ $_['text_no'] = 'No';
 
 $_['text_php_version'] = 'Versi&oacute;n de PHP';
 $_['text_db_version'] = 'Versi&oacute;n de MariaDB / MySQL';
+$_['text_db_name'] = 'Nombre de la base de datos';
 $_['text_ram'] = 'RAM total';
 $_['text_gpu'] = 'Tarjeta gr&aacute;fica (VRAM)';
 $_['text_not_available'] = 'No disponible';

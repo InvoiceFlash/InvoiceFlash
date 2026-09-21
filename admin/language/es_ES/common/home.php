@@ -48,6 +48,7 @@ $_['text_search_product']           = 'Buscar Producto';
 $_['button_search']                 = 'Buscar Ahora';
 $_['text_view_dashboard']           = 'Ver Panel de Control';
 $_['text_view_calendar']            = 'Ver Calendario';
+$_['text_pending_invoices']          = 'Facturas recibidas no procesadas';
 $_['text_view_claude_chat']         = 'Ver Chat con IA';
 $_['text_claude_chat']              = 'Chat con IA';
 $_['text_claude_chat_placeholder']  = 'Hola, soy el asistente de InvoiceFlash. Puedo responder dudas sobre la aplicaci&oacute;n y consultar datos de tu cuenta (facturas, clientes, ventas...). &iquest;En qu&eacute; puedo ayudarte?';

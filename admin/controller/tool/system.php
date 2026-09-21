@@ -30,6 +30,7 @@ class ControllerToolSystem extends Controller {
 
 		$this->data['text_php_version'] = $this->language->get('text_php_version');
 		$this->data['text_db_version'] = $this->language->get('text_db_version');
+		$this->data['text_db_name'] = $this->language->get('text_db_name');
 		$this->data['text_ram'] = $this->language->get('text_ram');
 		$this->data['text_gpu'] = $this->language->get('text_gpu');
 		$this->data['text_ollama_status'] = $this->language->get('text_ollama_status');
@@ -42,6 +43,7 @@ class ControllerToolSystem extends Controller {
 
 		$this->data['php_version'] = PHP_VERSION;
 		$this->data['db_version'] = $this->getDbVersion();
+		$this->data['db_name'] = DB_DATABASE;
 
 		$ollama_url = $this->config->get('config_ollama_url') ?: 'http://127.0.0.1:11434/api/chat';
 		$ollama_base = preg_replace('#/api/.*$#', '', $ollama_url);
