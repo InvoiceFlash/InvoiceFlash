@@ -266,4 +266,6 @@ $_['error_to'] = '&iexcl;El email de destino no es v&aacute;lido!';
 $_['error_subject'] = '&iexcl;El asunto no puede estar vac&iacute;o!';
 $_['error_message'] = '&iexcl;El mensaje no puede estar vac&iacute;o!';
 
+$_['entry_tariff'] = 'Tarifa:';
+$_['text_tariff_default'] = 'Tarifa por defecto';
 ?>

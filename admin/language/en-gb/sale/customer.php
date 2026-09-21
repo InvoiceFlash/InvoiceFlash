@@ -266,4 +266,6 @@ $_['error_to'] = 'The destination email is not valid!';
 $_['error_subject'] = 'Subject can not be empty!';
 $_['error_message'] = 'Message can not be empty!';
 
+$_['entry_tariff'] = 'Tariff:';
+$_['text_tariff_default'] = 'Default tariff';
 ?>

@@ -108,4 +108,5 @@ $_['text_update_available']            = 'Hay una actualizaci&oacute;n disponibl
 $_['text_update_upgrade']              = 'Actualizar ahora';
 $_['text_update_view']                 = 'Ver cambios';
 $_['text_update_dismiss']              = 'Descartar';
-$_['text_update_confirm']              = 'Esto descargar&aacute; y aplicar&aacute; la &uacute;ltima versi&oacute;n desde GitHub. Se guardar&aacute; una copia de seguridad de los archivos sustituidos en system/backup/. &iquest;Continuar?';
+$_['text_update_confirm']              = 'Esto descargar&aacute; y aplicar&aacute; la &uacute;ltima versi&oacute;n desde GitHub. Se guardar&aacute; una copia de seguridad de los archivos sustituidos en system/backup/. &iquest;Continuar?';$_['text_tariff'] = 'Tarifas';
+

@@ -2676,6 +2676,10 @@ class ControllerSaleQuote extends Controller {
 							: (float)$product_info['price'];
 
 						$discount_percent = isset($this->request->post['discount']) ? (float)preg_replace('/[^0-9\.]/', '', $this->request->post['discount']) : 0;
+						if (!isset($this->request->post['discount']) || trim($this->request->post['discount']) === '') {
+							$this->load->model('catalog/tariff');
+							$discount_percent = $this->model_catalog_tariff->getCustomerPercent(isset($this->request->post['customer_id']) ? $this->request->post['customer_id'] : 0);
+						}
 						$discount_amount = ($use_price * $quantity) * ($discount_percent / 100);
 
 						$this->session->data['cart'][] = array(

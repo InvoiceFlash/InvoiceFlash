@@ -292,6 +292,17 @@
 										</div>
 									</div>
 									<div class="form-group row">
+										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tariff; ?></label>
+										<div class="col-sm-6">
+											<select name="tariff_id" class="form-control" style="width:40%;">
+												<option value="0"><?php echo $text_tariff_default; ?></option>
+												<?php foreach ($tariffs as $tariff) { ?>
+												<option value="<?php echo $tariff['tariff_id']; ?>" <?php echo ($tariff_id == $tariff['tariff_id']) ? 'selected' : ''; ?>><?php echo $tariff['name']; ?> (<?php echo number_format($tariff['percent'], 2, '.', ''); ?>%)</option>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_vat_regime; ?></label>
 										<div class="col-sm-6">
 											<select name="vat_regime" class="form-control" style="width:20%;">

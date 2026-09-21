@@ -1444,6 +1444,18 @@ class ControllerSaleCustomer extends Controller {
 			$this->data['digital_invoice'] = 0;
 		}
 
+		$this->load->model('catalog/tariff');
+		$this->data['tariffs'] = $this->model_catalog_tariff->getTariffs();
+		$this->data['entry_tariff'] = $this->language->get('entry_tariff');
+		$this->data['text_tariff_default'] = $this->language->get('text_tariff_default');
+		if (isset($this->request->post['tariff_id'])) {
+			$this->data['tariff_id'] = $this->request->post['tariff_id'];
+		} elseif (!empty($customer_info) && !empty($customer_info['tariff_id'])) {
+			$this->data['tariff_id'] = $customer_info['tariff_id'];
+		} else {
+			$this->data['tariff_id'] = 0;
+		}
+
 		if (isset($this->request->post['vat_regime'])) {
 			$this->data['vat_regime'] = $this->request->post['vat_regime'];
 		} elseif (!empty($customer_info) && !empty($customer_info['vat_regime'])) {

@@ -158,4 +158,5 @@ $_['text_update_upgrade']              = 'Update now';
 $_['text_update_view']                 = 'View changes';
 $_['text_update_dismiss']              = 'Dismiss';
 $_['text_update_confirm']              = 'This will download and apply the latest version from GitHub. A backup of the replaced files will be kept under system/backup/. Continue?';
+$_['text_tariff'] = 'Tariffs';
 ?>
