@@ -1,7 +1,7 @@
 <?php
-class ControllerExtensionModule extends Controller {
+class ControllerToolModManager extends Controller {
 	public function index() {
-		$this->language->load('extension/module');
+		$this->language->load('tool/mod_manager');
 
 		$this->document->setTitle($this->language->get('heading_title')); 
 
@@ -15,7 +15,7 @@ class ControllerExtensionModule extends Controller {
 
 		$this->data['breadcrumbs'][] = array(
 			'text'      => $this->language->get('heading_title'),
-			'href'      => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
+			'href'      => $this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'),
 			'separator' => ' :: '
 		);
 
@@ -70,7 +70,7 @@ class ControllerExtensionModule extends Controller {
 				if (!in_array($extension, $extensions)) {
 					$action[] = array(
 						'text' => $this->language->get('text_install'),
-						'href' => $this->url->link('extension/module/install', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
+						'href' => $this->url->link('tool/mod_manager/install', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
 					);
 				} else {
 					$action[] = array(
@@ -80,7 +80,7 @@ class ControllerExtensionModule extends Controller {
 
 					$action[] = array(
 						'text' => $this->language->get('text_uninstall'),
-						'href' => $this->url->link('extension/module/uninstall', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
+						'href' => $this->url->link('tool/mod_manager/uninstall', 'token=' . $this->session->data['token'] . '&extension=' . $extension, 'SSL')
 					);
 				}
 
@@ -123,13 +123,13 @@ class ControllerExtensionModule extends Controller {
 				$label .= ' <span class="badge" style="background:#28a745;color:#fff;padding:3px 7px;">VQMod activo</span>';
 				$action = array(array(
 					'text' => 'Desactivar',
-					'href' => str_replace('&amp;', '&', $this->url->link('extension/module/disableVqmod', 'token=' . $this->session->data['token'] . '&file=' . urlencode($basename), 'SSL'))
+					'href' => str_replace('&amp;', '&', $this->url->link('tool/mod_manager/disableVqmod', 'token=' . $this->session->data['token'] . '&file=' . urlencode($basename), 'SSL'))
 				));
 			} else {
 				$label .= ' <span class="badge" style="background:#dc3545;color:#fff;padding:3px 7px;">VQMod inactivo</span>';
 				$action = array(array(
 					'text' => 'Activar',
-					'href' => str_replace('&amp;', '&', $this->url->link('extension/module/enableVqmod', 'token=' . $this->session->data['token'] . '&file=' . urlencode($basename), 'SSL'))
+					'href' => str_replace('&amp;', '&', $this->url->link('tool/mod_manager/enableVqmod', 'token=' . $this->session->data['token'] . '&file=' . urlencode($basename), 'SSL'))
 				));
 			}
 
@@ -140,9 +140,9 @@ class ControllerExtensionModule extends Controller {
 		}
 
 		$this->data['button_ia'] = $this->language->get('button_ia');
-		$this->data['ia_url']    = str_replace('&amp;', '&', $this->url->link('extension/module/ia', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['ia_url']    = str_replace('&amp;', '&', $this->url->link('tool/mod_manager/ia', 'token=' . $this->session->data['token'], 'SSL'));
 
-		$this->template = 'extension/module.tpl';
+		$this->template = 'tool/mod_manager.tpl';
 		$this->children = array(
 			'common/header',
 			'common/footer'
@@ -152,7 +152,7 @@ class ControllerExtensionModule extends Controller {
 	}
 
 	public function ia() {
-		$this->language->load('extension/module');
+		$this->language->load('tool/mod_manager');
 
 		$this->document->setTitle($this->language->get('text_ia'));
 
@@ -164,18 +164,18 @@ class ControllerExtensionModule extends Controller {
 		);
 		$this->data['breadcrumbs'][] = array(
 			'text'      => $this->language->get('heading_title'),
-			'href'      => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
+			'href'      => $this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'),
 			'separator' => ' :: '
 		);
 		$this->data['breadcrumbs'][] = array(
 			'text'      => $this->language->get('text_ia'),
-			'href'      => $this->url->link('extension/module/ia', 'token=' . $this->session->data['token'], 'SSL'),
+			'href'      => $this->url->link('tool/mod_manager/ia', 'token=' . $this->session->data['token'], 'SSL'),
 			'separator' => ' :: '
 		);
 
 		$this->data['heading_title'] = $this->language->get('text_ia');
-		$this->data['chat_url']      = str_replace('&amp;', '&', $this->url->link('extension/module/iaChat', 'token=' . $this->session->data['token'], 'SSL'));
-		$this->data['cancel']        = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['chat_url']      = str_replace('&amp;', '&', $this->url->link('tool/mod_manager/iaChat', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['cancel']        = $this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL');
 
 		// Only used to show a warning banner if it's not configured — the key itself is
 		// managed in Settings > IA now, not on this screen.
@@ -184,7 +184,7 @@ class ControllerExtensionModule extends Controller {
 		$this->data['server_software'] = isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '';
 		$this->data['server_timeout']  = $this->detectWebServerTimeout($this->data['server_software']);
 
-		$this->template = 'extension/module_ia.tpl';
+		$this->template = 'tool/mod_manager_ia.tpl';
 		$this->children = array(
 			'common/header',
 			'common/footer'
@@ -454,12 +454,12 @@ Responde siempre en español.';
 	}
 
 	public function install() {
-		$this->language->load('extension/module');
+		$this->language->load('tool/mod_manager');
 
-		if (!$this->user->hasPermission('modify', 'extension/module')) {
+		if (!$this->user->hasPermission('modify', 'tool/mod_manager')) {
 			$this->session->data['error'] = $this->language->get('error_permission'); 
 
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+			$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 		} else {
 			$this->load->model('setting/extension');
 
@@ -479,17 +479,17 @@ Responde siempre en español.';
 				$class->install();
 			}
 
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+			$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 	}
 
 	public function uninstall() {
-		$this->language->load('extension/module');
+		$this->language->load('tool/mod_manager');
 
-		if (!$this->user->hasPermission('modify', 'extension/module')) {
+		if (!$this->user->hasPermission('modify', 'tool/mod_manager')) {
 			$this->session->data['error'] = $this->language->get('error_permission');
 
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+			$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 		} else {
 			$this->load->model('setting/extension');
 			$this->load->model('setting/setting');
@@ -507,13 +507,13 @@ Responde siempre en español.';
 				$class->uninstall();
 			}
 
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+			$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 	}
 
 	public function disableVqmod() {
-		if (!$this->user->hasPermission('modify', 'extension/module')) {
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+		if (!$this->user->hasPermission('modify', 'tool/mod_manager')) {
+			$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 
 		$file = basename(rawurldecode($this->request->get['file']));
@@ -530,12 +530,12 @@ Responde siempre en español.';
 			}
 		}
 
-		$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 	}
 
 	public function enableVqmod() {
-		if (!$this->user->hasPermission('modify', 'extension/module')) {
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+		if (!$this->user->hasPermission('modify', 'tool/mod_manager')) {
+			$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 		}
 
 		$file = basename(rawurldecode($this->request->get['file']));
@@ -552,7 +552,7 @@ Responde siempre en español.';
 			}
 		}
 
-		$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->redirect($this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'));
 	}
 
 	private function clearVqmodCache() {

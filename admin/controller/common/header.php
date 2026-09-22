@@ -558,11 +558,11 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 			
-			// Modules
-			if ($this->user->hasPermission('access', 'extension/module')) {
+			// vqmod Modules
+			if ($this->user->hasPermission('access', 'tool/mod_manager')) {
                 $tools[] = array(
-                    'name' => $this->language->get('text_module'),
-                    'href' => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'),
+                    'name' => $this->language->get('text_vqmod'),
+                    'href' => $this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'),
                     'children' => array()
                 );
 			}
@@ -962,15 +962,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 			
-			// addon manager
-			if ($this->user->hasPermission('access', 'tool/mod_manager')) {
-				$tools[] = array(
-					'name' => $this->language->get('text_vqmod'),
-					'href' => $this->url->link('tool/mod_manager', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
 			// Importar Documentos
 			if ($this->user->hasPermission('access', 'setting/document_embeddings')) {
 				$tools[] = array(

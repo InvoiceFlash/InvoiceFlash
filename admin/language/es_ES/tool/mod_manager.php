@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']    = 'M&oacute;dulos';
+$_['heading_title']    = 'M&oacute;dulos vqmod';
 
 // Text
 $_['text_install']     = 'Instalar';

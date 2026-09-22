@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']    = 'Modules';
+$_['heading_title']    = 'vqmod Modules';
 
 // Text
 $_['text_install']     = 'Install';
