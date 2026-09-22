@@ -35,9 +35,6 @@
 				<?php } ?>
 				<b><?php echo $text_nif; ?></b> <?php echo $drafts['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $drafts['store_telephone']; ?><br>
-				<?php if ($drafts['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $drafts['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $drafts['store_email']; ?><br>
 				<?php echo $drafts['store_url']; ?></td>
 			<td>

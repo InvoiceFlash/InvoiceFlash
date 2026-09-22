@@ -81,9 +81,6 @@ th {
 				<?php echo $reception['store_address']; ?><br>
 				<?php echo $text_tax_id; ?> <?php echo $reception['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $reception['store_telephone']; ?><br>
-				<?php if ($reception['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $reception['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $reception['store_email']; ?></td>
 		</tr>
 	</table>

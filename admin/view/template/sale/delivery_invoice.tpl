@@ -34,9 +34,6 @@
 				<?php } ?>
 				<?php echo $text_tax_id; ?> <?php echo $delivery['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $delivery['store_telephone']; ?><br>
-				<?php if ($delivery['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $delivery['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $delivery['store_email']; ?><br>
 				<?php echo $delivery['store_url']; ?></td>
 			<td>

@@ -26,9 +26,6 @@
 			<td width="50%"><?php echo $order['store_name']; ?><br>
 				<?php echo $order['store_address']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $order['store_telephone']; ?><br>
-				<?php if ($order['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $order['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $order['store_email']; ?><br>
 				<?php echo $order['store_url']; ?></td>
 			<td>

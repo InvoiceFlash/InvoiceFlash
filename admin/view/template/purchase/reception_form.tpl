@@ -292,10 +292,6 @@
 									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-telephone"></p></div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-3"><?php echo $entry_fax; ?></label>
-									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-fax"></p></div>
-								</div>
-								<div class="form-group">
 									<label class="control-label col-3"><?php echo $entry_address_1; ?></label>
 									<div class="control-field col-sm-8"><p class="form-control-static" id="sd-address-1"></p></div>
 								</div>
@@ -462,7 +458,6 @@ $('#viewSupplier').click(function(e) {
 			$('#sd-tax-id').text(json.tax_id || '');
 			$('#sd-email').text(json.email || '');
 			$('#sd-telephone').text(json.telephone || '');
-			$('#sd-fax').text(json.fax || '');
 			$('#sd-address-1').text(json.address_1 || '');
 			$('#sd-address-2').text(json.address_2 || '');
 			$('#sd-city').text(json.city || '');

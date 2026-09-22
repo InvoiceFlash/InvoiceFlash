@@ -88,9 +88,6 @@ th {
 				<?php } ?>
 				<?php echo $text_tax_id; ?> <?php echo $invoice['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $invoice['store_telephone']; ?><br>
-				<?php if ($invoice['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $invoice['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $invoice['store_email']; ?></td>
 		</tr>
 	</table>

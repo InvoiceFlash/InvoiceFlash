@@ -57,9 +57,6 @@ th {
 				<?php } ?>
 				<?php echo $text_tax_id; ?> <?php echo $deliveries['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $deliveries['store_telephone']; ?><br>
-				<?php if ($deliveries['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $deliveries['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $deliveries['store_email']; ?><br>
 				<?php echo $deliveries['store_url']; ?></td>
 			<td>

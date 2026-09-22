@@ -26,9 +26,6 @@
 			<td width="50%"><?php echo $invoice['store_name']; ?><br>
 				<?php echo $invoice['store_address']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $invoice['store_telephone']; ?><br>
-				<?php if ($invoice['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $invoice['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $invoice['store_email']; ?><br>
 				<?php echo $invoice['store_url']; ?></td>
 			<td>

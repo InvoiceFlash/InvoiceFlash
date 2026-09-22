@@ -40,9 +40,6 @@
 				<?php } ?>
 				<?php echo $text_tax_id; ?> <?php echo $invoices['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $invoices['store_telephone']; ?><br>
-				<?php if ($invoices['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $invoices['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $invoices['store_email']; ?><br>
 				<?php echo $invoices['store_url']; ?></td>
 			<td>

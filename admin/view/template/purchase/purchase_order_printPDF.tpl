@@ -78,9 +78,6 @@ th {
 				<?php echo $purchase_order['store_address']; ?><br>
 				<?php echo $text_tax_id; ?> <?php echo $purchase_order['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $purchase_order['store_telephone']; ?><br>
-				<?php if ($purchase_order['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $purchase_order['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $purchase_order['store_email']; ?></td>
 		</tr>
 	</table>

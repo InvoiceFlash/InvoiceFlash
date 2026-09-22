@@ -381,12 +381,6 @@
 												<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 											</div>
 										</div>
-										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_fax; ?></label>
-											<div class="control-field col-sm-8">
-												<input type="text" name="fax" value="<?php echo $fax; ?>" class="form-control">
-											</div>
-										</div>
 									</div>
 								</div>
 								<div class="tab-pane" id="tab-payment">
@@ -843,7 +837,6 @@ $(function(){
 			$('#supplier_id').val(s.supplier_id);
 			$('input[name="email"]').val(s.email);
 			$('input[name="telephone"]').val(s.telephone);
-			$('input[name="fax"]').val(s.fax);
 			return item;
 		}
 	});
@@ -914,7 +907,6 @@ $(document).on('dblclick', '#ss-results tr[data-idx]', function() {
 	$('#supplier_id').val(s.supplier_id);
 	$('input[name="email"]').val(s.email);
 	$('input[name="telephone"]').val(s.telephone);
-	$('input[name="fax"]').val(s.fax);
 
 	bootstrap.Modal.getInstance(document.getElementById('SupplierSearchModal')).hide();
 });
