@@ -24,7 +24,6 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-documents" data-bs-toggle="tab"><?php echo $tab_documents; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-bs-toggle="tab"><?php echo $tab_reward; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-design" data-bs-toggle="tab"><?php echo $tab_design; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
@@ -144,7 +143,10 @@
 							<div class="form-group row">
 								<label class="col-form-label col-sm-4"><?php echo $entry_price; ?></label>
 								<div class="col-sm-6">
-									<input type="text" name="price" value="<?php echo $price; ?>" class="form-control">
+									<div class="input-group">
+										<input type="text" name="price" value="<?php echo $price; ?>" class="form-control">
+										<div class="input-group-append"><span class="input-group-text">&euro;</span></div>
+									</div>
 								</div>
 							</div>
 							<div class="form-group row">

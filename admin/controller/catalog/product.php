@@ -1073,9 +1073,9 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 		if (isset($this->request->post['price'])) {
-			$this->data['price'] = $this->currency->format($this->request->post['price'], $this->config->get('config_currency'));
+			$this->data['price'] = $this->currency->format($this->request->post['price'], $this->config->get('config_currency'), '', false);
 		} elseif (!empty($product_info)) {
-			$this->data['price'] = $this->currency->format($product_info['price'], $this->config->get('config_currency'));
+			$this->data['price'] = $this->currency->format($product_info['price'], $this->config->get('config_currency'), '', false);
 		} else {
 			$this->data['price'] = '';
 		}

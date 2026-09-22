@@ -278,6 +278,7 @@ class ControllerUserUser extends Controller {
 		$this->data['entry_lastname'] = $this->language->get('entry_lastname');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_signature'] = $this->language->get('entry_signature');
+		$this->data['entry_cost_per_hour'] = $this->language->get('entry_cost_per_hour');
 		$this->data['entry_user_group'] = $this->language->get('entry_user_group');
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		$this->data['entry_captcha'] = $this->language->get('entry_captcha');
@@ -433,6 +434,14 @@ class ControllerUserUser extends Controller {
 			$this->data['signature'] = $user_info['signature'];
 		} else {
 			$this->data['signature'] = '';
+		}
+
+		if (isset($this->request->post['cost_per_hour'])) {
+			$this->data['cost_per_hour'] = $this->request->post['cost_per_hour'];
+		} elseif (!empty($user_info)) {
+			$this->data['cost_per_hour'] = number_format((float)$user_info['cost_per_hour'], 2, '.', '');
+		} else {
+			$this->data['cost_per_hour'] = '';
 		}
 
 		if (isset($this->request->post['user_group_id'])) {

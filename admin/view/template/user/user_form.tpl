@@ -38,6 +38,12 @@
 				</div>
 			</div>
 			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_cost_per_hour; ?></label>
+				<div class="col-sm-6">
+					<input type="text" inputmode="decimal" name="cost_per_hour" value="<?php echo $cost_per_hour; ?>" class="form-control" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+				</div>
+			</div>
+			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_signature; ?></label>
 				<div class="col-sm-6">
 					<textarea name="signature" class="form-control" rows="5"><?php echo $signature; ?></textarea>
