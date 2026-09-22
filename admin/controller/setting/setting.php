@@ -106,7 +106,6 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_address'] = $this->language->get('entry_address');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
-		$this->data['entry_fax'] = $this->language->get('entry_fax');	
 		$this->data['entry_vat_id'] = $this->language->get('entry_vat_id');
 		$this->data['entry_geocode'] = $this->language->get('entry_geocode');
 		$this->data['entry_title'] = $this->language->get('entry_title');
@@ -706,12 +705,6 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_geocode'] = $this->request->post['config_geocode'];
 		} else {
 			$this->data['config_geocode'] = $this->config->get('config_geocode');
-		}
-
-		if (isset($this->request->post['config_fax'])) {
-			$this->data['config_fax'] = $this->request->post['config_fax'];
-		} else {
-			$this->data['config_fax'] = $this->config->get('config_fax');
 		}
 
 		if (isset($this->request->post['config_title'])) {

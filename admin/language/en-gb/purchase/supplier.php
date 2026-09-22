@@ -33,7 +33,6 @@ $_['entry_tax_id']             = 'Tax ID:';
 $_['entry_contable_account']   = 'Accounting Account:';
 $_['entry_email']              = 'E-Mail:';
 $_['entry_telephone']          = 'Telephone:';
-$_['entry_fax']                = 'Fax:';
 $_['entry_web']                = 'Web:';
 $_['button_web']               = 'Go to web';
 $_['error_web']                = 'Error: Enter a valid url!';

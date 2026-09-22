@@ -34,7 +34,6 @@ $_['entry_address'] = 'Direcci&oacute;n';
 $_['entry_geocode'] = 'Geocode';
 $_['entry_email'] = 'E-Mail';
 $_['entry_telephone'] = 'Tel&eacute;fono';
-$_['entry_fax'] = 'Cif';
 $_['entry_image'] = 'Imagen';
 $_['entry_open'] = 'Horario';
 $_['entry_comment'] = 'Comentario';

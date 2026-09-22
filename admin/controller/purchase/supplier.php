@@ -404,7 +404,6 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['contable_account_maxlength'] = (int)$this->config->get('config_conta_digits') ?: 10;
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
-		$this->data['entry_fax'] = $this->language->get('entry_fax');
 		$this->data['entry_web'] = $this->language->get('entry_web');
 		$this->data['button_web'] = $this->language->get('button_web');
 		$this->data['error_web'] = $this->language->get('error_web');
@@ -496,7 +495,7 @@ class ControllerPurchaseSupplier extends Controller {
 		$this->data['token'] = $this->session->data['token'];
 		$this->data['supplier_id'] = isset($this->request->get['supplier_id']) ? $this->request->get['supplier_id'] : 0;
 
-		$fields = array('firstname', 'lastname', 'company', 'company_id', 'tax_id', 'contable_account', 'email', 'telephone', 'fax', 'web', 'address_1', 'address_2', 'city', 'postcode', 'country_id', 'zone_id');
+		$fields = array('firstname', 'lastname', 'company', 'company_id', 'tax_id', 'contable_account', 'email', 'telephone', 'web', 'address_1', 'address_2', 'city', 'postcode', 'country_id', 'zone_id');
 
 		foreach ($fields as $field) {
 			if (isset($this->request->post[$field])) {

@@ -202,7 +202,6 @@ class ControllerSettingStore extends Controller {
 		$this->data['entry_address'] = $this->language->get('entry_address');
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_telephone'] = $this->language->get('entry_telephone');
-		$this->data['entry_fax'] = $this->language->get('entry_fax');				
 		$this->data['entry_title'] = $this->language->get('entry_title');
 		$this->data['entry_meta_description'] = $this->language->get('entry_meta_description');
 		$this->data['entry_layout'] = $this->language->get('entry_layout');
@@ -455,14 +454,6 @@ class ControllerSettingStore extends Controller {
 			$this->data['config_telephone'] = $store_info['config_telephone'];		
 		} else {
 			$this->data['config_telephone'] = '';
-		}
-
-		if (isset($this->request->post['config_fax'])) {
-			$this->data['config_fax'] = $this->request->post['config_fax'];
-		} elseif (isset($store_info['config_fax'])) {
-			$this->data['config_fax'] = $store_info['config_fax'];		
-		} else {
-			$this->data['config_fax'] = '';
 		}
 
 		if (isset($this->request->post['config_title'])) {

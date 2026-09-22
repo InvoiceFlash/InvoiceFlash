@@ -408,8 +408,7 @@
 												<?php } ?>
 											</div>
 										</div>
-										<input type="hidden" name="fax" value="<?php echo $fax; ?>">
-									</div>
+										</div>
 								</div>
 								<div class="tab-pane" id="tab-payment">
 									<div class="form-horizontal">

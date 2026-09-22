@@ -54,9 +54,6 @@ th {
 				<?php } ?>
 				<?php echo $text_tax_id; ?> <?php echo $quotes['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $quotes['store_telephone']; ?><br>
-				<?php if ($quotes['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $quotes['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $quotes['store_email']; ?><br>
 				<?php echo $quotes['store_url']; ?></td>
 			<td>

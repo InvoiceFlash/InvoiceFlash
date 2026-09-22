@@ -33,7 +33,6 @@ $_['entry_tax_id']             = 'CIF/NIF:';
 $_['entry_contable_account']   = 'Cuenta Contable:';
 $_['entry_email']              = 'E-Mail:';
 $_['entry_telephone']          = 'Tel&eacute;fono:';
-$_['entry_fax']                = 'Fax:';
 $_['entry_web']                = 'Web:';
 $_['button_web']               = 'Ir a la web';
 $_['error_web']                = 'Error: &iexcl;Introduzca una URL v&aacute;lida!';

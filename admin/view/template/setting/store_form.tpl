@@ -67,12 +67,6 @@
 							<?php } ?>
 						</div>
 					</div>
-					<div class="form-group">
-						<label class="control-label col-sm-2"><?php echo $entry_fax; ?></label>
-						<div class="control-field col-sm-4">
-							<input type="text" name="config_fax" value="<?php echo $config_fax; ?>" class="form-control">
-						</div>
-					</div>
 				</div>
 				<div class="tab-pane" id="tab-store">
 					<div class="form-group">

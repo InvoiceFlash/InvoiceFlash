@@ -1186,14 +1186,6 @@ class ControllerSaleQuote extends Controller {
       		$this->data['telephone'] = '';
     	}
 		
-    	if (isset($this->request->post['fax'])) {
-      		$this->data['fax'] = $this->request->post['fax'];
-    	} elseif (!empty($quote_info)) { 
-			$this->data['fax'] = $quote_info['fax'];
-		} else {
-      		$this->data['fax'] = '';
-    	}	
-		
 		if (isset($this->request->post['invoice_status_id'])) {
       		$this->data['invoice_status_id'] = $this->request->post['invoice_status_id'];
     	} elseif (!empty($quote_info)) { 

@@ -87,8 +87,6 @@ $_['entry_email']           = 'E-Mail:';
 
 $_['entry_telephone']       = 'Tel&eacute;fono:';
 
-$_['entry_fax']             = 'Fax:';
-
 $_['entry_newsletter']      = 'Bolet&iacute;n:';
 
 $_['entry_customer_group']  = 'Grupo de Clientes:';

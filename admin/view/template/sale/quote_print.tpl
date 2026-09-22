@@ -34,9 +34,6 @@
 				<?php } ?>
 				<?php echo $text_tax_id; ?> <?php echo $quote['store_nif']; ?><br>
 				<?php echo $text_telephone; ?> <?php echo $quote['store_telephone']; ?><br>
-				<?php if ($quote['store_fax']) { ?>
-				<?php echo $text_fax; ?> <?php echo $quote['store_fax']; ?><br>
-				<?php } ?>
 				<?php echo $quote['store_email']; ?><br>
 				<?php echo $quote['store_url']; ?></td>
 			<td>

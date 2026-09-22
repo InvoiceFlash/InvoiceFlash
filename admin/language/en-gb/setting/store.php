@@ -28,7 +28,6 @@ $_['entry_owner']                  = 'Store Owner:';
 $_['entry_address']                = 'Address:';
 $_['entry_email']                  = 'E-Mail:';
 $_['entry_telephone']              = 'Telephone:';
-$_['entry_fax']                    = 'Fax:';
 $_['entry_title']                  = 'Title:';
 $_['entry_meta_description']       = 'Meta Tag Description:';
 $_['entry_layout']                 = 'Default Layout:';
