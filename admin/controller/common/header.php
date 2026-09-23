@@ -107,14 +107,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			if ($this->user->hasPermission('access', 'catalog/tariff')) {
-				$categories[] = array(
-					'name' => $this->language->get('text_tariff'),
-					'href' => $this->url->link('catalog/tariff', 'token=' . $this->session->data['token'], 'SSL'),
-					'children' => array()
-				);
-			}
-
 			if ($this->user->hasPermission('access', 'catalog/product')) {
 				$categories[] = array(
 					'name' => $this->language->get('text_product'),
@@ -127,6 +119,14 @@ class ControllerCommonHeader extends Controller {
 				$categories[] = array(
 					'name' => $this->language->get('text_option'),
 					'href' => $this->url->link('catalog/option', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
+			if ($this->user->hasPermission('access', 'catalog/tariff')) {
+				$categories[] = array(
+					'name' => $this->language->get('text_tariff'),
+					'href' => $this->url->link('catalog/tariff', 'token=' . $this->session->data['token'], 'SSL'),
 					'children' => array()
 				);
 			}
