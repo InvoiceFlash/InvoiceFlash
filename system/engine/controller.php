@@ -254,7 +254,7 @@ abstract class Controller {
 			$mail->addAttachment($lcFile);
 		}
 
-		$log=new Log('mail.log'); $log->write($mail);
+		$log=new Log('mail.log'); $log->write('Mail a ' . (is_array($to) ? implode(',', $to) : $to) . ' | ' . $subject . ' | protocolo: ' . $this->config->get('config_mail_protocol')); // no volcar $mail: lleva la contrasena SMTP
 
 		try {
 			$mail->send();
