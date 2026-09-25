@@ -12,7 +12,7 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or
   - [] Edit language
   - [] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
   - [] Multi Store
-  - [] Item movement tracking
+  - [x] Module Production
   - [x] Kanban
 
 ### 0.0.14
