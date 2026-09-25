@@ -7,12 +7,18 @@
 <p align="center" bgcolor="#429ae1"><b>InvoiceFlash is a self-hosted open source ERP with RAG options.<br>
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
----
+## Getting Started
+
+### Prerequisites
+
+- MariaDB > 11.7
+- PHP > 5.x
+
 ### 0.0.15
   - [] Edit language
   - [] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
   - [] Multi Store
-  - [] Item movement tracking
+  - [x] Module Production
   - [x] Kanban
 
 ### 0.0.14
