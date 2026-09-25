@@ -247,7 +247,7 @@ class Mail {
 		$data = str_replace(array("\r\n", "\r"), "\n", $header . $message);
 
 		foreach (explode("\n", $data) as $line) {
-			foreach (str_split($line, 998) as $chunk) {
+			foreach ($line === '' ? array('') : str_split($line, 998) as $chunk) {
 				fputs($handle, $chunk . $this->crlf);
 			}
 		}
