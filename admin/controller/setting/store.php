@@ -131,7 +131,8 @@ class ControllerSettingStore extends Controller {
 
 			$action[] = array(
 				'text' => $this->language->get('text_edit'),
-				'href' => $this->url->link('setting/store/update', 'token=' . $this->session->data['token'] . '&store_id=' . $result['store_id'], 'SSL')
+				'href' => $this->url->link('setting/store/update', 'token=' . $this->session->data['token'] . '&store_id=' . $result['store_id'], 'SSL'),
+				'icon' => '<i class="fa fa-edit"></i>'
 			);
 
 			$this->data['stores'][] = array(
