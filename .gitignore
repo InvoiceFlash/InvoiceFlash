@@ -30,7 +30,7 @@ __pycache__/
 system/backup/
 system/cache/update_*
 docs/
-catalog/
+/catalog/
 .claude/skills/invoiceFlash/
 
 # Modulo cp (no se sube)

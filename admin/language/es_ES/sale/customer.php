@@ -1,6 +1,6 @@
 <?php
 // Heading
-$_['heading_title']         = 'Cliente';
+$_['heading_title']         = 'Clientes';
 $_['heading_contact']		= 'Contacto del Cliente';
 
 
