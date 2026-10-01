@@ -23,7 +23,6 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-special" data-bs-toggle="tab"><?php echo $tab_special; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-documents" data-bs-toggle="tab"><?php echo $tab_documents; ?></a></li>
-			<li class="nav-item"><a class="nav-link" href="#tab-reward" data-bs-toggle="tab"><?php echo $tab_reward; ?></a></li>
 		</ul>
 		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
@@ -816,30 +815,6 @@
 						</tbody>
 					</table>
 					<?php } ?>
-				</div>
-				<div class="tab-pane" id="tab-reward">
-					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_points; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="points" value="<?php echo $points; ?>" class="form-control">
-						</div>
-					</div>
-					<table class="table table-bordered table-striped">
-						<thead>
-							<tr>
-								<th><?php echo $entry_customer_group; ?></th>
-								<th><?php echo $entry_reward; ?></th>
-							</tr>
-						</thead>
-						<tbody>
-						<?php foreach ($customer_groups as $customer_group) { ?>
-							<tr>
-								<td><?php echo $customer_group['name']; ?></td>
-								<td><input type="text" name="product_reward[<?php echo $customer_group['customer_group_id']; ?>][points]" value="<?php echo isset($product_reward[$customer_group['customer_group_id']]) ? $product_reward[$customer_group['customer_group_id']]['points'] :''; ?>" class="form-control"></td>
-							</tr>
-						<?php } ?>
-						</tbody>
-					</table>
 				</div>
 				<div class="tab-pane" id="tab-design">
 					<table class="table table-bordered table-striped">
