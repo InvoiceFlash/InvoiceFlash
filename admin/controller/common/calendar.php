@@ -8,11 +8,19 @@ class ControllerCommonCalendar extends Controller {
 
 		$this->document->setTitle($this->language->get('heading_title'));
 
-		foreach (array('heading_title', 'text_new_event', 'text_edit_event', 'text_calendars', 'text_new_calendar', 'text_confirm', 'text_today', 'text_month', 'text_week', 'text_day', 'text_list', 'entry_title', 'entry_calendar', 'entry_start', 'entry_end', 'entry_all_day', 'entry_location', 'entry_description', 'entry_name', 'entry_color', 'button_save', 'button_delete', 'button_close', 'error_title') as $key) {
+		foreach (array('heading_title', 'text_new_event', 'text_edit_event', 'text_calendars', 'text_new_calendar', 'text_confirm', 'text_today', 'text_month', 'text_week', 'text_day', 'text_list', 'entry_title', 'entry_calendar', 'entry_start', 'entry_end', 'entry_all_day', 'entry_location', 'entry_description', 'entry_name', 'entry_color', 'entry_share', 'text_shared_by', 'button_save', 'button_delete', 'button_close', 'error_title') as $key) {
 			$this->data[$key] = $this->language->get($key);
 		}
 
 		$this->data['calendars'] = $this->model_common_calendar->getCalendars($this->user->getId());
+		$this->data['users'] = array();
+
+		foreach ($this->model_common_calendar->getUsers() as $u) {
+			if ((int)$u['user_id'] !== (int)$this->user->getId()) {
+				$this->data['users'][] = $u;
+			}
+		}
+
 		$this->data['can_modify'] = true;
 		$this->data['locale'] = substr($this->config->get('config_admin_language') ? $this->config->get('config_admin_language') : 'es', 0, 2);
 
@@ -162,14 +170,16 @@ class ControllerCommonCalendar extends Controller {
 		$color = isset($p['color']) ? $p['color'] : '';
 
 		if ($calendar_id) {
-			if (!$this->model_common_calendar->getCalendar($calendar_id, $this->user->getId())) {
+			if (!$this->model_common_calendar->getOwnCalendar($calendar_id, $this->user->getId())) {
 				return $this->json(array('error' => 1));
 			}
 
 			$this->model_common_calendar->editCalendar($calendar_id, $name, $color);
 		} else {
-			$this->model_common_calendar->addCalendar($this->user->getId(), $name, $color);
+			$calendar_id = $this->model_common_calendar->addCalendar($this->user->getId(), $name, $color);
 		}
+
+		$this->model_common_calendar->setShares($calendar_id, isset($p['shared']) ? $p['shared'] : array(), $this->user->getId());
 
 		$this->json(array('success' => true));
 	}
@@ -179,7 +189,7 @@ class ControllerCommonCalendar extends Controller {
 
 		$calendar_id = isset($this->request->post['calendar_id']) ? (int)$this->request->post['calendar_id'] : 0;
 
-		if (!true || !$this->model_common_calendar->getCalendar($calendar_id, $this->user->getId())) {
+		if (!true || !$this->model_common_calendar->getOwnCalendar($calendar_id, $this->user->getId())) {
 			return $this->json(array('error' => 1));
 		}
 

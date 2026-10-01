@@ -28,11 +28,12 @@
 				</div>
 				<div id="cal-list">
 					<?php foreach ($calendars as $c) { ?>
-					<div class="cal-item" data-id="<?php echo $c['calendar_id']; ?>" data-name="<?php echo $c['name']; ?>" data-color="<?php echo $c['color']; ?>">
+					<div class="cal-item" data-id="<?php echo $c['calendar_id']; ?>" data-name="<?php echo $c['name']; ?>" data-color="<?php echo $c['color']; ?>" data-shared="<?php echo implode(',', $c['shared']); ?>">
 						<span class="cal-dot" style="background:<?php echo $c['color']; ?>;"></span>
 						<input type="checkbox" class="cal-toggle" id="cal-chk-<?php echo $c['calendar_id']; ?>" value="<?php echo $c['calendar_id']; ?>" checked>
 						<label for="cal-chk-<?php echo $c['calendar_id']; ?>"><?php echo $c['name']; ?></label>
-						<?php if ($can_modify) { ?><a class="cal-edit" title="<?php echo $text_edit_event; ?>"><i class="fa fa-pencil"></i></a><?php } ?>
+						<?php if ($c['shared'] || !$c['is_owner']) { ?><i class="fa fa-users text-muted" title="<?php echo $entry_share; ?>"></i><?php } ?>
+						<?php if ($can_modify && $c['is_owner']) { ?><a class="cal-edit" title="<?php echo $text_edit_event; ?>"><i class="fa fa-pencil"></i></a><?php } ?>
 					</div>
 					<?php } ?>
 				</div>
@@ -87,6 +88,11 @@
 				<input type="hidden" id="cal-id">
 				<div class="mb-2"><label class="form-label"><?php echo $entry_name; ?></label><input type="text" id="cal-name" class="form-control"></div>
 				<div class="mb-2"><label class="form-label"><?php echo $entry_color; ?></label><input type="color" id="cal-color" class="form-control form-control-color" value="#3788d8"></div>
+					<div class="mb-2"><label class="form-label"><?php echo $entry_share; ?></label>
+						<div id="cal-users" style="max-height:140px;overflow:auto;">
+							<?php foreach ($users as $u) { ?><label class="d-block"><input type="checkbox" class="cal-user" value="<?php echo $u['user_id']; ?>"> <?php echo $u['username']; ?></label><?php } ?>
+						</div>
+					</div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-danger me-auto" id="cal-delete" style="display:none;"><i class="fa fa-trash"></i> <?php echo $button_delete; ?></button>
@@ -205,19 +211,22 @@ $(function() {
 
 	$('#cal-add').on('click', function(ev) {
 		ev.preventDefault();
-		$('#cal-id').val(''); $('#cal-name').val(''); $('#cal-color').val('#3788d8'); $('#cal-delete').hide();
+		$('#cal-id').val(''); $('#cal-name').val(''); $('#cal-color').val('#3788d8'); $('#cal-delete').hide(); $('.cal-user').prop('checked', false);
 		calModal.show();
 	});
 
 	$('#cal-list').on('click', '.cal-edit', function() {
 		var $i = $(this).closest('.cal-item');
 		$('#cal-id').val($i.data('id')); $('#cal-name').val($i.data('name')); $('#cal-color').val($i.data('color'));
+			var sh = String($i.attr('data-shared')).split(',');
+			$('.cal-user').each(function() { $(this).prop('checked', $.inArray(this.value, sh) !== -1); });
 		$('#cal-delete').show();
 		calModal.show();
 	});
 
 	$('#cal-save').on('click', function() {
-		$.post(urls.calSave, { calendar_id: $('#cal-id').val(), name: $('#cal-name').val(), color: $('#cal-color').val() }, function(r) {
+		$.post(urls.calSave, { calendar_id: $('#cal-id').val(), name: $('#cal-name').val(), color: $('#cal-color').val(),
+				shared: $('.cal-user:checked').map(function() { return this.value; }).get() }, function(r) {
 			if (!r.error) { location.reload(); }
 		}, 'json');
 	});

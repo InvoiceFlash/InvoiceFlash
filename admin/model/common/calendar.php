@@ -25,23 +25,78 @@ class ModelCommonCalendar extends Model {
 			KEY `calendar_id` (`calendar_id`),
 			KEY `start` (`start`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "crm_calendar_user` (
+			`calendar_id` int(11) NOT NULL,
+			`user_id` int(11) NOT NULL,
+			PRIMARY KEY (`calendar_id`,`user_id`),
+			KEY `user_id` (`user_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+	}
+
+	// Condicion SQL: el usuario es propietario del calendario o lo tiene compartido.
+	private function access($user_id, $alias = 'c') {
+		$user_id = (int)$user_id;
+
+		return "(" . $alias . ".user_id = '" . $user_id . "' OR " . $alias . ".calendar_id IN (SELECT calendar_id FROM `" . DB_PREFIX . "crm_calendar_user` WHERE user_id = '" . $user_id . "'))";
 	}
 
 	public function getCalendars($user_id) {
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "crm_calendar` WHERE user_id = '" . (int)$user_id . "' ORDER BY name");
+		$sql = "SELECT c.*, (c.user_id = '" . (int)$user_id . "') AS is_owner FROM `" . DB_PREFIX . "crm_calendar` c WHERE " . $this->access($user_id) . " ORDER BY c.name";
+		$query = $this->db->query($sql);
 
 		if (!$query->num_rows) {
 			$this->addCalendar($user_id, 'Personal', '#3788d8');
-			$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "crm_calendar` WHERE user_id = '" . (int)$user_id . "' ORDER BY name");
+			$query = $this->db->query($sql);
 		}
 
-		return $query->rows;
+		$rows = array();
+
+		foreach ($query->rows as $row) {
+			$row['is_owner'] = (int)$row['is_owner'];
+			$row['shared'] = $this->getShares($row['calendar_id']);
+			$rows[] = $row;
+		}
+
+		return $rows;
 	}
 
+	// Calendario al que el usuario tiene acceso (propio o compartido): para eventos.
 	public function getCalendar($calendar_id, $user_id) {
+		$query = $this->db->query("SELECT c.* FROM `" . DB_PREFIX . "crm_calendar` c WHERE c.calendar_id = '" . (int)$calendar_id . "' AND " . $this->access($user_id));
+
+		return $query->row;
+	}
+
+	// Solo el propietario puede editar, borrar y compartir el calendario.
+	public function getOwnCalendar($calendar_id, $user_id) {
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "crm_calendar` WHERE calendar_id = '" . (int)$calendar_id . "' AND user_id = '" . (int)$user_id . "'");
 
 		return $query->row;
+	}
+
+	public function getShares($calendar_id) {
+		$ids = array();
+
+		foreach ($this->db->query("SELECT user_id FROM `" . DB_PREFIX . "crm_calendar_user` WHERE calendar_id = '" . (int)$calendar_id . "'")->rows as $row) {
+			$ids[] = (int)$row['user_id'];
+		}
+
+		return $ids;
+	}
+
+	public function setShares($calendar_id, $user_ids, $owner_id) {
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "crm_calendar_user` WHERE calendar_id = '" . (int)$calendar_id . "'");
+
+		foreach (array_unique(array_map('intval', (array)$user_ids)) as $uid) {
+			if ($uid > 0 && $uid != (int)$owner_id) {
+				$this->db->query("INSERT INTO `" . DB_PREFIX . "crm_calendar_user` SET calendar_id = '" . (int)$calendar_id . "', user_id = '" . $uid . "'");
+			}
+		}
+	}
+
+	public function getUsers() {
+		return $this->db->query("SELECT user_id, username FROM `" . DB_PREFIX . "user` ORDER BY username")->rows;
 	}
 
 	public function addCalendar($user_id, $name, $color) {
@@ -56,18 +111,19 @@ class ModelCommonCalendar extends Model {
 
 	public function deleteCalendar($calendar_id) {
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "crm_calendar_event` WHERE calendar_id = '" . (int)$calendar_id . "'");
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "crm_calendar_user` WHERE calendar_id = '" . (int)$calendar_id . "'");
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "crm_calendar` WHERE calendar_id = '" . (int)$calendar_id . "'");
 	}
 
 	public function getEvents($user_id, $start, $end) {
-		$query = $this->db->query("SELECT e.*, c.color FROM `" . DB_PREFIX . "crm_calendar_event` e INNER JOIN `" . DB_PREFIX . "crm_calendar` c ON c.calendar_id = e.calendar_id WHERE c.user_id = '" . (int)$user_id . "' AND e.start < '" . $this->db->escape($end) . "' AND COALESCE(e.`end`, e.start) >= '" . $this->db->escape($start) . "'");
+		$query = $this->db->query("SELECT e.*, c.color FROM `" . DB_PREFIX . "crm_calendar_event` e INNER JOIN `" . DB_PREFIX . "crm_calendar` c ON c.calendar_id = e.calendar_id WHERE " . $this->access($user_id) . " AND e.start < '" . $this->db->escape($end) . "' AND COALESCE(e.`end`, e.start) >= '" . $this->db->escape($start) . "'");
 
 		return $query->rows;
 	}
 
 	// Devuelve el evento solo si pertenece a un calendario del usuario.
 	public function getEvent($event_id, $user_id) {
-		$query = $this->db->query("SELECT e.* FROM `" . DB_PREFIX . "crm_calendar_event` e INNER JOIN `" . DB_PREFIX . "crm_calendar` c ON c.calendar_id = e.calendar_id WHERE e.event_id = '" . (int)$event_id . "' AND c.user_id = '" . (int)$user_id . "'");
+		$query = $this->db->query("SELECT e.* FROM `" . DB_PREFIX . "crm_calendar_event` e INNER JOIN `" . DB_PREFIX . "crm_calendar` c ON c.calendar_id = e.calendar_id WHERE e.event_id = '" . (int)$event_id . "' AND " . $this->access($user_id) . "");
 
 		return $query->row;
 	}
