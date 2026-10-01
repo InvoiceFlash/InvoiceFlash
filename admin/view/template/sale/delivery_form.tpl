@@ -1,13 +1,12 @@
 <?php echo $header; ?>
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
 <div class="panel panel-default">
-	<?php $fa='clipboard'; include DIR_TEMPLATE . 'common/template-title-form.tpl'; ?>
+	<?php $fa='clipboard'; $title_buttons = '<button class="btn btn-success" type="button" title="Pedidos Pendientes de procesar" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById(\'OrderSearchModal\')).show();"><i class="fa fa-list-alt"></i><span class="hidden-xs"> Pedidos Pendientes</span></button> '; include DIR_TEMPLATE . 'common/template-title-form.tpl'; ?>
 	<div class="panel-body">
 		<form action="<?php echo $action; ?>" method="post" onsubmit="return validateForm();" class="form-inline" enctype="multipart/form-data" id="form">
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
-					<button class="btn btn-warning pull-right" type="button" title="Pedidos Pendientes de procesar" style="margin-right:4px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><i class="fa fa-list-alt"></i> <span class="hidden-xs">Pedidos Pendientes</span></button>
 				<button class="btn btn-info pull-right" type="button" data-bs-toggle="modal" data-bs-target="#CommentModal" style="margin-right:4px;"><i class="fas fa-comment"></i><span></span></button>
 					<!-- Modal -->
 					<div class="modal fade" id="CommentModal" tabindex="-1" role="dialog" aria-labelledby="CommentModalLabel" aria-hidden="true">
