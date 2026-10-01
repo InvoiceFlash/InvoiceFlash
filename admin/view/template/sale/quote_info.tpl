@@ -7,6 +7,38 @@
 			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#KanbanCardModal"><i class="fa fa-columns"></i><span class="hidden-xs"> <?php echo $button_kanban; ?></span></button>
 			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
 			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
+			<button class="btn btn-default" type="button" id="button-share-quote" style="display:none;" title="Compartir"><i class="fa fa-share-alt"></i><span class="hidden-xs"> Compartir</span></button>
+			<script>
+			(function () {
+				var btn = document.getElementById('button-share-quote');
+				var pdfUrl = <?php echo json_encode(html_entity_decode($printPDF, ENT_QUOTES, 'UTF-8')); ?>;
+				var fileName = 'Presupuesto-<?php echo (int)$quote_id; ?>.pdf';
+
+				function canShareFiles() {
+					try {
+						return !!(navigator.share && navigator.canShare &&
+							navigator.canShare({ files: [new File(['x'], 'a.pdf', { type: 'application/pdf' })] }));
+					} catch (e) {
+						return false;
+					}
+				}
+
+				if (!btn || !canShareFiles()) { return; }
+				btn.style.display = '';
+
+				btn.addEventListener('click', function () {
+					btn.disabled = true;
+					fetch(pdfUrl, { credentials: 'same-origin' })
+						.then(function (r) { if (!r.ok) { throw new Error('HTTP ' + r.status); } return r.blob(); })
+						.then(function (blob) {
+							var file = new File([blob], fileName, { type: 'application/pdf' });
+							return navigator.share({ files: [file], title: fileName });
+						})
+						.catch(function (e) { if (e && e.name !== 'AbortError') { alert('No se pudo compartir el presupuesto: ' + e.message); } })
+						.then(function () { btn.disabled = false; });
+				});
+			})();
+			</script>
 			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-eye"></i><span class="hidden-xs"> View</span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
