@@ -39,7 +39,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 
 ### 0.0.15
   - [] Edit language
-  - [] Mod API client for banks supporting PSD2 APIs with OAuth2 authentication.
+  - [x] Conciliación bancaria (Norma 43 y CAMT.053)
   - [x] Module Account
   - [x] Module Production
   - [x] Kanban
