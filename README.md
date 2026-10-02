@@ -63,45 +63,6 @@ For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or
 - [x] VeriFactu
 - [x] IA
 
-### 0.0.7 
-- [x] Change price articles on invoice
-
-### 0.0.6
-- Resellers on web
-- cron support
-- minor fix bug
-
-### 0.0.5 
-- IBAN validator
-- Attributes
-- Status Order
-
-### 0.0.4 
-- Delivery
-- Remittances
-
-### 0.0.3 
-- Orders
-- Payments
-- Auto-update
-- Receipts
-
-### 0.0.2 
-- Manufacturers
-- Multilanguage
-- Returns
-
-### 0.0.1 
-- Customers
-- Invoices
-- Quotes
-
-### Requirements
-To use InvoiceFlash application you should have already installed:
-
-*   **PHP** >=5.0 
-*   **MariaDB** >=11.7 server
-
 ### How to install
 Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=10" target="_blank">read this doc</a>.
 
