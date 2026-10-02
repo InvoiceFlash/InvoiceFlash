@@ -13,6 +13,23 @@
 <p align="center" bgcolor="#429ae1"><b>InvoiceFlash is a self-hosted open source ERP with RAG options.<br>
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
+## About
+
+InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. It takes a company from the first quote to the accounting entry in a single application. You install it on your own server, you keep your data, and you extend it with modules.
+
+**What it covers**
+
+- **Sales:** customers, quotes, orders, delivery notes, invoices, receipts and remittances.
+- **Purchases:** suppliers, purchase orders, receptions and purchase invoices.
+- **Accounting:** automatic journal entries, tax models and export to Sage 50.
+- **CRM:** leads, contacts, calendar, mailings and sales follow-up.
+- **Production:** bills of materials, manufacturing orders and a Kanban board.
+- **Presence control:** clock-in and absences.
+- **Electronic invoicing:** Facturae and VeriFactu.
+- **AI:** RAG search over your own documents, a REST API and an MCP server.
+- **Modules:** add or customize features without touching the core.
+- **Multilanguage**, with import from Excel, SaConta and Flash Gestión.
+
 ## Getting Started
 
 ### Prerequisites
