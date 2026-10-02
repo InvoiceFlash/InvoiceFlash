@@ -2,7 +2,13 @@
 
 ![InvoiceFlash](https://www.invoiceflash.com/github/logo/png/screen.gif)
 
-[![InvoiceFlash](https://badge.fury.io/gh/InvoiceFlash%2FInvoiceFlash.svg)](https://badge.fury.io/gh/InvoiceFlash%2FInvoiceFlash)
+[![CI](https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml/badge.svg)](https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/InvoiceFlash/InvoiceFlash)](https://github.com/InvoiceFlash/InvoiceFlash/releases)
+[![php](https://img.shields.io/badge/php-5.x%20to%208.3-blue)](https://www.php.net)
+[![mariadb](https://img.shields.io/badge/mariadb-%3E%3D11.7-blue)](https://mariadb.org)
+[![license](https://img.shields.io/badge/license-GPLv3-green)](LICENSE)
+[![online](https://img.shields.io/badge/online-demo-blueviolet)](https://demo.invoiceflash.com)
+[![docs](https://img.shields.io/badge/online-docs-blueviolet)](https://docs.invoiceflash.com)
 
 <p align="center" bgcolor="#429ae1"><b>InvoiceFlash is a self-hosted open source ERP with RAG options.<br>
 For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
