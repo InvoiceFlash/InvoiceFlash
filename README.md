@@ -38,7 +38,6 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 - PHP > 5.x
 
 ### 0.0.15
-  - [] Edit language
   - [x] Conciliación bancaria (Norma 43 y CAMT.053)
   - [x] Module Account
   - [x] Module Production
