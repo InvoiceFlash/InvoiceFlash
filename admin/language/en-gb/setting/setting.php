@@ -208,7 +208,6 @@ $_['entry_conta_iva_soportado_account'] = 'Input VAT accounting account (472):';
 $_['entry_conta_digits'] = 'Accounting digits';
 $_['entry_certificado'] = 'Certificate:';
 $_['entry_clave'] = 'Password:';
-$_['entry_aeat_active'] = 'Send invoices to the AEAT:';
 $_['entry_ai_enabled'] = 'Use AI:';
 $_['error_ai_enabled'] = 'AI cannot be enabled: you must provide the Claude API KEY or the Ollama URL, depending on the selected engine.';
 $_['entry_ai_provider'] = 'AI to use:';
@@ -229,11 +228,6 @@ $_['entry_supplier_invoice_pop_ssl'] = 'Use SSL/TLS?';
 $_['entry_supplier_invoice_match_order'] = '<a data-toggle="tooltip" title="Only automatically import invoices that match 100% on Tax ID and total amount with a Purchase Order."><i class="fas fa-question-circle"></i></a> Only match Order:';
 $_['error_supplier_invoice_email'] = 'You must set an email in the Mail tab to import supplier invoices.';
 $_['error_supplier_invoice_pop_host'] = 'You must set the POP3 server in the Mail tab to import supplier invoices.';
-$_['entry_aeat_send'] = 'Sending mode:';
-$_['text_aeat_test'] = 'Test';
-$_['text_aeat_production'] = 'Production';
-$_['entry_aeat_ca_bundle'] = 'CA Bundle Path:';
-$_['text_aeat_ca_bundle_help'] = 'Optional. Path to a .pem file with trusted root certificates, relative to the InvoiceFlash root folder. Only needed if the server gets an SSL certificate error when sending to the AEAT (common on Windows/XAMPP setups with no CA bundle configured). A sample bundle is already included at system/external/cacert.pem.';
 
 $_['text_success_mail'] = 'Test Mail sent. Check your inbox.';
 ?>

@@ -4,16 +4,9 @@ $_['heading_title']                           = 'Facturas';
 
 // Tabs
 $_['tab_receipts']                            = 'Recibos';
-$_['tab_aeat']                                = 'AEAT';
 
 // Text
 $_['text_success']                            = '&Eacute;xito: &iexcl;Ha modificado las facturas!';
-$_['text_aeat_sent_date']                     = 'Fecha de Env&iacute;o:';
-$_['text_aeat_response_date']                 = 'Fecha Respuesta:';
-$_['text_aeat_status']                        = 'Estado AEAT:';
-$_['text_aeat_notice']                        = 'Aviso:';
-$_['text_aeat_csv']                           = 'CSV:';
-$_['button_resend_aeat']                      = 'Reenviar a la AEAT';
 $_['text_invoice_id']                         = 'ID de Factura:';
 $_['text_invoice_no']                         = 'N&ordm; de Factura:';
 $_['text_invoice_date']                       = 'Fecha de Factura:';
@@ -153,19 +146,6 @@ $_['error_facturae_seller_postcode']          = 'Advertencia: &iexcl;La direcci&
 $_['error_facturae_buyer_vat_id']             = 'Advertencia: &iexcl;Falta el CIF/NIF del cliente/facturaci&oacute;n o no es v&aacute;lido, es obligatorio para generar una factura Facturae!';
 $_['error_facturae_buyer_postcode']           = 'Advertencia: &iexcl;Falta el c&oacute;digo postal del cliente/facturaci&oacute;n o no es v&aacute;lido, se requiere un c&oacute;digo postal v&aacute;lido de 5 d&iacute;gitos para generar una factura Facturae!';
 $_['error_facturae_sign']                     = 'Advertencia: No se pudo firmar la factura Facturae con el certificado configurado en Ajustes.';
-$_['error_aeat_inactive']                     = 'Advertencia: El env&iacute;o de facturas a la AEAT est&aacute; desactivado en Ajustes (pesta&ntilde;a Hacienda).';
-$_['error_aeat_vat_id']                       = 'Advertencia: &iexcl;Debe establecer el campo CIF/NIF en Ajustes antes de enviar una factura a la AEAT!';
-$_['error_aeat_certificate']                  = 'Advertencia: &iexcl;Debe subir el certificado digital y establecer su contrase&ntilde;a en Ajustes antes de enviar una factura a la AEAT!';
-$_['error_aeat_not_found']                    = 'Advertencia: Factura no encontrada.';
-$_['error_aeat_seller_nif']                   = 'Advertencia: El CIF/NIF de la tienda debe tener exactamente 9 caracteres para enviar a la AEAT.';
-$_['error_aeat_buyer_nif']                    = 'Advertencia: El CIF/NIF del cliente debe tener exactamente 9 caracteres para enviar a la AEAT (no se admiten clientes extranjeros por el momento).';
-$_['error_aeat_generic']                      = 'La AEAT ha rechazado el env&iacute;o.';
-$_['error_aeat_ca_bundle']                    = 'Advertencia: No se pudo verificar el certificado SSL del servidor de la AEAT porque este servidor no tiene configurado un almac&eacute;n de certificados de confianza (CA). Contacte con su administrador de sistemas o proveedor de hosting para configurarlo.';
-$_['error_aeat_ca_bundle_not_found']           = 'Advertencia: La ruta al almac&eacute;n CA configurada en Ajustes (pesta&ntilde;a Hacienda) no existe.';
-$_['text_success_aeat']                       = '&Eacute;xito: La factura se ha enviado correctamente a la AEAT.';
-$_['text_aeat_status_error']                  = 'Error';
-$_['text_aeat_default_description']           = 'Venta de bienes y/o prestaci&oacute;n de servicios';
-$_['text_aeat_already_registered']            = 'Esta factura ya est&aacute; correctamente registrada en la AEAT.';
 $_['error_telephone']                         = '&iexcl;El tel&eacute;fono debe tener entre 3 y 32 caracteres!';
 $_['error_password']                          = '&iexcl;La contrase&ntilde;a debe tener entre 3 y 20 caracteres!';
 $_['error_confirm']                           = '&iexcl;La contrase&ntilde;a y su confirmaci&oacute;n no coinciden!';

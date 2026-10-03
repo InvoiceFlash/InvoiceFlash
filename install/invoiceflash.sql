@@ -7725,12 +7725,6 @@ CREATE TABLE `if_invoice` (
   `accept_language` varchar(255) NOT NULL,
   `date_added` datetime NOT NULL,
   `date_modified` datetime NOT NULL,
-  `aeat_sent_date` datetime DEFAULT NULL,
-  `aeat_response_date` datetime DEFAULT NULL,
-  `aeat_status` varchar(50) DEFAULT NULL,
-  `aeat_notice` text,
-  `aeat_csv` varchar(100) DEFAULT NULL,
-  `aeat_hash` char(64) DEFAULT NULL,
   `entry_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`invoice_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

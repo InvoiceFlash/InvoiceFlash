@@ -326,7 +326,6 @@ $_['entry_conta_iva_soportado_account'] = 'Cuenta contable de IVA soportado (472
 $_['entry_conta_digits'] = 'N&ordm; de d&iacute;gitos contabilidad';
 $_['entry_certificado'] = 'Certificado:';
 $_['entry_clave'] = 'Contrase&ntilde;a certificado:';
-$_['entry_aeat_active'] = 'Enviar facturas a la AEAT:';
 $_['entry_ai_enabled'] = 'Usar IA:';
 $_['error_ai_enabled'] = 'No se puede activar la IA: falta indicar el API KEY de Claude o la URL de Ollama, seg&uacute;n el motor seleccionado.';
 $_['entry_ai_provider'] = 'IA a utilizar:';
@@ -347,10 +346,5 @@ $_['entry_supplier_invoice_pop_ssl'] = '&iquest;Usar SSL/TLS?';
 $_['entry_supplier_invoice_match_order'] = '<a data-toggle="tooltip" title="S&oacute;lo incluir autom&aacute;ticamente los invoices que coinciden 100% en el NIF y en el total con un Purchase Order."><i class="fas fa-question-circle"></i></a> Solo coincide con el Importe del Pedido:';
 $_['error_supplier_invoice_email'] = 'Debes indicar un email en la pesta&ntilde;a Mail para poder importar facturas de proveedores.';
 $_['error_supplier_invoice_pop_host'] = 'Debes indicar el servidor POP3 en la pesta&ntilde;a Mail para poder importar facturas de proveedores.';
-$_['entry_aeat_send'] = 'Modo de Env&iacute;o:';
-$_['text_aeat_test'] = 'Pruebas';
-$_['text_aeat_production'] = 'Producci&oacute;n';
-$_['entry_aeat_ca_bundle'] = 'Ruta al almac&eacute;n CA:';
-$_['text_aeat_ca_bundle_help'] = 'Opcional. Ruta a un archivo .pem con certificados ra&iacute;z de confianza, relativa a la carpeta ra&iacute;z de InvoiceFlash. Solo hace falta si el servidor da un error de certificado SSL al enviar a la AEAT (com&uacute;n en entornos Windows/XAMPP sin almac&eacute;n de CA configurado). Ya se incluye uno de ejemplo en system/external/cacert.pem.';
 
 $_['text_success_mail'] = 'Email de prueba enviado. Revise su bandeja de entrada.';

@@ -35,8 +35,6 @@ class ControllerSaleInvoice extends Controller {
 				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
 			));
 
-			$this->autoSendAeat($new_invoice_id);
-
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
@@ -508,8 +506,6 @@ class ControllerSaleInvoice extends Controller {
 				'total'         => $this->currency->format($result['total'], '', '', true, true),
 				'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'selected'      => isset($this->request->post['selected']) && in_array($result['invoice_id'], $this->request->post['selected']),
-				'aeat_status'   => $result['aeat_status'],
-				'aeat_ok'       => in_array($result['aeat_status'], array('Correcto', 'ParcialmenteCorrecto')),
 				'action'        => $action
 			);
 		}
@@ -1451,14 +1447,6 @@ class ControllerSaleInvoice extends Controller {
 			$this->data['tab_fraud'] = $this->language->get('tab_fraud');
 			$this->data['tab_history'] = $this->language->get('tab_history');
 			$this->data['tab_receipts'] = $this->language->get('tab_receipts');
-			$this->data['tab_aeat'] = $this->language->get('tab_aeat');
-
-			$this->data['text_aeat_sent_date'] = $this->language->get('text_aeat_sent_date');
-			$this->data['text_aeat_response_date'] = $this->language->get('text_aeat_response_date');
-			$this->data['text_aeat_status'] = $this->language->get('text_aeat_status');
-			$this->data['text_aeat_notice'] = $this->language->get('text_aeat_notice');
-			$this->data['text_aeat_csv'] = $this->language->get('text_aeat_csv');
-			$this->data['button_resend_aeat'] = $this->language->get('button_resend_aeat');
 
 			$this->data['token'] = $this->session->data['token'];
 
@@ -1594,12 +1582,6 @@ class ControllerSaleInvoice extends Controller {
 			}
 			
 			$this->data['date_added'] = date($this->language->get('date_format_short'), strtotime($invoice_info['date_added']));
-
-			$this->data['aeat_sent_date'] = $invoice_info['aeat_sent_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_sent_date'])) : '';
-			$this->data['aeat_response_date'] = $invoice_info['aeat_response_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_response_date'])) : '';
-			$this->data['aeat_status'] = $invoice_info['aeat_status'];
-			$this->data['aeat_notice'] = $invoice_info['aeat_notice'] ? nl2br($invoice_info['aeat_notice']) : '';
-			$this->data['aeat_csv'] = $invoice_info['aeat_csv'];
 
 			$this->data['payment_company'] = $invoice_info['payment_company'];
 			$this->data['payment_company_id'] = $invoice_info['payment_company_id'];
@@ -2070,37 +2052,6 @@ class ControllerSaleInvoice extends Controller {
 				
 				$total_data = $this->model_sale_invoice->getInvoiceTotals($invoice_id);
 
-				//add - VeriFactu QR code (Real Decreto 1007/2023, arts. 20-21)
-				$qr_code = '';
-				$qr_code_pdf = '';
-				$qr_verifiable = defined('VERIFACTU_ONLINE_MODE') ? VERIFACTU_ONLINE_MODE : false;
-				$qr_numserie = $invoice_no ? $invoice_no : ($invoice_info['invoice_prefix'] . $invoice_id);
-
-				// only invoices actually registered with the AEAT carry a QR (same check as the list icon and resendAeat())
-				$qr_registered = in_array($invoice_info['aeat_status'], array('Correcto', 'ParcialmenteCorrecto'));
-
-				if ($store_nif && $qr_numserie && $qr_registered) {
-					require_once(DIR_SYSTEM . 'library/verifactu.php');
-					require_once(DIR_SYSTEM . 'external/tcpdf/tcpdf_barcodes_2d.php');
-
-					$verifactu = new Verifactu($store_nif, $invoice_info['store_name'], array());
-					$verifactu->setProduction($this->config->get('config_aeat_send') == 'production');
-
-					$qr_url = $verifactu->getQrUrl($store_nif, $qr_numserie, $invoice_info['date_added'], number_format((float)$invoice_info['total'], 2, '.', ''), $qr_verifiable);
-
-					$qr_barcode = new TCPDF2DBarcode($qr_url, 'QRCODE,M');
-					$qr_png = $qr_barcode->getBarcodePngData(6, 6, array(0, 0, 0));
-
-					if ($qr_png !== false) {
-						$qr_code = 'data:image/png;base64,' . base64_encode($qr_png);
-
-						// TCPDF's writeHTML() cannot render base64 data-uri images, so the PDF needs a real file
-						$qr_code_pdf = DIR_CACHE . 'qr_invoice_' . $invoice_id . '.png';
-						file_put_contents($qr_code_pdf, $qr_png);
-					}
-				}
-				//end add
-
 				$this->data['invoices'][] = array(
 					'invoice_id'	         => $invoice_id,
 					'invoice_no'         => $invoice_no,
@@ -2128,10 +2079,7 @@ class ControllerSaleInvoice extends Controller {
 					'shipping_method'    => $invoice_info['shipping_method'],
 					'product'            => $product_data,
 					'total'              => $total_data,
-					'comment'            => nl2br($invoice_info['comment']),
-					'qr_code'            => $qr_code,
-					'qr_code_pdf'        => $qr_code_pdf,
-					'qr_verifiable'      => $qr_verifiable
+					'comment'            => nl2br($invoice_info['comment'])
 				);
 			}
 		}
@@ -2416,306 +2364,6 @@ class ControllerSaleInvoice extends Controller {
 		$this->response->addHeader('Content-Type: application/xml; charset=UTF-8');
 		$this->response->addHeader('Content-Disposition: attachment; filename="facturae_' . $invoice_info['invoice_prefix'] . $invoice_no . '.xml"');
 		$this->response->setOutput($xml);
-	}
-
-	// Submits the invoice to the AEAT VERI*FACTU web service (Real Decreto 1007/2023) and
-	// records the outcome on the invoice's own row (aeat_* columns, shown on the AEAT tab).
-	// Called automatically right after an invoice is created (see insert(), and the
-	// delivery/draft-to-invoice conversion controllers) whenever config_aeat_active is on -
-	// there is no manual "send" button, this is not a user-facing AJAX action.
-	//
-	// @return array{success:bool,message:string}
-	public function autoSendAeat($invoice_id) {
-		$this->load->language('sale/invoice');
-
-		if (!$this->config->get('config_aeat_active')) {
-			return array('success' => false, 'message' => $this->language->get('error_aeat_inactive'));
-		}
-
-		if (!$this->config->get('config_vat_id') && !$this->config->get('config_nif')) {
-			return array('success' => false, 'message' => $this->language->get('error_aeat_vat_id'));
-		}
-
-		if (!$this->config->get('certificado') || !$this->config->get('clave')) {
-			return array('success' => false, 'message' => $this->language->get('error_aeat_certificate'));
-		}
-
-		require_once(DIR_SYSTEM . 'library/verifactu.php');
-
-		$this->load->model('sale/invoice');
-
-		$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
-
-		if (!$invoice_info) {
-			return array('success' => false, 'message' => $this->language->get('error_aeat_not_found'));
-		}
-
-		$this->load->model('localisation/country');
-		$this->load->model('localisation/zone');
-		$this->load->model('localisation/tax_rate');
-
-		list($seller, $buyer) = $this->getFacturaeParties($invoice_info);
-
-		$error = $this->getFacturaePartiesError($seller, $buyer);
-
-		if (!$error && strlen($seller['nif']) != 9) {
-			$error = $this->language->get('error_aeat_seller_nif');
-		}
-
-		if (!$error && strlen($buyer['nif']) != 9) {
-			$error = $this->language->get('error_aeat_buyer_nif');
-		}
-
-		if ($error) {
-			return array('success' => false, 'message' => $error);
-		}
-
-		// Tax breakdown: same derivation as facturae() (taxable base from the tax amount and
-		// rate, so it stays correct even when an invoice mixes several VAT rates).
-		$totals = $this->model_sale_invoice->getInvoiceTotals($invoice_id);
-
-		$tax_rate_lookup = array();
-
-		foreach ($this->model_localisation_tax_rate->getTaxRates() as $tax_rate) {
-			$tax_rate_lookup[$tax_rate['name']] = $tax_rate;
-		}
-
-		$sub_total = 0;
-		$tax_total = 0;
-		$taxes = array();
-
-		foreach ($totals as $total) {
-			if ($total['code'] == 'sub_total') {
-				$sub_total = (float)$total['value'];
-			}
-
-			if ($total['code'] == 'tax') {
-				$rate = 0;
-
-				if (isset($tax_rate_lookup[$total['title']]) && $tax_rate_lookup[$total['title']]['type'] == 'P') {
-					$rate = (float)$tax_rate_lookup[$total['title']]['rate'];
-				}
-
-				$amount = (float)$total['value'];
-
-				$taxes[] = array(
-					'rate'   => $rate,
-					'base'   => $rate > 0 ? round($amount / ($rate / 100), 2) : $sub_total,
-					'amount' => $amount
-				);
-
-				$tax_total += $amount;
-			}
-		}
-
-		if (!$taxes) {
-			$taxes[] = array(
-				'rate'   => 0,
-				'base'   => $sub_total,
-				'amount' => 0
-			);
-		}
-
-		$breakdown = array();
-
-		foreach ($taxes as $tax) {
-			$breakdown[] = array(
-				'tax_type'       => Verifactu::TAX_TYPE_IVA,
-				'regime_type'    => Verifactu::REGIME_GENERAL,
-				'operation_type' => Verifactu::OPERATION_SUBJECT,
-				'base_amount'    => number_format($tax['base'], 2, '.', ''),
-				// AEAT rule 1208: TipoImpositivo/CuotaRepercutida are mandatory for OPERATION_SUBJECT
-				// (S1) lines, even at a 0% rate - only genuinely exempt/non-subject operation types
-				// (not currently used here) are allowed to omit them.
-				'tax_rate'       => number_format($tax['rate'], 2, '.', ''),
-				'tax_amount'     => number_format($tax['amount'], 2, '.', '')
-			);
-		}
-
-		// Description of the operation (required by AEAT): the invoiced product/service names.
-		$products = $this->model_sale_invoice->getInvoiceProducts($invoice_id);
-
-		$product_names = array();
-
-		foreach ($products as $product) {
-			$product_names[] = $product['name'];
-		}
-
-		$description = $product_names ? implode(', ', $product_names) : $this->language->get('text_aeat_default_description');
-		$description = utf8_substr($description, 0, 500);
-
-		$invoice_number = $invoice_info['invoice_prefix'] . ($invoice_info['invoice_no'] ? $invoice_info['invoice_no'] : $invoice_info['invoice_id']);
-
-		// Chaining: VERI*FACTU requires every record to reference the hash of the previous one
-		// issued by the same taxpayer (store). aeat_hash is only set on invoices that were
-		// actually submitted (see below), so this always points at the last real link in the chain.
-		$previous = null;
-
-		$previous_query = $this->db->query("SELECT invoice_prefix, invoice_no, invoice_id, date_added, aeat_hash FROM `" . DB_PREFIX . "invoice` WHERE store_id = '" . (int)$invoice_info['store_id'] . "' AND aeat_hash IS NOT NULL AND invoice_id != '" . (int)$invoice_id . "' ORDER BY invoice_id DESC LIMIT 1");
-
-		if ($previous_query->num_rows) {
-			$previous = array(
-				'issuer_id'      => $seller['nif'],
-				'invoice_number' => $previous_query->row['invoice_prefix'] . ($previous_query->row['invoice_no'] ? $previous_query->row['invoice_no'] : $previous_query->row['invoice_id']),
-				'issue_date'     => $previous_query->row['date_added'],
-				'hash'           => $previous_query->row['aeat_hash']
-			);
-		}
-
-		// Self-developed system: this deployment is both the software's developer and the
-		// taxpayer using it, which RD 1007/2023 allows for non-commercialised systems.
-		$system = array(
-			'vendor_nif'              => $seller['nif'],
-			'vendor_name'             => $seller['name'],
-			'name'                    => 'InvoiceFlash',
-			'id'                      => '01',
-			'version'                 => defined('VERSION') ? VERSION : '1.0',
-			'installation_number'     => '1',
-			'only_verifactu'          => true,
-			'supports_multi_taxpayer' => false,
-			'has_multi_taxpayer'      => false
-		);
-
-		$is_production = ($this->config->get('config_aeat_send') == 'production');
-
-		$verifactu = new Verifactu($seller['nif'], $seller['name'], $system);
-		$verifactu->setCertificate(DIR_DOWNLOAD . $this->config->get('certificado'), $this->config->get('clave'));
-		$verifactu->setProduction($is_production);
-
-		// AEAT's own pre-production/testing sandbox serves a certificate that isn't in any
-		// public CA bundle, so SSL verification is skipped there to allow local testing.
-		// Production always verifies - this can never be disabled outside test mode.
-		if (!$is_production) {
-			$verifactu->setVerifySsl(false);
-		}
-
-		// Optional CA bundle for servers whose cURL build has no default trust store configured
-		// (see error_aeat_ca_bundle above) - path is either absolute or relative to the
-		// InvoiceFlash root folder (e.g. "system/external/cacert.pem", the sample bundle included).
-		$ca_bundle = trim((string)$this->config->get('config_aeat_ca_bundle'));
-
-		if ($ca_bundle !== '') {
-			$ca_bundle_path = is_file($ca_bundle) ? $ca_bundle : rtrim($this->getInvoiceFlashRoot(), '/') . '/' . ltrim(str_replace('\\', '/', $ca_bundle), '/');
-
-			if (!is_file($ca_bundle_path)) {
-				return array('success' => false, 'message' => $this->language->get('error_aeat_ca_bundle_not_found') . ' (' . $ca_bundle . ')');
-			}
-
-			$verifactu->setCaBundle($ca_bundle_path);
-		}
-
-		try {
-			$record = $verifactu->createRegistrationRecord(array(
-				'invoice_number'   => $invoice_number,
-				'issue_date'       => $invoice_info['date_added'],
-				'description'      => $description,
-				'recipients'       => array(array('name' => $buyer['name'], 'nif' => $buyer['nif'])),
-				'breakdown'        => $breakdown,
-				'total_tax_amount' => number_format($tax_total, 2, '.', ''),
-				'total_amount'     => number_format((float)$invoice_info['total'], 2, '.', ''),
-				'previous'         => $previous
-			));
-		} catch (VerifactuException $e) {
-			return array('success' => false, 'message' => $e->getMessage());
-		}
-
-		$sent_date = date('Y-m-d H:i:s');
-
-		try {
-			$result = $verifactu->send(array($record));
-		} catch (VerifactuException $e) {
-			$notice = $this->isAeatCaBundleError($e->getMessage()) ? $this->language->get('error_aeat_ca_bundle') . ' (' . $e->getMessage() . ')' : $e->getMessage();
-
-			// The record itself was validated and hashed successfully - keep it in the local
-			// chain (so the next invoice still links to it) even though the HTTP call failed.
-			$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET
-				aeat_sent_date = '" . $this->db->escape($sent_date) . "',
-				aeat_status = '" . $this->db->escape($this->language->get('text_aeat_status_error')) . "',
-				aeat_notice = '" . $this->db->escape($notice) . "',
-				aeat_hash = '" . $this->db->escape($record['hash']) . "'
-				WHERE invoice_id = '" . (int)$invoice_id . "'");
-
-			return array('success' => false, 'message' => $notice);
-		}
-
-		$response_date = date('Y-m-d H:i:s');
-
-		$notice_parts = array();
-
-		if ($result['error']) {
-			$notice_parts[] = $result['error'];
-		}
-
-		foreach ($result['items'] as $item) {
-			if ($item['error_description']) {
-				$notice_parts[] = ($item['error_code'] ? $item['error_code'] . ': ' : '') . $item['error_description'];
-			}
-		}
-
-		$notice = implode("\n", $notice_parts);
-		$status = $result['status'] ? $result['status'] : $this->language->get('text_aeat_status_error');
-
-		$this->db->query("UPDATE `" . DB_PREFIX . "invoice` SET
-			aeat_sent_date = '" . $this->db->escape($sent_date) . "',
-			aeat_response_date = '" . $this->db->escape($response_date) . "',
-			aeat_status = '" . $this->db->escape($status) . "',
-			aeat_notice = '" . $this->db->escape($notice) . "',
-			aeat_csv = '" . $this->db->escape((string)$result['csv']) . "',
-			aeat_hash = '" . $this->db->escape($record['hash']) . "'
-			WHERE invoice_id = '" . (int)$invoice_id . "'");
-
-		if ($result['success']) {
-			return array('success' => true, 'message' => $this->language->get('text_success_aeat'));
-		}
-
-		return array('success' => false, 'message' => $notice ? $notice : $this->language->get('error_aeat_generic'));
-	}
-
-	// Manual re-send button on the AEAT tab (invoice_info.tpl) - re-runs autoSendAeat() for an
-	// invoice that was never sent (AEAT was off, missing certificate...) or that failed and needs
-	// retrying after fixing the cause (e.g. a wrong config_vat_id). autoSendAeat() always reads
-	// config_vat_id/config_nif fresh via getFacturaeParties(), so a NIF change in Settings is
-	// picked up immediately with no extra step.
-	public function resendAeat() {
-		$this->load->language('sale/invoice');
-
-		$json = array();
-
-		if (!$this->user->hasPermission('modify', 'sale/invoice')) {
-			$json['error'] = $this->language->get('error_permission');
-		} else {
-			$invoice_id = isset($this->request->get['invoice_id']) ? (int)$this->request->get['invoice_id'] : 0;
-
-			$this->load->model('sale/invoice');
-
-			$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
-
-			// VERI*FACTU rejects re-submitting a record that was already accepted (Código 3000,
-			// "Registro de facturación duplicado") - short-circuit instead of hitting the AEAT
-			// again for nothing.
-			if ($invoice_info && in_array($invoice_info['aeat_status'], array('Correcto', 'ParcialmenteCorrecto'))) {
-				$json['success'] = true;
-				$json['message'] = $this->language->get('text_aeat_already_registered');
-			} else {
-				$result = $this->autoSendAeat($invoice_id);
-
-				$json['success'] = $result['success'];
-				$json['message'] = $result['message'];
-
-				$invoice_info = $this->model_sale_invoice->getInvoice($invoice_id);
-			}
-
-			if ($invoice_info) {
-				$json['aeat_sent_date']     = $invoice_info['aeat_sent_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_sent_date'])) : '';
-				$json['aeat_response_date'] = $invoice_info['aeat_response_date'] ? date($this->language->get('date_format_short') . ' H:i', strtotime($invoice_info['aeat_response_date'])) : '';
-				$json['aeat_status']        = $invoice_info['aeat_status'];
-				$json['aeat_notice']        = $invoice_info['aeat_notice'] ? nl2br($invoice_info['aeat_notice']) : '';
-				$json['aeat_csv']           = $invoice_info['aeat_csv'];
-			}
-		}
-
-		$this->response->addHeader('Content-Type: application/json');
-		$this->response->setOutput(json_encode($json));
 	}
 
 	protected function buildFacturaeXml($data) {
@@ -3083,29 +2731,6 @@ class ControllerSaleInvoice extends Controller {
 		);
 
 		return array($seller, $buyer);
-	}
-
-	// InvoiceFlash's project root (one level above DIR_APPLICATION/admin) - used to resolve
-	// config_aeat_ca_bundle when it's given as a relative path (e.g. "system/external/cacert.pem").
-	protected function getInvoiceFlashRoot() {
-		return dirname(rtrim(str_replace('\\', '/', DIR_APPLICATION), '/'));
-	}
-
-	// Detects the "no CA trust store configured" class of cURL/OpenSSL error - common on
-	// Windows/XAMPP-style PHP builds that ship without a default CA bundle - so sendAeat()
-	// can surface a clear, actionable notice instead of a cryptic OpenSSL message.
-	protected function isAeatCaBundleError($message) {
-		$needles = array('certificate problem', 'self-signed certificate', 'self signed certificate', 'unable to get local issuer certificate', 'unable to verify the first certificate', 'ssl certificate problem');
-
-		$message = strtolower($message);
-
-		foreach ($needles as $needle) {
-			if (strpos($message, $needle) !== false) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	protected function getFacturaePartiesError($seller, $buyer) {

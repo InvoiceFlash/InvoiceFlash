@@ -25,7 +25,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 - **CRM:** leads, contacts, calendar, mailings and sales follow-up.
 - **Production:** bills of materials, manufacturing orders and a Kanban board.
 - **Presence control:** clock-in and absences.
-- **Electronic invoicing:** Facturae and VeriFactu.
+- **Electronic invoicing:** Facturae (VeriFactu is an optional module).
 - **AI:** RAG search over your own documents, a REST API and an MCP server.
 - **Modules:** add or customize features without touching the core.
 - **Multilanguage**, with import from Excel, SaConta and Flash Gestión.
@@ -38,7 +38,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 - PHP > 5.x
 
 ### 0.0.16
-  - [ ] Turn Veri*Factu into a module
+  - [x] Turn Veri*Factu into a module
   - [ ] eInvoicing module compliant with EN 16931 and PEPPOL
   - [ ] Charts in Accounting
   - [ ] Mail share
@@ -82,7 +82,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 - [x] API
 - [x] Modules
 - [x] Facturae
-- [x] VeriFactu
+- [x] VeriFactu (module `Veri_Factu`)
 - [x] IA
 
 ### How to install

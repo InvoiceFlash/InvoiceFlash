@@ -16,7 +16,6 @@
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-						<th width="40" class="text-center d-none d-lg-table-cell"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#qr-code"/></svg></th>
 						<th class="text-end"><a href="<?php echo $sort_invoice; ?>"><?php echo $column_invoice_id; echo ($sort == 'o.invoice_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_customer; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
@@ -56,11 +55,6 @@
 							<?php } else { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $invoice['invoice_id']; ?>">
 							<?php } ?></td>
-						<td class="text-center d-none d-lg-table-cell"><?php if ($invoice['aeat_ok']) { ?>
-							<svg class="bi text-success" data-bs-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"><use href="view/image/bootstrap-icons.svg#qr-code"/></svg>
-							<?php } else { ?>
-							<svg class="bi" style="color:#000;" <?php if ($invoice['aeat_status']) { ?>data-bs-toggle="tooltip" title="<?php echo $invoice['aeat_status']; ?>"<?php } ?>><use href="view/image/bootstrap-icons.svg#qr-code"/></svg>
-							<?php } ?></td>
 						<td class="text-end"><?php echo $invoice['invoice_id']; ?></td>
 						<td><?php echo $invoice['company']; ?></td>
 						<td class="d-none d-lg-table-cell text-<?php echo strtolower($invoice['status']); ?>"><?php echo $invoice['status']; ?></td>
@@ -73,7 +67,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="8"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="7"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

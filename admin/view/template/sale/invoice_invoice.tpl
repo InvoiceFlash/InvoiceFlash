@@ -24,12 +24,6 @@
 		<div class="logo" style="width:auto;">
 			<img src="<?php echo '../image/' . $logo; ?>" title="<?php echo $invoices['store_name']; ?>" />
 		</div>
-		<?php if ($invoices['qr_code']) { ?>
-		<div style="text-align:center;">
-			<div><b>QR tributario:</b></div>
-			<img src="<?php echo $invoices['qr_code']; ?>" style="width:30mm; height:30mm;" alt="QR tributario" /><br><b>VERI*FACTU</b>
-		</div>
-		<?php } ?>
 	</div>
 	<table class="table table-bordered">
 		<tr>

@@ -574,13 +574,7 @@ class ModelSaleInvoice extends Model {
 				'currency_code'           => $invoice_query->row['currency_code'],
 				'currency_value'          => $invoice_query->row['currency_value'],					
 				'date_added'              => $invoice_query->row['date_added'],
-				'date_modified'           => $invoice_query->row['date_modified'],
-				'aeat_sent_date'          => $invoice_query->row['aeat_sent_date'],
-				'aeat_response_date'      => $invoice_query->row['aeat_response_date'],
-				'aeat_status'             => $invoice_query->row['aeat_status'],
-				'aeat_notice'             => $invoice_query->row['aeat_notice'],
-				'aeat_csv'                => $invoice_query->row['aeat_csv'],
-				'aeat_hash'               => $invoice_query->row['aeat_hash']
+				'date_modified'           => $invoice_query->row['date_modified']
 			);
 		} else {
 			return false;
@@ -588,7 +582,7 @@ class ModelSaleInvoice extends Model {
 	}
 
 	public function getInvoices($data = array()) {
-		$sql = "SELECT o.invoice_id, o.shipping_company, o.aeat_status, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, c.company AS company FROM `" . DB_PREFIX . "invoice` o LEFT JOIN `" . DB_PREFIX . "invoice_status` os ON o.invoice_status_id = os.invoice_status_id LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
+		$sql = "SELECT o.invoice_id, o.shipping_company, os.name AS `status`, os.color, o.total, o.currency_code, o.currency_value, o.date_added, c.company AS company FROM `" . DB_PREFIX . "invoice` o LEFT JOIN `" . DB_PREFIX . "invoice_status` os ON o.invoice_status_id = os.invoice_status_id LEFT JOIN `" . DB_PREFIX . "customer` c ON o.customer_id = c.customer_id WHERE os.language_id = '" . $this->config->get('config_language_id') . "'";
 
 		if (isset($data['filter_invoice_status_id']) && !is_null($data['filter_invoice_status_id'])) {
 			$sql .= " AND o.invoice_status_id = '" . (int)$data['filter_invoice_status_id'] . "'";

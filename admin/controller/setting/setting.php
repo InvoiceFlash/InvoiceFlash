@@ -82,8 +82,6 @@ class ControllerSettingSetting extends Controller {
 		$this->data['text_none'] = $this->language->get('text_none');
 		$this->data['text_yes'] = $this->language->get('text_yes');
 		$this->data['text_no'] = $this->language->get('text_no');
-		$this->data['text_aeat_test'] = $this->language->get('text_aeat_test');
-		$this->data['text_aeat_production'] = $this->language->get('text_aeat_production');
 		$this->data['text_option_general'] = $this->language->get('text_option_general');
 		$this->data['text_items'] = $this->language->get('text_items');
 		$this->data['text_product'] = $this->language->get('text_product');
@@ -232,10 +230,6 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_conta_digits'] = $this->language->get('entry_conta_digits');
 		$this->data['entry_certificado'] = $this->language->get('entry_certificado');
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
-		$this->data['entry_aeat_active'] = $this->language->get('entry_aeat_active');
-		$this->data['entry_aeat_send'] = $this->language->get('entry_aeat_send');
-		$this->data['entry_aeat_ca_bundle'] = $this->language->get('entry_aeat_ca_bundle');
-		$this->data['text_aeat_ca_bundle_help'] = $this->language->get('text_aeat_ca_bundle_help');
 		$this->data['entry_ai_enabled'] = $this->language->get('entry_ai_enabled');
 		$this->data['entry_ai_provider'] = $this->language->get('entry_ai_provider');
 		$this->data['text_ai_claude'] = $this->language->get('text_ai_claude');
@@ -1487,23 +1481,6 @@ class ControllerSettingSetting extends Controller {
 			$this->data['clave'] = $this->config->get('clave');
 		}
 
-		if (isset($this->request->post['config_aeat_active'])) {
-			$this->data['config_aeat_active'] = $this->request->post['config_aeat_active'];
-		} else {
-			$this->data['config_aeat_active'] = $this->config->get('config_aeat_active');
-		}
-
-		if (isset($this->request->post['config_aeat_send'])) {
-			$this->data['config_aeat_send'] = $this->request->post['config_aeat_send'];
-		} else {
-			$this->data['config_aeat_send'] = $this->config->get('config_aeat_send');
-		}
-
-		if (isset($this->request->post['config_aeat_ca_bundle'])) {
-			$this->data['config_aeat_ca_bundle'] = $this->request->post['config_aeat_ca_bundle'];
-		} else {
-			$this->data['config_aeat_ca_bundle'] = $this->config->get('config_aeat_ca_bundle');
-		}
 
 		$this->template = 'setting/setting.tpl';
 		$this->children = array(

@@ -17,7 +17,7 @@
 				<?php if ($shipping_method) { ?>
 				<li class="nav-item"><a class="nav-link" href="#tab-shipping" data-bs-toggle="tab"><?php echo $tab_shipping; ?></a></li>
 				<?php } ?>
-				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-aeat" data-bs-toggle="tab"><?php echo $tab_aeat; ?></a></li>
+				<li class="nav-item"><a class="nav-link" href="#tab-product" data-bs-toggle="tab"><?php echo $tab_product; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-history" data-bs-toggle="tab"><?php echo $tab_history; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li>
 			</ul>
 			<div class="tab-content mt-2">
 				<div id="tab-invoice" class="tab-pane active">
@@ -222,31 +222,6 @@
 				<div class="tab-pane" id="tab-receipts">
 					<div id="receipts" data-href="index.php?route=sale/invoice/receipts&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>"></div>
 				</div>
-				<div class="tab-pane" id="tab-aeat">
-					<table class="table table-bordered table-striped table-hover info-page">
-						<tr>
-							<td class="col-sm-3"><?php echo $text_aeat_sent_date; ?></td>
-							<td id="aeat-sent-date"><?php echo $aeat_sent_date; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_aeat_response_date; ?></td>
-							<td id="aeat-response-date"><?php echo $aeat_response_date; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_aeat_status; ?></td>
-							<td id="aeat-status"><?php echo $aeat_status; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_aeat_notice; ?></td>
-							<td id="aeat-notice"><?php echo $aeat_notice; ?></td>
-						</tr>
-						<tr>
-							<td><?php echo $text_aeat_csv; ?></td>
-							<td id="aeat-csv"><?php echo $aeat_csv; ?></td>
-						</tr>
-					</table>
-					<button type="button" id="button-aeat-resend" class="btn btn-primary"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#send"/></svg> <?php echo $button_resend_aeat; ?></button>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -272,40 +247,6 @@ $('#button-facturae').on('click',function(e){
 			} else {
 				window.open(url,'_blank');
 			}
-		}
-	});
-});
-$('#button-aeat-resend').on('click',function(e){
-	e.preventDefault();
-
-	var button = $(this);
-
-	button.prop('disabled', true);
-	button.find('svg.bi').addClass('bi-spin').find('use').attr('href', 'view/image/bootstrap-icons.svg#arrow-repeat');
-
-	$.ajax({
-		url:'index.php?route=sale/invoice/resendAeat&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>',
-		type:'get',
-		dataType:'json',
-		success:function(json){
-			if(json['error']){
-				alertMessage('danger',json['error']);
-			} else {
-				$('#aeat-sent-date').text(json['aeat_sent_date']);
-				$('#aeat-response-date').text(json['aeat_response_date']);
-				$('#aeat-status').text(json['aeat_status']);
-				$('#aeat-notice').html(json['aeat_notice']);
-				$('#aeat-csv').text(json['aeat_csv']);
-
-				alertMessage(json['success'] ? 'success' : 'danger', json['message']);
-			}
-		},
-		error:function(request){
-			console.log("ajax call went wrong:" + request.responseText);
-		},
-		complete:function(){
-			button.prop('disabled', false);
-			button.find('svg.bi').removeClass('bi-spin').find('use').attr('href', 'view/image/bootstrap-icons.svg#send');
 		}
 	});
 });
