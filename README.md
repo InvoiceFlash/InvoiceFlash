@@ -77,7 +77,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
  - [x] General Discount
 
 ### 0.0.8 
-- [x] Upgraded to Boostrap 5.x
+- [x] Upgraded to Boostrap 4.x
 - [x] Compatible php 5 y php 8.3
 - [x] API
 - [x] Modules
@@ -90,7 +90,7 @@ Please read the installation instructions included in the repository or <a href=
 
 ## Credits / Technologies
 
-*   **Bootstrap 4.x + SASS**
-*   **jQuery 3.x**
+*   **Bootstrap 5.3.3 + SASS**
+*   **jQuery 3.7.1
 *   **Font Awesome 5.x**
 
