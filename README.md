@@ -91,6 +91,6 @@ Please read the installation instructions included in the repository or <a href=
 ## Credits / Technologies
 
 *   **Bootstrap 5.3.3 + SASS**
-*   **jQuery 3.7.1
+*   **jQuery 3.7.1**
 *   **Font Awesome 5.x**
 
