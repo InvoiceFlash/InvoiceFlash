@@ -37,11 +37,14 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 - MariaDB > 11.7
 - PHP > 5.x
 
-### 0.0.16
+### 0.0.17
   - [x] Turn Veri*Factu into a module
   - [ ] eInvoicing module compliant with EN 16931 and PEPPOL
   - [ ] Charts in Accounting
   - [ ] Mail share
+
+### 0.0.16
+  - [x] Boostrap 5.x
 
 ### 0.0.15
   - [x] Conciliación bancaria (Norma 43 y CAMT.053)
