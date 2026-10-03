@@ -10,10 +10,10 @@
 	-webkit-font-smoothing: antialiased;
 }
 #home-type h5, #home-type .h2 { font-size: 1rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; }
-#home-type .panel-heading { font-weight: 600; }
+#home-type .page-card > .card-header { font-weight: 600; }
 #home-type .table { font-size: 0.875rem; font-variant-numeric: tabular-nums; }
 #home-type .table th { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.02em; }
-#home-type .font-weight-bold { font-weight: 600 !important; }
+#home-type .fw-bold { font-weight: 600 !important; }
 #home-type .btn, #home-type .form-control, #home-type .input-group-text { font-family: inherit; font-size: 0.875rem; }
 #home-type .btn { font-weight: 500; }
 #home-type h5.buton { font-size: 0.875rem; font-weight: 500; }
@@ -43,34 +43,30 @@
 </noscript>
 <div class="row mb-3">
 	<div class="col-sm-12">
-		<div class="panel panel-default" id="search">
-			<div class="panel-heading clearfix">
-				<h5 class="pull-left"><i class="fa fa-search"></i> <?php echo $text_search; ?></h5>
-				<div class="pull-right">
-					<button type="button" id="btn-view-kanban" class="btn btn-default btn-sm" data-toggle="tooltip" title="<?php echo $text_view_kanban; ?>"><i class="fa fa-columns"></i></button>
-						<button type="button" id="btn-view-dashboard" class="btn btn-default btn-sm active" data-toggle="tooltip" title="<?php echo $text_view_dashboard; ?>"><i class="fa fa-chart-bar"></i></button>
-						<a href="<?php echo $this->url->link('common/calendar', 'token=' . $this->session->data['token'], 'SSL'); ?>" id="btn-view-calendar" class="btn btn-default btn-sm" data-toggle="tooltip" title="<?php echo $text_view_calendar; ?>"><i class="fa fa-calendar"></i></a>
-					<button type="button" id="btn-view-claude-chat" class="btn btn-default btn-sm" data-toggle="tooltip" title="<?php echo $text_view_claude_chat; ?>"><i class="fa fa-robot"></i></button>
+		<div class="card page-card" id="search">
+			<div class="card-header clearfix">
+				<h5 class="float-start"><i class="fa fa-search"></i> <?php echo $text_search; ?></h5>
+				<div class="float-end">
+					<button type="button" id="btn-view-kanban" class="btn btn-default btn-sm" data-bs-toggle="tooltip" title="<?php echo $text_view_kanban; ?>"><i class="fa fa-columns"></i></button>
+						<button type="button" id="btn-view-dashboard" class="btn btn-default btn-sm active" data-bs-toggle="tooltip" title="<?php echo $text_view_dashboard; ?>"><i class="fa fa-chart-bar"></i></button>
+						<a href="<?php echo $this->url->link('common/calendar', 'token=' . $this->session->data['token'], 'SSL'); ?>" id="btn-view-calendar" class="btn btn-default btn-sm" data-bs-toggle="tooltip" title="<?php echo $text_view_calendar; ?>"><i class="fa fa-calendar"></i></a>
+					<button type="button" id="btn-view-claude-chat" class="btn btn-default btn-sm" data-bs-toggle="tooltip" title="<?php echo $text_view_claude_chat; ?>"><i class="fa fa-robot"></i></button>
 				</div>
 			</div>
-			<div class="panel-body">
+			<div class="card-body">
 			<div class="d-flex flex-column flex-sm-row gap-2">
 				<div class="flex-fill">
 					<div class="input-group">
-						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_customer; ?></span></span>
+						<span class="input-group-text"><?php echo $text_search_customer; ?></span>
 						<input type="text" id="search-customer" class="form-control">
-						<div class="input-group-append">
-							<button class="btn btn-info" id="button-search-customer"><?php echo $button_search; ?></button>
-						</div>
+						<button class="btn btn-info" id="button-search-customer"><?php echo $button_search; ?></button>
 					</div>
 				</div>
 				<div class="flex-fill" style="margin-left: 5cm;">
 					<div class="input-group">
-						<span class="input-group-prepend"><span class="input-group-text"><?php echo $text_search_product; ?></span></span>
+						<span class="input-group-text"><?php echo $text_search_product; ?></span>
 						<input type="text" id="search-product" class="form-control">
-						<div class="input-group-append">
-							<button class="btn btn-info" id="button-search-product"><?php echo $button_search; ?></button>
-						</div>
+						<button class="btn btn-info" id="button-search-product"><?php echo $button_search; ?></button>
 					</div>
 				</div>
 			</div>
@@ -82,25 +78,25 @@
 <?php if ($view['quick_action']) { ?>
 <div class="row mb-3">
 <div class="col-sm-12">
-<div class="panel panel-default" id="actions">
-	<div class="panel-heading clearfix"><h5><?php echo $text_actions; ?></h5></div>
-	<div class="panel-body">
+<div class="card page-card" id="actions">
+	<div class="card-header clearfix"><h5><?php echo $text_actions; ?></h5></div>
+	<div class="card-body">
 		<div class="card-group d-flex justify-content-center">
 			<div class="card">
-				<a href="<?php echo $view_inbox; ?>"><h5 class="buton"><i class="fas fa-inbox"></i> <span class="hidden-xs"><?php echo $text_view_inbox; ?></span></h5></a>
+				<a href="<?php echo $view_inbox; ?>"><h5 class="buton"><i class="fas fa-inbox"></i> <span class="d-none d-lg-inline"><?php echo $text_view_inbox; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<a href="<?php echo $add_customer; ?>"><h5 class="buton"><i class="fas fa-user"></i> <span class="hidden-xs"><?php echo $text_add_customer; ?></span></h5></a>
+				<a href="<?php echo $add_customer; ?>"><h5 class="buton"><i class="fas fa-user"></i> <span class="d-none d-lg-inline"><?php echo $text_add_customer; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<a href="<?php echo $new_invoice; ?>"><h5 class="buton"><i class="far fa-file-alt"></i> <span class="hidden-xs"><?php echo $text_new_invoice; ?></span></h5></a>
+				<a href="<?php echo $new_invoice; ?>"><h5 class="buton"><i class="far fa-file-alt"></i> <span class="d-none d-lg-inline"><?php echo $text_new_invoice; ?></span></h5></a>
 			</div>
 			<div class="card">
-				<a href="<?php echo $add_product; ?>"><h5 class="buton"><i class="fas fa-box-open"></i> <span class="hidden-xs"><?php echo $text_add_product; ?></span></h5></a>
+				<a href="<?php echo $add_product; ?>"><h5 class="buton"><i class="fas fa-box-open"></i> <span class="d-none d-lg-inline"><?php echo $text_add_product; ?></span></h5></a>
 			</div>
 			<?php if ($view['pending_invoices']) { ?>
 			<div class="card">
-				<a href="<?php echo $pending_invoices; ?>"><h5 class="buton"><i class="fas fa-envelope-open-text"></i> <span class="hidden-xs"><?php echo $text_pending_invoices; ?></span></h5></a>
+				<a href="<?php echo $pending_invoices; ?>"><h5 class="buton"><i class="fas fa-envelope-open-text"></i> <span class="d-none d-lg-inline"><?php echo $text_pending_invoices; ?></span></h5></a>
 			</div>
 			<?php } ?>
 		</div>
@@ -112,38 +108,38 @@
 <?php if ($view['over']) { ?>
 <div class="row">
 	<div class="col-sm-6">
-		<div class="panel panel-default">
-			<div class="panel-heading clearfix">
+		<div class="card page-card">
+			<div class="card-header clearfix">
 				<div class="h2"><i class="fa fa-home"></i> <?php echo $text_overview; ?></div>
 			</div>
-			<div class="panel-body">
+			<div class="card-body">
 				<table class="table table-bordered">
 					<tr>
 						<td><?php echo $text_total_sale; ?></td>
-						<td class="text-right"><span class="font-weight-bold"><?php echo $total_sale; ?></span></td>
+						<td class="text-end"><span class="fw-bold"><?php echo $total_sale; ?></span></td>
 					</tr>
 					<tr>
 						<td><?php echo $text_total_sale_year; ?></td>
-						<td class="text-right"><span class="font-weight-bold"><?php echo $total_sale_year; ?></span></td>
+						<td class="text-end"><span class="fw-bold"><?php echo $total_sale_year; ?></span></td>
 					</tr>
 					<tr>
 						<td><?php echo $text_total_order; ?></td>
-						<td class="text-right"><span class="font-weight-bold"><?php echo $total_order; ?></span></td>
+						<td class="text-end"><span class="fw-bold"><?php echo $total_order; ?></span></td>
 					</tr>
 					<tr>
 						<td><?php echo $text_total_customer; ?></td>
-						<td class="text-right"><span class="font-weight-bold"><?php echo $total_customer; ?></span></td>
+						<td class="text-end"><span class="fw-bold"><?php echo $total_customer; ?></span></td>
 					</tr>
 				</table>
 			</div>
 		</div>
 	</div>
 	<div class="col-sm-6">
-		<div class="panel panel-default">
-			<div class="panel-heading clearfix">
+		<div class="card page-card">
+			<div class="card-header clearfix">
 				<div class="h2"><i class="fa fa-chart-bar"></i> <?php echo $text_statistics; ?></div>
 			</div>
-			<div class="panel-body">
+			<div class="card-body">
 				<ul class="nav nav-tabs" id="tabs-chart" title="<?php echo $entry_range; ?>">
 					<li class="nav-item"><a class="nav-link" href="#day" data-bs-toggle="tab"><?php echo $text_day; ?></a></li>
 					<li class="nav-item"><a class="nav-link" href="#week" data-bs-toggle="tab"><?php echo $text_week; ?></a></li>
@@ -163,33 +159,33 @@
 <?php } ?>
 <div class="row">
 <?php if($view['last_quotes']) { ?>
-<div class="col-sm-6"><div class="panel panel-default">
-	<div class="panel-heading clearfix">
+<div class="col-sm-6"><div class="card page-card">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-edit"></i> <?php echo $text_latest_10_quotes; ?></div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<table class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
-					<th class="text-right hidden-xs"><?php echo $column_quote; ?></th>
+					<th class="text-end d-none d-lg-table-cell"><?php echo $column_quote; ?></th>
 					<th><?php echo $column_customer; ?></th>
-					<th class="hidden-xs"><?php echo $column_status; ?></th>
-					<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-					<th class="text-right hidden-xs"><?php echo $column_total; ?></th>
-					<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+					<th class="d-none d-lg-table-cell"><?php echo $column_status; ?></th>
+					<th class="d-none d-lg-table-cell"><?php echo $column_date_added; ?></th>
+					<th class="text-end d-none d-lg-table-cell"><?php echo $column_total; ?></th>
+					<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 				</tr>
 			</thead>
 			<tbody data-link="row" class="rowlink">
 				<?php if ($quotes) { ?>
 				<?php foreach ($quotes as $quote) { ?>
 				<tr>
-					<td class="text-right hidden-xs"><?php echo $quote['quote_id']; ?></td>
+					<td class="text-end d-none d-lg-table-cell"><?php echo $quote['quote_id']; ?></td>
 					<td><?php echo $quote['company']; ?></td>
-					<td class="hidden-xs text-<?php echo strtolower($quote['status']); ?>"><?php echo $quote['status']; ?></td>
-					<td class="hidden-xs"><?php echo $quote['date_added']; ?></td>
-					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $quote['total']; ?></span></td>
-					<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
-						<a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fas fa-eye"></i> <span class="hidden-xs"><?php echo $action['text']; ?></span></a>
+					<td class="d-none d-lg-table-cell text-<?php echo strtolower($quote['status']); ?>"><?php echo $quote['status']; ?></td>
+					<td class="d-none d-lg-table-cell"><?php echo $quote['date_added']; ?></td>
+					<td class="text-end d-none d-lg-table-cell"><span class="fw-bold"><?php echo $quote['total']; ?></span></td>
+					<td class="text-end"><?php foreach ($quote['action'] as $action) { ?>
+						<a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fas fa-eye"></i> <span class="d-none d-lg-inline"><?php echo $action['text']; ?></span></a>
 					<?php } ?></td>
 				</tr>
 				<?php } ?>
@@ -204,33 +200,33 @@
 </div></div>
 <?php } ?>
 <?php if ($view['last_invoice']) { ?>
-<div class="col-sm-6"><div class="panel panel-default">
-	<div class="panel-heading clearfix">
+<div class="col-sm-6"><div class="card page-card">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="far fa-file-alt"></i> <?php echo $text_latest_10_orders; ?></div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<table class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
-					<th class="text-right hidden-xs"><?php echo $column_order; ?></th>
+					<th class="text-end d-none d-lg-table-cell"><?php echo $column_order; ?></th>
 					<th><?php echo $column_customer; ?></th>
-					<th class="hidden-xs"><?php echo $column_status; ?></th>
-					<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-					<th class="text-right hidden-xs"><?php echo $column_total; ?></th>
-					<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+					<th class="d-none d-lg-table-cell"><?php echo $column_status; ?></th>
+					<th class="d-none d-lg-table-cell"><?php echo $column_date_added; ?></th>
+					<th class="text-end d-none d-lg-table-cell"><?php echo $column_total; ?></th>
+					<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 				</tr>
 			</thead>
 			<tbody data-link="row" class="rowlink">
 				<?php if ($invoices) { ?>
 				<?php foreach ($invoices as $invoice) { ?>
 				<tr>
-					<td class="text-right hidden-xs"><?php echo $invoice['invoice_id']; ?></td>
+					<td class="text-end d-none d-lg-table-cell"><?php echo $invoice['invoice_id']; ?></td>
 					<td><?php echo $invoice['company']; ?></td>
-					<td class="hidden-xs text-<?php echo strtolower($invoice['status']); ?>" style="background-color:rgb(<?php echo $invoice['color']; ?>)"><?php echo $invoice['status']; ?></td>
-					<td class="hidden-xs"><?php echo $invoice['date_added']; ?></td>
-					<td class="text-right hidden-xs"><span class="font-weight-bold"><?php echo $invoice['total']; ?></span></td>
-					<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
-						<a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fas fa-eye"></i> <span class="hidden-xs"><?php echo $action['text']; ?></span></a>
+					<td class="d-none d-lg-table-cell text-<?php echo strtolower($invoice['status']); ?>" style="background-color:rgb(<?php echo $invoice['color']; ?>)"><?php echo $invoice['status']; ?></td>
+					<td class="d-none d-lg-table-cell"><?php echo $invoice['date_added']; ?></td>
+					<td class="text-end d-none d-lg-table-cell"><span class="fw-bold"><?php echo $invoice['total']; ?></span></td>
+					<td class="text-end"><?php foreach ($invoice['action'] as $action) { ?>
+						<a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fas fa-eye"></i> <span class="d-none d-lg-inline"><?php echo $action['text']; ?></span></a>
 					<?php } ?></td>
 				</tr>
 				<?php } ?>
@@ -249,9 +245,9 @@
 <div id="kanban-view" style="display:none;">
 	<div class="row mb-3">
 		<div class="col-sm-12">
-			<div class="panel panel-default">
-				<div class="panel-heading clearfix"><h5><i class="fa fa-columns"></i> <?php echo $text_kanban; ?></h5></div>
-				<div class="panel-body d-flex" style="gap:16px; align-items:flex-start;">
+			<div class="card page-card">
+				<div class="card-header clearfix"><h5><i class="fa fa-columns"></i> <?php echo $text_kanban; ?></h5></div>
+				<div class="card-body d-flex" style="gap:16px; align-items:flex-start;">
 				<div style="width:260px; flex:none; border:1px solid #e5e2da; border-radius:6px;">
 					<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #e5e2da; font-weight:600;">
 						<span><i class="fa fa-briefcase"></i> <?php echo $text_kanban_projects; ?></span>
@@ -262,7 +258,7 @@
 				<div style="flex:1; min-width:0;">
 					<div id="kanban-add-row" class="input-group mb-3" style="max-width:500px;">
 						<input type="text" id="kanban-new-title" class="form-control" placeholder="<?php echo $text_kanban_new_placeholder; ?>">
-						<div class="input-group-append"><button type="button" class="btn btn-info" id="kanban-add"><?php echo $text_kanban_add; ?></button></div>
+						<button type="button" class="btn btn-info" id="kanban-add"><?php echo $text_kanban_add; ?></button>
 					</div>
 					<div class="d-flex" style="gap:12px; align-items:flex-start;">
 						<?php
@@ -318,7 +314,7 @@
 	<div class="modal-body">
 		<div class="input-group mb-3">
 			<input type="file" id="kanban-files-input" class="form-control" multiple>
-			<div class="input-group-append"><button type="button" class="btn btn-info" id="kanban-files-upload"><i class="fa fa-upload"></i> <?php echo $text_kanban_upload; ?></button></div>
+			<button type="button" class="btn btn-info" id="kanban-files-upload"><i class="fa fa-upload"></i> <?php echo $text_kanban_upload; ?></button>
 		</div>
 		<div id="kanban-files-grid" class="d-flex flex-wrap" style="gap:12px;"></div>
 	</div>
@@ -326,9 +322,9 @@
 <div id="claude-chat-view" style="display:none;">
 	<div class="row mb-3">
 		<div class="col-sm-12">
-			<div class="panel panel-default" id="claude-chat">
-				<div class="panel-heading clearfix"><h5><i class="fa fa-robot"></i> <?php echo $text_claude_chat; ?> (<?php echo $ai_chat_model; ?>)</h5></div>
-				<div class="panel-body">
+			<div class="card page-card" id="claude-chat">
+				<div class="card-header clearfix"><h5><i class="fa fa-robot"></i> <?php echo $text_claude_chat; ?> (<?php echo $ai_chat_model; ?>)</h5></div>
+				<div class="card-body">
 					<div id="claude-chat-messages" style="height:400px; overflow-y:auto; background:#faf9f7; border:1px solid #e5e2da; border-radius:6px; padding:15px; margin-bottom:15px;">
 						<div class="claude-chat-message claude-chat-message-bot" style="background:#fff; border:1px solid #e5e2da; border-radius:8px; padding:10px 14px; max-width:80%; margin-bottom:10px;">
 							<?php echo $text_claude_chat_placeholder; ?>
@@ -336,9 +332,7 @@
 					</div>
 					<div class="input-group">
 						<input type="text" id="claude-chat-input" class="form-control" placeholder="<?php echo $text_claude_chat_input_placeholder; ?>">
-						<div class="input-group-append">
-							<button type="button" class="btn btn-info" id="claude-chat-send"><i class="fa fa-paper-plane"></i></button>
-						</div>
+						<button type="button" class="btn btn-info" id="claude-chat-send"><i class="fa fa-paper-plane"></i></button>
 					</div>
 				</div>
 			</div>

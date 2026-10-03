@@ -1,20 +1,20 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-envelope"></i> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-envelope"></i> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 			<div class="form-group row">
 				<label class="col-sm-3 col-form-label"><?php echo $entry_from ?></label>
 				<div class="col-sm-4">
 					<input type="text" readonly class="form-control-plaintext" value="<?php echo htmlentities($from); ?>">
 				</div>
 				<div class="col-sm-2">
-					<button class="btn btn-primary pull-right" data-bs-toggle="modal" data-bs-target="#EmailModal">Reply</button>
+					<button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#EmailModal">Reply</button>
 				</div>
 			</div>
 			<div class="form-group row">
@@ -39,20 +39,20 @@
     <div class="modal-content">
       <div class="modal-header">
 				<h4 class="modal-title">Reply Mail</h4>
-        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form action="<?php echo $reply; ?>" class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
+        <form action="<?php echo $reply; ?>" class="form-classic" method="post" enctype="multipart/form-data" id="formEmail">
 					<div class="form-group">
-						<label for="to" class="control-label col-2">To:</label>
+						<label for="to" class="col-form-label text-sm-end pb-0 col-2">To:</label>
 						<div class="col-sm-10"><input type="text" name="to" id="to" class="form-control" value="<?php echo htmlentities($from); ?>"></div>
 					</div>
 					<div class="form-group">
-						<label for="subject" class="control-label col-2">Subject:</label>
+						<label for="subject" class="col-form-label text-sm-end pb-0 col-2">Subject:</label>
 						<div class="col-sm-10"><input type="text" name="subject" id="subject" class="form-control" value="Re: <?php echo $subject; ?>"></div>
 					</div>
 					<div class="form-group">
-						<label for="message" class="control-label col-2">Message:</label>
+						<label for="message" class="col-form-label text-sm-end pb-0 col-2">Message:</label>
 						<div class="col-sm-10"><textarea name="message" id="message" cols="30" rows="10" class="form-control"><?php echo $message; ?></textarea></div>
 					</div>
          </form>

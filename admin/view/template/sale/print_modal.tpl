@@ -5,7 +5,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Print Select</h4>
-        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <form action="<?php echo $print ?>" id="formPrint" method="post" target="_blank">

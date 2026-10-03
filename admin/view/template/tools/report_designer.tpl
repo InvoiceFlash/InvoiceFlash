@@ -1,10 +1,10 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-file-text"></i> <?php echo $heading_title; ?></div>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-file-text"></i> <?php echo $heading_title; ?></div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<p><?php echo $text_select_document; ?></p>
 	</div>
 </div>
@@ -14,7 +14,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title"><?php echo $text_select_document; ?></h4>
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
 				<form id="formReportType">
@@ -38,7 +38,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title"><?php echo $text_existing_formats; ?></h4>
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
 				<table class="table table-bordered">
@@ -80,8 +80,8 @@ $(document).ready(function() {
 					json.formats.forEach(function(f, index) {
 						html += '<tr>';
 						html += '<td><input type="radio" name="rf-source" value="' + f.report_format_id + '"' + (index === 0 ? ' checked' : '') + '></td>';
-						html += '<td>' + f.name + (f.is_default ? ' <span class="label label-default"><?php echo $text_default; ?></span>' : '') + '</td>';
-						html += '<td>' + (f.is_active ? '<span class="label label-success"><?php echo $text_active; ?></span>' : '') + '</td>';
+						html += '<td>' + f.name + (f.is_default ? ' <span class="badge bg-secondary"><?php echo $text_default; ?></span>' : '') + '</td>';
+						html += '<td>' + (f.is_active ? '<span class="badge bg-success"><?php echo $text_active; ?></span>' : '') + '</td>';
 						html += '<td>';
 
 						if (!f.is_default) {

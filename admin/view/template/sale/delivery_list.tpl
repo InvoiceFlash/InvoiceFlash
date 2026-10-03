@@ -1,38 +1,38 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitDeliveries(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_delivery; ?></span></button>
-			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitDeliveries(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
-			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirm(text_confirm);" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
-			<button type="button" onclick="convertToDraft();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="hidden-xs"> <?php echo $button_convert_draft; ?></span></button>
-			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-clipboard"></i> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<button type="button" data-url="<?php echo $invoice; ?>" onclick="submitDeliveries(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-eye"></i><span class="d-none d-lg-inline"> <?php echo $button_delivery; ?></span></button>
+			<button type="button" data-url="<?php echo $printPDF; ?>" onclick="submitDeliveries(this.dataset.url);" class="btn btn-default btn-spacer"><i class="fa fa-file-pdf"></i><span class="d-none d-lg-inline"> PDF</span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" onclick="return confirm(text_confirm);" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><i class="fa fa-copy"></i><span class="d-none d-lg-inline"> <?php echo $button_copy; ?></span></button>
+			<button type="button" onclick="convertToDraft();" id="btn-convert" class="btn btn-success btn-spacer"><i class="fa fa-exchange-alt"></i><span class="d-none d-lg-inline"> <?php echo $button_convert_draft; ?></span></button>
+			<a href="<?php echo $insert; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-plus-circle"></i><span class="d-none d-lg-inline"> <?php echo $button_insert; ?></span></a>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<form class="foe" action="<?php echo $invoice; ?>" method="post" enctype="multipart/form-data" id="form" name="form">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-						<th class="text-right"><a href="<?php echo $sort_delivery; ?>"><?php echo $column_delivery_id; echo ($sort == 'o.delivery_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="text-end"><a href="<?php echo $sort_delivery; ?>"><?php echo $column_delivery_id; echo ($sort == 'o.delivery_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_customer; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right hidden-xs"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs hidden-sm"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'o.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="text-end d-none d-lg-table-cell"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'o.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
 					<tr id="filter" class="info">
-						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/delivery&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
-						<td class="text-right"><input type="text" name="filter_delivery_id" value="<?php echo $filter_delivery_id; ?>" class="form-control text-right"></td>
+						<td class="text-center"><a class="btn btn-default d-block w-100" href="index.php?route=sale/delivery&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+						<td class="text-end"><input type="text" name="filter_delivery_id" value="<?php echo $filter_delivery_id; ?>" class="form-control text-end"></td>
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
-						<td class="hidden-xs"><select name="filter_invoice_status_id" class="form-control">
+						<td class="d-none d-lg-table-cell"><select name="filter_invoice_status_id" class="form-select">
 							<option value="*">&ndash;</option>
 							<?php foreach ($invoice_statuses as $invoice_status) { ?>
 							<?php if ($invoice_status['delivery_status_id'] == $filter_invoice_status_id) { ?>
@@ -42,20 +42,16 @@
 							<?php } ?>
 							<?php } ?>
 						</select></td>
-						<td class="text-right hidden-xs"><input type="text" name="filter_total" value="<?php echo $filter_total; ?>" class="form-control text-right"></td>
-						<td class="hidden-xs"><div class="input-group">
+						<td class="text-end d-none d-lg-table-cell"><input type="text" name="filter_total" value="<?php echo $filter_total; ?>" class="form-control text-end"></td>
+						<td class="d-none d-lg-table-cell"><div class="input-group">
 							<input type="text" name="filter_date_added" class="form-control date"/>
-							<div class="input-group-append">
 							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
-							</div>
 						</div></td>
-						<td class="hidden-xs"><div class="input-group">
+						<td class="d-none d-lg-table-cell"><div class="input-group">
 							<input type="text" name="filter_date_modified" class="form-control date"/>
-							<div class="input-group-append">
 							<div class="input-group-text"><i class="fas fa-calendar"></i></div>
-							</div>
 						</div></td>
-						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+						<td class="text-end"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="d-none d-lg-inline"> <?php echo $button_filter; ?></span></button></td>
 					</tr>
 					<?php if ($deliveries) { ?>
 					<?php foreach ($deliveries as $delivery) { ?>
@@ -65,13 +61,13 @@
 							<?php } else { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $delivery['delivery_id']; ?>" data-status-id="<?php echo $delivery['status_id']; ?>">
 							<?php } ?></td>
-						<td class="text-right"><?php echo $delivery['delivery_id']; ?></td>
+						<td class="text-end"><?php echo $delivery['delivery_id']; ?></td>
 						<td><?php echo $delivery['company']; ?></td>
-						<td id="delivery-status-<?php echo $delivery['delivery_id']; ?>" class="hidden-xs text-<?php echo strtolower($delivery['status']); ?>"><?php echo $delivery['status']; ?></td>
-						<td class="text-right hidden-xs"><?php echo $delivery['total']; ?></td>
-						<td class="hidden-xs"><?php echo $delivery['date_added']; ?></td>
-						<td class="hidden-xs hidden-sm"><?php echo $delivery['date_modified']; ?></td>
-						<td class="text-right"><?php foreach ($delivery['action'] as $action) { ?>
+						<td id="delivery-status-<?php echo $delivery['delivery_id']; ?>" class="d-none d-lg-table-cell text-<?php echo strtolower($delivery['status']); ?>"><?php echo $delivery['status']; ?></td>
+						<td class="text-end d-none d-lg-table-cell"><?php echo $delivery['total']; ?></td>
+						<td class="d-none d-lg-table-cell"><?php echo $delivery['date_added']; ?></td>
+						<td class="d-none d-lg-table-cell"><?php echo $delivery['date_modified']; ?></td>
+						<td class="text-end"><?php foreach ($delivery['action'] as $action) { ?>
 							<a href="<?php echo $action['href']; ?>" class="btn btn-<?php echo $action['color']; ?>"><i class="<?php echo $action['icon']; ?>"></i></a>
 						<?php } ?></td>
 					</tr>
@@ -92,11 +88,11 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title"><?php echo $text_group_question; ?></h4>
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
-				<button type="button" class="btn btn-default btn-block" id="btn-convert-single" style="margin-bottom:10px;"><?php echo $text_group_single; ?></button>
-				<button type="button" class="btn btn-primary btn-block" id="btn-convert-merge"><?php echo $text_group_merge; ?></button>
+				<button type="button" class="btn btn-default d-block w-100" id="btn-convert-single" style="margin-bottom:10px;"><?php echo $text_group_single; ?></button>
+				<button type="button" class="btn btn-primary d-block w-100" id="btn-convert-merge"><?php echo $text_group_merge; ?></button>
 			</div>
 		</div>
 	</div>

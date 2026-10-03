@@ -1,26 +1,26 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
+<div class="card page-card">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-landmark"></i> <?php echo $heading_title; ?></div>
 	</div>
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="input-group">
 						<input type="text" class="form-control date" id="date-start" name="filter_date_start" value="<?php echo $filter_date_start ?>" placeholder="<?php echo $entry_date_start?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="input-group">
 						<input type="text" class="form-control date" id="date-end" name="filter_date_end" value="<?php echo $filter_date_end ?>" placeholder="<?php echo $entry_date_end?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div class="col-sm-2">
-					<select name="filter_group" title="<?php echo $entry_group; ?>" class="form-control">
+					<select name="filter_group" title="<?php echo $entry_group; ?>" class="form-select">
 						<?php foreach ($groups as $groups) { ?>
 						<?php if ($groups['value'] == $filter_group) { ?>
 						<option value="<?php echo $groups['value']; ?>" selected=""><?php echo $groups['text']; ?></option>
@@ -31,7 +31,7 @@
 					</select>
 				</div>
 				<div class="col-sm-2">
-					<select name="filter_order_status_id" title="<?php echo $entry_status; ?>" class="form-control">
+					<select name="filter_order_status_id" title="<?php echo $entry_status; ?>" class="form-select">
 						<option value="0"><?php echo $text_all_status; ?></option>
 						<?php foreach ($order_statuses as $order_status) { ?>
 						<?php if ($order_status['order_status_id'] == $filter_order_status_id) { ?>
@@ -42,7 +42,7 @@
 						<?php } ?>
 					</select>
 				</div>
-				<div class="col-sm-2 text-right">
+				<div class="col-sm-2 text-end">
 					<button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i> <?php echo $button_filter; ?></button>
 				</div>
 			</div>
@@ -54,8 +54,8 @@
 					<th><?php echo $column_date_start; ?></th>
 					<th><?php echo $column_date_end; ?></th>
 					<th><?php echo $column_title; ?></th>
-					<th class="hidden-xs right"><?php echo $column_orders; ?></th>
-					<th class="text-right"><?php echo $column_total; ?></th>
+					<th class="d-none d-lg-table-cell right"><?php echo $column_orders; ?></th>
+					<th class="text-end"><?php echo $column_total; ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -65,8 +65,8 @@
 					<td><?php echo $order['date_start']; ?></td>
 					<td><?php echo $order['date_end']; ?></td>
 					<td><?php echo $order['title']; ?></td>
-					<td class="hidden-xs right"><?php echo $order['orders']; ?></td>
-					<td class="text-right"><?php echo $order['total']; ?></td>
+					<td class="d-none d-lg-table-cell right"><?php echo $order['orders']; ?></td>
+					<td class="text-end"><?php echo $order['total']; ?></td>
 				</tr>
 				<?php } ?>
 				<?php } else { ?>

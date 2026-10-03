@@ -18,10 +18,12 @@ class ModelToolBackup extends Model {
 		$query = $this->db->query("SHOW TABLES FROM `" . DB_DATABASE . "`");
 
 		foreach ($query->rows as $result) {
-			if (utf8_substr($result['Tables_in_' . DB_DATABASE], 0, strlen(DB_PREFIX)) == DB_PREFIX) {
-				if (isset($result['Tables_in_' . DB_DATABASE])) {
-					$table_data[] = $result['Tables_in_' . DB_DATABASE];
-				}
+			// El nombre de la columna es Tables_in_<base de datos> con las mayusculas del servidor (en Windows
+			// puede no coincidir con DB_DATABASE): se toma el primer valor de la fila.
+			$table = reset($result);
+
+			if ($table !== false && $table !== null && utf8_substr($table, 0, strlen(DB_PREFIX)) == DB_PREFIX) {
+				$table_data[] = $table;
 			}
 		}
 

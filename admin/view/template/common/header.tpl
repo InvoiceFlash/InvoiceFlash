@@ -13,11 +13,10 @@
 	<meta name="keywords" content="<?php echo $keywords; ?>">
 	<?php } ?>
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-	<link type="text/css" href="view/stylesheet/main.css" rel="stylesheet"/>
-	<link type="text/css" href="view/javascript/datepicker/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
+	<link type="text/css" href="view/stylesheet/main.css?v=<?php echo @filemtime(DIR_APPLICATION . 'view/stylesheet/main.css'); ?>" rel="stylesheet"/>
+	<link type="text/css" href="view/javascript/flatpickr/flatpickr.min.css" rel="stylesheet"/>
 	<link type="text/css" href="view/javascript/font-awesome/css/all.min.css" rel="stylesheet"/>
 	<script type="text/javascript" src="view/javascript/jquery/jquery-3.7.1.min.js"></script>
-	<script type="text/javascript" src="view/javascript/moment.js"></script>
 	<script type="text/javascript" src="view/javascript/bootstrap/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="view/javascript/common.js?v=<?php echo filemtime(DIR_APPLICATION . 'view/javascript/common.js'); ?>"></script>
 	<script type="text/javascript" src="view/javascript/ckeditor/ckeditor.js"></script>
@@ -27,7 +26,8 @@
 	}
 	</script>
 	<script type="text/javascript" src="view/javascript/bootstrap-typeahead.js"></script>
-	<script type="text/javascript" src="view/javascript/datepicker/bootstrap-datetimepicker.min.js"></script>
+	<script type="text/javascript" src="view/javascript/flatpickr/flatpickr.min.js"></script>
+	<script type="text/javascript" src="view/javascript/flatpickr/l10n/es.js"></script>
 	<script>
 	var text_confirm='<?php echo $text_confirm; ?>';
 	var text_select_warning='<?php echo $text_select_warning; ?>';
@@ -80,7 +80,7 @@ body { -webkit-font-smoothing: antialiased; }
 			<a class="navbar-brand app-title" href="<?php echo $home; ?>">Invoice Flash</a>
 		</div>
 		<div class="collapse navbar-collapse" id="menu">
-			<div class="navbar-nav mr-auto mt-2 mt-lg-0">
+			<div class="navbar-nav me-auto mt-2 mt-lg-0">
 			<?php foreach ($menus as $menu) { ?>
 				<?php if($menu['href']) { ?>
 					<div id="<?php echo $menu['id']; ?>" class="nav-item"><a href="<?php echo $menu['href']; ?>" class="nav-link"><?php echo $menu['name']; ?></a></div>

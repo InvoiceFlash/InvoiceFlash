@@ -2,28 +2,28 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="d-flex flex-wrap align-items-center justify-content-between mb-4" style="gap:.5rem;">
 				<div class="d-flex flex-wrap align-items-center" style="gap:.5rem;">
 					<strong><?php echo $text_period; ?>:</strong>
 					<input type="number" id="filter-year" class="form-control" style="width:100px;" value="<?php echo $filter_year; ?>">
 
 					<strong class="ms-3"><?php echo $text_quarter; ?>:</strong>
-					<select id="filter-quarter" class="form-control" style="width:170px;">
+					<select id="filter-quarter" class="form-select" style="width:170px;">
 						<?php foreach ($quarters as $value => $label) { ?>
 						<option value="<?php echo $value; ?>" <?php echo ($value == $filter_quarter) ? 'selected' : ''; ?>><?php echo $label; ?></option>
 						<?php } ?>
 					</select>
 
 					<strong class="ms-3"><?php echo $text_casilla_29; ?>:</strong>
-					<input type="text" id="filter-casilla-29" class="form-control text-right" style="width:120px;" value="<?php echo $filter_casilla_29; ?>">
+					<input type="text" id="filter-casilla-29" class="form-control text-end" style="width:120px;" value="<?php echo $filter_casilla_29; ?>">
 				</div>
 
 				<div style="white-space:nowrap;">

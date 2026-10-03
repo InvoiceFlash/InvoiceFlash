@@ -1,16 +1,16 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'cog'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-bar" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th><?php echo $column_name; ?></th>
-						<th class="hidden-xs"><?php echo $column_url; ?></th>
-						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th class="d-none d-lg-table-cell"><?php echo $column_url; ?></th>
+						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
@@ -23,8 +23,8 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $store['store_id']; ?>">
 							<?php } ?></td>
 						<td><?php echo $store['name']; ?></td>
-						<td class="hidden-xs"><?php echo $store['url']; ?></td>
-						<td class="text-right"><?php foreach ($store['action'] as $action) { ?>
+						<td class="d-none d-lg-table-cell"><?php echo $store['url']; ?></td>
+						<td class="text-end"><?php foreach ($store['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>

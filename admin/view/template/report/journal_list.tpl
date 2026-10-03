@@ -2,14 +2,14 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="d-flex flex-wrap align-items-center justify-content-between mb-4" style="gap:.5rem;">
 				<div class="d-flex flex-wrap align-items-center" style="gap:.5rem;">
 					<div class="form-check mb-0">
@@ -25,11 +25,11 @@
 					</div>
 					<div class="input-group" style="width:150px;">
 						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>" placeholder="<?php echo $entry_from; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 					<div class="input-group" style="width:150px;">
 						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>" placeholder="<?php echo $entry_to; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 
@@ -56,12 +56,12 @@
 					<?php if ($rows) { ?>
 					<?php foreach ($rows as $row) { ?>
 					<tr>
-						<td class="text-left"><?php echo $row['entry_id'] . ' ' . $row['line_date']; ?></td>
-						<td class="text-left"><?php echo $row['account']; ?></td>
-						<td class="text-left"><?php echo $row['description']; ?></td>
-						<td class="text-left"><?php echo $row['concept']; ?></td>
-						<td class="text-right"><?php echo $row['debit']; ?></td>
-						<td class="text-right"><?php echo $row['credit']; ?></td>
+						<td class="text-start"><?php echo $row['entry_id'] . ' ' . $row['line_date']; ?></td>
+						<td class="text-start"><?php echo $row['account']; ?></td>
+						<td class="text-start"><?php echo $row['description']; ?></td>
+						<td class="text-start"><?php echo $row['concept']; ?></td>
+						<td class="text-end"><?php echo $row['debit']; ?></td>
+						<td class="text-end"><?php echo $row['credit']; ?></td>
 					</tr>
 					<?php } ?>
 					<?php } else { ?>

@@ -16,7 +16,7 @@ table.lines { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 table.lines th { text-align: left; border-bottom: 1px solid #000000; padding: 3px 4px; font-size: 8px; white-space: nowrap; }
 table.lines td { padding: 2px 4px; font-size: 8px; }
 table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
-.text-right { text-align: right; }
+.text-end, .text-right { text-align: right; }
 .account-block-break { page-break-after: always; }
 </style>
 </head>
@@ -36,9 +36,9 @@ table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
 			<tr>
 				<th><?php echo $column_entry; ?></th>
 				<th><?php echo $column_concept; ?></th>
-				<th class="text-right"><?php echo $column_debit; ?></th>
-				<th class="text-right"><?php echo $column_credit; ?></th>
-				<th class="text-right"><?php echo $column_balance; ?></th>
+				<th class="text-end"><?php echo $column_debit; ?></th>
+				<th class="text-end"><?php echo $column_credit; ?></th>
+				<th class="text-end"><?php echo $column_balance; ?></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -46,18 +46,18 @@ table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
 			<tr>
 				<td><?php echo trim($row['entry_id'] . ' ' . $row['line_date']); ?></td>
 				<td><?php echo $row['concept']; ?></td>
-				<td class="text-right"><?php echo $row['debit']; ?></td>
-				<td class="text-right"><?php echo $row['credit']; ?></td>
-				<td class="text-right"><?php echo $row['balance']; ?></td>
+				<td class="text-end"><?php echo $row['debit']; ?></td>
+				<td class="text-end"><?php echo $row['credit']; ?></td>
+				<td class="text-end"><?php echo $row['balance']; ?></td>
 			</tr>
 			<?php } ?>
 		</tbody>
 		<tfoot>
 			<tr>
 				<td colspan="2"><?php echo $text_total; ?></td>
-				<td class="text-right"><?php echo $account['total_debit']; ?></td>
-				<td class="text-right"><?php echo $account['total_credit']; ?></td>
-				<td class="text-right"><?php echo $account['balance']; ?></td>
+				<td class="text-end"><?php echo $account['total_debit']; ?></td>
+				<td class="text-end"><?php echo $account['total_credit']; ?></td>
+				<td class="text-end"><?php echo $account['balance']; ?></td>
 			</tr>
 		</tfoot>
 	</table>

@@ -1,18 +1,18 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-	<div class="pull-left h2">
-		<i class="hidden-xs fa fa-box-open"></i> 
+<div class="card page-card">
+	<div class="card-header clearfix">
+	<div class="float-start h2">
+		<i class="fa fa-box-open"></i> 
 		<?php echo $heading_title; ?>
 		<?php echo (isset($this->request->get['product_id'])) ? ' : ' . $product_name : ''; ?>
 		</div>
-	<div class="pull-right">
-		<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
-		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+	<div class="float-end">
+		<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="d-none d-lg-inline"> <?php echo $button_save; ?></span></button>
+		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 	</div>
 </div>
-	<div class="panel-body">
+	<div class="card-body">
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-data" data-bs-toggle="tab"><?php echo $tab_data; ?></a></li>
@@ -24,18 +24,18 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-image" data-bs-toggle="tab"><?php echo $tab_image; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-documents" data-bs-toggle="tab"><?php echo $tab_documents; ?></a></li>
 		</ul>
-		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+		<form class="form-classic mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
 				<div class="tab-pane" id="tab-general">
 					<div class="row">
-						<div class="col-xs-4 col-sm-3">
+						<div class="col-sm-3">
 							<div id="vtab-language"  class="nav flex-column" role="tablist" aria-orientation="vertical">
 								<?php foreach ($languages as $language) { ?>
 									<a class="nav-link" href="#language<?php echo $language['language_id']; ?>" data-bs-toggle="pill" role="tab" aria-selected="false"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i> <?php echo $language['name']; ?></a>
 								<?php } ?>
 							</div>
 						</div>
-						<div class="col-xs-8 col-sm-9">
+						<div class="col-sm-9">
 							<div class="tab-content">
 								<?php foreach ($languages as $language) { ?>
 									<div class="tab-pane" id="language<?php echo $language['language_id']; ?>">
@@ -44,7 +44,7 @@
 											<div class="col-sm-6">
 												<input type="text" name="product_description[<?php echo $language['language_id']; ?>][name]" value="<?php echo isset($product_description[$language['language_id']]) ? $product_description[$language['language_id']]['name'] : ''; ?>" class="form-control" id="name<?php echo $language['language_id']; ?>" class="form-control">
 												<?php if (isset($error_name[$language['language_id']])) { ?>
-												<div class="help-block error"><?php echo $error_name[$language['language_id']]; ?></div>
+												<div class="form-text error"><?php echo $error_name[$language['language_id']]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -90,7 +90,7 @@
 								<div class="col-sm-6">
 									<input type="text" name="model" value="<?php echo $model; ?>" class="form-control">
 									<?php if ($error_model) { ?>
-									<div class="help-block error"><?php echo $error_model; ?></div>
+									<div class="form-text error"><?php echo $error_model; ?></div>
 									<?php } ?>
 								</div>
 							</div>
@@ -99,7 +99,7 @@
 								<div class="col-sm-6">
 									<input type="text" name="sku" value="<?php echo $sku; ?>" class="form-control">
 									<?php if ($error_sku) { ?>
-									<div class="help-block error"><?php echo $error_sku; ?></div>
+									<div class="form-text error"><?php echo $error_sku; ?></div>
 									<?php } ?>
 								</div>
 							</div>
@@ -144,14 +144,14 @@
 								<div class="col-sm-6">
 									<div class="input-group">
 										<input type="text" name="price" value="<?php echo $price; ?>" class="form-control">
-										<div class="input-group-append"><span class="input-group-text">&euro;</span></div>
+										<span class="input-group-text">&euro;</span>
 									</div>
 								</div>
 							</div>
 							<div class="form-group row">
 								<label class="col-form-label col-sm-4"><?php echo $entry_tax_class; ?></label>
 								<div class="col-sm-6">
-									<select name="tax_class_id" class="form-control">
+									<select name="tax_class_id" class="form-select">
 										<option value="0"><?php echo $text_none; ?></option>
 										<?php foreach ($tax_classes as $tax_class) { ?>
 										<?php if ($tax_class['tax_class_id'] == $tax_class_id) { ?>
@@ -178,7 +178,7 @@
 							<div class="form-group row">
 								<label class="col-form-label col-sm-4"><?php echo $entry_subtract; ?></label>
 								<div class="col-sm-6">
-									<select name="subtract" class="form-control">
+									<select name="subtract" class="form-select">
 										<?php if ($subtract) { ?>
 										<option value="1" selected=""><?php echo $text_yes; ?></option>
 										<option value="0"><?php echo $text_no; ?></option>
@@ -192,7 +192,7 @@
 							<div class="form-group row">
 								<label class="col-form-label col-sm-4"><?php echo $entry_stock_status; ?></label>
 								<div class="col-sm-6">
-									<select name="stock_status_id" class="form-control">
+									<select name="stock_status_id" class="form-select">
 										<?php foreach ($stock_statuses as $stock_status) { ?>
 										<?php if ($stock_status['stock_status_id'] == $stock_status_id) { ?>
 										<option value="<?php echo $stock_status['stock_status_id']; ?>" selected=""><?php echo $stock_status['name']; ?></option>
@@ -230,7 +230,7 @@
 								<div class="col-sm-6">
 									<div class="input-group">
 										<input type="text" name="date_available" class="form-control" value="<?php echo $date_available; ?>">
-										<div class="input-group-append"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div>
+										<span class="input-group-text"><i class="fas fa-calendar"></i></span>
 									</div>
 								</div>
 							</div>
@@ -253,7 +253,7 @@
 							<div class="form-group row">
 								<label class="col-form-label col-sm-4"><?php echo $entry_length; ?></label>
 								<div class="col-sm-6">
-									<select name="length_class_id" class="form-control">
+									<select name="length_class_id" class="form-select">
 										<?php foreach ($length_classes as $length_class) { ?>
 										<?php if ($length_class['length_class_id'] == $length_class_id) { ?>
 										<option value="<?php echo $length_class['length_class_id']; ?>" selected=""><?php echo $length_class['title']; ?></option>
@@ -273,7 +273,7 @@
 							<div class="form-group row">
 								<label class="col-form-label col-sm-4"><?php echo $entry_weight_class; ?></label>
 								<div class="col-sm-6">
-									<select name="weight_class_id" class="form-control">
+									<select name="weight_class_id" class="form-select">
 										<?php foreach ($weight_classes as $weight_class) { ?>
 										<?php if ($weight_class['weight_class_id'] == $weight_class_id) { ?>
 										<option value="<?php echo $weight_class['weight_class_id']; ?>" selected=""><?php echo $weight_class['title']; ?></option>
@@ -287,7 +287,7 @@
 							<div class="form-group row">
 								<label class="col-form-label col-sm-4"><?php echo $entry_status; ?></label>
 								<div class="col-sm-6">
-									<select name="status" class="form-control">
+									<select name="status" class="form-select">
 										<?php if ($status) { ?>
 										<option value="1" selected=""><?php echo $text_enabled; ?></option>
 										<option value="0"><?php echo $text_disabled; ?></option>
@@ -319,11 +319,11 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_category; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="category" value="" class="form-control" data-target="product" autocomplete="off">
-							<div class="panel panel-default panel-scrollable">
+							<div class="card page-card page-card-scroll">
 								<div id="product-category" class="list-group">
 								<?php foreach ($product_categories as $product_category) { ?>
 									<div class="list-group-item" id="product-category<?php echo $product_category['category_id']; ?>">
-									<a class="label label-danger label-trash"><i class="fa fa-trash "></i></a><?php echo $product_category['name']; ?>
+									<a class="badge bg-danger label-trash"><i class="fa fa-trash"></i></a><?php echo $product_category['name']; ?>
 									<input type="hidden" name="product_category[]" value="<?php echo $product_category['category_id']; ?>">
 									</div>
 								<?php } ?>
@@ -335,11 +335,11 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_filter; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="filter" value="" class="form-control" data-target="product" autocomplete="off">
-							<div class="panel panel-default panel-scrollable">
+							<div class="card page-card page-card-scroll">
 								<div id="product-filter" class="list-group">
 								<?php foreach ($product_filters as $product_filter) { ?>
 									<div class="list-group-item" id="product-filter<?php echo $product_filter['filter_id']; ?>">
-									<a class="label label-danger label-trash"><i class="fa fa-trash "></i></a><?php echo $product_filter['name']; ?>
+									<a class="badge bg-danger label-trash"><i class="fa fa-trash"></i></a><?php echo $product_filter['name']; ?>
 									<input type="hidden" name="product_filter[]" value="<?php echo $product_filter['filter_id']; ?>">
 									</div>
 								<?php } ?>
@@ -350,7 +350,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_store; ?></label>
 						<div class="col-sm-6">
-							<div class="panel panel-default panel-scrollable">
+							<div class="card page-card page-card-scroll">
 								<div class="list-group list-group-hover">
 									<label class="list-group-item">
 										<?php if (in_array(0, $product_store)) { ?>
@@ -376,11 +376,11 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_download; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="download" value="" class="form-control" autocomplete="off">
-							<div class="panel panel-default panel-scrollable">
+							<div class="card page-card page-card-scroll">
 								<div id="product-download" class="list-group">
 								<?php foreach ($product_downloads as $product_download) { ?>
 									<div class="list-group-item" id="product-download<?php echo $product_download['download_id']; ?>">
-									<a class="label label-danger label-trash"><i class="fa fa-trash "></i></a><?php echo $product_download['name']; ?>
+									<a class="badge bg-danger label-trash"><i class="fa fa-trash"></i></a><?php echo $product_download['name']; ?>
 									<input type="hidden" name="product_download[]" value="<?php echo $product_download['download_id']; ?>">
 									</div>
 								<?php } ?>
@@ -392,11 +392,11 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_related; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="related" value="" class="form-control" autocomplete="off">
-							<div class="panel panel-default panel-scrollable">
+							<div class="card page-card page-card-scroll">
 								<div id="product-related" class="list-group">
 								<?php foreach ($product_related as $product_related) { ?>
 									<div class="list-group-item" id="product-related<?php echo $product_related['product_id']; ?>">
-									<a class="label label-danger label-trash"><i class="fa fa-trash "></i></a><?php echo $product_related['name']; ?>
+									<a class="badge bg-danger label-trash"><i class="fa fa-trash"></i></a><?php echo $product_related['name']; ?>
 									<input type="hidden" name="product_related[]" value="<?php echo $product_related['product_id']; ?>">
 									</div>
 								<?php } ?>
@@ -409,7 +409,7 @@
 					<table id="attribute" class="table table-bordered table-striped">
 						<thead>
 							<tr>
-								<th class="col-xs-4"><?php echo $entry_attribute; ?></th>
+								<th><?php echo $entry_attribute; ?></th>
 								<th><?php echo $entry_text; ?></th>
 								<th></th>
 							</tr>
@@ -424,10 +424,10 @@
 									<td><?php foreach ($languages as $language) { ?>
 										<div class="input-group">
 											<textarea name="product_attribute[<?php echo $attribute_row; ?>][product_attribute_description][<?php echo $language['language_id']; ?>][text]" class="form-control" rows="3"><?php echo isset($product_attribute['product_attribute_description'][$language['language_id']]) ? $product_attribute['product_attribute_description'][$language['language_id']]['text'] :''; ?></textarea>
-											<span class="input-group-addon"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i></span>
+											<span class="input-group-text"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i></span>
 										</div>
 										<?php } ?></td>
-									<td><a onclick="$('#attribute-row<?php echo $attribute_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
+									<td><a onclick="$('#attribute-row<?php echo $attribute_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>
 								</tr>
 							<?php $attribute_row++; ?>
 							<?php } ?>
@@ -438,33 +438,31 @@
 						<tfoot>
 							<tr>
 								<td colspan="2"></td>
-								<td><a onclick="addAttribute();" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_add_attribute; ?></span></a></td>
+								<td><a onclick="addAttribute();" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="d-none d-lg-inline"> <?php echo $button_add_attribute; ?></span></a></td>
 							</tr>
 						</tfoot>
 					</table>
 				</div>
 				<div class="tab-pane" id="tab-option">
 					<div class="row">
-						<div class="col-xs-4 col-sm-3">
+						<div class="col-sm-3">
 							<div class="nav flex-column">
 								<ul id="vtab-option" class="nav nav-tabs flex-column">
 									<?php $option_row = 0; ?>
 									<?php foreach ($product_options as $product_option) { ?>
 									<li class="nav-item"><a class="nav-link" href="#tab-option-<?php echo $option_row; ?>" id="option-<?php echo $option_row; ?>" data-bs-toggle="tab">
-										<span class="label label-danger" onclick="$('#vtab-option a:first').trigger('click');$('#option-<?php echo $option_row; ?>').remove();$('#tab-option-<?php echo $option_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $product_option['name']; ?>
+										<span class="badge bg-danger" onclick="$('#vtab-option a:first').trigger('click');$('#option-<?php echo $option_row; ?>').remove();$('#tab-option-<?php echo $option_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $product_option['name']; ?>
 									</a></li>
 									<?php $option_row++; ?>
 									<?php } ?>
 									<li class="action" id="option-add"><div class="input-group mb-3">
 										<input type="text" class="form-control" name="option">
-										<div class="input-group-append">
 											<span class="input-group-text"><i class="fa fa-plus-circle fa-lg" title="<?php echo $button_add_option; ?>"></i></span>
-										</div>
 									</div></li>
 								</ul>
 							</div>
 						</div>
-						<div class="col-xs-8 col-sm-9">
+						<div class="col-sm-9">
 							<div class="tab-content" id="option-container">
 								<?php $option_row = 0; ?>
 								<?php $option_value_row = 0; ?>
@@ -477,7 +475,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_required; ?></label>
 										<div class="col-sm-6">
-											<select name="product_option[<?php echo $option_row; ?>][required]" class="form-control">
+											<select name="product_option[<?php echo $option_row; ?>][required]" class="form-select">
 												<?php if ($product_option['required']) { ?>
 												<option value="1" selected=""><?php echo $text_yes; ?></option>
 												<option value="0"><?php echo $text_no; ?></option>
@@ -517,7 +515,7 @@
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>	
 											<div class="input-group col-sm-4">
 												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control date">
-												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+												<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'datetime') { ?>
@@ -525,7 +523,7 @@
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>	
 											<div class="input-group col-sm-4">
 												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control datetime">
-												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+												<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'time') { ?>
@@ -533,7 +531,7 @@
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>	
 											<div class="input-group col-sm-4">
 												<input type="text" name="product_option[<?php echo $option_row; ?>][option_value]" value="<?php echo $product_option['option_value']; ?>" class="form-control time">
-												<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+												<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 											</div>
 										</div>
 									<?php } elseif ($product_option['type'] == 'select' || $product_option['type'] == 'radio' || $product_option['type'] == 'checkbox' || $product_option['type'] == 'image') { ?>
@@ -542,11 +540,11 @@
 										<thead>
 											<tr>
 												<th><?php echo $entry_option_value; ?></th>
-												<th class="text-right"><?php echo $entry_quantity; ?></th>
+												<th class="text-end"><?php echo $entry_quantity; ?></th>
 												<th><?php echo $entry_subtract; ?></th>
-												<th class="text-right"><?php echo $entry_price; ?></th>
-												<th class="text-right"><?php echo $entry_option_points; ?></th>
-												<th class="text-right"><?php echo $entry_weight; ?></th>
+												<th class="text-end"><?php echo $entry_price; ?></th>
+												<th class="text-end"><?php echo $entry_option_points; ?></th>
+												<th class="text-end"><?php echo $entry_weight; ?></th>
 												<th></th>
 											</tr>
 										</thead>
@@ -555,7 +553,7 @@
 										<?php foreach ($product_option['product_option_value'] as $product_option_value) { ?>
 											<tr id="option-value-row<?php echo $option_value_row; ?>">
 												<td>
-													<select name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][option_value_id]" class="form-control">
+													<select name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][option_value_id]" class="form-select">
 														<?php if (isset($option_values[$product_option['option_id']])) { ?>
 														<?php foreach ($option_values[$product_option['option_id']] as $option_value) { ?>
 														<?php if ($option_value['option_value_id'] == $product_option_value['option_value_id']) { ?>
@@ -568,13 +566,13 @@
 													</select>
 													<input type="hidden" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][product_option_value_id]" value="<?php echo $product_option_value['product_option_value_id']; ?>">
 												</td>
-												<td class="text-right"><input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][quantity]" value="<?php echo $product_option_value['quantity']; ?>" class="form-control"></td>
-												<td><select name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][subtract]" class="form-control">
+												<td class="text-end"><input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][quantity]" value="<?php echo $product_option_value['quantity']; ?>" class="form-control"></td>
+												<td><select name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][subtract]" class="form-select">
 													<option value="1" <?php echo ($product_option_value['subtract']) ? 'selected' : '' ; ?>><?php echo $text_yes; ?></option>
 													<option value="0" <?php echo ($product_option_value['subtract']) ? '' : 'selected' ; ?>><?php echo $text_no; ?></option>
 												</select></td>
-												<td class="text-right"><div class="input-group">
-													<span class="input-group-btn" data-toggle="buttons">
+												<td class="text-end"><div class="input-group">
+													<div class="btn-group" data-toggle="buttons">
 														<label class="btn btn-default <?php echo ($product_option_value['price_prefix']=='+') ? 'active' : ''; ?>">
 															<input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="+" <?php echo ($product_option_value['price_prefix']=='+') ? 'checked' : ''; ?>>
 															<i class="fas fa-plus"></i>
@@ -583,11 +581,11 @@
 															<input type="radio" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price_prefix]" value="-" <?php echo ($product_option_value['price_prefix']=='-') ? 'checked' : ''; ?>>
 															<i class="fas fa-minus"></i>
 														</label>
-													</span>
+													</div>
 													<input type="text" name="product_option[<?php echo $option_row; ?>][product_option_value][<?php echo $option_value_row; ?>][price]" value="<?php echo $product_option_value['price']; ?>" class="form-control">
 												</div></td>
-												<td class="text-right"><div class="input-group">
-													<span class="input-group-btn" data-toggle="buttons">
+												<td class="text-end"><div class="input-group">
+													<div class="btn-group" data-toggle="buttons">
 														<label class="btn btn-default <?php echo ($product_option_value['points_prefix']=='+') ? 'active' : ''; ?>">
 															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="+" <?php echo ($product_option_value['points_prefix']=='+') ? 'checked' : ''; ?>>
 															<i class="fas fa-plus"></i>
@@ -596,11 +594,11 @@
 															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][points_prefix]" value="-" <?php echo ($product_option_value['points_prefix']=='-') ? 'checked' : ''; ?>>
 															<i class="fas fa-minus"></i>
 														</label>
-													</span>
+													</div>
 													<input type="text" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][points]" value="<?php echo $product_option_value['points']; ?>" class="form-control">
 												</div></td>
-												<td class="text-right"><div class="input-group">
-													<span class="input-group-btn" data-toggle="buttons">
+												<td class="text-end"><div class="input-group">
+													<div class="btn-group" data-toggle="buttons">
 														<label class="btn btn-default <?php echo ($product_option_value['weight_prefix']=='+') ? 'active' : ''; ?>">
 															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="+" <?php echo ($product_option_value['weight_prefix']=='+') ? 'checked' : ''; ?>>
 															<i class="fas fa-plus"></i>
@@ -609,10 +607,10 @@
 															<input type="radio" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][weight_prefix]" value="-" <?php echo ($product_option_value['weight_prefix']=='-') ? 'checked' : ''; ?>>
 															<i class="fas fa-minus"></i>
 														</label>
-													</span>
+													</div>
 													<input type="text" name="product_option[<?php echo $option_row?>][product_option_value][<?php echo $option_value_row; ?>][weight]" value="<?php echo $product_option_value['weight']; ?>" class="form-control">
 												</div></td>
-												<td><a onclick="$('#option-value-row<?php echo $option_value_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
+												<td><a onclick="$('#option-value-row<?php echo $option_value_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>
 											</tr>
 										<?php $option_value_row++; ?>
 										<?php } ?>
@@ -622,7 +620,7 @@
 										</tbody>
 										<tfoot>
 											<tr>
-												<td colspan="7" class="text-right"><a onclick="addOptionValue('<?php echo $option_row; ?>');" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_add_option_value; ?></span></a></td>
+												<td colspan="7" class="text-end"><a onclick="addOptionValue('<?php echo $option_row; ?>');" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="d-none d-lg-inline"> <?php echo $button_add_option_value; ?></span></a></td>
 											</tr>
 										</tfoot>
 									</table>
@@ -648,11 +646,11 @@
 						<thead>
 							<tr>
 								<th><?php echo $entry_customer_group; ?></th>
-								<th class="text-right"><?php echo $entry_quantity; ?></th>
-								<th class="text-right"><?php echo $entry_priority; ?></th>
-								<th class="text-right"><?php echo $entry_price; ?></th>
-								<th class="col-xs-2"><?php echo $entry_date_start; ?></th>
-								<th class="col-xs-2"><?php echo $entry_date_end; ?></th>
+								<th class="text-end"><?php echo $entry_quantity; ?></th>
+								<th class="text-end"><?php echo $entry_priority; ?></th>
+								<th class="text-end"><?php echo $entry_price; ?></th>
+								<th><?php echo $entry_date_start; ?></th>
+								<th><?php echo $entry_date_end; ?></th>
 								<th></th>
 							</tr>
 						</thead>
@@ -661,7 +659,7 @@
 						<?php if ($product_discounts) { ?>
 						<?php foreach ($product_discounts as $product_discount) { ?>
 							<tr id="discount-row<?php echo $discount_row; ?>">
-								<td><select name="product_discount[<?php echo $discount_row; ?>][customer_group_id]" class="form-control">
+								<td><select name="product_discount[<?php echo $discount_row; ?>][customer_group_id]" class="form-select">
 									<?php foreach ($customer_groups as $customer_group) { ?>
 									<?php if ($customer_group['customer_group_id'] == $product_discount['customer_group_id']) { ?>
 									<option value="<?php echo $customer_group['customer_group_id']; ?>" selected=""><?php echo $customer_group['name']; ?></option>
@@ -670,12 +668,12 @@
 									<?php } ?>
 									<?php } ?>
 								</select></td>
-								<td class="text-right"><input type="text" name="product_discount[<?php echo $discount_row; ?>][quantity]" value="<?php echo $product_discount['quantity']; ?>" class="form-control"></td>
-								<td class="text-right"><input type="text" name="product_discount[<?php echo $discount_row; ?>][priority]" value="<?php echo $product_discount['priority']; ?>" class="form-control"></td>
-								<td class="text-right"><input type="text" name="product_discount[<?php echo $discount_row; ?>][price]" value="<?php echo $product_discount['price']; ?>" class="form-control"></td>
-								<td><label class="input-group"><input type="text" name="product_discount[<?php echo $discount_row; ?>][date_start]" value="<?php echo strtotime($product_discount['date_start']) ? $product_discount['date_start'] : ''; ?>" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div></label></td>
-								<td><label class="input-group"><input type="text" name="product_discount[<?php echo $discount_row; ?>][date_end]" value="<?php echo strtotime($product_discount['date_end']) ? $product_discount['date_end'] : ''; ?>" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div></label></td>
-								<td><a onclick="$('#discount-row<?php echo $discount_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
+								<td class="text-end"><input type="text" name="product_discount[<?php echo $discount_row; ?>][quantity]" value="<?php echo $product_discount['quantity']; ?>" class="form-control"></td>
+								<td class="text-end"><input type="text" name="product_discount[<?php echo $discount_row; ?>][priority]" value="<?php echo $product_discount['priority']; ?>" class="form-control"></td>
+								<td class="text-end"><input type="text" name="product_discount[<?php echo $discount_row; ?>][price]" value="<?php echo $product_discount['price']; ?>" class="form-control"></td>
+								<td><label class="input-group"><input type="text" name="product_discount[<?php echo $discount_row; ?>][date_start]" value="<?php echo strtotime($product_discount['date_start']) ? $product_discount['date_start'] : ''; ?>" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fas fa-calendar"></i></span></label></td>
+								<td><label class="input-group"><input type="text" name="product_discount[<?php echo $discount_row; ?>][date_end]" value="<?php echo strtotime($product_discount['date_end']) ? $product_discount['date_end'] : ''; ?>" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fas fa-calendar"></i></span></label></td>
+								<td><a onclick="$('#discount-row<?php echo $discount_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>
 							</tr>
 						<?php $discount_row++; ?>
 						<?php } ?>
@@ -686,7 +684,7 @@
 						<tfoot>
 							<tr>
 								<td colspan="6"></td>
-								<td><a onclick="addDiscount();" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_add_discount; ?></span></a></td>
+								<td><a onclick="addDiscount();" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="d-none d-lg-inline"> <?php echo $button_add_discount; ?></span></a></td>
 							</tr>
 						</tfoot>
 					</table>
@@ -698,10 +696,10 @@
 						<thead>
 							<tr>
 								<th><?php echo $entry_customer_group; ?></th>
-								<th class="text-right"><?php echo $entry_priority; ?></th>
-								<th class="text-right"><?php echo $entry_price; ?></th>
-								<th class="col-xs-3"><?php echo $entry_date_start; ?></th>
-								<th class="col-xs-3"><?php echo $entry_date_end; ?></th>
+								<th class="text-end"><?php echo $entry_priority; ?></th>
+								<th class="text-end"><?php echo $entry_price; ?></th>
+								<th><?php echo $entry_date_start; ?></th>
+								<th><?php echo $entry_date_end; ?></th>
 								<th></th>
 							</tr>
 						</thead>
@@ -710,7 +708,7 @@
 						<?php if ($product_specials) { ?>
 						<?php foreach ($product_specials as $product_special) { ?>
 							<tr id="special-row<?php echo $special_row; ?>">
-								<td><select name="product_special[<?php echo $special_row; ?>][customer_group_id]" class="form-control">
+								<td><select name="product_special[<?php echo $special_row; ?>][customer_group_id]" class="form-select">
 									<?php foreach ($customer_groups as $customer_group) { ?>
 									<?php if ($customer_group['customer_group_id'] == $product_special['customer_group_id']) { ?>
 									<option value="<?php echo $customer_group['customer_group_id']; ?>" selected=""><?php echo $customer_group['name']; ?></option>
@@ -719,11 +717,11 @@
 									<?php } ?>
 									<?php } ?>
 								</select></td>
-								<td class="text-right"><input type="text" name="product_special[<?php echo $special_row; ?>][priority]" value="<?php echo $product_special['priority']; ?>" class="form-control"></td>
-								<td class="text-right"><input type="text" name="product_special[<?php echo $special_row; ?>][price]" value="<?php echo $product_special['price']; ?>" class="form-control"></td>
-								<td><label class="input-group"><input type="text" name="product_special[<?php echo $special_row; ?>][date_start]" value="<?php echo strtotime($product_special['date_start']) ? $product_special['date_start'] : ''; ?>" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div></label></td>
-								<td><label class="input-group"><input type="text" name="product_special[<?php echo $special_row; ?>][date_end]" value="<?php echo strtotime($product_special['date_end']) ? $product_special['date_end'] : ''; ?>" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-text"><i class="fas fa-calendar"></i></span></div></label></td>
-								<td><a onclick="$('#special-row<?php echo $special_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
+								<td class="text-end"><input type="text" name="product_special[<?php echo $special_row; ?>][priority]" value="<?php echo $product_special['priority']; ?>" class="form-control"></td>
+								<td class="text-end"><input type="text" name="product_special[<?php echo $special_row; ?>][price]" value="<?php echo $product_special['price']; ?>" class="form-control"></td>
+								<td><label class="input-group"><input type="text" name="product_special[<?php echo $special_row; ?>][date_start]" value="<?php echo strtotime($product_special['date_start']) ? $product_special['date_start'] : ''; ?>" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fas fa-calendar"></i></span></label></td>
+								<td><label class="input-group"><input type="text" name="product_special[<?php echo $special_row; ?>][date_end]" value="<?php echo strtotime($product_special['date_end']) ? $product_special['date_end'] : ''; ?>" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fas fa-calendar"></i></span></label></td>
+								<td><a onclick="$('#special-row<?php echo $special_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>
 							</tr>
 						<?php $special_row++; ?>
 						<?php } ?>
@@ -745,14 +743,14 @@
 						<thead>
 							<tr>
 								<th><?php echo $entry_image; ?></th>
-								<th class="text-right"><?php echo $entry_sort_order; ?></th>
+								<th class="text-end"><?php echo $entry_sort_order; ?></th>
 								<th></th>
 							</tr>
 						</thead>
 						
 						<tbody>
 						<tr>
-							<td class="text-left"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
+							<td class="text-start"><a href="" id="thumb-image" data-toggle="image" class="img-thumbnail">
 							<img src="<?php echo $thumb; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>
 							<input type="hidden" name="image" value="<?php echo $image; ?>" id="input-image" /></td>
 						</tr>
@@ -763,8 +761,8 @@
 								<td><a href="" id="thumb<?php echo $image_row; ?>" data-toggle="image" class="img-thumbnail">
 									<img src="<?php echo $product_image['thumb']; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>
 									<input type="hidden" name="product_image[<?php echo $image_row; ?>][image]" value="<?php echo $product_image['image']; ?>" id="image<?php echo $image_row; ?>"></td>
-								<td class="text-right"><input type="text" name="product_image[<?php echo $image_row; ?>][sort_order]" value="<?php echo $product_image['sort_order']; ?>" class="form-control"></td>
-								<td><a onclick="$('#image-row<?php echo $image_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
+								<td class="text-end"><input type="text" name="product_image[<?php echo $image_row; ?>][sort_order]" value="<?php echo $product_image['sort_order']; ?>" class="form-control"></td>
+								<td><a onclick="$('#image-row<?php echo $image_row; ?>').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>
 							</tr>
 						<?php $image_row++; ?>
 						<?php } ?>
@@ -772,7 +770,7 @@
 						<tfoot>
 							<tr>
 								<td colspan="2"></td>
-								<td><a onclick="addImage();" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="hidden-xs"> <?php echo $button_add_image; ?></span></a></td>
+								<td><a onclick="addImage();" class="btn btn-info"><i class="fa fa-plus-circle"></i><span class="d-none d-lg-inline"> <?php echo $button_add_image; ?></span></a></td>
 							</tr>
 						</tfoot>
 					</table>
@@ -786,7 +784,7 @@
 							<input type="file" id="docupload-input" class="form-control" multiple>
 						</div>
 						<div class="col-sm-4">
-							<a onclick="docuploadStart();" class="btn btn-info"><i class="fa fa-upload"></i><span class="hidden-xs"> <?php echo $button_document_upload; ?></span></a>
+							<a onclick="docuploadStart();" class="btn btn-info"><i class="fa fa-upload"></i><span class="d-none d-lg-inline"> <?php echo $button_document_upload; ?></span></a>
 						</div>
 					</div>
 					<div id="docupload-progress" class="alert alert-danger" style="display:none;"></div>
@@ -804,7 +802,7 @@
 							<tr id="document-row<?php echo $document['product_document_id']; ?>">
 								<td><a href="<?php echo $document['view_url']; ?>" target="_blank"><?php echo $document['name']; ?></a></td>
 								<td><?php echo $document['date_added']; ?></td>
-								<td><a onclick="docdeleteRow(<?php echo $document['product_document_id']; ?>);" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>
+								<td><a onclick="docdeleteRow(<?php echo $document['product_document_id']; ?>);" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>
 							</tr>
 							<?php } ?>
 							<?php } else { ?>
@@ -827,7 +825,7 @@
 						<tbody>
 							<tr>
 								<td><?php echo $text_default; ?></td>
-								<td><select name="product_layout[0][layout_id]" class="form-control">
+								<td><select name="product_layout[0][layout_id]" class="form-select">
 									<option value="">&ndash;</option>
 									<?php foreach ($layouts as $layout) { ?>
 									<?php if (isset($product_layout[0]) && $product_layout[0] == $layout['layout_id']) { ?>
@@ -841,7 +839,7 @@
 							<?php foreach ($stores as $store) { ?>
 								<tr>
 									<td><?php echo $store['name']; ?></td>
-									<td><select name="product_layout[<?php echo $store['store_id']; ?>][layout_id]" class="form-control">
+									<td><select name="product_layout[<?php echo $store['store_id']; ?>][layout_id]" class="form-select">
 										<option value="">&ndash;</option>
 										<?php foreach ($layouts as $layout) { ?>
 										<?php if (isset($product_layout[$store['store_id']]) && $product_layout[$store['store_id']] == $layout['layout_id']) { ?>
@@ -869,10 +867,10 @@ function addAttribute(){
 	html+='<td><input type="text" name="product_attribute['+attribute_row+'][name]" value="" class="form-control"><input type="hidden" name="product_attribute['+attribute_row+'][attribute_id]" value="" class="form-control"></td>';
 	html+='<td>';
 	<?php foreach ($languages as $language) { ?>
-	html+='<div class="input-group"><textarea name="product_attribute['+attribute_row+'][product_attribute_description][<?php echo $language['language_id']; ?>][text]" class="form-control" rows="3"></textarea><span class="input-group-addon"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i></span></div>';
+	html+='<div class="input-group"><textarea name="product_attribute['+attribute_row+'][product_attribute_description][<?php echo $language['language_id']; ?>][text]" class="form-control" rows="3"></textarea><span class="input-group-text"><i class="lang-<?php echo str_replace('.png','', $language['image']); ?>" title="<?php echo $language['name']; ?>"></i></span></div>';
 	<?php } ?>
 	html+='</td>';
-	html+='<td><a onclick="$(\'#attribute-row'+attribute_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+	html+='<td><a onclick="$(\'#attribute-row'+attribute_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>';
 	html+='</tr>';
 	
 	$('#attribute tbody').append(html);
@@ -908,7 +906,7 @@ a.typeahead({
 		html+='<div class="form-group row">';
 		html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_required; ?></label>';
 		html+='<div class="col-sm-4">';
-		html+='<select name="product_option['+option_row+'][required]" class="form-control">';
+		html+='<select name="product_option['+option_row+'][required]" class="form-select">';
 		html+='<option value="1"><?php echo $text_yes; ?></option>';
 		html+='<option value="0"><?php echo $text_no; ?></option>';
 		html+='</select>';
@@ -936,21 +934,21 @@ a.typeahead({
 			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
 			html+='<div class="col-sm-4"><label class="input-group">';
 			html+='<input type="text" class="form-control date" name="product_option['+option_row+'][option_value]" value="">';
-			html+='<div class="input-group-append"><span class="input-group-text"><i class="fa fa-calendar"></i></span></div>';
+			html+='<span class="input-group-text"><i class="fa fa-calendar"></i></span>';
 			html+='</label></div>';
 		}else if(mapped[item].type=='datetime'){
 			html+='<div class="form-group row">';
 			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
 			html+='<div class="col-sm-4"><label class="input-group">';
 			html+='<input type="text" class="form-control datetime" name="product_option['+option_row+'][option_value]" value="" autocomplete="off">';
-			html+='<div class="input-group-append"><span class="input-group-text"><i class="fa fa-calendar"></i></span></div>';
+			html+='<span class="input-group-text"><i class="fa fa-calendar"></i></span>';
 			html+='</label></div>';
 		}else if(mapped[item].type=='time'){
 			html+='<div class="form-group row">';
 			html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_option_value; ?></label>';
 			html+='<div class="col-sm-4"><label class="input-group">';
 			html+='<input type="text" class="form-control time" name="product_option['+option_row+'][option_value]" value="" autocomplete="off">';
-			html+='<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>';
+			html+='<span class="input-group-text"><i class="fa fa-clock-o"></i></span>';
 			html+='</label></div>';
 		}else if(mapped[item].type=='select'||mapped[item].type=='radio'||mapped[item].type=='checkbox'||mapped[item].type=='image'){
 			html+='<div class="table-responsive">'; 
@@ -958,11 +956,11 @@ a.typeahead({
 			html+='<thead>'; 
 			html+='<tr>';
 			html+='<th><?php echo $entry_option_value; ?></th>';
-			html+='<th class="text-right"><?php echo $entry_quantity; ?></th>';
+			html+='<th class="text-end"><?php echo $entry_quantity; ?></th>';
 			html+='<th><?php echo $entry_subtract; ?></th>';
-			html+='<th class="text-right"><?php echo $entry_price; ?></th>';
-			html+='<th class="text-right"><?php echo $entry_option_points; ?></th>';
-			html+='<th class="text-right"><?php echo $entry_weight; ?></th>';
+			html+='<th class="text-end"><?php echo $entry_price; ?></th>';
+			html+='<th class="text-end"><?php echo $entry_option_points; ?></th>';
+			html+='<th class="text-end"><?php echo $entry_weight; ?></th>';
 			html+='<th></th>';
 			html+='</tr>';
 			html+='</thead>';
@@ -988,7 +986,7 @@ a.typeahead({
 		
 		$('#option-container').append(html);
 
-		$('#option-add').before('<li class="nav-item"><a class="nav-link" href="#tab-option-'+option_row+'" id="option-'+option_row+'" data-bs-toggle="tab"><span class="label label-danger" onclick="$(\'#vtab-option a:first\').trigger(\'click\'); $(\'#option-'+option_row+'\').remove();$(\'#tab-option-'+option_row+'\').remove();return false;"><i class="fa fa-trash"></i></span> '+item+'</a></li>');
+		$('#option-add').before('<li class="nav-item"><a class="nav-link" href="#tab-option-'+option_row+'" id="option-'+option_row+'" data-bs-toggle="tab"><span class="badge bg-danger" onclick="$(\'#vtab-option a:first\').trigger(\'click\'); $(\'#option-'+option_row+'\').remove();$(\'#tab-option-'+option_row+'\').remove();return false;"><i class="fa fa-trash"></i></span> '+item+'</a></li>');
 
 		$('#option-'+option_row).click();
 
@@ -1003,15 +1001,15 @@ var option_value_row=<?php echo $option_value_row; ?>;
 
 function addOptionValue(option_row){
 	html ='<tr id="option-value-row'+option_value_row+'">';
-	html+='<td><select name="product_option['+option_row+'][product_option_value]['+option_value_row+'][option_value_id]" class="form-control">';
+	html+='<td><select name="product_option['+option_row+'][product_option_value]['+option_value_row+'][option_value_id]" class="form-select">';
 	html+=$('#option-values'+option_row).html();
 	html+='</select><input type="hidden" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][product_option_value_id]" value=""></td>';
-	html+='<td class="text-right"><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][quantity]" value="" class="form-control"></td>'; 
-	html+='<td><select name="product_option['+option_row+'][product_option_value]['+option_value_row+'][subtract]" class="form-control"><option value="1"><?php echo $text_yes; ?></option><option value="0"><?php echo $text_no; ?></option></select></td>';
-	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="-"><i class="fas fa-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price]" value="" class="form-control"></div></td>';
-	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="-"><i class="fas fa-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points]" value="" class="form-control"></div></td>';
-	html+='<td class="text-right"><div class="input-group"><span class="input-group-btn" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="-"><i class="fas fa-minus"></i></label></span><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight]" value="" class="form-control"></div></td>';
-	html+='<td><a onclick="$(\'#option-value-row'+option_value_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+	html+='<td class="text-end"><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][quantity]" value="" class="form-control"></td>'; 
+	html+='<td><select name="product_option['+option_row+'][product_option_value]['+option_value_row+'][subtract]" class="form-select"><option value="1"><?php echo $text_yes; ?></option><option value="0"><?php echo $text_no; ?></option></select></td>';
+	html+='<td class="text-end"><div class="input-group"><div class="btn-group" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price_prefix]" value="-"><i class="fas fa-minus"></i></label></div><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][price]" value="" class="form-control"></div></td>';
+	html+='<td class="text-end"><div class="input-group"><div class="btn-group" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points_prefix]" value="-"><i class="fas fa-minus"></i></label></div><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][points]" value="" class="form-control"></div></td>';
+	html+='<td class="text-end"><div class="input-group"><div class="btn-group" data-toggle="buttons"><label class="btn btn-default active"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="+" checked=""><i class="fas fa-plus"></i></label><label class="btn btn-default"><input type="radio" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight_prefix]" value="-"><i class="fas fa-minus"></i></label></div><input type="text" name="product_option['+option_row+'][product_option_value]['+option_value_row+'][weight]" value="" class="form-control"></div></td>';
+	html+='<td><a onclick="$(\'#option-value-row'+option_value_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>';
 	html+='</tr>';
 
 	if (option_value_row==0) {
@@ -1029,17 +1027,17 @@ var discount_row=<?php echo $discount_row; ?>;
 
 function addDiscount(){
 	html ='<tr id="discount-row'+discount_row+'">';
-	html+='<td><select name="product_discount['+discount_row+'][customer_group_id]" class="form-control">';
+	html+='<td><select name="product_discount['+discount_row+'][customer_group_id]" class="form-select">';
 	<?php foreach ($customer_groups as $customer_group) { ?>
 	html+='<option value="<?php echo $customer_group['customer_group_id']; ?>"><?php echo addslashes($customer_group['name']); ?></option>';
 	<?php } ?>
 	html+='</select></td>';
-	html+='<td class="text-right"><input type="text" name="product_discount['+discount_row+'][quantity]" value="" class="form-control"></td>';
-	html+='<td class="text-right"><input type="text" name="product_discount['+discount_row+'][priority]" value="" class="form-control"></td>';
-	html+='<td class="text-right"><input type="text" name="product_discount['+discount_row+'][price]" value="" class="form-control"></td>';
-	html+='<td><label class="input-group"><input type="text" name="product_discount['+discount_row+'][date_start]" value="" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></label></td>';
-	html+='<td><label class="input-group"><input type="text" name="product_discount['+discount_row+'][date_end]" value="" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></label></td>';
-	html+='<td><a onclick="$(\'#discount-row'+discount_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+	html+='<td class="text-end"><input type="text" name="product_discount['+discount_row+'][quantity]" value="" class="form-control"></td>';
+	html+='<td class="text-end"><input type="text" name="product_discount['+discount_row+'][priority]" value="" class="form-control"></td>';
+	html+='<td class="text-end"><input type="text" name="product_discount['+discount_row+'][price]" value="" class="form-control"></td>';
+	html+='<td><label class="input-group"><input type="text" name="product_discount['+discount_row+'][date_start]" value="" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fa fa-calendar"></i></span></label></td>';
+	html+='<td><label class="input-group"><input type="text" name="product_discount['+discount_row+'][date_end]" value="" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fa fa-calendar"></i></span></label></td>';
+	html+='<td><a onclick="$(\'#discount-row'+discount_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>';
 	html+='</tr>';
 	
 	$('#discount tbody').append(html);
@@ -1052,16 +1050,16 @@ var special_row=<?php echo $special_row; ?>;
 
 function addSpecial(){
 	html ='<tr id="special-row'+special_row+'">';
-	html+='<td><select name="product_special['+special_row+'][customer_group_id]" class="form-control">';
+	html+='<td><select name="product_special['+special_row+'][customer_group_id]" class="form-select">';
 	<?php foreach ($customer_groups as $customer_group) { ?>
 	html+='<option value="<?php echo $customer_group['customer_group_id']; ?>"><?php echo addslashes($customer_group['name']); ?></option>';
 	<?php } ?>
 	html+='</select></td>';
-	html+='<td class="text-right"><input type="text" name="product_special['+special_row+'][priority]" value="" class="form-control"></td>';
-	html+='<td class="text-right"><input type="text" name="product_special['+special_row+'][price]" value="" class="form-control"></td>';
-	html+='<td><label class="input-group"><input type="text" name="product_special['+special_row+'][date_start]" value="" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></label></td>';
-	html+='<td><label class="input-group"><input type="text" name="product_special['+special_row+'][date_end]" value="" class="form-control date" autocomplete="off"><div class="input-group-append"><span class="input-group-addon"><i class="fa fa-calendar"></i></span></div></label></td>';
-	html+='<td><a onclick="$(\'#special-row'+special_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+	html+='<td class="text-end"><input type="text" name="product_special['+special_row+'][priority]" value="" class="form-control"></td>';
+	html+='<td class="text-end"><input type="text" name="product_special['+special_row+'][price]" value="" class="form-control"></td>';
+	html+='<td><label class="input-group"><input type="text" name="product_special['+special_row+'][date_start]" value="" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fa fa-calendar"></i></span></label></td>';
+	html+='<td><label class="input-group"><input type="text" name="product_special['+special_row+'][date_end]" value="" class="form-control date" autocomplete="off"><span class="input-group-text"><i class="fa fa-calendar"></i></span></label></td>';
+	html+='<td><a onclick="$(\'#special-row'+special_row+'\').remove();" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>';
 	html+='</tr>';
 	
 	$('#special tbody').append(html);
@@ -1077,9 +1075,9 @@ function addImage(){
 	html += '<td><a href="" id="thumb'+image_row+'" data-toggle="image" class="img-thumbnail">';
 	html += '<img src="<?php echo $no_image; ?>" data-placeholder="<?php echo $no_image; ?>"/></a>';
 	html += '<input type="hidden" name="product_image['+image_row+'][image]" value="" id="image'+image_row+'"></td>';
-	html += '<td class="text-right"><input type="text" name="product_image['+image_row+'][sort_order]" value="" class="form-control"></td>';
+	html += '<td class="text-end"><input type="text" name="product_image['+image_row+'][sort_order]" value="" class="form-control"></td>';
 	html += '<td><a onclick="$(\'#image-row'+image_row+'\').remove();" class="btn btn-danger">';
-	html += '<i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+	html += '<i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>';
 	html += '</tr>';
 	
 	$('#images tbody').append(html);
@@ -1145,7 +1143,7 @@ function docuploadStart() {
 				var html = '<tr id="document-row' + doc.product_document_id + '">';
 				html += '<td><a href="' + doc.view_url + '" target="_blank">' + doc.name + '</a></td>';
 				html += '<td>' + doc.date_added + '</td>';
-				html += '<td><a onclick="docdeleteRow(' + doc.product_document_id + ');" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_remove; ?></span></a></td>';
+				html += '<td><a onclick="docdeleteRow(' + doc.product_document_id + ');" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_remove; ?></span></a></td>';
 				html += '</tr>';
 
 				$('#documents-tbody').append(html);

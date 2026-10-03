@@ -11,42 +11,42 @@
 	#sales-status-table .badge-pending { background-color: #e05b5b; color: #fff; }
 </style>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-chart-line"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="row g-2 align-items-end">
 				<div class="col-12 col-sm-2">
-					<label class="control-label"><?php echo $entry_customer; ?></label>
+					<label class="col-form-label text-sm-end pb-0"><?php echo $entry_customer; ?></label>
 					<div style="position:relative;">
 						<input type="text" id="filter-customer" class="form-control" style="padding-right:2.5rem;" value="<?php echo $filter_customer; ?>" placeholder="<?php echo $entry_customer; ?>">
 						<button type="button" id="searchCustomer" class="btn btn-default" style="position:absolute; top:0; right:0; height:calc(2.0625rem + 2px); border-left:0; border-top-left-radius:0; border-bottom-left-radius:0;" title="Buscar Cliente"><i class="fa fa-search"></i></button>
 					</div>
 				</div>
 				<div class="col-12 col-sm-2">
-					<label class="control-label"><?php echo $entry_reference; ?></label>
+					<label class="col-form-label text-sm-end pb-0"><?php echo $entry_reference; ?></label>
 					<input type="text" id="filter-reference" class="form-control" value="<?php echo $filter_reference; ?>" placeholder="<?php echo $entry_reference; ?>">
 				</div>
 				<div class="col-6 col-sm-2">
-					<label class="control-label"><?php echo $entry_date_start; ?></label>
+					<label class="col-form-label text-sm-end pb-0"><?php echo $entry_date_start; ?></label>
 					<div class="input-group mb-0">
 						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div class="col-6 col-sm-2">
-					<label class="control-label"><?php echo $entry_date_end; ?></label>
+					<label class="col-form-label text-sm-end pb-0"><?php echo $entry_date_end; ?></label>
 					<div class="input-group mb-0">
 						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div class="col-12 col-sm-2">
-					<label class="control-label d-block">&nbsp;</label>
+					<label class="col-form-label text-sm-end pb-0 d-block">&nbsp;</label>
 					<div class="d-flex align-items-center" style="height: calc(2.0625rem + 2px);">
 						<div class="form-check form-check-inline mb-0">
 							<input type="checkbox" class="form-check-input" id="filter-pending" <?php echo $filter_pending ? 'checked' : ''; ?>>
@@ -59,7 +59,7 @@
 					</div>
 				</div>
 				<div class="col-12 col-sm-2">
-					<label class="control-label d-block">&nbsp;</label>
+					<label class="col-form-label text-sm-end pb-0 d-block">&nbsp;</label>
 					<button type="button" onclick="salesStatusFilter();" class="btn btn-info w-100" style="height:calc(2.0625rem + 2px);"><i class="fa fa-sync"></i> <?php echo $button_filter; ?></button>
 				</div>
 			</div>
@@ -125,16 +125,16 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title">Buscar Cliente</h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<div class="row g-2 mb-3">
 					<div class="col-12 col-sm">
-						<label class="control-label">Empresa</label>
+						<label class="col-form-label text-sm-end pb-0">Empresa</label>
 						<input type="text" id="cs-company" class="form-control" placeholder="Empresa">
 					</div>
 					<div class="col-12 col-sm">
-						<label class="control-label">Nombre de Contacto</label>
+						<label class="col-form-label text-sm-end pb-0">Nombre de Contacto</label>
 						<input type="text" id="cs-contact" class="form-control" placeholder="Nombre de Contacto">
 					</div>
 					<div class="col-12 col-sm-auto d-flex align-items-end">

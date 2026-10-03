@@ -1,15 +1,15 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'landmark'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-bar" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th><a href="<?php echo $sort_title; ?>"><?php echo $column_title; echo ($sort == 'title') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
@@ -22,7 +22,7 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $tax_class['tax_class_id']; ?>">
 							<?php } ?></td>
 						<td><?php echo $tax_class['title']; ?></td>
-						<td class="text-right"><?php foreach ($tax_class['action'] as $action) { ?>
+						<td class="text-end"><?php foreach ($tax_class['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>

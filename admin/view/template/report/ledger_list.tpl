@@ -2,24 +2,24 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="d-flex flex-wrap align-items-center justify-content-between mb-4" style="gap:.5rem;">
 				<div class="d-flex flex-wrap align-items-center" style="gap:.5rem;">
 					<strong><?php echo $text_period; ?>:</strong>
 					<div class="input-group" style="width:150px;">
 						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>" placeholder="<?php echo $entry_from; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 					<div class="input-group" style="width:150px;">
 						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>" placeholder="<?php echo $entry_to; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 
 					<strong class="ms-3"><?php echo $text_accounts; ?>:</strong>
@@ -76,9 +76,9 @@
 					<tr>
 						<th><?php echo $column_entry; ?></th>
 						<th><?php echo $column_concept; ?></th>
-						<th class="text-right"><?php echo $column_debit; ?></th>
-						<th class="text-right"><?php echo $column_credit; ?></th>
-						<th class="text-right"><?php echo $column_balance; ?></th>
+						<th class="text-end"><?php echo $column_debit; ?></th>
+						<th class="text-end"><?php echo $column_credit; ?></th>
+						<th class="text-end"><?php echo $column_balance; ?></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -86,18 +86,18 @@
 					<tr>
 						<td><?php echo trim($row['entry_id'] . ' ' . $row['line_date']); ?></td>
 						<td><?php echo $row['concept']; ?></td>
-						<td class="text-right"><?php echo $row['debit']; ?></td>
-						<td class="text-right"><?php echo $row['credit']; ?></td>
-						<td class="text-right"><?php echo $row['balance']; ?></td>
+						<td class="text-end"><?php echo $row['debit']; ?></td>
+						<td class="text-end"><?php echo $row['credit']; ?></td>
+						<td class="text-end"><?php echo $row['balance']; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>
 				<tfoot>
 					<tr>
 						<td colspan="2"><?php echo $text_total; ?></td>
-						<td class="text-right"><?php echo $account['total_debit']; ?></td>
-						<td class="text-right"><?php echo $account['total_credit']; ?></td>
-						<td class="text-right"><?php echo $account['balance']; ?></td>
+						<td class="text-end"><?php echo $account['total_debit']; ?></td>
+						<td class="text-end"><?php echo $account['total_credit']; ?></td>
+						<td class="text-end"><?php echo $account['balance']; ?></td>
 					</tr>
 				</tfoot>
 			</table>
@@ -136,7 +136,7 @@
 .ledger-report table.lines th { text-align: left; border-bottom: 1px solid #000000; padding: 4px 6px; font-size: 12px; white-space: nowrap; }
 .ledger-report table.lines td { padding: 3px 6px; font-size: 13px; }
 .ledger-report table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
-.ledger-report .text-right { text-align: right; }
+.ledger-report .text-end, .ledger-report .text-right { text-align: right; }
 </style>
 <script type="text/javascript"><!--
 function buildFilterParams() {

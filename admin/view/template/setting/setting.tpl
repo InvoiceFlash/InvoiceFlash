@@ -1,8 +1,8 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'cog'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
+	<div class="card-body">
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a class="nav-link" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-local" data-bs-toggle="tab"><?php echo $tab_local; ?></a></li>
@@ -16,7 +16,7 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-ftp" data-bs-toggle="tab"><?php echo $tab_ftp; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-server" data-bs-toggle="tab"><?php echo $tab_server; ?></a></li>
 				<li class="nav-item"><a class="nav-link" href="#tab-ia" data-bs-toggle="tab"><?php echo $tab_ia; ?></a></li></ul>
-		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+		<form class="form-classic mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">
 				<div id="tab-general" class="tab-pane">
 					<div class="form-group row">
@@ -24,7 +24,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_name" value="<?php echo $config_name; ?>" class="form-control">
 							<?php if ($error_name) { ?>
-								<div class="help-block text-danger"><?php echo $error_name; ?></div>
+								<div class="form-text text-danger"><?php echo $error_name; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -33,14 +33,14 @@
 						<div class="col-sm-6">
 							<textarea name="config_address" class="form-control" rows="3"><?php echo $config_address; ?></textarea>
 							<?php if ($error_address) { ?>
-								<div class="help-block text-danger"><?php echo $error_address; ?></div>
+								<div class="form-text text-danger"><?php echo $error_address; ?></div>
 							<?php } ?>
 						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
 						<div class="col-sm-6">
-							<select name="config_country_id" data-id="<?php echo $config_zone_id; ?>" data-none="<?php echo $text_none; ?>" class="form-control">
+							<select name="config_country_id" data-id="<?php echo $config_zone_id; ?>" data-none="<?php echo $text_none; ?>" class="form-select">
 								<?php foreach ($countries as $country) { ?>
 									<?php if ($country['country_id'] == $config_country_id) { ?>
 									<option value="<?php echo $country['country_id']; ?>" selected=""><?php echo $country['name']; ?></option>
@@ -54,7 +54,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
 						<div class="col-sm-6">
-							<select name="config_zone_id" class="form-control"></select>
+							<select name="config_zone_id" class="form-select"></select>
 						</div>
 					</div>
 					<div class="form-group row">
@@ -68,7 +68,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_email" value="<?php echo $config_email; ?>" class="form-control">
 							<?php if ($error_email) { ?>
-								<div class="help-block text-danger"><?php echo $error_email; ?></div>
+								<div class="form-text text-danger"><?php echo $error_email; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -77,7 +77,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_telephone" value="<?php echo $config_telephone; ?>" class="form-control">
 							<?php if ($error_telephone) { ?>
-								<div class="help-block text-danger"><?php echo $error_telephone; ?></div>
+								<div class="form-text text-danger"><?php echo $error_telephone; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -100,7 +100,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_title" value="<?php echo $config_title; ?>" class="form-control">
 							<?php if ($error_title) { ?>
-								<div class="help-block text-danger"><?php echo $error_title; ?></div>
+								<div class="form-text text-danger"><?php echo $error_title; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -113,7 +113,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_template; ?></label>
 						<div class="col-sm-6">
-							<select name="config_template" onchange="$('#template').load('index.php?route=setting/setting/template&token=<?php echo $token; ?>&template='+encodeURIComponent(this.value));" class="form-control">
+							<select name="config_template" onchange="$('#template').load('index.php?route=setting/setting/template&token=<?php echo $token; ?>&template='+encodeURIComponent(this.value));" class="form-select">
 								<?php foreach ($templates as $template) { ?>
 									<?php if ($template == $config_template) { ?>
 									<option value="<?php echo $template; ?>" selected=""><?php echo $template; ?></option>
@@ -122,13 +122,13 @@
 									<?php } ?>
 								<?php } ?>
 							</select>
-							<div class="help-block" id="template"></div>
+							<div class="form-help" id="template"></div>
 						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_layout; ?></label>
 						<div class="col-sm-6">
-							<select name="config_layout_id" class="form-control">
+							<select name="config_layout_id" class="form-select">
 								<?php foreach ($layouts as $layout) { ?>
 									<?php if ($layout['layout_id'] == $config_layout_id) { ?>
 									<option value="<?php echo $layout['layout_id']; ?>" selected=""><?php echo $layout['name']; ?></option>
@@ -144,7 +144,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_language; ?></label>
 						<div class="col-sm-6">
-							<select name="config_language" class="form-control">
+							<select name="config_language" class="form-select">
 								<?php foreach ($languages as $language) { ?>
 									<?php if ($language['code'] == $config_language) { ?>
 									<option value="<?php echo $language['code']; ?>" selected=""><?php echo $language['name']; ?></option>
@@ -158,7 +158,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_admin_language; ?></label>
 						<div class="col-sm-6">
-							<select name="config_admin_language" class="form-control">
+							<select name="config_admin_language" class="form-select">
 								<?php foreach ($languages as $language) { ?>
 									<?php if ($language['code'] == $config_admin_language) { ?>
 									<option value="<?php echo $language['code']; ?>" selected=""><?php echo $language['name']; ?></option>
@@ -172,7 +172,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_currency; ?></label>
 						<div class="col-sm-6">
-							<select name="config_currency" class="form-control">
+							<select name="config_currency" class="form-select">
 								<?php foreach ($currencies as $currency) { ?>
 									<?php if ($currency['code'] == $config_currency) { ?>
 									<option value="<?php echo $currency['code']; ?>" selected=""><?php echo $currency['title']; ?></option>
@@ -200,7 +200,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_decimal_point" value="<?php echo $config_decimal_point; ?>" maxlength="1" class="form-control" style="max-width:80px;">
 							<?php if ($error_decimal_point) { ?>
-								<div class="help-block text-danger"><?php echo $error_decimal_point; ?></div>
+								<div class="form-text text-danger"><?php echo $error_decimal_point; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -209,14 +209,14 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_thousand_point" value="<?php echo $config_thousand_point; ?>" maxlength="1" class="form-control" style="max-width:80px;">
 							<?php if ($error_thousand_point) { ?>
-								<div class="help-block text-danger"><?php echo $error_thousand_point; ?></div>
+								<div class="form-text text-danger"><?php echo $error_thousand_point; ?></div>
 							<?php } ?>
 						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_length_class; ?></label>
 						<div class="col-sm-6">
-							<select name="config_length_class_id" class="form-control">
+							<select name="config_length_class_id" class="form-select">
 								<?php foreach ($length_classes as $length_class) { ?>
 									<?php if ($length_class['length_class_id'] == $config_length_class_id) { ?>
 									<option value="<?php echo $length_class['length_class_id']; ?>" selected=""><?php echo $length_class['title']; ?></option>
@@ -230,7 +230,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_weight_class; ?></label>
 						<div class="col-sm-6">
-							<select name="config_weight_class_id" class="form-control">
+							<select name="config_weight_class_id" class="form-select">
 								<?php foreach ($weight_classes as $weight_class) { ?>
 									<?php if ($weight_class['weight_class_id'] == $config_weight_class_id) { ?>
 									<option value="<?php echo $weight_class['weight_class_id']; ?>" selected=""><?php echo $weight_class['title']; ?></option>
@@ -267,7 +267,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_category_height" value="<?php echo $config_image_category_height; ?>" class="form-control"></div>
 							</div>							
 							<?php if ($error_image_category) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_category; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_category; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -279,7 +279,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_thumb_height" value="<?php echo $config_image_thumb_height; ?>" class="form-control"></div>
 							</div>
 							<?php if ($error_image_thumb) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_thumb; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_thumb; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -291,7 +291,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_popup_height" value="<?php echo $config_image_popup_height; ?>" class="form-control"></div>
 							</div>							
 							<?php if ($error_image_popup) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_popup; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_popup; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -303,7 +303,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_product_height" value="<?php echo $config_image_product_height; ?>" class="form-control"></div>
 							</div>
 							<?php if ($error_image_product) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_product; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_product; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -315,7 +315,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_additional_height" value="<?php echo $config_image_additional_height; ?>" class="form-control"></div>
 							</div>
 							<?php if ($error_image_additional) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_additional; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_additional; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -327,7 +327,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_related_height" value="<?php echo $config_image_related_height; ?>" class="form-control"></div>
 							</div>
 							<?php if ($error_image_related) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_related; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_related; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -339,7 +339,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_compare_height" value="<?php echo $config_image_compare_height; ?>" class="form-control"></div>
 							</div>
 							<?php if ($error_image_compare) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_compare; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_compare; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -351,7 +351,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_wishlist_height" value="<?php echo $config_image_wishlist_height; ?>" class="form-control"></div>
 							</div>
 							<?php if ($error_image_wishlist) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_wishlist; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_wishlist; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -363,7 +363,7 @@
 								<div class="slim-col-sm-6"><input type="text" name="config_image_cart_height" value="<?php echo $config_image_cart_height; ?>" class="form-control"></div>
 							</div>
 							<?php if ($error_image_cart) { ?>
-								<div class="help-block text-danger"><?php echo $error_image_cart; ?></div>
+								<div class="form-text text-danger"><?php echo $error_image_cart; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -374,7 +374,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_ftp_host" value="<?php echo $config_ftp_host; ?>" class="form-control">
 							<?php if ($error_ftp_host) { ?>
-							<div class="help-block text-danger"><?php echo $error_ftp_host; ?></div>
+							<div class="form-text text-danger"><?php echo $error_ftp_host; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -383,7 +383,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_ftp_port" value="<?php echo $config_ftp_port; ?>" class="form-control">
 							<?php if ($error_ftp_port) { ?>
-							<div class="help-block text-danger"><?php echo $error_ftp_port; ?></div>
+							<div class="form-text text-danger"><?php echo $error_ftp_port; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -392,7 +392,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_ftp_username" value="<?php echo $config_ftp_username; ?>" class="form-control">
 							<?php if ($error_ftp_username) { ?>
-							<div class="help-block text-danger"><?php echo $error_ftp_username; ?></div>
+							<div class="form-text text-danger"><?php echo $error_ftp_username; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -401,7 +401,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_ftp_password" value="<?php echo $config_ftp_password; ?>" class="form-control">
 							<?php if ($error_ftp_password) { ?>
-							<div class="help-block text-danger"><?php echo $error_ftp_password; ?></div>
+							<div class="form-text text-danger"><?php echo $error_ftp_password; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -428,7 +428,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_mail_protocol; ?></label>
 						<div class="col-sm-6">
-							<select name="config_mail_protocol" class="form-control" id="protocol">
+							<select name="config_mail_protocol" class="form-select" id="protocol">
 								<?php if ($config_mail_protocol == 'mail') { ?>
 								<option value="mail" selected=""><?php echo $text_mail; ?></option>
 								<?php } else { ?>
@@ -461,10 +461,10 @@
 							<small class="text-muted">(<?php echo $text_test_email_note; ?>)</small>
 						</div>
 						<!-- Boton de testeo de correo -->
-						<span class="input-group-btn">
+						<div class="col-sm-4">
 							<a onclick="test();" class="btn btn-primary"><?php echo $button_test; ?></a>
-							<span class="help-block text-danger" id="mcResponse"></span>
-						</span>
+							<span class="form-text text-danger" id="mcResponse"></span>
+						</div>
 						<!-- fin boton -->
 					</div>
 					<div class="form-group row">
@@ -537,7 +537,7 @@
 									<td><input type="text" name="banks[<?php echo $bank_row; ?>][iban]" value="<?php echo $bank['iban']; ?>" maxlength="34" class="form-control"></td>
 									<td><input type="text" name="banks[<?php echo $bank_row; ?>][bic]" value="<?php echo $bank['bic']; ?>" maxlength="11" class="form-control"></td>
 									<td class="text-center"><input type="radio" name="bank_default" value="<?php echo $bank_row; ?>"<?php echo ((string)$bank_row === (string)$bank_default) ? ' checked=""' : ''; ?>></td>
-									<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#bank-row<?php echo $bank_row; ?>').remove();"><i class="fa fa-trash"></i></a></td>
+									<td class="text-center"><a class="badge bg-danger" title="<?php echo $button_remove; ?>" onclick="$('#bank-row<?php echo $bank_row; ?>').remove();"><i class="fa fa-trash"></i></a></td>
 								</tr>
 								<?php $bank_row++; ?>
 								<?php } ?>
@@ -555,7 +555,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_enabled; ?></label>
 						<div class="col-sm-2">
-							<select name="config_conta_enabled" id="input-conta-enabled" class="form-control" style="width:120px;">
+							<select name="config_conta_enabled" id="input-conta-enabled" class="form-select" style="width:120px;">
 								<option value="1"<?php echo ($config_conta_enabled) ? ' selected="selected"' : ''; ?>><?php echo $text_yes; ?></option>
 								<option value="0"<?php echo (!$config_conta_enabled) ? ' selected="selected"' : ''; ?>><?php echo $text_no; ?></option>
 							</select>
@@ -566,14 +566,14 @@
 						<div class="col-sm-2">
 							<div class="input-group">
 								<input type="text" name="accounting_period_from" value="<?php echo $accounting_period_from ?>" class="form-control date" style="width: 40px;">
-								<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+								<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 							</div>
 						</div>
 						<label class="col-form-label col-sm-10 col-md-1"><?php echo $entry_accounting_period_to ?></label>
 						<div class="col-sm-2">
 							<div class="input-group">
 								<input type="text" name="accounting_period_to" value="<?php echo $accounting_period_to ?>" class="form-control date" style="width: 40px;">
-								<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+								<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 							</div>
 						</div>
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_accounting_period_fiscal_year ?></label>
@@ -588,7 +588,7 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?> <i class="fa fa-question-circle text-muted" data-toggle="tooltip" title="<?php echo $text_creditor_id_tooltip; ?>"></i></label>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_creditor_id ?> <i class="fa fa-question-circle text-muted" data-bs-toggle="tooltip" title="<?php echo $text_creditor_id_tooltip; ?>"></i></label>
 						<div class="col-sm-3"><input type="text" name="creditor_id" value="<?php echo $creditor_id ?>" class="form-control"></div>
 					</div>
 					<div class="form-group row">
@@ -596,7 +596,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_ventas_account" id="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control conta-account" placeholder="700000000" style="width: 160px;">
 							<?php if ($error_conta_ventas_account) { ?>
-								<div class="help-block text-danger"><?php echo $error_conta_ventas_account; ?></div>
+								<div class="form-text text-danger"><?php echo $error_conta_ventas_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -605,7 +605,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_cliente_account" id="config_conta_cliente_account" value="<?php echo $config_conta_cliente_account; ?>" class="form-control conta-account" placeholder="430000000" style="width: 160px;">
 							<?php if ($error_conta_cliente_account) { ?>
-								<div class="help-block text-danger"><?php echo $error_conta_cliente_account; ?></div>
+								<div class="form-text text-danger"><?php echo $error_conta_cliente_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -614,7 +614,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_result_account" id="config_conta_result_account" value="<?php echo $config_conta_result_account; ?>" class="form-control conta-account" placeholder="1290000000" style="width: 160px;">
 							<?php if ($error_conta_result_account) { ?>
-								<div class="help-block text-danger"><?php echo $error_conta_result_account; ?></div>
+								<div class="form-text text-danger"><?php echo $error_conta_result_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -623,7 +623,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_compras_account" id="config_conta_compras_account" value="<?php echo $config_conta_compras_account; ?>" class="form-control conta-account" placeholder="6000000000" style="width: 160px;">
 							<?php if ($error_conta_compras_account) { ?>
-								<div class="help-block text-danger"><?php echo $error_conta_compras_account; ?></div>
+								<div class="form-text text-danger"><?php echo $error_conta_compras_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -632,7 +632,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_proveedor_account" id="config_conta_proveedor_account" value="<?php echo $config_conta_proveedor_account; ?>" class="form-control conta-account" placeholder="4000000000" style="width: 160px;">
 							<?php if ($error_conta_proveedor_account) { ?>
-								<div class="help-block text-danger"><?php echo $error_conta_proveedor_account; ?></div>
+								<div class="form-text text-danger"><?php echo $error_conta_proveedor_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -641,7 +641,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_iva_repercutido_account" id="config_conta_iva_repercutido_account" value="<?php echo $config_conta_iva_repercutido_account; ?>" class="form-control conta-account" placeholder="4770000021" style="width: 160px;">
 							<?php if ($error_conta_iva_repercutido_account) { ?>
-								<div class="help-block text-danger"><?php echo $error_conta_iva_repercutido_account; ?></div>
+								<div class="form-text text-danger"><?php echo $error_conta_iva_repercutido_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -650,7 +650,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_iva_soportado_account" id="config_conta_iva_soportado_account" value="<?php echo $config_conta_iva_soportado_account; ?>" class="form-control conta-account" placeholder="4720000021" style="width: 160px;">
 							<?php if ($error_conta_iva_soportado_account) { ?>
-								<div class="help-block text-danger"><?php echo $error_conta_iva_soportado_account; ?></div>
+								<div class="form-text text-danger"><?php echo $error_conta_iva_soportado_account; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -674,16 +674,14 @@
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_clave ?></label>
 							<div class="col-sm-6 input-group">
 								<input type="password" name="clave" value="<?php echo $clave ?>" id="input-clave" class="form-control">
-								<div class="input-group-append">
 									<button type="button" id="button-clave" class="btn btn-light border"><i class="fa fa-eye"></i></button>
-								</div>
 							</div>
 						</div>
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_aeat_active; ?></label>
 						<div class="col-sm-6">
-							<select name="config_aeat_active" class="form-control" style="width: auto;">
+							<select name="config_aeat_active" class="form-select" style="width: auto;">
 								<?php if ($config_aeat_active) { ?>
 								<option value="0"><?php echo $text_no; ?></option>
 								<option value="1" selected=""><?php echo $text_yes; ?></option>
@@ -716,7 +714,7 @@
 				</div>
 				<div id="tab-recepciones" class="tab-pane">
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><a data-toggle="tooltip" title="<?php echo $text_import_supplier_invoices_tooltip; ?>"><i class="fas fa-question-circle"></i></a> <?php echo $entry_import_supplier_invoices; ?></label>
+						<label class="col-form-label col-sm-10 col-md-2"><a data-bs-toggle="tooltip" title="<?php echo $text_import_supplier_invoices_tooltip; ?>"><i class="fas fa-question-circle"></i></a> <?php echo $entry_import_supplier_invoices; ?></label>
 						<div class="col-sm-6">
 							<?php if ($config_import_supplier_invoices) { ?>
 								<label class="radio-inline"><input type="radio" name="config_import_supplier_invoices" value="1" checked=""><?php echo $text_yes; ?></label>
@@ -726,10 +724,10 @@
 								<label class="radio-inline"><input type="radio" name="config_import_supplier_invoices" value="0" checked=""><?php echo $text_no; ?></label>
 								<?php } ?>
 							<?php if ($error_supplier_invoice_email) { ?>
-								<div class="help-block text-danger"><?php echo $error_supplier_invoice_email; ?></div>
+								<div class="form-text text-danger"><?php echo $error_supplier_invoice_email; ?></div>
 							<?php } ?>
 							<?php if ($error_import_supplier_invoices_ai) { ?>
-								<div class="help-block text-danger"><?php echo $error_import_supplier_invoices_ai; ?></div>
+								<div class="form-text text-danger"><?php echo $error_import_supplier_invoices_ai; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -747,7 +745,7 @@
 							<div class="col-sm-6">
 								<input type="text" name="config_supplier_invoice_email" value="<?php echo $config_supplier_invoice_email; ?>" class="form-control">
 								<?php if ($error_supplier_invoice_email) { ?>
-									<div class="help-block text-danger"><?php echo $error_supplier_invoice_email; ?></div>
+									<div class="form-text text-danger"><?php echo $error_supplier_invoice_email; ?></div>
 								<?php } ?>
 							</div>
 						</div>
@@ -762,7 +760,7 @@
 							<div class="col-sm-6">
 								<input type="text" name="config_supplier_invoice_pop_host" value="<?php echo $config_supplier_invoice_pop_host; ?>" class="form-control" placeholder="mail.midominio.com">
 								<?php if ($error_supplier_invoice_pop_host) { ?>
-									<div class="help-block text-danger"><?php echo $error_supplier_invoice_pop_host; ?></div>
+									<div class="form-text text-danger"><?php echo $error_supplier_invoice_pop_host; ?></div>
 								<?php } ?>
 							</div>
 						</div>
@@ -814,9 +812,9 @@
 						<div class="tab-content mt-2">
 							<div id="tab-option-general" class="tab-pane">
 								<div class="form-group row">
-									<label class="col-form-label col-sm-10 col-md-2"><a data-toggle="tooltip" title="<?php echo $text_open_next_convert_tooltip; ?>"><i class="fas fa-question-circle"></i></a> <?php echo $entry_open_next_convert; ?></label>
+									<label class="col-form-label col-sm-10 col-md-2"><a data-bs-toggle="tooltip" title="<?php echo $text_open_next_convert_tooltip; ?>"><i class="fas fa-question-circle"></i></a> <?php echo $entry_open_next_convert; ?></label>
 									<div class="col-sm-6">
-										<select name="config_open_next_convert" class="form-control" style="width: auto;">
+										<select name="config_open_next_convert" class="form-select" style="width: auto;">
 											<?php if ($config_open_next_convert) { ?>
 											<option value="0"><?php echo $text_no; ?></option>
 											<option value="1" selected=""><?php echo $text_yes; ?></option>
@@ -864,7 +862,7 @@
 									<div class="col-sm-6">
 										<input type="text" name="config_catalog_limit" value="<?php echo $config_catalog_limit; ?>" class="form-control">
 										<?php if ($error_catalog_limit) { ?>
-											<div class="help-block text-danger"><?php echo $error_catalog_limit; ?></div>
+											<div class="form-text text-danger"><?php echo $error_catalog_limit; ?></div>
 										<?php } ?>
 									</div>
 								</div>
@@ -873,7 +871,7 @@
 									<div class="col-sm-6">
 										<input type="text" name="config_admin_limit" value="<?php echo $config_admin_limit; ?>" class="form-control">
 										<?php if ($error_admin_limit) { ?>
-											<div class="help-block text-danger"><?php echo $error_admin_limit; ?></div>
+											<div class="form-text text-danger"><?php echo $error_admin_limit; ?></div>
 										<?php } ?>
 									</div>
 								</div>
@@ -909,7 +907,7 @@
 									<div class="col-sm-6">
 										<input type="text" name="config_voucher_min" value="<?php echo $config_voucher_min; ?>" class="form-control">
 										<?php if ($error_voucher_min) { ?>
-											<div class="help-block text-danger"><?php echo $error_voucher_min; ?></div>
+											<div class="form-text text-danger"><?php echo $error_voucher_min; ?></div>
 										<?php } ?>
 									</div>
 								</div>
@@ -918,7 +916,7 @@
 									<div class="col-sm-6">
 										<input type="text" name="config_voucher_max" value="<?php echo $config_voucher_max; ?>" class="form-control">
 										<?php if ($error_voucher_max) { ?>
-											<div class="help-block text-danger"><?php echo $error_voucher_max; ?></div>
+											<div class="form-text text-danger"><?php echo $error_voucher_max; ?></div>
 										<?php } ?>
 									</div>
 								</div>
@@ -951,7 +949,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_default; ?></label>
 									<div class="col-sm-6">
-										<select name="config_tax_default" class="form-control">
+										<select name="config_tax_default" class="form-select">
 											<option value=""><?php echo $text_none; ?></option>
 											<?php	if ($config_tax_default == 'shipping') { ?>
 											<option value="shipping" selected=""><?php echo $text_shipping; ?></option>
@@ -969,7 +967,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tax_customer; ?></label>
 									<div class="col-sm-6">
-										<select name="config_tax_customer" class="form-control">
+										<select name="config_tax_customer" class="form-select">
 											<option value=""><?php echo $text_none; ?></option>
 											<?php	if ($config_tax_customer == 'shipping') { ?>
 											<option value="shipping" selected=""><?php echo $text_shipping; ?></option>
@@ -1001,7 +999,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_group; ?></label>
 									<div class="col-sm-6">
-										<select name="config_customer_group_id" class="form-control">
+										<select name="config_customer_group_id" class="form-select">
 											<?php foreach ($customer_groups as $customer_group) { ?>
 												<?php if ($customer_group['customer_group_id'] == $config_customer_group_id) { ?>
 												<option value="<?php echo $customer_group['customer_group_id']; ?>" selected=""><?php echo $customer_group['name']; ?></option>
@@ -1015,7 +1013,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_group_display; ?></label>
 									<div class="col-sm-6">
-										<div class="panel panel-default panel-scrollable">
+										<div class="card page-card page-card-scroll">
 											<div class="list-group">
 											<?php foreach ($customer_groups as $customer_group) { ?>
 												<label class="list-group-item">
@@ -1031,7 +1029,7 @@
 											</div>
 										</div>
 										<?php if ($error_customer_group_display) { ?>
-											<div class="help-block text-danger"><?php echo $error_customer_group_display; ?></div>
+											<div class="form-text text-danger"><?php echo $error_customer_group_display; ?></div>
 										<?php } ?>
 									</div>
 								</div>
@@ -1050,7 +1048,7 @@
 								<div class="form-group row" style="display:none;">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_account; ?></label>
 									<div class="col-sm-6">
-										<select name="config_account_id" class="form-control">
+										<select name="config_account_id" class="form-select">
 											<option value="0"><?php echo $text_none; ?></option>
 											<?php foreach ($informations as $information) { ?>
 												<?php if ($information['information_id'] == $config_account_id) { ?>
@@ -1091,7 +1089,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_checkout; ?></label>
 									<div class="col-sm-6">
-										<select name="config_checkout_id" class="form-control">
+										<select name="config_checkout_id" class="form-select">
 											<option value="0"><?php echo $text_none; ?></option>
 											<?php foreach ($informations as $information) { ?>
 												<?php if ($information['information_id'] == $config_checkout_id) { ?>
@@ -1118,7 +1116,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_order_status; ?></label>
 									<div class="col-sm-6">
-										<select name="config_order_status_id" class="form-control">
+										<select name="config_order_status_id" class="form-select">
 											<?php foreach ($order_statuses as $order_status) { ?>
 												<?php if ($order_status['order_status_id'] == $config_order_status_id) { ?>
 												<option value="<?php echo $order_status['order_status_id']; ?>" selected=""><?php echo $order_status['name']; ?></option>
@@ -1132,7 +1130,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_complete_status; ?></label>
 									<div class="col-sm-6">
-										<select name="config_complete_status_id" class="form-control">
+										<select name="config_complete_status_id" class="form-select">
 											<?php foreach ($order_statuses as $order_status) { ?>
 												<?php if ($order_status['order_status_id'] == $config_complete_status_id) { ?>
 												<option value="<?php echo $order_status['order_status_id']; ?>" selected=""><?php echo $order_status['name']; ?></option>
@@ -1184,7 +1182,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_stock_status; ?></label>
 									<div class="col-sm-6">
-										<select name="config_stock_status_id" class="form-control">
+										<select name="config_stock_status_id" class="form-select">
 											<?php foreach ($stock_statuses as $stock_status) { ?>
 												<?php if ($stock_status['stock_status_id'] == $config_stock_status_id) { ?>
 												<option value="<?php echo $stock_status['stock_status_id']; ?>" selected=""><?php echo $stock_status['name']; ?></option>
@@ -1200,7 +1198,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_affiliate; ?></label>
 									<div class="col-sm-6">
-										<select name="config_affiliate_id" class="form-control">
+										<select name="config_affiliate_id" class="form-select">
 											<option value="0"><?php echo $text_none; ?></option>
 											<?php foreach ($informations as $information) { ?>
 												<?php if ($information['information_id'] == $config_affiliate_id) { ?>
@@ -1223,7 +1221,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_return; ?></label>
 									<div class="col-sm-6">
-										<select name="config_return_id" class="form-control">
+										<select name="config_return_id" class="form-select">
 											<option value="0"><?php echo $text_none; ?></option>
 											<?php foreach ($informations as $information) { ?>
 											<?php if ($information['information_id'] == $config_return_id) { ?>
@@ -1238,7 +1236,7 @@
 								<div class="form-group row">
 									<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_return_status; ?></label>
 									<div class="col-sm-6">
-										<select name="config_return_status_id" class="form-control">
+										<select name="config_return_status_id" class="form-select">
 											<?php foreach ($return_statuses as $return_status) { ?>
 												<?php if ($return_status['return_status_id'] == $config_return_status_id) { ?>
 												<option value="<?php echo $return_status['return_status_id']; ?>" selected=""><?php echo $return_status['name']; ?></option>
@@ -1373,7 +1371,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="config_error_filename" value="<?php echo $config_error_filename; ?>" class="form-control">
 							<?php if ($error_error_filename) { ?>
-								<div class="help-block text-danger"><?php echo $error_error_filename; ?></div>
+								<div class="form-text text-danger"><?php echo $error_error_filename; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -1388,12 +1386,12 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_enabled; ?></label>
 						<div class="col-sm-6">
-							<select name="config_ai_enabled" id="input-ai-enabled" class="form-control" style="width:120px;">
+							<select name="config_ai_enabled" id="input-ai-enabled" class="form-select" style="width:120px;">
 								<option value="1"<?php echo ($config_ai_enabled) ? ' selected="selected"' : ''; ?>><?php echo $text_yes; ?></option>
 								<option value="0"<?php echo (!$config_ai_enabled) ? ' selected="selected"' : ''; ?>><?php echo $text_no; ?></option>
 							</select>
 							<?php if ($error_ai_enabled) { ?>
-								<div class="help-block text-danger"><?php echo $error_ai_enabled; ?></div>
+								<div class="form-text text-danger"><?php echo $error_ai_enabled; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -1445,7 +1443,7 @@
 					<hr>
 
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"><a data-toggle="tooltip" title="<?php echo $text_product_vector_embeddings_tooltip; ?>" style="display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;border-radius:50%;background-color:#2e8bcc;color:#fff;font-size:11px;font-weight:bold;text-decoration:none;">?</a> <?php echo $entry_product_vector_embeddings; ?></label>
+						<label class="col-form-label col-sm-10 col-md-2"><a data-bs-toggle="tooltip" title="<?php echo $text_product_vector_embeddings_tooltip; ?>" style="display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;border-radius:50%;background-color:#2e8bcc;color:#fff;font-size:11px;font-weight:bold;text-decoration:none;">?</a> <?php echo $entry_product_vector_embeddings; ?></label>
 						<div class="col-sm-6">
 							<?php if ($config_product_vector_embeddings) { ?>
 							<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="1" checked=""><?php echo $text_yes; ?></label>
@@ -1455,7 +1453,7 @@
 							<label class="radio-inline"><input type="radio" name="config_product_vector_embeddings" value="0" checked=""><?php echo $text_no; ?></label>
 							<?php } ?>
 							<?php if ($error_product_vector_embeddings) { ?>
-								<div class="help-block text-danger"><?php echo $error_product_vector_embeddings; ?></div>
+								<div class="form-text text-danger"><?php echo $error_product_vector_embeddings; ?></div>
 							<?php } ?>
 						</div>
 					</div>
@@ -1594,7 +1592,7 @@
 			'<td><input type="text" name="banks[' + currentRow + '][iban]" maxlength="34" class="form-control"></td>' +
 			'<td><input type="text" name="banks[' + currentRow + '][bic]" maxlength="11" class="form-control"></td>' +
 			'<td class="text-center"><input type="radio" name="bank_default" value="' + currentRow + '"' + checked + '></td>' +
-			'<td class="text-center"><a class="label label-danger" onclick="$(this).closest(\'tr\').remove();"><i class="fa fa-trash"></i></a></td>' +
+			'<td class="text-center"><a class="badge bg-danger" onclick="$(this).closest(\'tr\').remove();"><i class="fa fa-trash"></i></a></td>' +
 			'</tr>';
 
 		$('#bank-rows').append(html);

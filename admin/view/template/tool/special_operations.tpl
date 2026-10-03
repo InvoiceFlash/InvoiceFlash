@@ -1,15 +1,15 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
+<div class="card page-card">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fas fa-tools"></i> <?php echo $heading_title; ?></div>
 	</div>
-	<div class="panel-body">
-		<div class="panel panel-default">
-			<div class="panel-heading clearfix">
+	<div class="card-body">
+		<div class="card page-card">
+			<div class="card-header clearfix">
 				<h5><i class="fa fa-trash"></i> <?php echo $text_delete_data; ?></h5>
 			</div>
-			<div class="panel-body">
+			<div class="card-body">
 				<div class="alert alert-warning">
 					<p><b><?php echo $text_warning_delete; ?></b></p>
 					<p><?php echo $text_warning_keep; ?></p>

@@ -1,13 +1,13 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
+<div class="card page-card">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-robot"></i> <?php echo $heading_title; ?></div>
 		<div style="float:right;margin-top:-4px;">
 			<a href="<?php echo $cancel; ?>" class="btn btn-default btn-sm"><i class="fa fa-arrow-left"></i> Volver</a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 
 		<?php if (!$config_claude_api_key) { ?>
 		<div class="alert alert-warning">No hay ninguna API key de Claude configurada. Ve a Ajustes &gt; IA para configurarla.</div>
@@ -37,11 +37,9 @@
 
 		<div class="input-group">
 			<textarea id="chat-input" class="form-control" rows="2" placeholder="Describe el módulo que quieres crear o modificar..."></textarea>
-			<span class="input-group-btn">
 				<button class="btn btn-primary" id="send-btn" type="button">
-					<i class="fa fa-paper-plane"></i><span class="hidden-xs"> Enviar</span>
+					<i class="fa fa-paper-plane"></i><span class="d-none d-lg-inline"> Enviar</span>
 				</button>
-			</span>
 		</div>
 		<small class="text-muted">Ctrl+Enter para enviar &nbsp;·&nbsp; Solo puede crear/modificar archivos en <code>vqmod/xml/</code></small>
 

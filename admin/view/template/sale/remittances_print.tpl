@@ -6,7 +6,7 @@
 <title><?php echo $title; ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <base href="<?php echo $base; ?>">
-<link href="view/stylesheet/main.css" rel="stylesheet">
+<link href="view/stylesheet/main.css?v=<?php echo @filemtime(DIR_APPLICATION . 'view/stylesheet/main.css'); ?>" rel="stylesheet">
 <script src="view\javascript\jquery\jquery-3.7.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
 <style>
@@ -53,7 +53,7 @@
 			<th><?php echo $column_date_due; ?></th>
 			<th><?php echo $column_invoice_no; ?></th>
 			<th><?php echo $column_bank_cc; ?></th>
-			<th class="text-right"><?php echo $column_amount; ?></th>
+			<th class="text-end"><?php echo $column_amount; ?></th>
 		</tr>
 		<?php foreach ($remittance['remittance_lines'] as $line) { ?>
 		<tr>
@@ -62,12 +62,12 @@
 			<td><?php echo $line['date_due']; ?></td>
 			<td><?php echo $line['invoice_no']; ?></td>
 			<td><?php echo $line['bank_cc']; ?></td>
-			<td class="text-right"><?php echo $line['amount']; ?></td>
+			<td class="text-end"><?php echo $line['amount']; ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
-			<td class="text-right" colspan="5"><b><?php echo $column_total; ?>:</b></td>
-			<td class="text-right"><b><?php echo $remittance['total']; ?></b></td>
+			<td class="text-end" colspan="5"><b><?php echo $column_total; ?>:</b></td>
+			<td class="text-end"><b><?php echo $remittance['total']; ?></b></td>
 		</tr>
 	</table>
 <?php } ?>

@@ -3,7 +3,7 @@
 		<tr>
 			<th><?php echo $column_date_added; ?></th>
 			<th class="col-sm-10"><?php echo $column_description; ?></th>
-			<th class="text-right"><?php echo $column_amount; ?></th>
+			<th class="text-end"><?php echo $column_amount; ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -12,13 +12,13 @@
 		<tr>
 			<td><?php echo $transaction['date_added']; ?></td>
 			<td><?php echo $transaction['description']; ?></td>
-			<td class="text-right"><?php echo $transaction['amount']; ?></td>
+			<td class="text-end"><?php echo $transaction['amount']; ?></td>
 		</tr>
 		<?php } ?>
 		<tr>
 			<td>&nbsp;</td>
-			<td class="text-right"><?php echo $text_balance; ?></td>
-			<td class="text-right"><?php echo $balance; ?></td>
+			<td class="text-end"><?php echo $text_balance; ?></td>
+			<td class="text-end"><?php echo $balance; ?></td>
 		</tr>
 		<?php } else { ?>
 		<tr>

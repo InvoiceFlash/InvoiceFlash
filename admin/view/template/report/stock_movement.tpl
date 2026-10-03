@@ -2,27 +2,27 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-exchange-alt"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="row">
 				<div class="col-sm-3">
 					<input type="text" class="form-control" name="filter_product" value="<?php echo $filter_product; ?>" placeholder="<?php echo $entry_product; ?>">
 				</div>
 				<div class="col-sm-2">
-					<select name="filter_movement_type" title="<?php echo $entry_movement_type; ?>" class="form-control">
+					<select name="filter_movement_type" title="<?php echo $entry_movement_type; ?>" class="form-select">
 						<option value=""><?php echo $text_all; ?></option>
 						<option value="in" <?php echo ($filter_movement_type == 'in') ? 'selected=""' : ''; ?>><?php echo $text_in; ?></option>
 						<option value="out" <?php echo ($filter_movement_type == 'out') ? 'selected=""' : ''; ?>><?php echo $text_out; ?></option>
 					</select>
 				</div>
 				<div class="col-sm-2">
-					<select name="filter_document_type" title="<?php echo $entry_document_type; ?>" class="form-control">
+					<select name="filter_document_type" title="<?php echo $entry_document_type; ?>" class="form-select">
 						<option value=""><?php echo $text_all; ?></option>
 						<option value="sale_delivery" <?php echo ($filter_document_type == 'sale_delivery') ? 'selected=""' : ''; ?>><?php echo $text_sale_delivery; ?></option>
 						<option value="purchase_reception" <?php echo ($filter_document_type == 'purchase_reception') ? 'selected=""' : ''; ?>><?php echo $text_purchase_reception; ?></option>
@@ -31,7 +31,7 @@
 				<div class="col-sm-3">
 					<input type="text" class="form-control" name="filter_party" value="<?php echo $filter_party; ?>" placeholder="<?php echo $entry_party; ?>">
 				</div>
-				<div class="col-sm-2 text-right">
+				<div class="col-sm-2 text-end">
 					<button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i> <?php echo $button_filter; ?></button>
 				</div>
 			</div>
@@ -39,16 +39,16 @@
 				<div class="col-sm-3">
 					<div class="input-group">
 						<input type="text" class="form-control date" id="date-start" name="filter_date_start" value="<?php echo $filter_date_start; ?>" placeholder="<?php echo $entry_date_start; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="input-group">
 						<input type="text" class="form-control date" id="date-end" name="filter_date_end" value="<?php echo $filter_date_end; ?>" placeholder="<?php echo $entry_date_end; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
-				<div class="col-sm-6 text-right">
+				<div class="col-sm-6 text-end">
 					<button type="button" onclick="exportExcel();" class="btn btn-success ms-1"><i class="fa fa-file-excel"></i> <?php echo $button_export; ?></button>
 				</div>
 			</div>
@@ -72,21 +72,21 @@
 				<?php if ($movements) { ?>
 				<?php foreach ($movements as $movement) { ?>
 				<tr>
-					<td class="text-left"><?php echo $movement['date_added']; ?></td>
-					<td class="text-left"><a href="<?php echo $movement['product_href']; ?>"><?php echo $movement['product_name']; ?></a></td>
-					<td class="text-left"><?php echo $movement['model']; ?></td>
-					<td class="text-left">
+					<td class="text-start"><?php echo $movement['date_added']; ?></td>
+					<td class="text-start"><a href="<?php echo $movement['product_href']; ?>"><?php echo $movement['product_name']; ?></a></td>
+					<td class="text-start"><?php echo $movement['model']; ?></td>
+					<td class="text-start">
 						<?php if ($movement['movement_type'] == 'in') { ?>
 						<span class="badge bg-success"><?php echo $movement['movement_label']; ?></span>
 						<?php } else { ?>
 						<span class="badge bg-danger"><?php echo $movement['movement_label']; ?></span>
 						<?php } ?>
 					</td>
-					<td class="text-right"><?php echo ($movement['movement_type'] == 'in' ? '+' : '-') . $movement['quantity']; ?></td>
-					<td class="text-right"><?php echo $movement['balance_after']; ?></td>
-					<td class="text-left"><?php if ($movement['document_href']) { ?><a href="<?php echo $movement['document_href']; ?>"><?php echo $movement['document_label']; ?></a><?php } else { ?><?php echo $movement['document_label']; ?><?php } ?></td>
-					<td class="text-left"><?php echo $movement['party_name']; ?></td>
-					<td class="text-left"><?php echo $movement['username']; ?></td>
+					<td class="text-end"><?php echo ($movement['movement_type'] == 'in' ? '+' : '-') . $movement['quantity']; ?></td>
+					<td class="text-end"><?php echo $movement['balance_after']; ?></td>
+					<td class="text-start"><?php if ($movement['document_href']) { ?><a href="<?php echo $movement['document_href']; ?>"><?php echo $movement['document_label']; ?></a><?php } else { ?><?php echo $movement['document_label']; ?><?php } ?></td>
+					<td class="text-start"><?php echo $movement['party_name']; ?></td>
+					<td class="text-start"><?php echo $movement['username']; ?></td>
 				</tr>
 				<?php } ?>
 				<?php } else { ?>

@@ -1,27 +1,27 @@
 <?php echo $header; ?>
 <?php include DIR_TEMPLATE . 'common/template-header.tpl'; ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-	<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo ($draft_id) ? sprintf($text_heading_draft_no, $draft_id) : $heading_title; ?></div>
-	<div class="pull-right">
-		<button type="submit" form="form" class="btn btn-primary"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#floppy"/></svg><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
-		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+<div class="card page-card">
+	<div class="card-header clearfix">
+	<div class="float-start h2"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo ($draft_id) ? sprintf($text_heading_draft_no, $draft_id) : $heading_title; ?></div>
+	<div class="float-end">
+		<button type="submit" form="form" class="btn btn-primary"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#floppy"/></svg><span class="d-none d-lg-inline"> <?php echo $button_save; ?></span></button>
+		<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 	</div>
 </div>
-	<div class="panel-body">
-		<form action="<?php echo $action; ?>" method="post" onsubmit="return validateForm();" class="form-inline" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form action="<?php echo $action; ?>" method="post" onsubmit="return validateForm();" class="form-bar" enctype="multipart/form-data" id="form">
 			<div class="card" id="tab-customer" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_customer; ?>
-					<button class="btn btn-warning pull-right" type="button" title="<?php echo $title_pending_deliveries; ?>" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#card-list"/></svg> <span class="hidden-xs"><?php echo $text_pending_deliveries; ?></span></button>
+					<button class="btn btn-warning float-end" type="button" title="<?php echo $title_pending_deliveries; ?>" style="margin-right:4px; margin-left:10px;" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('OrderSearchModal')).show();"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#card-list"/></svg> <span class="d-none d-lg-inline"><?php echo $text_pending_deliveries; ?></span></button>
 					<input type="hidden" name="comment" value="<?php echo $comment; ?>">
 				</div>
 				<div class="card-body">
 					<div class="row">
 						<div class="form-group col-sm-4">
-							<label class="control-label col-sm-4"><?php echo $entry_store; ?></label>
+							<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_store; ?></label>
 							<div class="control-field col-sm-8">
-								<select name="store_id" class="form-control">
+								<select name="store_id" class="form-select">
 									<option value="0"><?php echo $text_default; ?></option>
 									<?php foreach ($stores as $store) { ?>
 										<?php if ($store['store_id'] == $store_id) { ?>
@@ -34,19 +34,19 @@
 							</div>
 						</div>
 						<div class="form-group col-sm-6">
-							<label class="control-label col-sm-3"><?php echo $entry_customer; ?></label>
+							<label class="col-form-label text-sm-end pb-0 col-sm-3"><?php echo $entry_customer; ?></label>
 							<div class="control-field input-group col-sm-9">
 								<input type="text" name="company" value="<?php echo $company; ?>" id="order-customer" autocomplete="off" class="form-control">
 								<input type="hidden" id="customer_id" name="customer_id" value="<?php echo $customer_id; ?>">
 								<input type="hidden" name="customer_group_id" value="<?php echo $customer_group_id; ?>">
-								<div class="input-group-append"><button class="btn btn-default" type="button" id="searchCustomer" title="<?php echo $title_search_customer; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#search"/></svg></button></div>
-								<div class="input-group-append"><button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg></button></div>
+								<button class="btn btn-default" type="button" id="searchCustomer" title="<?php echo $title_search_customer; ?>"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#search"/></svg></button>
+								<button class="btn btn-info" type="button" data-bs-toggle="modal" data-bs-target="#CustomerModal"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg></button>
 							</div>
 						</div>
 						<div class="form-group col-sm-2">
-							<label class="control-label col-sm-4">Bank:</label>
+							<label class="col-form-label text-sm-end pb-0 col-sm-4">Bank:</label>
 							<div class="control-field col-sm-8">
-								<select name="bank_index" id="bank_index" class="form-control">
+								<select name="bank_index" id="bank_index" class="form-select">
 									<option value=""><?php echo $text_select; ?></option>
 									<optgroup label="Our Bank">
 										<?php foreach ($banks as $bank_row => $bank) { ?>
@@ -64,9 +64,9 @@
 					</div>
 					<div class="row">
 						<div class="form-group col-sm-3">
-							<label class="control-label col-sm-4"><?php echo $entry_shipping; ?></label>
+							<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_shipping; ?></label>
 							<div class="control-field col-sm-8">
-								<select id="shipping" name="shipping" class="form-control">
+								<select id="shipping" name="shipping" class="form-select">
 									<option value=""><?php echo $text_select; ?></option>
 									<?php foreach ($shippings as $shipping): ?>
 										<option value="<?php echo $shipping['shipping_id'] ?>" <?php echo ($shipping['shipping_id'] == $shipping_code ? 'selected' : '') ?>><?php echo $shipping['name'] ?></option>
@@ -75,14 +75,14 @@
 								<input type="hidden" name="shipping_method" value="<?php echo $shipping_method; ?>">
 								<input type="hidden" name="shipping_code" value="<?php echo $shipping_code; ?>">
 								<?php if ($error_shipping_method) { ?>
-									<div class="help-block error"><?php echo $error_shipping_method; ?></div>
+									<div class="form-text error"><?php echo $error_shipping_method; ?></div>
 								<?php } ?>
 							</div>
 						</div>
 						<div class="form-group col-sm-3">
-							<label class="control-label col-sm-4"><?php echo $entry_payment; ?></label>
+							<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_payment; ?></label>
 							<div class="control-field col-sm-8">
-								<select id="payment" name="payment" class="form-control">
+								<select id="payment" name="payment" class="form-select">
 									<option value=""><?php echo $text_select; ?></option>
 									<?php foreach ($payments as $payment): ?>
 										<option value="<?php echo $payment['payment_id'] ?>" <?php echo ($payment['payment_id'] == $payment_code ? 'selected' : '') ?>><?php echo $payment['name'] ?></option>
@@ -91,21 +91,21 @@
 								<input type="hidden" name="payment_method" value="<?php echo $payment_method; ?>">
 								<input type="hidden" name="payment_code" value="<?php echo $payment_code; ?>">
 								<?php if ($error_payment_method) { ?>
-									<div class="help-block error"><?php echo $error_payment_method; ?></div>
+									<div class="form-text error"><?php echo $error_payment_method; ?></div>
 								<?php } ?>
 							</div>
 						</div>
 						<div class="form-group col-sm-3">
-							<label class="control-label col-sm-4"><?php echo $entry_simplified; ?></label>
+							<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_simplified; ?></label>
 							<div class="control-field col-sm-8 d-flex align-items-center" style="min-height:38px; gap:15px;">
 								<label class="radio-inline m-0 p-0" style="padding-left:20px;"><input type="radio" name="simplified" value="0" <?php echo (!$simplified) ? 'checked=""' : ''; ?>> <?php echo $text_normal; ?></label>
 								<label class="radio-inline m-0 p-0" style="padding-left:20px;"><input type="radio" name="simplified" value="1" <?php echo ($simplified) ? 'checked=""' : ''; ?>> <?php echo $text_simplified; ?></label>
 							</div>
 						</div>
 						<div class="form-group col-sm-3 d-flex align-items-center">
-							<label class="control-label text-nowrap mb-0 pr-1"><?php echo $entry_global_discount; ?></label>
+							<label class="col-form-label text-sm-end pb-0 text-nowrap mb-0 pe-1"><?php echo $entry_global_discount; ?></label>
 							<div class="control-field">
-								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-right" inputmode="decimal" style="width:70px;">
+								<input type="text" name="global_discount" id="global_discount" value="<?php echo $global_discount; ?>" class="form-control text-end" inputmode="decimal" style="width:70px;">
 							</div>
 						</div>
 					</div>
@@ -114,7 +114,7 @@
 			<div class="card" id="tab-product" style="width:100%;">
 				<div class="card-header">
 					<?php echo $tab_product; ?>
-					<button class="btn btn-info pull-right" type="button" id="addProduct"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <span class="hidden-xs"><?php echo $button_add_product; ?></span></button>
+					<button class="btn btn-info float-end" type="button" id="addProduct"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <span class="d-none d-lg-inline"><?php echo $button_add_product; ?></span></button>
 				</div>
 				<div class="card-body">
 					<table class="table table-bordered table-striped table-hover">
@@ -122,10 +122,10 @@
 							<tr>
 								<th></th>
 								<th style="width:50%;"><?php echo $column_product; ?></th>
-								<th class="text-right" style="width:80px;"><?php echo $column_quantity; ?></th>
-								<th class="text-right"><?php echo $column_price; ?></th>
-								<th class="text-right"><?php echo $column_discount; ?></th>
-								<th class="text-right"><?php echo $column_base; ?></th>
+								<th class="text-end" style="width:80px;"><?php echo $column_quantity; ?></th>
+								<th class="text-end"><?php echo $column_price; ?></th>
+								<th class="text-end"><?php echo $column_discount; ?></th>
+								<th class="text-end"><?php echo $column_base; ?></th>
 						</tr>
 						</thead>
 						<?php $product_row = 0; ?>
@@ -134,7 +134,7 @@
 							<?php if ($draft_products) { ?>
 							<?php foreach ($draft_products as $draft_product) { ?>
 							<tr id="product-row<?php echo $product_row; ?>">
-								<td class="text-center"><a class="label label-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-draft-product').click();"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#trash3"/></svg></a></td>
+								<td class="text-center"><a class="badge bg-danger" title="<?php echo $button_remove; ?>" onclick="$('#product-row<?php echo $product_row; ?>').remove();$('#button-draft-product').click();"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#trash3"/></svg></a></td>
 								<td>
 									<input type="text" class="form-control draft-name" data-catalog-name="<?php echo htmlspecialchars((string)$draft_product['catalog_name'], ENT_QUOTES, 'UTF-8'); ?>" name="draft_product[<?php echo $product_row; ?>][name]" value="<?php echo htmlspecialchars((string)$draft_product['name'], ENT_QUOTES, 'UTF-8'); ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][draft_product_id]" value="<?php echo $draft_product['draft_product_id']; ?>">
@@ -151,10 +151,10 @@
 									<?php } ?>
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][model]" value="<?php echo $draft_product['model']; ?>">
 								</td>
-								<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $draft_product['quantity']; ?>"></td>
-								<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="<?php echo $draft_product['catalog_price_raw']; ?>" name="draft_product[<?php echo $product_row; ?>][price]" value="<?php echo $draft_product['price_raw']; ?>"></td>
-								<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product[<?php echo $product_row; ?>][discount]" value="<?php echo $draft_product['discount_raw']; ?>"></td>
-								<td class="text-right"><?php echo $draft_product['total']; ?>
+								<td class="text-end"><input type="text" class="form-control text-end draft-qty" name="draft_product[<?php echo $product_row; ?>][quantity]" value="<?php echo $draft_product['quantity']; ?>"></td>
+								<td class="text-end"><input type="text" class="form-control text-end draft-price" data-catalog-price="<?php echo $draft_product['catalog_price_raw']; ?>" name="draft_product[<?php echo $product_row; ?>][price]" value="<?php echo $draft_product['price_raw']; ?>"></td>
+								<td class="text-end"><input type="text" class="form-control text-end draft-discount" name="draft_product[<?php echo $product_row; ?>][discount]" value="<?php echo $draft_product['discount_raw']; ?>"></td>
+								<td class="text-end"><?php echo $draft_product['total']; ?>
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][total]" value="<?php echo $draft_product['total']; ?>">
 									<input type="hidden" name="draft_product[<?php echo $product_row; ?>][tax]" value="<?php echo $draft_product['tax']; ?>"></td>
 							</tr>
@@ -173,14 +173,14 @@
 							<?php foreach ($draft_totals as $draft_total) { ?>
 							<tr id="total-row<?php echo $total_row; ?>">
 								<td class="d-none d-sm-table-cell"></td>
-								<td class="text-right" colspan="4"><?php echo $draft_total['title']; ?>:
+								<td class="text-end" colspan="4"><?php echo $draft_total['title']; ?>:
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][draft_total_id]" value="<?php echo $draft_total['draft_total_id']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][code]" value="<?php echo $draft_total['code']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][title]" value="<?php echo $draft_total['title']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][text]" value="<?php echo $draft_total['text']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][value]" value="<?php echo $draft_total['value']; ?>">
 									<input type="hidden" name="draft_total[<?php echo $total_row; ?>][sort_order]" value="<?php echo $draft_total['sort_order']; ?>"></td>
-								<td class="text-right"><?php echo $draft_total['text']; ?></td>
+								<td class="text-end"><?php echo $draft_total['text']; ?></td>
 							</tr>
 							<?php $total_row++; ?>
 							<?php } ?>
@@ -195,16 +195,16 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><?php echo $text_pending_deliveries; ?></h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<div class="row g-2 mb-3">
 								<div class="col-12 col-sm-3">
-									<label class="control-label"><?php echo $entry_delivery_no; ?></label>
+									<label class="col-form-label text-sm-end pb-0"><?php echo $entry_delivery_no; ?></label>
 									<input type="text" id="os-order-id" class="form-control" placeholder="<?php echo $entry_delivery_no; ?>">
 								</div>
 								<div class="col-12 col-sm">
-									<label class="control-label"><?php echo $entry_customer_filter; ?></label>
+									<label class="col-form-label text-sm-end pb-0"><?php echo $entry_customer_filter; ?></label>
 									<input type="text" id="os-company" class="form-control" placeholder="<?php echo $entry_company_name; ?>">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
@@ -219,7 +219,7 @@
 											<th><?php echo $column_delivery_no; ?></th>
 											<th><?php echo $entry_customer_filter; ?></th>
 											<th><?php echo $column_delivery_date; ?></th>
-											<th class="text-right"><?php echo $column_total; ?></th>
+											<th class="text-end"><?php echo $column_total; ?></th>
 											<th><?php echo $column_status; ?></th>
 										</tr>
 									</thead>
@@ -239,16 +239,16 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><?php echo $title_search_customer; ?></h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<div class="row g-2 mb-3">
 								<div class="col-12 col-sm">
-									<label class="control-label"><?php echo $entry_company_name; ?></label>
+									<label class="col-form-label text-sm-end pb-0"><?php echo $entry_company_name; ?></label>
 									<input type="text" id="cs-company" class="form-control" placeholder="<?php echo $entry_company_name; ?>">
 								</div>
 								<div class="col-12 col-sm">
-									<label class="control-label"><?php echo $entry_contact_name; ?></label>
+									<label class="col-form-label text-sm-end pb-0"><?php echo $entry_contact_name; ?></label>
 									<input type="text" id="cs-contact" class="form-control" placeholder="<?php echo $entry_contact_name; ?>">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
@@ -282,16 +282,16 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><?php echo $text_search_product_title; ?></h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<div class="row g-2 mb-3">
 								<div class="col-12 col-sm-3">
-									<label class="control-label"><?php echo $entry_sku_search; ?></label>
+									<label class="col-form-label text-sm-end pb-0"><?php echo $entry_sku_search; ?></label>
 									<input type="text" id="ps-sku" class="form-control" placeholder="SKU">
 								</div>
 								<div class="col-12 col-sm">
-									<label class="control-label"><?php echo $entry_description; ?></label>
+									<label class="col-form-label text-sm-end pb-0"><?php echo $entry_description; ?></label>
 									<input type="text" id="ps-name" class="form-control" placeholder="<?php echo $entry_description; ?>">
 								</div>
 								<div class="col-12 col-sm-auto d-flex align-items-end">
@@ -305,8 +305,8 @@
 										<tr>
 											<th>SKU</th>
 											<th><?php echo $entry_description; ?></th>
-											<th class="text-right"><?php echo $column_price; ?></th>
-											<th class="text-right">Stock</th>
+											<th class="text-end"><?php echo $column_price; ?></th>
+											<th class="text-end">Stock</th>
 										</tr>
 									</thead>
 									<tbody id="ps-results">
@@ -325,33 +325,33 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title" id="pm-product-name"><?php echo $text_product; ?></h5>
-							<button class="close" data-bs-dismiss="modal" arial-label="Close"><span aria-hidden="true">&times;</span></button>
+							<button class="btn-close" data-bs-dismiss="modal" arial-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<input type="hidden" name="product_id" id="product_id" value="0">
 							<input type="hidden" name="product" id="draft-product" value="">
-							<div class="form-horizontal">
+							<div class="form-classic">
 								<div id="option"></div>
 								<div class="form-group">
-									<label class="control-label col-sm-4"><?php echo $entry_quantity; ?></label>
+									<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_quantity; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="quantity" id="pm-quantity" value="1" class="form-control">
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-sm-4"><?php echo $entry_price; ?></label>
+									<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_price; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="price_override" id="price_override" value="" class="form-control">
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-sm-4"><?php echo $entry_discount; ?></label>
+									<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_discount; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" name="discount" id="pm-discount" value="" class="form-control">
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-sm-4"><?php echo $entry_tax_rate; ?></label>
+									<label class="col-form-label text-sm-end pb-0 col-sm-4"><?php echo $entry_tax_rate; ?></label>
 									<div class="control-field col-sm-8">
 										<input type="text" id="pm-tax-rate" value="" class="form-control" readonly>
 									</div>
@@ -359,9 +359,9 @@
 							</div>
 						</div>
 						<div class="modal-footer">
-							<div class="control-field col-sm-4 col-sm-offset-2">
-								<button type="button" id="button-draft-product" class="btn btn-info pull-right">
-									<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <span class="hidden-xs"><?php echo $button_add_product; ?></span>
+							<div class="control-field col-sm-4">
+								<button type="button" id="button-draft-product" class="btn btn-info float-end">
+									<svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <span class="d-none d-lg-inline"><?php echo $button_add_product; ?></span>
 								</button>
 							</div>
 						</div>
@@ -375,9 +375,7 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title"><?php echo $tab_customer; ?></h5>
-							<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-							</button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<ul class="nav nav-tabs">
@@ -387,11 +385,11 @@
 							</ul>
 							<div class="tab-content mt-2">
 								<div class="tab-pane" id="modal-tab-customer">
-									<div class="form-horizontal">
+									<div class="form-classic">
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_customer_group; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><?php echo $entry_customer_group; ?></label>
 											<div class="control-field col-sm-8">
-												<select id="customer_group_id" class="form-control"<?php echo $customer_id ? ' disabled=""' :''; ?>>
+												<select id="customer_group_id" class="form-select"<?php echo $customer_id ? ' disabled=""' :''; ?>>
 													<?php foreach ($customer_groups as $customer_group) { ?>
 														<?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
 														<option value="<?php echo $customer_group['customer_group_id']; ?>" selected=""><?php echo $customer_group['name']; ?></option>
@@ -403,31 +401,31 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_email; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_email; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
 												<?php if ($error_email) { ?>
-													<div class="help-block error"><?php echo $error_email; ?></div>
+													<div class="form-text error"><?php echo $error_email; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_telephone; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_telephone; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 												<?php if ($error_telephone) { ?>
-													<div class="help-block error"><?php echo $error_telephone; ?></div>
+													<div class="form-text error"><?php echo $error_telephone; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="tab-pane" id="tab-payment">
-									<div class="form-horizontal">
+									<div class="form-classic">
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_address; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><?php echo $entry_address; ?></label>
 											<div class="control-field col-sm-8">
-												<select name="payment_address" class="form-control">
+												<select name="payment_address" class="form-select">
 													<option value="0" selected=""><?php echo $text_none; ?></option>
 													<?php foreach ($addresses as $address) { ?>
 														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
@@ -436,48 +434,48 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_company; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><?php echo $entry_company; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_company" value="<?php echo $payment_company; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_address_1; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_address_1; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_address_1" value="<?php echo $payment_address_1; ?>" class="form-control">
 												<?php if ($error_payment_address_1) { ?>
-													<div class="help-block error"><?php echo $error_payment_address_1; ?></div>
+													<div class="form-text error"><?php echo $error_payment_address_1; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_address_2; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><?php echo $entry_address_2; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_address_2" value="<?php echo $payment_address_2; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_city; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_city; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_city" value="<?php echo $payment_city; ?>" class="form-control">
 												<?php if ($error_payment_city) { ?>
-													<div class="help-block error"><?php echo $error_payment_city; ?></div>
+													<div class="form-text error"><?php echo $error_payment_city; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><span id="payment-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><span id="payment-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="payment_postcode" value="<?php echo $payment_postcode; ?>" class="form-control">
 												<?php if ($error_payment_postcode) { ?>
-													<div class="help-block error"><?php echo $error_payment_postcode; ?></div>
+													<div class="form-text error"><?php echo $error_payment_postcode; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_country; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_country; ?></label>
 											<div class="control-field col-sm-8">
-												<select name="payment_country_id" data-provide="countries" data-target="payment" data-selected="<?php echo $payment_zone_id; ?>" class="form-control">
+												<select name="payment_country_id" data-provide="countries" data-target="payment" data-selected="<?php echo $payment_zone_id; ?>" class="form-select">
 													<option value=""><?php echo $text_select; ?></option>
 													<?php foreach ($countries as $country) { ?>
 														<?php if ($country['country_id'] == $payment_country_id) { ?>
@@ -488,27 +486,27 @@
 													<?php } ?>
 												</select>
 												<?php if ($error_payment_country) { ?>
-													<div class="help-block error"><?php echo $error_payment_country; ?></div>
+													<div class="form-text error"><?php echo $error_payment_country; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_zone; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_zone; ?></label>
 											<div class="control-field col-sm-8">
-												<select name="payment_zone_id" class="form-control"></select>
+												<select name="payment_zone_id" class="form-select"></select>
 												<?php if ($error_payment_zone) { ?>
-													<div class="help-block error"><?php echo $error_payment_zone; ?></div>
+													<div class="form-text error"><?php echo $error_payment_zone; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="tab-pane" id="tab-shipping">
-									<div class="form-horizontal">
+									<div class="form-classic">
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_address; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><?php echo $entry_address; ?></label>
 											<div class="control-field col-sm-8">
-												<select name="shipping_address" class="form-control">
+												<select name="shipping_address" class="form-select">
 													<option value="0" selected=""><?php echo $text_none; ?></option>
 													<?php foreach ($addresses as $address) { ?>
 														<option value="<?php echo $address['address_id']; ?>"><?php echo $address['address_1'] . ', ' . $address['city'] . ', ' . $address['country']; ?></option>
@@ -517,45 +515,45 @@
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_company; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><?php echo $entry_company; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="shipping_company" value="<?php echo $shipping_company; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_address_1; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_address_1; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="shipping_address_1" value="<?php echo $shipping_address_1; ?>" class="form-control">
 												<?php if ($error_shipping_address_1) { ?>
-													<div class="help-block error"><?php echo $error_shipping_address_1; ?></div>
+													<div class="form-text error"><?php echo $error_shipping_address_1; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><?php echo $entry_address_2; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><?php echo $entry_address_2; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="shipping_address_2" value="<?php echo $shipping_address_2; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_city; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_city; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="shipping_city" value="<?php echo $shipping_city; ?>" class="form-control">
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><span id="shipping-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><span id="shipping-postcode-required" class="required">*</span> <?php echo $entry_postcode; ?></label>
 											<div class="control-field col-sm-8">
 												<input type="text" name="shipping_postcode" value="<?php echo $shipping_postcode; ?>" class="form-control">
 												<?php if ($error_shipping_postcode) { ?>
-													<div class="help-block error"><?php echo $error_shipping_postcode; ?></div>
+													<div class="form-text error"><?php echo $error_shipping_postcode; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_country; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_country; ?></label>
 											<div class="control-field col-sm-8">
-												<select name="shipping_country_id" data-provide="countries" data-target="shipping" data-selected="<?php echo $shipping_zone_id; ?>" class="form-control">
+												<select name="shipping_country_id" data-provide="countries" data-target="shipping" data-selected="<?php echo $shipping_zone_id; ?>" class="form-select">
 													<option value=""><?php echo $text_select; ?></option>
 													<?php foreach ($countries as $country) { ?>
 														<?php if ($country['country_id'] == $shipping_country_id) { ?>
@@ -566,16 +564,16 @@
 													<?php } ?>
 												</select>
 												<?php if ($error_shipping_country) { ?>
-													<div class="help-block error"><?php echo $error_shipping_country; ?></div>
+													<div class="form-text error"><?php echo $error_shipping_country; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group">
-											<label class="control-label col-3"><b class="required">*</b> <?php echo $entry_zone; ?></label>
+											<label class="col-form-label text-sm-end pb-0 col-3"><b class="required">*</b> <?php echo $entry_zone; ?></label>
 											<div class="control-field col-sm-8">
-												<select name="shipping_zone_id" class="form-control"></select>
+												<select name="shipping_zone_id" class="form-select"></select>
 												<?php if ($error_shipping_zone) { ?>
-													<div class="help-block error"><?php echo $error_shipping_zone; ?></div>
+													<div class="form-text error"><?php echo $error_shipping_zone; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -788,7 +786,7 @@ function osDoSearch() {
 				html += '<td>' + json[i].order_id + '</td>';
 				html += '<td>' + json[i].company + '</td>';
 				html += '<td>' + json[i].date_added + '</td>';
-				html += '<td class="text-right">' + json[i].total + '</td>';
+				html += '<td class="text-end">' + json[i].total + '</td>';
 				html += '<td>' + (json[i].status || '') + '</td>';
 				html += '</tr>';
 			}
@@ -916,8 +914,8 @@ function psDoSearch() {
 				html += '<tr data-idx="' + i + '" style="cursor:pointer;">';
 				html += '<td>' + (json[i].sku || '') + '</td>';
 				html += '<td>' + json[i].name + '</td>';
-				html += '<td class="text-right">' + json[i].price_formatted + '</td>';
-				html += '<td class="text-right">' + json[i].quantity + '</td>';
+				html += '<td class="text-end">' + json[i].price_formatted + '</td>';
+				html += '<td class="text-end">' + json[i].quantity + '</td>';
 				html += '</tr>';
 			}
 			$('#ps-results').html(html);
@@ -959,7 +957,7 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 			if (o.required == 1) html += '<b class="required">* </b>';
 			html += o.name + ':</label><div class="control-field col-sm-8">';
 			if (o.type == 'select') {
-				html += '<select name="option[' + o.product_option_id + ']" class="form-control"><option value="">' + s + '</option>';
+				html += '<select name="option[' + o.product_option_id + ']" class="form-select"><option value="">' + s + '</option>';
 				for (var j = 0; j < o.option_value.length; j++) {
 					html += '<option value="' + o.option_value[j].product_option_value_id + '">' + o.option_value[j].name + '</option>';
 				}
@@ -973,7 +971,7 @@ $(document).on('dblclick', '#ps-results tr[data-idx]', function() {
 					html += '<div class="checkbox"><label><input type="checkbox" name="option[' + o.product_option_id + '][]" value="' + o.option_value[j].product_option_value_id + '"> ' + o.option_value[j].name + '</label></div>';
 				}
 			} else if (o.type == 'date' || o.type == 'datetime') {
-				html += '<div class="input-group"><input type="text" name="option[' + o.product_option_id + ']" value="' + psToday + '" class="form-control date" placeholder="DD-MM-YYYY"><div class="input-group-append"><button class="btn btn-default" type="button" onclick="$(this).closest(\'.input-group\').find(\'.date\').focus();"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></button></div></div>';
+				html += '<div class="input-group"><input type="text" name="option[' + o.product_option_id + ']" value="' + psToday + '" class="form-control date" placeholder="DD-MM-YYYY"><button class="btn btn-default" type="button" onclick="$(this).closest(\'.input-group\').find(\'.date\').focus();"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></button></div>';
 			} else if (o.type == 'time') {
 				html += '<input type="text" name="option[' + o.product_option_id + ']" value="" class="form-control">';
 			} else if (o.type == 'textarea') {

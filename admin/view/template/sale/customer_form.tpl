@@ -2,14 +2,14 @@
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <div class="card">
 	<div class="card-header">
-		<div class="float-left h2"><i class="hidden-xs fa fa-user"></i><span> <?php echo $heading_title; ?></span></div>
-		<div class="float-right">
+		<div class="float-start h2"><i class="fa fa-user"></i><span> <?php echo $heading_title; ?></span></div>
+		<div class="float-end">
 			<?php if ($customer_id) { ?>
-			<a class="btn btn-default" href="<?php echo $sepa; ?>" target="_blank"><i class="fa fa-university"></i><span class="hidden-xs"> <?php echo $button_sepa; ?></span></a>
+			<a class="btn btn-default" href="<?php echo $sepa; ?>" target="_blank"><i class="fa fa-university"></i><span class="d-none d-lg-inline"> <?php echo $button_sepa; ?></span></a>
 			<?php } ?>
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
-			<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="d-none d-lg-inline"> <?php echo $button_new_email ?></span></button>
+			<button type="submit" form="form" class="btn btn-primary"><i class="fa fa-save"></i><span class="d-none d-lg-inline"> <?php echo $button_save; ?></span></button>
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
 	<div class="card-body">
@@ -27,11 +27,11 @@
 			<li class="nav-item"><a class="nav-link" href="#tab-receipts" data-bs-toggle="tab"><?php echo $tab_receipts; ?></a></li>
 			<li class="nav-item"><a class="nav-link" href="#tab-ip" data-bs-toggle="tab"><?php echo $tab_ip; ?></a></li>
 		</ul>
-		<form class="form-horizontal mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+		<form class="form-classic mt-2" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="tab-content">				
 				<div class="tab-pane" id="tab-general">
 					<div class="row">
-						<div class="col-xs-4 col-sm-3">
+						<div class="col-sm-3">
 							<div class="nav flex-column" id="vtabs-address">
 								<a href="#tab-customer" class="nav-link active" role="tab" aria-selected="true" data-bs-toggle="pill"><?php echo $tab_general; ?></a>
 								<a href="#tab-notas" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"<?php if ($notes) { ?> style="background-color:#fff9c4;"<?php } ?>><?php echo $tab_notes; ?></a>
@@ -42,10 +42,10 @@
 									<a href="#tab-address-<?php echo $address_row; ?>" id="address-<?php echo $address_row; ?>" class="nav-link" role="tab" aria-selected="false" data-bs-toggle="pill"><span class="text-danger" onclick="$('#tab-general .nav-tabs a:first').trigger('click');$('#address-<?php echo $address_row; ?>').remove();$('#tab-address-<?php echo $address_row; ?>').remove();return false;"><i class="fa fa-trash"></i></span> <?php echo $tab_address . ' ' . $address_row; ?></a>
 									<?php $address_row++; ?>
 								<?php } ?>
-								<a class="nav-link action" id="address-add" role="tab" aria-selected="false" data-bs-toggle="pill"><button type="button" class="btn btn-info btn-block" onclick="addAddress();"><i class="fa fa-plus-circle"></i>&nbsp;<?php echo $button_add_address; ?></button></a>
+								<a class="nav-link action" id="address-add" role="tab" aria-selected="false" data-bs-toggle="pill"><button type="button" class="btn btn-info d-block w-100" onclick="addAddress();"><i class="fa fa-plus-circle"></i>&nbsp;<?php echo $button_add_address; ?></button></a>
 							</div>
 						</div>
-						<div class="col-xs-8 col-sm-9">
+						<div class="col-sm-9">
 							<div class="tab-content" id="customer-content">
 								<div class="tab-pane fade show active" role="tab-panel" id="tab-customer">
 									<div class="form-group row">
@@ -60,7 +60,7 @@
 											<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
 											<?php $to = $email ?>
 											<?php if ($error_email) { ?>
-												<div class="help-block text-danger"><?php echo $error_email; ?></div>
+												<div class="form-text text-danger"><?php echo $error_email; ?></div>
 											<?php	} ?>
 										</div>
 									</div>
@@ -73,7 +73,7 @@
 										<div class="col-sm-6">
 											<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 											<?php if ($error_telephone) { ?>
-												<div class="help-block text-danger"><?php echo $error_telephone; ?></div>
+												<div class="form-text text-danger"><?php echo $error_telephone; ?></div>
 											<?php	} ?>
 										</div>
 									</div>
@@ -81,9 +81,7 @@
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_web; ?></label>
 										<div class="col-sm-6 input-group">
 											<input type="text" name="web" value="<?php echo $web; ?>" id="web" class="form-control">
-											<div class="input-group-append">
 												<button type="button" id="button-web" class="btn btn-info" title="<?php echo $button_web?>"><i class="fas fa-globe"></i></button>
-											</div>
 										</div>
 									</div>
 									<div class="form-group row">
@@ -107,13 +105,13 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
 										<div class="col-sm-6">
-											<select name="zone_id" class="form-control"></select>
+											<select name="zone_id" class="form-select"></select>
 										</div>
 									</div>
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
 										<div class="col-sm-6">
-											<select name="country_id" id="customer-country" class="form-control">
+											<select name="country_id" id="customer-country" class="form-select">
 												<option value=""><?php echo $text_select; ?></option>
 												<?php foreach ($countries as $country) { ?>
 												<?php if ($country['country_id'] == $country_id) { ?>
@@ -128,7 +126,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_newsletter; ?></label>
 										<div class="col-sm-6">
-											<select name="newsletter" class="form-control">
+											<select name="newsletter" class="form-select">
 												<?php if ($newsletter) { ?>
 												<option value="1" selected=""><?php echo $text_enabled; ?></option>
 												<option value="0"><?php echo $text_disabled; ?></option>
@@ -142,7 +140,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_group; ?></label>
 										<div class="col-sm-6">
-											<select name="customer_group_id" onchange="groupToggle();" class="form-control">
+											<select name="customer_group_id" onchange="groupToggle();" class="form-select">
 												<?php foreach ($customer_groups as $customer_group) { ?>
 													<?php if ($customer_group['customer_group_id'] == $customer_group_id) { ?>
 													<option value="<?php echo $customer_group['customer_group_id']; ?>" selected=""><?php echo $customer_group['name']; ?></option>
@@ -156,7 +154,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_representative; ?></label>
 										<div class="col-sm-6">
-											<select name="customer_representative_id" class="form-control">
+											<select name="customer_representative_id" class="form-select">
 												<option value="0"><?php echo $text_none; ?></option>
 												<?php foreach ($customer_representatives as $customer_representative) { ?>
 													<?php if ($customer_representative['customer_representative_id'] == $customer_representative_id) { ?>
@@ -171,7 +169,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status; ?></label>
 										<div class="col-sm-6">
-											<select name="status" class="form-control">
+											<select name="status" class="form-select">
 												<?php if ($status) { ?>
 													<option value="1" selected=""><?php echo $text_enabled; ?></option>
 													<option value="0"><?php echo $text_disabled; ?></option>
@@ -213,7 +211,7 @@
 										</tbody>
 										<tfoot>
 											<tr>
-												<td class="text-right" colspan="4"><a href="<?php echo $add_note ?>" class="btn btn-info"><?php echo $button_add_note ?></a></td>
+												<td class="text-end" colspan="4"><a href="<?php echo $add_note ?>" class="btn btn-info"><?php echo $button_add_note ?></a></td>
 											</tr>
 										</tfoot>
 									</table>
@@ -223,7 +221,7 @@
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $text_bank_cc; ?></label>
 										<div class="col-sm-6 input-group">
 											<input type="text" name="bank_cc" id="bank_cc" value="<?php echo $bank_cc; ?>" class="form-control" >
-											<div class="input-group-append"><button type="button" class="btn btn-info" id="validate-cc">Validate</button></div>
+											<button type="button" class="btn btn-info" id="validate-cc">Validate</button>
 										</div>
 									</div>
 									<div id="iban-res" class="offset-sm-10 offset-md-2"></div>
@@ -294,7 +292,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_tariff; ?></label>
 										<div class="col-sm-6">
-											<select name="tariff_id" class="form-control" style="width:40%;">
+											<select name="tariff_id" class="form-select" style="width:40%;">
 												<option value="0"><?php echo $text_tariff_default; ?></option>
 												<?php foreach ($tariffs as $tariff) { ?>
 												<option value="<?php echo $tariff['tariff_id']; ?>" <?php echo ($tariff_id == $tariff['tariff_id']) ? 'selected' : ''; ?>><?php echo $tariff['name']; ?> (<?php echo number_format($tariff['percent'], 2, '.', ''); ?>%)</option>
@@ -305,7 +303,7 @@
 									<div class="form-group row">
 										<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_vat_regime; ?></label>
 										<div class="col-sm-6">
-											<select name="vat_regime" class="form-control" style="width:20%;">
+											<select name="vat_regime" class="form-select" style="width:20%;">
 												<option value="general" <?php echo ($vat_regime == 'general') ? 'selected' : ''; ?>><?php echo $text_vat_regime_general; ?></option>
 												<option value="comunitario" <?php echo ($vat_regime == 'comunitario') ? 'selected' : ''; ?>><?php echo $text_vat_regime_comunitario; ?></option>
 												<option value="internacional" <?php echo ($vat_regime == 'internacional') ? 'selected' : ''; ?>><?php echo $text_vat_regime_internacional; ?></option>
@@ -360,7 +358,7 @@
 											<div class="col-sm-6">
 												<input type="text" name="customer_address[<?php echo $address_row; ?>][tax_id]" value="<?php echo $address['tax_id']; ?>" class="form-control">
 												<?php if (isset($error_address_tax_id[$address_row])) { ?>
-													<div class="help-block text-danger"><?php echo $error_address_tax_id[$address_row]; ?></div>
+													<div class="form-text text-danger"><?php echo $error_address_tax_id[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -369,7 +367,7 @@
 											<div class="col-sm-6">
 												<input type="text" name="customer_address[<?php echo $address_row; ?>][address_1]" value="<?php echo $address['address_1']; ?>" class="form-control">
 												<?php if (isset($error_address_address_1[$address_row])) { ?>
-													<div class="help-block text-danger"><?php echo $error_address_address_1[$address_row]; ?></div>
+													<div class="form-text text-danger"><?php echo $error_address_address_1[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -384,7 +382,7 @@
 											<div class="col-sm-6">
 												<input type="text" name="customer_address[<?php echo $address_row; ?>][city]" value="<?php echo $address['city']; ?>" class="form-control">
 												<?php if (isset($error_address_city[$address_row])) { ?>
-													<div class="help-block text-danger"><?php echo $error_address_city[$address_row]; ?></div>
+													<div class="form-text text-danger"><?php echo $error_address_city[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -397,7 +395,7 @@
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>
 											<div class="col-sm-6">
-												<select name="customer_address[<?php echo $address_row; ?>][country_id]" onchange="country(this,'<?php echo $address_row; ?>','<?php echo $address['zone_id']; ?>');" class="form-control">
+												<select name="customer_address[<?php echo $address_row; ?>][country_id]" onchange="country(this,'<?php echo $address_row; ?>','<?php echo $address['zone_id']; ?>');" class="form-select">
 													<option value=""><?php echo $text_select; ?></option>
 													<?php foreach ($countries as $country) { ?>
 														<?php if ($country['country_id'] == $address['country_id']) { ?>
@@ -408,17 +406,17 @@
 													<?php } ?>
 												</select>
 												<?php if (isset($error_address_country[$address_row])) { ?>
-													<div class="help-block text-danger"><?php echo $error_address_country[$address_row]; ?></div>
+													<div class="form-text text-danger"><?php echo $error_address_country[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
 										<div class="form-group row">
 											<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>
 											<div class="col-sm-6">
-												<select name="customer_address[<?php echo $address_row; ?>][zone_id]" class="form-control">
+												<select name="customer_address[<?php echo $address_row; ?>][zone_id]" class="form-select">
 												</select>
 												<?php if (isset($error_address_zone[$address_row])) { ?>
-													<div class="help-block text-danger"><?php echo $error_address_zone[$address_row]; ?></div>
+													<div class="form-text text-danger"><?php echo $error_address_zone[$address_row]; ?></div>
 												<?php } ?>
 											</div>
 										</div>
@@ -457,7 +455,7 @@
 		                      <td class="d-none d-sm-table-cell"><?php echo $contact['email']; ?></td>
 		                      <td><?php echo $contact['telephone']; ?></td>
 		                      <td><?php echo $contact['puesto']; ?></td>
-		                      <td class="text-right"><?php foreach ($contact['action'] as $action): ?>
+		                      <td class="text-end"><?php foreach ($contact['action'] as $action): ?>
 		                        <?php echo $action['link']; ?>
 		                      <?php endforeach ?></td>
 		                    </tr>
@@ -468,7 +466,7 @@
 		              </tbody>
 		              <tfoot>
 		                <tr>
-		                  <td class="text-right" colspan="5"><a href="<?php echo $add_contact ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact ?></a></td>
+		                  <td class="text-end" colspan="5"><a href="<?php echo $add_contact ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_contact ?></a></td>
 		                </tr>
 		              </tfoot>
 		            </table>
@@ -488,7 +486,7 @@
 		                    <tr>
 		                      <td><?php echo $bank['bank_name']; ?><input type="hidden" name="bank_id" value="<?php echo $bank['bank_id']; ?>"></td>
 		                      <td><?php echo $bank['iban']; ?></td>
-		                      <td class="text-right"><?php foreach ($bank['action'] as $action): ?>
+		                      <td class="text-end"><?php foreach ($bank['action'] as $action): ?>
 		                        <?php echo $action['link']; ?>
 		                      <?php endforeach ?></td>
 		                    </tr>
@@ -499,7 +497,7 @@
 		              </tbody>
 		              <tfoot>
 		                <tr>
-		                  <td class="text-right" colspan="3"><a href="<?php echo $add_bank ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_bank ?></a></td>
+		                  <td class="text-end" colspan="3"><a href="<?php echo $add_bank ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_bank ?></a></td>
 		                </tr>
 		              </tfoot>
 		            </table>
@@ -513,10 +511,10 @@
 								<th><?php echo $column_product_id; ?></th>
 
 								<th class="d-none d-sm-table-cell"><?php echo $column_product_name; ?></th>
-								<th class="text-left"><?php echo $column_order; ?></th>
-								<th class="text-left"><?php echo $column_order_date; ?></th>
-								<th class="text-left"><?php echo $column_quantity; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
+								<th class="text-start"><?php echo $column_order; ?></th>
+								<th class="text-start"><?php echo $column_order_date; ?></th>
+								<th class="text-start"><?php echo $column_quantity; ?></th>
+								<th class="text-end"><?php echo $column_total; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -524,11 +522,11 @@
 							<?php foreach ($products as $product) { ?>
 							<tr>
 								<td class="d-none d-sm-table-cell"><?php echo $product['product_id']; ?></td>
-								<td class="text-left"><?php echo $product['name']; ?></td>
-								<td class="text-left"><?php echo $product['order_id']; ?></td>
-								<td class="text-left"><?php echo $product['date']; ?></td>
-								<td class="text-left"><?php echo $product['quantity']; ?></td>
-								<td class="text-right"><?php echo $product['total']; ?></td>
+								<td class="text-start"><?php echo $product['name']; ?></td>
+								<td class="text-start"><?php echo $product['order_id']; ?></td>
+								<td class="text-start"><?php echo $product['date']; ?></td>
+								<td class="text-start"><?php echo $product['quantity']; ?></td>
+								<td class="text-end"><?php echo $product['total']; ?></td>
 							</tr>
 							<?php } ?>
 						<?php } else { ?>
@@ -544,9 +542,9 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_quote; ?></th>
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>	
-								<th class="text-right"><?php echo $column_total; ?></th>
-								<th class="text-right"><?php echo $column_action; ?></th>
+								<th class="d-none d-lg-table-cell"><?php echo $column_date_added; ?></th>	
+								<th class="text-end"><?php echo $column_total; ?></th>
+								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -555,8 +553,8 @@
 							<tr>
 								<td class="left"><?php echo $quote['quote_id']; ?></td>
 								<td class="left"><?php echo $quote['date']; ?></td>
-								<td class="text-right hidden-xs"><?php echo $quote['total']; ?></td>
-								<td class="text-right"><?php foreach ($quote['action'] as $action) { ?>
+								<td class="text-end d-none d-lg-table-cell"><?php echo $quote['total']; ?></td>
+								<td class="text-end"><?php foreach ($quote['action'] as $action) { ?>
 									<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
 								<?php } ?></td>
 							</tr>
@@ -574,9 +572,9 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_order; ?></th>
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>							
-								<th class="text-right"><?php echo $column_total; ?></th>
-								<th class="text-right"><?php echo $column_action; ?></th>
+								<th class="d-none d-lg-table-cell"><?php echo $column_date_added; ?></th>							
+								<th class="text-end"><?php echo $column_total; ?></th>
+								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -585,8 +583,8 @@
 							<tr>
 								<td class="left"><?php echo $order['order_id']; ?></td>
 								<td class="left"><?php echo $order['date']; ?></td>
-								<td class="text-right hidden-xs"><?php echo $order['total']; ?></td>
-								<td class="text-right"><?php foreach ($order['action'] as $action) { ?>
+								<td class="text-end d-none d-lg-table-cell"><?php echo $order['total']; ?></td>
+								<td class="text-end"><?php foreach ($order['action'] as $action) { ?>
 								  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
 								<?php } ?></td>
 							</tr>
@@ -603,21 +601,21 @@
 						<table class="table table-bordered table-striped table-hover">
 						<thead>
 							<tr>
-								<th class="hidden-xs"><?php echo $column_date; ?></th>
-								<th class="text-left"><?php echo $column_email_subject; ?></th>
-								<th class="text-left"><?php echo $column_email_sender; ?></th>
-								<th class="text-right"><?php echo $column_action; ?></th>
+								<th class="d-none d-lg-table-cell"><?php echo $column_date; ?></th>
+								<th class="text-start"><?php echo $column_email_subject; ?></th>
+								<th class="text-start"><?php echo $column_email_sender; ?></th>
+								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody>
 						<?php if ($emails) { ?>
 						 <?php foreach ($emails as $email) { ?>
 							<tr>
-								<td class="text-left"><?php echo $email['date_added']; ?></td>
-								<td class="text-left"><?php echo $email['subject']; ?></td>
-								<td class="text-left"><?php echo $email['sender']; ?></td>
+								<td class="text-start"><?php echo $email['date_added']; ?></td>
+								<td class="text-start"><?php echo $email['subject']; ?></td>
+								<td class="text-start"><?php echo $email['sender']; ?></td>
 								<td class="d-none" id="mail-<?php echo $email['mail_id']; ?>"><?php echo $email['text']; ?></td>
-								<td class="text-right">
+								<td class="text-end">
 									<button type="button" class="btn btn-info" onclick="viewMessage(<?php echo $email['mail_id']; ?>);">
 										<i class="fa fa-eye"></i> <?php echo $text_view; ?>
 									</button>
@@ -637,9 +635,9 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_delivery; ?></th>
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
-								<th class="text-right"><?php echo $column_action; ?></th>
+								<th class="d-none d-lg-table-cell"><?php echo $column_date_added; ?></th>
+								<th class="text-end"><?php echo $column_total; ?></th>
+								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -648,8 +646,8 @@
 							<tr>
 								<td class="left"><?php echo $delivery['delivery_id']; ?></td>
 								<td class="left"><?php echo $delivery['date']; ?></td>
-								<td class="text-right hidden-xs"><?php echo $delivery['total']; ?></td>
-								<td class="text-right"><?php foreach ($delivery['action'] as $action) { ?>
+								<td class="text-end d-none d-lg-table-cell"><?php echo $delivery['total']; ?></td>
+								<td class="text-end"><?php foreach ($delivery['action'] as $action) { ?>
 									  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
 								<?php } ?></td>
 							</tr>
@@ -667,9 +665,9 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_invoice; ?></th>
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
-								<th class="text-right"><?php echo $column_action; ?></th>
+								<th class="d-none d-lg-table-cell"><?php echo $column_date_added; ?></th>
+								<th class="text-end"><?php echo $column_total; ?></th>
+								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -678,8 +676,8 @@
 							<tr>
 								<td class="left"><?php echo $invoice['invoice_id']; ?></td>
 								<td class="left"><?php echo $invoice['date']; ?></td>
-								<td class="text-right hidden-xs"><?php echo $invoice['total']; ?></td>
-								<td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
+								<td class="text-end d-none d-lg-table-cell"><?php echo $invoice['total']; ?></td>
+								<td class="text-end"><?php foreach ($invoice['action'] as $action) { ?>
 									  <a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <?php echo $action['text']; ?></a>
 								<?php } ?></td>
 							</tr>
@@ -707,7 +705,7 @@
 			                    <tr>
 			                      <td><?php echo $contract['filename']; ?><input type="hidden" name="document_id" value="<?php echo $contract['document_id']; ?>"></td>
 			                      <td><?php echo $contract['date_added']; ?></td>
-			                       <td class="text-right"><?php foreach ($contract['action'] as $action): ?>
+			                       <td class="text-end"><?php foreach ($contract['action'] as $action): ?>
 			                        <?php echo $action['link']; ?>
 			                      <?php endforeach ?></td>
 			                    </tr>
@@ -718,7 +716,7 @@
 			              </tbody>
 			              <tfoot>
 			                <tr>
-			                  <td colspan="3" class="text-right"><a href="<?php echo $add_contract ?>" class="btn btn-info"><?php echo $button_add_contract ?></a></td>
+			                  <td colspan="3" class="text-end"><a href="<?php echo $add_contract ?>" class="btn btn-info"><?php echo $button_add_contract ?></a></td>
 			                </tr>
 			              </tfoot>
 			            </table>
@@ -731,9 +729,9 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_ip; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
-								<th class="hidden-xs"><?php echo $column_date_added; ?></th>
-								<th class="text-right"><?php echo $column_action; ?></th>
+								<th class="text-end"><?php echo $column_total; ?></th>
+								<th class="d-none d-lg-table-cell"><?php echo $column_date_added; ?></th>
+								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -741,9 +739,9 @@
 						<?php foreach ($ips as $ip) { ?>
 							<tr>
 								<td><a href="http://www.geoiptool.com/en/?IP=<?php echo $ip['ip']; ?>" target="_blank"><?php echo $ip['ip']; ?></a></td>
-								<td class="text-right"><a href="<?php echo $ip['filter_ip']; ?>" target="_blank"><?php echo $ip['total']; ?></a></td>
-								<td class="hidden-xs"><?php echo $ip['date_added']; ?></td>
-								<td class="text-right"><?php if ($ip['ban_ip']) { ?>
+								<td class="text-end"><a href="<?php echo $ip['filter_ip']; ?>" target="_blank"><?php echo $ip['total']; ?></a></td>
+								<td class="d-none d-lg-table-cell"><?php echo $ip['date_added']; ?></td>
+								<td class="text-end"><?php if ($ip['ban_ip']) { ?>
 									<span class="bracket"><a id="<?php echo str_replace('.', '-', $ip['ip']); ?>" onclick="removeBanIP('<?php echo $ip['ip']; ?>');"><?php echo $text_remove_ban_ip; ?></a></span>
 									<?php } else { ?>
 									<span class="bracket"><a id="<?php echo str_replace('.', '-', $ip['ip']); ?>" onclick="addBanIP('<?php echo $ip['ip']; ?>');"><?php echo $text_add_ban_ip; ?></a></span>
@@ -768,7 +766,7 @@
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+			<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 		</div>
 		<div class="modal-body"><textarea readonly class="form-control-plaintext" id="message" rows="30"></textarea></div>
 	</div>
@@ -780,41 +778,39 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
 	<?php if (isset($error_server)) { ?>
-		<center><span class="label label-danger"><?php echo $error_server; ?></span>
+		<center><span class="badge bg-danger"><?php echo $error_server; ?></span>
 	<?php } ?>
-        <form class="form-horizontal" method="post" enctype="multipart/form-data" id="formEmail">
+        <form class="form-classic" method="post" enctype="multipart/form-data" id="formEmail">
             <div class="form-group row">
-              <label for="to" class="control-label col-sm-3"><?php echo $text_to ?></label>
+              <label for="to" class="col-form-label text-sm-end pb-0 col-sm-3"><?php echo $text_to ?></label>
               <div class="col-sm-9">
                 <input type="email" name="to" id="to" class="form-control" value="<?php echo $to; ?>">
 								<span class="text-danger" id="error-to"></span>
               </div>
             </div>
         <div class="form-group row">
-          <label class="control-label col-sm-3" for="subject"><?php echo $text_subject ?></label>
+          <label class="col-form-label text-sm-end pb-0 col-sm-3" for="subject"><?php echo $text_subject ?></label>
           <div class="col-sm-9">
             <input type="text" class="form-control" id="subject" name="subject">
 						<span class="text-danger" id="error-subject"></span>
           </div>
           </div>
           <div class="form-group row">
-            <label for="message" class="control-label col-sm-3"><?php echo $text_message ?></label>
+            <label for="message" class="col-form-label text-sm-end pb-0 col-sm-3"><?php echo $text_message ?></label>
             <div class="col-sm-9"><textarea name="message" class="ckeditor form-control" spellcheck="false" id="message"></textarea>
 						<span class="text-danger" id="error-message"></span></div>
           </div>
           <div class="form-group row">
-          	<label class="control-label col-sm-3">Attachment:</label>
+          	<label class="col-form-label text-sm-end pb-0 col-sm-3">Attachment:</label>
           	<div class="control-field col-sm-9">
           		<div class="input-group">
-          			<span class="input-group-btn">
           				<button type="button" id="button-upload" class="btn btn-info">
           					<i class="fa fa-upload"></i> Upload
           				</button>
-          			</span>
           			<input type="hidden" name="filename" id="input-filename" class="form-control">
           			<input type="text" name="mask" id="mask"class="form-control">
           		</div>
@@ -1059,7 +1055,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_country; ?></label>';
 
-	html+='<div class="col-sm-6"><select name="customer_address['+address_row+'][country_id]" onchange="country(this, \''+address_row+'\', \'0\');" class="form-control">';
+	html+='<div class="col-sm-6"><select name="customer_address['+address_row+'][country_id]" onchange="country(this, \''+address_row+'\', \'0\');" class="form-select">';
 
 	html+='<option value=""><?php echo $text_select; ?></option>';
 
@@ -1077,7 +1073,7 @@ function addAddress(){
 
 	html+='<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_zone; ?></label>';
 
-	html+='<div class="col-sm-6"><select name="customer_address['+address_row+'][zone_id]" class="form-control"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></div>';
+	html+='<div class="col-sm-6"><select name="customer_address['+address_row+'][zone_id]" class="form-select"><option value="false"><?php echo $this->language->get('text_none'); ?></option></select></div>';
 
 	html+='</div>';
 

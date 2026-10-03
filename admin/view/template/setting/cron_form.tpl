@@ -1,15 +1,15 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'clock'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
-        <form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+        <form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
             <div class="form-group row">
                 <label class="col-form-label col-sm-10 col-md-2"><span class="required">*</span> <?php echo $entry_code; ?></label>
                 <div class="col-sm-6">
                     <input type="text" name="cron_code" class="form-control" value="<?php echo $cron_code; ?>">
                     <?php if ($error_code) { ?>
-                        <div class="help-block text-danger"><?php echo $error_code; ?></div>
+                        <div class="form-text text-danger"><?php echo $error_code; ?></div>
                     <?php } ?>
                 </div>
             </div>
@@ -18,7 +18,7 @@
                 <div class="col-sm-6">
                     <input type="text" name="cron_action" class="form-control" value="<?php echo $cron_action; ?>">
                     <?php if ($error_action) { ?>
-                        <div class="help-block text-danger"><?php echo $error_action; ?></div>
+                        <div class="form-text text-danger"><?php echo $error_action; ?></div>
                     <?php } ?>
                 </div>
             </div>
@@ -27,14 +27,14 @@
                 <div class="col-sm-1">
                     <input type="number" min="0" name="cron_cycle" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" class="form-control" value="<?php echo $cron_cycle; ?>">
                     <?php if ($error_cycle) { ?>
-                        <div class="help-block text-danger"><?php echo $error_cicle; ?></div>
+                        <div class="form-text text-danger"><?php echo $error_cicle; ?></div>
                     <?php } ?>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status?></label>
                 <div class="col-sm-2">
-                    <select name="cron_status" class="form-control">
+                    <select name="cron_status" class="form-select">
                         <option value="1" <?php echo $cron_status ? 'selected' : ''; ?>><?php echo $text_enabled; ?></option>
                         <option value="0" <?php echo $cron_status ? '' : 'selected'; ?>><?php echo $text_disabled; ?></option>
                     </select>

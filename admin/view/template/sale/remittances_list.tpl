@@ -1,37 +1,35 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-shopping-cart"></i> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<button onClick="validate();" class="btn btn-success btn-spacer"><i class="fa fa-print"></i><span class="hidden-xs"> <?php echo $button_remittance; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-shopping-cart"></i> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<button onClick="validate();" class="btn btn-success btn-spacer"><i class="fa fa-print"></i><span class="d-none d-lg-inline"> <?php echo $button_remittance; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_delete; ?></span></button>
 	    </div>
     </div>
-    <div class="panel-body">
+    <div class="card-body">
       <form class="foe" action="<?php echo $printRemittances; ?>" method="post" enctype="multipart/form-data" id="form">
         <table class="table table-bordered table-striped table-hover">
           <thead>
             <tr>
               <th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-							<th class="text-right"><a href="<?php echo $sort_remittance_id; ?>"><?php echo $column_remittance_id; echo ($sort=='r.remittance_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
-							<th class="text-right"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort=='r.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th class="text-end"><a href="<?php echo $sort_remittance_id; ?>"><?php echo $column_remittance_id; echo ($sort=='r.remittance_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
+							<th class="text-end"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort=='r.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
 							<th><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort=='r.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : '';?></a></th>
 							<th><i class=""></i> <span class="d-none d-sm-block-inline"><?php echo $column_action; ?></span></th>
             </tr>
           </thead>
           <tbody data-link="row" class="rowlink">
            <tr id="filter" class="info">
-              <td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/remittances&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
-              <td class="text-right"><input type="text" class="form-control" name="filter_remittance_id" value="<?php echo $filter_remittance_id; ?>"></td>
-              <td><input type="text" class="form-control text-right" name="filter_total" value="<?php echo $filter_total; ?>"></td>
+              <td class="text-center"><a class="btn btn-default d-block w-100" href="index.php?route=sale/remittances&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+              <td class="text-end"><input type="text" class="form-control" name="filter_remittance_id" value="<?php echo $filter_remittance_id; ?>"></td>
+              <td><input type="text" class="form-control text-end" name="filter_total" value="<?php echo $filter_total; ?>"></td>
               <td class="d-none d-sm-table-cell"><div class="input-group">
 								<input type="text" name="filter_date_added" class="form-control date"/>
-								<div class="input-group-append">
 								<div class="input-group-text"><i class="fas fa-calendar"></i></div>
-								</div>
 							</div></td>
-              <td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+              <td class="text-end"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="d-none d-lg-inline"> <?php echo $button_filter; ?></span></button></td>
 						</tr>
             <?php if ($remittances) { ?>
             <?php foreach ($remittances as $remittance) { ?>
@@ -41,10 +39,10 @@
 					<?php } else { ?>
 					<input type="checkbox" name="selected[]" value="<?php echo $remittance['remittance_id']; ?>">
 					<?php } ?></td>
-              <td class="text-right"><?php echo $remittance['remittance_id']; ?></td>
-              <td class="text-right"><?php echo $remittance['total']; ?></td>
-              <td class="text-left"><?php echo $remittance['date_added']; ?></td>
-              <td class="text-right"><?php foreach ($remittance['action'] as $action) { ?>
+              <td class="text-end"><?php echo $remittance['remittance_id']; ?></td>
+              <td class="text-end"><?php echo $remittance['total']; ?></td>
+              <td class="text-start"><?php echo $remittance['date_added']; ?></td>
+              <td class="text-end"><?php foreach ($remittance['action'] as $action) { ?>
                 <a href="<?php echo $action['href']; ?>" class="btn btn-info"><i class="fa fa-eye"></i> <span class="d-xs-none d-sm-block-inline"><?php echo $action['text']; ?></span></a>
                 <?php } ?></td>
             </tr>

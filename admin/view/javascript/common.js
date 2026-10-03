@@ -123,29 +123,41 @@ $('.dropdown-menu a.dropdown-toggle').on('click', function(e) {
 	return false;
 });
 var alertMessage=function(state,msg){
-	var html='<div class="alert alert-'+state+' alert-dismissable" style="display:none;"><a class="close" data-bs-dismiss="alert" href="#">&times;</a>'+msg+'</div>';
+	var html='<div class="alert alert-'+state+' alert-dismissible" style="display:none;"><button type="button" class="btn-close" data-bs-dismiss="alert"></button>'+msg+'</div>';
 	
 	$('#notification').html(html);
 	$('#notification>.alert').fadeIn('slow').delay(15000).fadeTo(2000,0,function(){
 		$(this).remove();
 	});
 };
-// datepicker
+// Selector de fechas (flatpickr). Se crea al recibir el foco el campo, tambien en filas anadidas por AJAX.
+// Formatos de salida iguales a los del selector anterior: .date DD-MM-YYYY, .time h:mm AM, .datetime MM/DD/YYYY h:mm AM.
+var fechaIdioma = (document.documentElement.lang || '').toLowerCase().indexOf('es') === 0 ? 'es' : 'default';
+var iniciarFecha = function(campo, opciones) {
+	if (campo._flatpickr || typeof flatpickr === 'undefined') {
+		return;
+	}
+	var fp = flatpickr(campo, $.extend({allowInput: true, disableMobile: true, locale: fechaIdioma}, opciones));
+	// Un texto escrito a mano que no es una fecha valida se descarta al salir del campo (se registra despues del
+	// manejador de flatpickr, que es quien interpreta lo escrito).
+	$(campo).on('blur', function() {
+		if (this.value && !fp.selectedDates.length) {
+			fp.clear();
+		}
+	});
+	fp.open();
+};
 $(document).on('focus','.date',function(e){
 	e.stopPropagation();
-	$(this).datetimepicker({
-		format:'DD-MM-YYYY'
-	});
+	iniciarFecha(this, {dateFormat: 'd-m-Y'});
 });
 $(document).on('focus','.time',function(e){
 	e.stopPropagation();
-	$(this).datetimepicker({
-		format: "LT"
-	});
+	iniciarFecha(this, {enableTime: true, noCalendar: true, dateFormat: 'h:i K'});
 });
 $(document).on('focus','.datetime',function(e){
 	e.stopPropagation();
-	$(this).datetimepicker();
+	iniciarFecha(this, {enableTime: true, dateFormat: 'm/d/Y h:i K'});
 });
 $(document).ajaxError(function(event,xhr,ajaxSettings,thrownError){
 	$('#notification').html($('<div>',{class:'alert alert-danger'}).html(thrownError+"\r\n"+xhr.statusText));
@@ -158,7 +170,7 @@ $(document).ready(function() {
 			bootstrap.Tab.getOrCreateInstance(tabEl).show();
 		}
 	});
-	$('.help-block.error').closest('.form-group').addClass('has-error');
+	$('.help-block.error,.form-text.error').closest('.form-group').addClass('has-error');
 	$(document).on('click','.list-group .label-trash',function(){
 		$(this).parent().remove();
 	});
@@ -217,7 +229,7 @@ $(document).ready(function() {
 		}
 	});
 	// tooltips on hover
-	$('[data-toggle=\'tooltip\']').each(function() {
+	$('[data-toggle=\'tooltip\'],[data-bs-toggle=\'tooltip\']').each(function() {
 		if (!bootstrap.Tooltip.getInstance(this)) {
 			new bootstrap.Tooltip(this, {container: 'body', html: true});
 		}
@@ -225,7 +237,7 @@ $(document).ready(function() {
 
 	// Makes tooltips work on ajax generated content
 	$(document).ajaxStop(function() {
-		$('[data-toggle=\'tooltip\']').each(function() {
+		$('[data-toggle=\'tooltip\'],[data-bs-toggle=\'tooltip\']').each(function() {
 			if (!bootstrap.Tooltip.getInstance(this)) {
 				new bootstrap.Tooltip(this, {container: 'body'});
 			}
@@ -233,7 +245,7 @@ $(document).ready(function() {
 	});
 
 	// tooltip remove
-	$('[data-toggle=\'tooltip\']').on('remove', function() {
+	$('[data-toggle=\'tooltip\'],[data-bs-toggle=\'tooltip\']').on('remove', function() {
 		var instance = bootstrap.Tooltip.getInstance(this);
 		if (instance) {
 			instance.dispose();
@@ -241,10 +253,10 @@ $(document).ready(function() {
 	});
 
 	// Tooltip remove fixed
-	$(document).on('click', '[data-toggle=\'tooltip\']', function(e) {
+	$(document).on('click', '[data-toggle=\'tooltip\'],[data-bs-toggle=\'tooltip\']', function(e) {
 		$('body > .tooltip').remove();
 	});
-	$('.help-block.error').closest('.form-group').addClass('has-error');
+	$('.help-block.error,.form-text.error').closest('.form-group').addClass('has-error');
 	$(document).on('click','.list-group .label-trash',function(){
 		$(this).parent().remove();
 	});
@@ -471,7 +483,7 @@ $(document).ready(function() {
 			},
 			updater:function(item){
 				$('#'+b+'-category'+mapped[item]).remove();
-				$('#'+b+'-category').append('<div class="list-group-item" id="'+b+'-category'+mapped[item]+'">'+item+'<a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="'+b+'_category[]" value="'+mapped[item]+'"></div>');
+				$('#'+b+'-category').append('<div class="list-group-item" id="'+b+'-category'+mapped[item]+'">'+item+'<a class="badge bg-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="'+b+'_category[]" value="'+mapped[item]+'"></div>');
 				return null;
 			}
 		});
@@ -491,7 +503,7 @@ $(document).ready(function() {
 		},
 		updater:function(item){
 			$('#'+b+'-filter'+mapped[item]).remove();
-			$('#'+b+'-filter').append('<div class="list-group-item" id="'+b+'-filter'+mapped[item]+'">'+item+'<a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="'+b+'_filter[]" value="'+mapped[item]+'"></div>');
+			$('#'+b+'-filter').append('<div class="list-group-item" id="'+b+'-filter'+mapped[item]+'">'+item+'<a class="badge bg-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="'+b+'_filter[]" value="'+mapped[item]+'"></div>');
 			return null;
 		}
 	});
@@ -509,7 +521,7 @@ $(document).ready(function() {
 		},
 		updater:function(item){
 			$('#product-download'+mapped[item]).remove();
-			$('#product-download').append('<div class="list-group-item" id="product-download'+mapped[item]+'">'+item+'<a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="product_download[]" value="'+mapped[item]+'"></div>');
+			$('#product-download').append('<div class="list-group-item" id="product-download'+mapped[item]+'">'+item+'<a class="badge bg-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="product_download[]" value="'+mapped[item]+'"></div>');
 			return null;
 		}
 	});
@@ -528,7 +540,7 @@ $(document).ready(function() {
 		},
 		updater:function(item){
 			$('#product-related'+mapped[item]).remove();
-			$('#product-related').append('<div class="list-group-item" id="product-related'+mapped[item]+'">'+item+'<a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="product_related[]" value="'+mapped[item]+'"></div>');
+			$('#product-related').append('<div class="list-group-item" id="product-related'+mapped[item]+'">'+item+'<a class="badge bg-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="product_related[]" value="'+mapped[item]+'"></div>');
 			return null;
 		}
 	});
@@ -547,7 +559,7 @@ $(document).ready(function() {
 		},
 		updater:function(item){
 			$('#product'+mapped[item]).remove();
-			$('#product').append('<div class="list-group-item" id="product'+mapped[item]+'">'+item+'<a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="product[]" value="'+mapped[item]+'"></div>');
+			$('#product').append('<div class="list-group-item" id="product'+mapped[item]+'">'+item+'<a class="badge bg-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="product[]" value="'+mapped[item]+'"></div>');
 			return null;
 		}
 	});
@@ -566,7 +578,7 @@ $(document).ready(function() {
 		},
 		updater:function(item){
 			$('#coupon-product'+mapped[item]).remove();
-			$('#coupon-product').append('<div class="list-group-item" id="coupon-product'+mapped[item]+'">'+item+'<a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="coupon_product[]" value="'+mapped[item]+'"></div>');
+			$('#coupon-product').append('<div class="list-group-item" id="coupon-product'+mapped[item]+'">'+item+'<a class="badge bg-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a><input type="hidden" name="coupon_product[]" value="'+mapped[item]+'"></div>');
 			return null;
 		}
 	});
@@ -1121,7 +1133,7 @@ $(function(){
 					html+=o['name']+':</label>';
 					html+='<div class="col-sm-8">';
 					if(o['type']=='select'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1155,7 +1167,7 @@ $(function(){
 							html+='</label></div>';
 						}
 					}else if(o['type']=='image'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1243,7 +1255,7 @@ $(function(){
 				if(json['error']){if(json['error']['product']){
 					if(json['error']['product']['option']){
 						for(i in json['error']['product']['option']){
-							$('#option-'+i+' .controls').append('<div class="help-block text-danger">'+json['error']['product']['option'][i]+'</div>');
+							$('#option-'+i+' .controls').append('<div class="form-text text-danger">'+json['error']['product']['option'][i]+'</div>');
 						}					
 					}
 				}}
@@ -1254,7 +1266,7 @@ $(function(){
 					for(i=0;i<json['order_product'].length;i++){
 						product=json['order_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
-						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-order-product\').click();"><i class="fa fa-trash"></i></a></td>';
+						html+='<td class="text-center"><a class="badge bg-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-order-product\').click();"><i class="fa fa-trash"></i></a></td>';
 						var orderNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 						html+='<td><input type="text" class="form-control order-name" name="order_product['+product_row+'][name]" value="'+orderNameAttr+'"><input type="hidden" name="order_product['+product_row+'][order_product_id]" value=""><input type="hidden" name="order_product['+product_row+'][product_id]" value="'+product['product_id']+'">';
 						var deliveryDateHtml='';
@@ -1276,10 +1288,10 @@ $(function(){
 						html+='<input type="hidden" name="order_product['+product_row+'][model]" value="'+product['model']+'">';
 						html+='</td>';
 						html+='<td>'+deliveryDateHtml+'</td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right order-qty" name="order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right order-price" data-catalog-price="'+product['catalog_price_raw']+'" name="order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right order-discount" name="order_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end order-qty" name="order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end order-price" data-catalog-price="'+product['catalog_price_raw']+'" name="order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end order-discount" name="order_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
+						html+='<td class="text-end">'+product['total']+'<input type="hidden" name="order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;		
 					}
@@ -1291,8 +1303,8 @@ $(function(){
 					for(i in json['order_total']){
 						total=json['order_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="5"><input type="hidden" name="order_total['+total_row+'][order_total_id]" value=""><input type="hidden" name="order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-end" colspan="5"><input type="hidden" name="order_total['+total_row+'][order_total_id]" value=""><input type="hidden" name="order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-end">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
@@ -1368,12 +1380,12 @@ $(function(){
 					for(i=0;i<json['purchase_order_product'].length;i++){
 						product=json['purchase_order_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
-						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();"><i class="fa fa-trash"></i></a></td>';
+						html+='<td class="text-center"><a class="badge bg-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();"><i class="fa fa-trash"></i></a></td>';
 						html+='<td>'+product['name']+'<br><input type="hidden" name="purchase_order_product['+product_row+'][purchase_order_product_id]" value=""><input type="hidden" name="purchase_order_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="purchase_order_product['+product_row+'][name]" value="'+product['name']+'"><input type="hidden" name="purchase_order_product['+product_row+'][model]" value="'+product['model']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right po-qty" name="purchase_order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right po-price" data-catalog-price="'+product['catalog_price_raw']+'" name="purchase_order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right po-discount" name="purchase_order_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="purchase_order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="purchase_order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end po-qty" name="purchase_order_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end po-price" data-catalog-price="'+product['catalog_price_raw']+'" name="purchase_order_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end po-discount" name="purchase_order_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
+						html+='<td class="text-end">'+product['total']+'<input type="hidden" name="purchase_order_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="purchase_order_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
 					}
@@ -1385,8 +1397,8 @@ $(function(){
 					for(i in json['purchase_order_total']){
 						total=json['purchase_order_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="purchase_order_total['+total_row+'][purchase_order_total_id]" value=""><input type="hidden" name="purchase_order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="purchase_order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="purchase_order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="purchase_order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="purchase_order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-end" colspan="4"><input type="hidden" name="purchase_order_total['+total_row+'][purchase_order_total_id]" value=""><input type="hidden" name="purchase_order_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="purchase_order_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="purchase_order_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="purchase_order_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="purchase_order_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-end">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
@@ -1428,7 +1440,7 @@ $(function(){
 					html+=o['name']+':</label>';
 					html+='<div class="control-field col-sm-8">';
 					if(o['type']=='select'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1462,7 +1474,7 @@ $(function(){
 							html+='</label></div>';
 						}
 					}else if(o['type']=='image'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1550,7 +1562,7 @@ $(function(){
 				if(json['error']){if(json['error']['product']){
 					if(json['error']['product']['option']){
 						for(i in json['error']['product']['option']){
-							$('#option-'+i+' .controls').append('<div class="help-block text-danger">'+json['error']['product']['option'][i]+'</div>');
+							$('#option-'+i+' .controls').append('<div class="form-text text-danger">'+json['error']['product']['option'][i]+'</div>');
 						}					
 					}
 				}}
@@ -1562,7 +1574,7 @@ $(function(){
 					for(i=0;i<json['invoice_product'].length;i++){
 						product=json['invoice_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
-						html+='<td class="text-center">'+(invoiceIsUpdate?'':'<a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-invoice-product\').click();"><i class="fa fa-trash"></i></a>')+'</td>';
+						html+='<td class="text-center">'+(invoiceIsUpdate?'':'<a class="badge bg-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-invoice-product\').click();"><i class="fa fa-trash"></i></a>')+'</td>';
 						var invoiceNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 						if (invoiceIsUpdate) {
 							html+='<td><input type="text" class="form-control" name="invoice_product['+product_row+'][name]" value="'+invoiceNameAttr+'">';
@@ -1587,10 +1599,10 @@ $(function(){
 						}
 						html+='<input type="hidden" name="invoice_product['+product_row+'][model]" value="'+product['model']+'">';
 						html+='</td>';
-						html+='<td class="text-right">'+product['quantity']+'<input type="hidden" name="invoice_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right">'+product['price']+'<input type="hidden" name="invoice_product['+product_row+'][price]" value="'+product['price']+'"></td>';
-						html+='<td class="text-right">'+(product['discount']||'')+'<input type="hidden" name="invoice_product['+product_row+'][discount]" value="'+(product['discount']||'')+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="invoice_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="invoice_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='<td class="text-end">'+product['quantity']+'<input type="hidden" name="invoice_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-end">'+product['price']+'<input type="hidden" name="invoice_product['+product_row+'][price]" value="'+product['price']+'"></td>';
+						html+='<td class="text-end">'+(product['discount']||'')+'<input type="hidden" name="invoice_product['+product_row+'][discount]" value="'+(product['discount']||'')+'"></td>';
+						html+='<td class="text-end">'+product['total']+'<input type="hidden" name="invoice_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="invoice_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;		
 					}
@@ -1602,8 +1614,8 @@ $(function(){
 					for(i in json['invoice_total']){
 						total=json['invoice_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="3"><input type="hidden" name="invoice_total['+total_row+'][invoice_total_id]" value=""><input type="hidden" name="invoice_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="invoice_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="invoice_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="invoice_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="invoice_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-end" colspan="3"><input type="hidden" name="invoice_total['+total_row+'][invoice_total_id]" value=""><input type="hidden" name="invoice_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="invoice_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="invoice_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="invoice_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="invoice_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-end">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
@@ -1639,7 +1651,7 @@ $(function(){
 					html+=o['name']+':</label>';
 					html+='<div class="control-field col-sm-8">';
 					if(o['type']=='select'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1673,7 +1685,7 @@ $(function(){
 							html+='</label></div>';
 						}
 					}else if(o['type']=='image'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1759,7 +1771,7 @@ $(function(){
 				if(json['error']){if(json['error']['product']){
 					if(json['error']['product']['option']){
 						for(i in json['error']['product']['option']){
-							$('#option-'+i+' .controls').append('<div class="help-block text-danger">'+json['error']['product']['option'][i]+'</div>');
+							$('#option-'+i+' .controls').append('<div class="form-text text-danger">'+json['error']['product']['option'][i]+'</div>');
 						}					
 					}
 				}}
@@ -1770,7 +1782,7 @@ $(function(){
 					for(i=0;i<json['quote_product'].length;i++){
 						product=json['quote_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
-						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-quote-product\').click();"><i class="fa fa-trash"></i></a></td>';
+						html+='<td class="text-center"><a class="badge bg-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-quote-product\').click();"><i class="fa fa-trash"></i></a></td>';
 						var productNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 						html+='<td><div class="d-flex justify-content-between align-items-start"><input type="text" class="form-control quote-name" name="quote_product['+product_row+'][name]" value="'+productNameAttr+'"><button type="button" class="btn btn-default btn-xs ms-2" onclick="quoteShowDescription('+product['product_id']+', '+product_row+');"><i class="fa fa-info-circle"></i></button></div><input type="hidden" id="quote-extended-description-'+product_row+'" name="quote_product['+product_row+'][extended_description]" value="'+(product['extended_description'] ? product['extended_description'].replace(/"/g, '&quot;') : '')+'"><input type="hidden" name="quote_product['+product_row+'][quote_product_id]" value=""><input type="hidden" name="quote_product['+product_row+'][product_id]" value="'+product['product_id']+'">';
 						var deliveryDateHtml='';
@@ -1792,10 +1804,10 @@ $(function(){
 						html+='</td>';
 						html+='<td>'+deliveryDateHtml+'</td>';
 						html+='<td>'+product['model']+'<input type="hidden" name="quote_product['+product_row+'][model]" value="'+product['model']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right quote-qty" name="quote_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right quote-price" data-catalog-price="'+product['catalog_price_raw']+'" name="quote_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right quote-discount" name="quote_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="quote_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="quote_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end quote-qty" name="quote_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end quote-price" data-catalog-price="'+product['catalog_price_raw']+'" name="quote_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end quote-discount" name="quote_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
+						html+='<td class="text-end">'+product['total']+'<input type="hidden" name="quote_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="quote_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
 					}
@@ -1812,8 +1824,8 @@ $(function(){
 					for(i in json['quote_total']){
 						total=json['quote_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="6"><input type="hidden" name="quote_total['+total_row+'][quote_total_id]" value=""><input type="hidden" name="quote_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="quote_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="quote_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="quote_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="quote_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-end" colspan="6"><input type="hidden" name="quote_total['+total_row+'][quote_total_id]" value=""><input type="hidden" name="quote_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="quote_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="quote_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="quote_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="quote_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-end">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
@@ -1849,7 +1861,7 @@ $(function(){
 					html+=o['name']+':</label>';
 					html+='<div class="control-field col-sm-8">';
 					if(o['type']=='select'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1883,7 +1895,7 @@ $(function(){
 							html+='</label></div>';
 						}
 					}else if(o['type']=='image'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -1969,7 +1981,7 @@ $(function(){
 				if(json['error']){if(json['error']['product']){
 					if(json['error']['product']['option']){
 						for(i in json['error']['product']['option']){
-							$('#option-'+i+' .controls').append('<div class="help-block text-danger">'+json['error']['product']['option'][i]+'</div>');
+							$('#option-'+i+' .controls').append('<div class="form-text text-danger">'+json['error']['product']['option'][i]+'</div>');
 						}
 					}
 				}}
@@ -1980,7 +1992,7 @@ $(function(){
 					for(i=0;i<json['draft_product'].length;i++){
 						product=json['draft_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
-						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-draft-product\').click();"><i class="fa fa-trash"></i></a></td>';
+						html+='<td class="text-center"><a class="badge bg-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-draft-product\').click();"><i class="fa fa-trash"></i></a></td>';
 						var draftNameAttr=(product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 						var draftCatalogNameAttr=(product['catalog_name']||product['name']||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 						html+='<td><input type="text" class="form-control draft-name" data-catalog-name="'+draftCatalogNameAttr+'" name="draft_product['+product_row+'][name]" value="'+draftNameAttr+'"><input type="hidden" name="draft_product['+product_row+'][draft_product_id]" value=""><input type="hidden" name="draft_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="draft_product['+product_row+'][model]" value="'+product['model']+'">';
@@ -2000,10 +2012,10 @@ $(function(){
 							}
 						}
 						html+='</td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right draft-qty" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right draft-price" data-catalog-price="'+product['catalog_price_raw']+'" name="draft_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right draft-discount" name="draft_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="draft_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="draft_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end draft-qty" name="draft_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end draft-price" data-catalog-price="'+product['catalog_price_raw']+'" name="draft_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end draft-discount" name="draft_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
+						html+='<td class="text-end">'+product['total']+'<input type="hidden" name="draft_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="draft_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
 					}
@@ -2025,8 +2037,8 @@ $(function(){
 					for(i in json['draft_total']){
 						total=json['draft_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="4"><input type="hidden" name="draft_total['+total_row+'][draft_total_id]" value=""><input type="hidden" name="draft_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="draft_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="draft_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="draft_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="draft_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-end" colspan="4"><input type="hidden" name="draft_total['+total_row+'][draft_total_id]" value=""><input type="hidden" name="draft_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="draft_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="draft_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="draft_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="draft_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-end">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
@@ -2068,7 +2080,7 @@ $(function(){
 					html+=o['name']+':</label>';
 					html+='<div class="control-field col-sm-8">';
 					if(o['type']=='select'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -2102,7 +2114,7 @@ $(function(){
 							html+='</label></div>';
 						}
 					}else if(o['type']=='image'){
-						html+='<select name="option['+o['product_option_id']+']" class="form-control">';
+						html+='<select name="option['+o['product_option_id']+']" class="form-select">';
 						html+='<option value="">'+s+'</option>';
 						for(j=0;j<o['option_value'].length;j++){
 							ov=o['option_value'][j];
@@ -2189,7 +2201,7 @@ $(function(){
 				if(json['error']){if(json['error']['product']){
 					if(json['error']['product']['option']){
 						for(i in json['error']['product']['option']){
-							$('#option-'+i+' .controls').append('<div class="help-block text-danger">'+json['error']['product']['option'][i]+'</div>');
+							$('#option-'+i+' .controls').append('<div class="form-text text-danger">'+json['error']['product']['option'][i]+'</div>');
 						}
 					}
 				}}
@@ -2200,7 +2212,7 @@ $(function(){
 					for(i=0;i<json['delivery_product'].length;i++){
 						product=json['delivery_product'][i];
 						html+='<tr id="product-row'+product_row+'">';
-						html+='<td class="text-center"><a class="label label-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-delivery-product\').click();"><i class="fa fa-trash"></i></a></td>';
+						html+='<td class="text-center"><a class="badge bg-danger" title="'+button_remove+'" onclick="$(\'#product-row'+product_row+'\').remove();$(\'#button-delivery-product\').click();"><i class="fa fa-trash"></i></a></td>';
 						html+='<td>'+product['name']+'<br><input type="hidden" name="delivery_product['+product_row+'][delivery_product_id]" value=""><input type="hidden" name="delivery_product['+product_row+'][product_id]" value="'+product['product_id']+'"><input type="hidden" name="delivery_product['+product_row+'][name]" value="'+product['name']+'"><input type="hidden" name="delivery_product['+product_row+'][model]" value="'+product['model']+'">';
 						if (product['option']){
 							for(j=0;j<product['option'].length;j++){
@@ -2218,11 +2230,11 @@ $(function(){
 							}
 						}
 						html+='</td>';
-						html+='<td class="text-right">'+(product['sku']||'')+'</td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right delivery-qty" name="delivery_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right delivery-price" data-catalog-price="'+product['catalog_price_raw']+'" name="delivery_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
-						html+='<td class="text-right"><input type="text" class="form-control text-right delivery-discount" name="delivery_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
-						html+='<td class="text-right">'+product['total']+'<input type="hidden" name="delivery_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="delivery_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
+						html+='<td class="text-end">'+(product['sku']||'')+'</td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end delivery-qty" name="delivery_product['+product_row+'][quantity]" value="'+product['quantity']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end delivery-price" data-catalog-price="'+product['catalog_price_raw']+'" name="delivery_product['+product_row+'][price]" value="'+product['price_raw']+'"></td>';
+						html+='<td class="text-end"><input type="text" class="form-control text-end delivery-discount" name="delivery_product['+product_row+'][discount]" value="'+(product['discount']!=null?product['discount']:'')+'"></td>';
+						html+='<td class="text-end">'+product['total']+'<input type="hidden" name="delivery_product['+product_row+'][total]" value="'+product['total']+'"><input type="hidden" name="delivery_product['+product_row+'][tax]" value="'+product['tax']+'"></td>';
 						html+='</tr>';
 						product_row++;
 					}
@@ -2234,8 +2246,8 @@ $(function(){
 					for(i in json['delivery_total']){
 						total=json['delivery_total'][i];
 						html+='<tr id="total-row'+total_row+'">';
-						html+='<td class="d-none d-sm-table-cell"></td><td class="text-right" colspan="5"><input type="hidden" name="delivery_total['+total_row+'][delivery_total_id]" value=""><input type="hidden" name="delivery_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="delivery_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="delivery_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="delivery_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="delivery_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
-						html+='<td class="text-right">'+total['text']+'</td>';
+						html+='<td class="d-none d-sm-table-cell"></td><td class="text-end" colspan="5"><input type="hidden" name="delivery_total['+total_row+'][delivery_total_id]" value=""><input type="hidden" name="delivery_total['+total_row+'][code]" value="'+total['code']+'"><input type="hidden" name="delivery_total['+total_row+'][title]" value="'+total['title']+'"><input type="hidden" name="delivery_total['+total_row+'][text]" value="'+total['text']+'"><input type="hidden" name="delivery_total['+total_row+'][value]" value="'+total['value']+'"><input type="hidden" name="delivery_total['+total_row+'][sort_order]" value="'+total['sort_order']+'">'+total['title']+':</td>';
+						html+='<td class="text-end">'+total['text']+'</td>';
 						html+='</tr>';
 						total_row++;
 					}
@@ -2298,17 +2310,17 @@ $(document).on('click','#button-send',function(){
 			a.button('reset');
 		},
 		success:function(json){
-			$('.alert,.help-block.error').remove();
+			$('.alert,.help-block.error,.form-text.error').remove();
 			$('.has-error').removeClass('has-error');
 			if(json['error']){
 				if(json['error']['warning']){
 					alertMessage('danger',json['error']['warning']);
 				}
 				if(json['error']['subject']){
-					$('input[name="subject"]').after('<span class="help-block error">'+json['error']['subject']+'</span>').closest('.form-group').addClass('has-error');
+					$('input[name="subject"]').after('<span class="form-text error">'+json['error']['subject']+'</span>').closest('.form-group').addClass('has-error');
 				}
 				if(json['error']['message']){
-					$('#message').parent().append('<span class="help-block error">'+json['error']['message']+'</span>').closest('.form-group').addClass('has-error');
+					$('#message').parent().append('<span class="form-text error">'+json['error']['message']+'</span>').closest('.form-group').addClass('has-error');
 				}				
 			}
 			if(json['success']){
@@ -2340,7 +2352,7 @@ $(function(){
 		},
 		updater:function(item){
 			$('#customer'+mapped[item]).remove();
-			$('#customer').append('<div class="list-group-item" id="customer'+mapped[item]+'"><a class="label label-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a>'+item+'<input type="hidden" name="customer[]" value="'+mapped[item]+'"></div>');
+			$('#customer').append('<div class="list-group-item" id="customer'+mapped[item]+'"><a class="badge bg-danger label-trash"><i class="fa fa-trash-o fa-lg"></i></a>'+item+'<input type="hidden" name="customer[]" value="'+mapped[item]+'"></div>');
 			return null;
 		}
 	});

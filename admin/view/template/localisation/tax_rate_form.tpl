@@ -1,15 +1,15 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'money'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><b class="required">*</b> <?php echo $entry_name; ?></label>
 				<div class="col-sm-6">
 					<input type="text" name="name" value="<?php echo $name; ?>" class="form-control" autofocus="">
 					<?php if ($error_name) { ?>
-						<div class="help-block error"><?php echo $error_name; ?></div>
+						<div class="form-text error"><?php echo $error_name; ?></div>
 					<?php } ?>
 				</div>
 			</div>
@@ -18,14 +18,14 @@
 				<div class="col-sm-6">
 					<input type="text" name="rate" id="input-rate" value="<?php echo $rate; ?>" class="form-control" inputmode="decimal">
 					<?php if ($error_rate) { ?>
-						<div class="help-block error"><?php echo $error_rate; ?></div>
+						<div class="form-text error"><?php echo $error_rate; ?></div>
 					<?php } ?>
 				</div>
 			</div>
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_type; ?></label>
 				<div class="col-sm-6">
-					<select name="type" class="form-control">
+					<select name="type" class="form-select">
 						<?php if ($type == 'P') { ?>
 						<option value="P" selected=""><?php echo $text_percent; ?></option>
 						<?php } else { ?>
@@ -48,7 +48,7 @@
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_customer_group; ?></label>
 				<div class="col-sm-6">
-					<div class="panel panel-default panel-scrollable">
+					<div class="card page-card page-card-scroll">
 						<div class="list-group list-group-hover">
 						<?php foreach ($customer_groups as $customer_group) { ?>
 						<label class="list-group-item">
@@ -68,7 +68,7 @@
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_geo_zone; ?></label>
 				<div class="col-sm-6">
-					<select name="geo_zone_id" class="form-control">
+					<select name="geo_zone_id" class="form-select">
 						<?php foreach ($geo_zones as $geo_zone) { ?>
 						<?php	if ($geo_zone['geo_zone_id'] == $geo_zone_id) { ?>
 						<option value="<?php echo $geo_zone['geo_zone_id']; ?>" selected=""><?php echo $geo_zone['name']; ?></option>

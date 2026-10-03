@@ -2,30 +2,30 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="row">
 				<div class="col-sm-3">
 					<div class="input-group">
 						<input type="text" class="form-control date" id="date-start" name="filter_date_start" value="<?php echo $filter_date_start ?>" placeholder="<?php echo $entry_date_start?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div class="col-sm-3">
 					<div class="input-group">
 						<input type="text" class="form-control date" id="date-end" name="filter_date_end" value="<?php echo $filter_date_end ?>" placeholder="<?php echo $entry_date_end?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div class="col-sm-2">
-					<select name="filter_supplier_id" title="<?php echo $entry_supplier; ?>" class="form-control">
+					<select name="filter_supplier_id" title="<?php echo $entry_supplier; ?>" class="form-select">
 						<option value="0"><?php echo $text_all_suppliers; ?></option>
 						<?php foreach ($suppliers as $supplier) { ?>
 						<?php if ($supplier['supplier_id'] == $filter_supplier_id) { ?>
@@ -37,7 +37,7 @@
 					</select>
 				</div>
 				<div class="col-sm-2">
-					<select name="filter_invoice_status_id" title="<?php echo $entry_status; ?>" class="form-control">
+					<select name="filter_invoice_status_id" title="<?php echo $entry_status; ?>" class="form-select">
 						<option value="0"><?php echo $text_all_status; ?></option>
 						<?php foreach ($invoice_statuses as $invoice_status) { ?>
 						<?php if ($invoice_status['invoice_status_id'] == $filter_invoice_status_id) { ?>
@@ -48,7 +48,7 @@
 						<?php } ?>
 					</select>
 				</div>
-				<div class="col-sm-2 text-right">
+				<div class="col-sm-2 text-end">
 					<button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i> <?php echo $button_filter; ?></button>
 					<button type="button" onclick="exportExcel();" class="btn btn-success ms-1"><i class="fa fa-file-excel"></i> <?php echo $button_export; ?></button>
 				</div>
@@ -74,16 +74,16 @@
           <?php if ($invoices) { ?>
           <?php foreach ($invoices as $invoice) { ?>
           <tr>
-            <td class="text-left"><?php echo $invoice['invoice_id']; ?></td>
-						<td class="text-left"><?php echo $invoice['date_added']; ?></td>
-            <td class="text-left"><?php echo $invoice['customer']; ?></td>
-            <td class="text-left"><?php echo $invoice['tax_id']; ?></td>
-            <td class="text-left"><?php echo $invoice['email']; ?></td>
-            <td class="text-left"><?php echo $invoice['telephone']; ?></td>
-            <td class="text-left"><?php echo $invoice['status']; ?></td>
-            <td class="text-right"><?php echo $invoice['tax']; ?></td>
-            <td class="text-right"><?php echo $invoice['total']; ?></td>
-            <td class="text-right"><?php foreach ($invoice['action'] as $action) { ?>
+            <td class="text-start"><?php echo $invoice['invoice_id']; ?></td>
+						<td class="text-start"><?php echo $invoice['date_added']; ?></td>
+            <td class="text-start"><?php echo $invoice['customer']; ?></td>
+            <td class="text-start"><?php echo $invoice['tax_id']; ?></td>
+            <td class="text-start"><?php echo $invoice['email']; ?></td>
+            <td class="text-start"><?php echo $invoice['telephone']; ?></td>
+            <td class="text-start"><?php echo $invoice['status']; ?></td>
+            <td class="text-end"><?php echo $invoice['tax']; ?></td>
+            <td class="text-end"><?php echo $invoice['total']; ?></td>
+            <td class="text-end"><?php foreach ($invoice['action'] as $action) { ?>
 							<a href="<?php echo $action['href']; ?>" class="btn btn-info"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 						<?php } ?></td>
           </tr>

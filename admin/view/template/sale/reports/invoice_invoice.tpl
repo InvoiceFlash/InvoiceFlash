@@ -6,7 +6,7 @@
 <title><?php echo $title; ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <base href="<?php echo $base; ?>">
-<link href="view/stylesheet/main.css" rel="stylesheet">
+<link href="view/stylesheet/main.css?v=<?php echo @filemtime(DIR_APPLICATION . 'view/stylesheet/main.css'); ?>" rel="stylesheet">
 <script src="view\javascript\jquery\jquery-3.7.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
 <style>
@@ -23,7 +23,7 @@ th {
 	font-weight: bold;
 	background-color: #dee2e6;
 }
-.text-right {
+.text-end, .text-right {
 	text-align: right;
 }
 @media print {
@@ -100,10 +100,10 @@ th {
 	<table class="table table-bordered">
 		<tr>
 			<th><?php echo $column_product; ?></th>
-			<th class="text-right"><?php echo $column_quantity; ?></th>
-			<th class="text-right"><?php echo $column_price; ?></th>
-			<th class="text-right"><?php echo $column_discount; ?></th>
-			<th class="text-right"><?php echo $column_total; ?></th>
+			<th class="text-end"><?php echo $column_quantity; ?></th>
+			<th class="text-end"><?php echo $column_price; ?></th>
+			<th class="text-end"><?php echo $column_discount; ?></th>
+			<th class="text-end"><?php echo $column_total; ?></th>
 		</tr>
 		<?php foreach ($invoice['product'] as $product) { ?>
 		<tr>
@@ -112,16 +112,16 @@ th {
 				<br>
 				&nbsp;<small> - <?php echo $option['name']; ?>: <?php echo $option['value']; ?></small>
 				<?php } ?></td>
-			<td class="text-right"><?php echo $product['quantity']; ?></td>
-			<td class="text-right"><?php echo $product['price']; ?></td>
-			<td class="text-right"><?php echo $product['discount']; ?></td>
-			<td class="text-right"><?php echo $product['total']; ?></td>
+			<td class="text-end"><?php echo $product['quantity']; ?></td>
+			<td class="text-end"><?php echo $product['price']; ?></td>
+			<td class="text-end"><?php echo $product['discount']; ?></td>
+			<td class="text-end"><?php echo $product['total']; ?></td>
 		</tr>
 		<?php } ?>
 		<?php foreach ($invoice['total'] as $total) { ?>
 		<tr>
-			<td class="text-right" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
-			<td class="text-right"><?php echo $total['text']; ?></td>
+			<td class="text-end" colspan="4"><b><?php echo $total['title']; ?>:</b></td>
+			<td class="text-end"><?php echo $total['text']; ?></td>
 		</tr>
 		<?php } ?>
 	</table>

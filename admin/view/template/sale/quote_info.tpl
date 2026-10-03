@@ -1,13 +1,13 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-edit"></i> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#KanbanCardModal"><i class="fa fa-columns"></i><span class="hidden-xs"> <?php echo $button_kanban; ?></span></button>
-			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-file-pdf"></i><span class="hidden-xs"> PDF</span></button>
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="hidden-xs"> Email</span></button>
-			<button class="btn btn-default" type="button" id="button-share-quote" style="display:none;" title="Compartir"><i class="fa fa-share-alt"></i><span class="hidden-xs"> Compartir</span></button>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-edit"></i> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#KanbanCardModal"><i class="fa fa-columns"></i><span class="d-none d-lg-inline"> <?php echo $button_kanban; ?></span></button>
+			<button class="btn btn-default" type="button" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><i class="fa fa-file-pdf"></i><span class="d-none d-lg-inline"> PDF</span></button>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><i class="fa fa-envelope"></i><span class="d-none d-lg-inline"> Email</span></button>
+			<button class="btn btn-default" type="button" id="button-share-quote" style="display:none;" title="Compartir"><i class="fa fa-share-alt"></i><span class="d-none d-lg-inline"> Compartir</span></button>
 			<script>
 			(function () {
 				var btn = document.getElementById('button-share-quote');
@@ -39,10 +39,10 @@
 				});
 			})();
 			</script>
-			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-eye"></i><span class="hidden-xs"> View</span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><i class="fa fa-eye"></i><span class="d-none d-lg-inline"> View</span></a> <a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<div class="tabbable">
 			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-quote" data-bs-toggle="tab"><?php echo $tab_quote; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-bs-toggle="tab"><?php echo $tab_payment; ?></a></li>
 				<?php if ($shipping_method) { ?>
@@ -93,9 +93,9 @@
 						<tr>
 							<td><?php echo $text_total; ?></td>
 							<td><?php if ($credit && $customer) { if (!$credit_total) { ?>
-								<button type="button" class="btn btn-default" id="credit" data-action="add"><b class="badge badge-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_add; ?></span></button>
+								<button type="button" class="btn btn-default" id="credit" data-action="add"><b class="badge bg-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_add; ?></span></button>
 								<?php } else { ?>
-								<button type="button" class="btn btn-default" id="credit" data-action="remove"><b class="badge badge-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_remove; ?></span></button>
+								<button type="button" class="btn btn-default" id="credit" data-action="remove"><b class="badge bg-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_remove; ?></span></button>
 								<?php } } else { echo $total; } ?></td>
 						</tr>
 						<?php if ($invoice_status) { ?>
@@ -252,9 +252,9 @@
 								<th><?php echo $column_product; ?></th>
 								<th><?php echo $column_delivery_date; ?></th>
 								<th class="d-none d-sm-table-cell"><?php echo $column_model; ?></th>
-								<th class="text-right"><?php echo $column_quantity; ?></th>
-								<th class="text-right"><?php echo $column_price; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
+								<th class="text-end"><?php echo $column_quantity; ?></th>
+								<th class="text-end"><?php echo $column_price; ?></th>
+								<th class="text-end"><?php echo $column_total; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -271,16 +271,16 @@
 									<?php } ?>
 								</td>
 								<td class="d-none d-sm-table-cell"><?php echo $product['model']; ?></td>
-								<td class="text-right"><?php echo $product['quantity']; ?></td>
-								<td class="text-right"><?php echo $product['price']; ?></td>
-								<td class="text-right"><?php echo $product['total']; ?></td>
+								<td class="text-end"><?php echo $product['quantity']; ?></td>
+								<td class="text-end"><?php echo $product['price']; ?></td>
+								<td class="text-end"><?php echo $product['total']; ?></td>
 							</tr>
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
 									<td class="d-none d-sm-table-cell"></td>
-									<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>
-									<td class="text-right"><?php echo $total['text']; ?></td>
+									<td colspan="4" class="text-end"><?php echo $total['title']; ?>:</td>
+									<td class="text-end"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
@@ -289,11 +289,11 @@
 				</div>
 				<div id="tab-history" class="tab-pane">
 					<div id="history" data-href="index.php?route=sale/quote/history&token=<?php echo $token; ?>&quote_id=<?php echo $quote_id; ?>"></div>
-					<div class="form-horizontal">
+					<div class="form-classic">
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_invoice_status; ?></label>
 							<div class="col-sm-6">
-								<select name="quote_status_id" class="form-control">
+								<select name="quote_status_id" class="form-select">
 									<?php foreach ($invoice_statuses as $invoice_statuses) { ?>
 									<?php if ($invoice_statuses['invoice_status_id'] == $invoice_status_id) { ?>
 									<option value="<?php echo $invoice_statuses['invoice_status_id']; ?>" selected=""><?php echo $invoice_statuses['name']; ?></option>
@@ -320,7 +320,7 @@
 							</div>
 						</div>
 						<div class="form-group row">
-							<div class="control-field col-sm-4 col-sm-offset-2">
+							<div class="control-field col-sm-4">
 								<button type="button" id="button-history" data-action="quote" data-target="sale" data-id="<?php echo $quote_id; ?>" class="btn btn-info"><i class="fa fa-plus-circle"></i> <?php echo $button_add_history; ?></button>
 							</div>
 						</div>

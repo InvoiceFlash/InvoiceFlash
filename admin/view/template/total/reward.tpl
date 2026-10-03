@@ -1,13 +1,13 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'btc'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_status; ?></label>
+				<label class="col-form-label text-sm-end pb-0 col-sm-2"><?php echo $entry_status; ?></label>
 				<div class="control-field col-sm-4">
-					<select name="reward_status" class="form-control">
+					<select name="reward_status" class="form-select">
 						<?php if ($reward_status) { ?>
 						<option value="1" selected=""><?php echo $text_enabled; ?></option>
 						<option value="0"><?php echo $text_disabled; ?></option>
@@ -19,7 +19,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_sort_order; ?></label>
+				<label class="col-form-label text-sm-end pb-0 col-sm-2"><?php echo $entry_sort_order; ?></label>
 				<div class="control-field col-sm-4">
 					<input type="text" name="reward_sort_order" value="<?php echo $reward_sort_order; ?>" class="form-control">
 				</div>

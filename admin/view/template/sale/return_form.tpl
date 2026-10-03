@@ -1,9 +1,9 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'undo'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="mt-2">
 				<div>
 					<legend><?php echo $text_order_info; ?></legend>
@@ -21,9 +21,7 @@
 						<div class="col-sm-6">
 							<div class="input-group">
 								<input type="text" name="date_ordered" value="<?php echo $date_ordered; ?>" class="form-control date"/>
-								<div class="input-group-append">
 									<div class="input-group-text"><i class="fas fa-calendar"></i></div>
-								</div>
 							</div>
 						</div>
 					</div>
@@ -39,7 +37,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="email" value="<?php echo $email; ?>" class="form-control">
 							<?php if ($error_email) { ?>
-								<div class="help-block text-danger"><?php echo $error_email; ?></div>
+								<div class="form-text text-danger"><?php echo $error_email; ?></div>
 							<?php	} ?>
 						</div>
 					</div>
@@ -48,7 +46,7 @@
 						<div class="col-sm-6">
 							<input type="text" name="telephone" value="<?php echo $telephone; ?>" class="form-control">
 							<?php if ($error_telephone) { ?>
-								<div class="help-block text-danger"><?php echo $error_telephone; ?></div>
+								<div class="form-text text-danger"><?php echo $error_telephone; ?></div>
 							<?php	} ?>
 						</div>
 					</div>
@@ -59,7 +57,7 @@
 							<input type="text" name="product" value="<?php echo $product; ?>" id="return-product" autocomplete="off" class="form-control">
 							<input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
 							<?php if ($error_product) { ?>
-								<div class="help-block text-danger"><?php echo $error_product; ?></div>
+								<div class="form-text text-danger"><?php echo $error_product; ?></div>
 							<?php	} ?>
 						</div>
 					</div>
@@ -78,7 +76,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_reason; ?></label>
 						<div class="col-sm-6">
-							<select name="return_reason_id" class="form-control">
+							<select name="return_reason_id" class="form-select">
 								<?php foreach ($return_reasons as $return_reason) { ?>
 									<?php if ($return_reason['return_reason_id'] == $return_reason_id) { ?>
 									<option value="<?php echo $return_reason['return_reason_id']; ?>" selected=""><?php echo $return_reason['name']; ?></option>
@@ -92,7 +90,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_opened; ?></label>
 						<div class="col-sm-6">
-							<select name="opened" class="form-control">
+							<select name="opened" class="form-select">
 								<?php if ($opened) { ?>
 									<option value="1" selected=""><?php echo $text_opened; ?></option>
 									<option value="0"><?php echo $text_unopened; ?></option>
@@ -112,7 +110,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_action; ?></label>
 						<div class="col-sm-6">
-							<select name="return_action_id" class="form-control">
+							<select name="return_action_id" class="form-select">
 								<option value="0">&ndash;</option>
 								<?php foreach ($return_actions as $return_action) { ?>
 								<?php if ($return_action['return_action_id'] == $return_action_id) { ?>
@@ -127,7 +125,7 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_return_status; ?></label>
 						<div class="col-sm-6">
-							<select name="return_status_id" class="form-control">
+							<select name="return_status_id" class="form-select">
 								<?php foreach ($return_statuses as $return_status) { ?>
 								<?php if ($return_status['return_status_id'] == $return_status_id) { ?>
 									<option value="<?php echo $return_status['return_status_id']; ?>" selected=""><?php echo $return_status['name']; ?></option>

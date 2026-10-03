@@ -2,18 +2,18 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="fa fa-vector-square"></i> <?php echo $heading_title; ?></div>
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-vector-square"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
+	<div class="card-body">
 		<p><?php echo $text_docemb_instruction; ?></p>
 		<div class="form-group row">
 			<label class="col-form-label col-sm-2" for="docemb-type"><?php echo $text_docemb_type; ?></label>
 			<div class="col-sm-4">
-				<select id="docemb-type" class="form-control">
+				<select id="docemb-type" class="form-select">
 					<?php foreach ($docemb_types as $option) { ?>
 					<option value="<?php echo htmlspecialchars($option['value'], ENT_QUOTES); ?>" <?php echo ($option['value'] == $active_type) ? 'selected' : ''; ?>><?php echo $option['text']; ?></option>
 					<?php } ?>

@@ -2,21 +2,21 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="d-flex flex-wrap align-items-center justify-content-between mb-4" style="gap:.5rem;">
 				<div class="d-flex flex-wrap align-items-center" style="gap:.5rem;">
 					<strong><?php echo $text_period; ?>:</strong>
 					<span class="text-muted"><?php echo $text_as_of; ?>:</span>
 					<div class="input-group" style="width:150px;">
 						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 

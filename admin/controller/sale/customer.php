@@ -1132,12 +1132,12 @@ class ControllerSaleCustomer extends Controller {
 
 					$link = $this->url->link('sale/customer/updateContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['customer_contacts_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
 		   			$action[] = array(
-						'link'	=> '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i><span class="hidden-xs"> ' . $this->language->get('text_edit') . '</span></a>'
+						'link'	=> '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i><span class="d-none d-lg-inline"> ' . $this->language->get('text_edit') . '</span></a>'
 		   			);
 
 		   			$link = $this->url->link('sale/customer/deleteContact', 'token=' . $this->session->data['token'] . '&contact_id=' . $result['customer_contacts_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
 		   			$action[] = array(
-						'link'	=> '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i><span class="hidden-xs"> ' . $this->language->get('text_delete') . '</span></a>'
+						'link'	=> '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> ' . $this->language->get('text_delete') . '</span></a>'
 		   			);
 
 					$this->data['contacts'][] = array(
@@ -1164,12 +1164,12 @@ class ControllerSaleCustomer extends Controller {
 
 					$link = $this->url->link('sale/customer/updateBank', 'token=' . $this->session->data['token'] . '&bank_id=' . $result['customer_bank_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
 					$action[] = array(
-						'link'	=> '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i><span class="hidden-xs"> ' . $this->language->get('text_edit') . '</span></a>'
+						'link'	=> '<a class="btn btn-default" href="'.$link.'"><i class="fa fa-edit"></i><span class="d-none d-lg-inline"> ' . $this->language->get('text_edit') . '</span></a>'
 					);
 
 					$link = $this->url->link('sale/customer/deleteBank', 'token=' . $this->session->data['token'] . '&bank_id=' . $result['customer_bank_id'] . '&customer_id=' . $this->request->get['customer_id'], 'SSL');
 					$action[] = array(
-						'link'	=> '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i><span class="hidden-xs"> ' . $this->language->get('text_delete') . '</span></a>'
+						'link'	=> '<a class="btn btn-danger" href="'.$link.'"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> ' . $this->language->get('text_delete') . '</span></a>'
 					);
 
 					$this->data['banks'][] = array(
@@ -1194,12 +1194,12 @@ class ControllerSaleCustomer extends Controller {
 
 					$link = $this->url->link('sale/customer/viewContract', 'token=' . $this->session->data['token'] . '&document_id=' . $result['document_id'], 'SSL');
 					$action[] = array(
-						'link' => '<a class="btn btn-default" href="'.$link.'" target="_blank"><i class="fa fa-eye"></i> <span class="hidden-xs">'.$this->language->get('button_view').'</span></a>'
+						'link' => '<a class="btn btn-default" href="'.$link.'" target="_blank"><i class="fa fa-eye"></i> <span class="d-none d-lg-inline">'.$this->language->get('button_view').'</span></a>'
 					);
 
 					$link = $this->url->link('sale/customer/deleteContract', 'token=' . $this->session->data['token'] . '&document_id=' . $result['document_id'] . '&customer_id=' . $this->request->get['customer_id'] . $url, 'SSL');
 					$action[] = array(
-						'link' => '<a class="btn btn-danger" href="'.$link.'" onclick="return confirm(text_confirm);"><i class="fa fa-trash"></i> <span class="hidden-xs">'.$this->language->get('text_delete').'</span></a>'
+						'link' => '<a class="btn btn-danger" href="'.$link.'" onclick="return confirm(text_confirm);"><i class="fa fa-trash"></i> <span class="d-none d-lg-inline">'.$this->language->get('text_delete').'</span></a>'
 					);
 
 					$this->data['contracts'][] = array(

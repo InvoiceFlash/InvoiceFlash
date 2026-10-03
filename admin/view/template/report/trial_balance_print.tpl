@@ -15,7 +15,7 @@ table.lines { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 table.lines th { text-align: left; border-bottom: 1px solid #000000; padding: 3px 4px; font-size: 8px; white-space: nowrap; }
 table.lines td { padding: 2px 4px; font-size: 8px; }
 table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
-.text-right { text-align: right; }
+.text-end, .text-right { text-align: right; }
 </style>
 </head>
 <body>
@@ -31,13 +31,13 @@ table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
 		<tr>
 			<th><?php echo $column_account; ?></th>
 			<th><?php echo $column_title; ?></th>
-			<th class="text-right"><?php echo $column_debit; ?></th>
-			<th class="text-right"><?php echo $column_credit; ?></th>
+			<th class="text-end"><?php echo $column_debit; ?></th>
+			<th class="text-end"><?php echo $column_credit; ?></th>
 			<?php if ($balance_columns == 'one') { ?>
-			<th class="text-right"><?php echo $column_balance; ?></th>
+			<th class="text-end"><?php echo $column_balance; ?></th>
 			<?php } else { ?>
-			<th class="text-right"><?php echo $column_debit_balance; ?></th>
-			<th class="text-right"><?php echo $column_credit_balance; ?></th>
+			<th class="text-end"><?php echo $column_debit_balance; ?></th>
+			<th class="text-end"><?php echo $column_credit_balance; ?></th>
 			<?php } ?>
 		</tr>
 	</thead>
@@ -46,13 +46,13 @@ table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
 		<tr>
 			<td><?php echo $row['code']; ?></td>
 			<td><?php echo $row['title']; ?></td>
-			<td class="text-right"><?php echo $row['debit']; ?></td>
-			<td class="text-right"><?php echo $row['credit']; ?></td>
+			<td class="text-end"><?php echo $row['debit']; ?></td>
+			<td class="text-end"><?php echo $row['credit']; ?></td>
 			<?php if ($balance_columns == 'one') { ?>
-			<td class="text-right"><?php echo $row['balance']; ?></td>
+			<td class="text-end"><?php echo $row['balance']; ?></td>
 			<?php } else { ?>
-			<td class="text-right"><?php echo $row['debit_balance']; ?></td>
-			<td class="text-right"><?php echo $row['credit_balance']; ?></td>
+			<td class="text-end"><?php echo $row['debit_balance']; ?></td>
+			<td class="text-end"><?php echo $row['credit_balance']; ?></td>
 			<?php } ?>
 		</tr>
 		<?php } ?>
@@ -60,13 +60,13 @@ table.lines tfoot td { border-top: 1px solid #000000; font-weight: bold; }
 	<tfoot>
 		<tr>
 			<td colspan="2"><?php echo $text_total; ?></td>
-			<td class="text-right"><?php echo $result['total_debit']; ?></td>
-			<td class="text-right"><?php echo $result['total_credit']; ?></td>
+			<td class="text-end"><?php echo $result['total_debit']; ?></td>
+			<td class="text-end"><?php echo $result['total_credit']; ?></td>
 			<?php if ($balance_columns == 'one') { ?>
-			<td class="text-right"><?php echo $result['total_balance']; ?></td>
+			<td class="text-end"><?php echo $result['total_balance']; ?></td>
 			<?php } else { ?>
-			<td class="text-right"><?php echo $result['total_debit_balance']; ?></td>
-			<td class="text-right"><?php echo $result['total_credit_balance']; ?></td>
+			<td class="text-end"><?php echo $result['total_debit_balance']; ?></td>
+			<td class="text-end"><?php echo $result['total_credit_balance']; ?></td>
 			<?php } ?>
 		</tr>
 	</tfoot>

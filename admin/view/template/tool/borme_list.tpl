@@ -2,48 +2,48 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="fa fa-building"></i> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<button type="button" id="btn-search-again" class="btn btn-default" onclick="bormeSearchAgain();"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_search_again; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-building"></i> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<button type="button" id="btn-search-again" class="btn btn-default" onclick="bormeSearchAgain();"><i class="fa fa-search"></i><span class="d-none d-lg-inline"> <?php echo $button_search_again; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>
 
-	<div class="panel-body">
+	<div class="card-body">
 		<p><?php echo $text_instruction; ?></p>
 
 		<?php if (!$has_api_key) { ?>
 		<div class="alert alert-warning"><?php echo $error_no_api_key; ?></div>
 		<?php } ?>
 
-		<div id="filter" class="well">
+		<div id="filter">
 			<div class="d-flex flex-wrap align-items-end mb-4" style="gap:.75rem;">
 				<div style="width:150px;">
-					<label class="control-label d-block"><?php echo $entry_date; ?><br>&nbsp;</label>
+					<label class="col-form-label text-sm-end pb-0 d-block"><?php echo $entry_date; ?><br>&nbsp;</label>
 					<div class="input-group" style="position:relative;margin-bottom:0;">
 						<input type="text" id="borme-date" class="form-control date" style="height:calc(2.0625rem + 2px);" value="<?php echo $default_date; ?>">
-						<div class="input-group-append"><div class="input-group-text" style="height:calc(2.0625rem + 2px);"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text" style="height:calc(2.0625rem + 2px);"><i class="fas fa-calendar"></i></div>
 					</div>
 				</div>
 				<div style="width:200px;">
-					<label class="control-label d-block"><?php echo $entry_province; ?><br>&nbsp;</label>
+					<label class="col-form-label text-sm-end pb-0 d-block"><?php echo $entry_province; ?><br>&nbsp;</label>
 					<input type="text" id="borme-province" class="form-control" style="height:calc(2.0625rem + 2px);" value="<?php echo $default_province; ?>">
 				</div>
 				<div style="width:120px;">
-					<label class="control-label d-block"><?php echo $entry_max_emails; ?></label>
+					<label class="col-form-label text-sm-end pb-0 d-block"><?php echo $entry_max_emails; ?></label>
 					<input type="number" id="borme-max-emails" class="form-control" style="height:calc(2.0625rem + 2px);" min="1" value="<?php echo $default_max_emails; ?>">
 				</div>
 				<div>
-					<label class="control-label d-block">&nbsp;<br>&nbsp;</label>
+					<label class="col-form-label text-sm-end pb-0 d-block">&nbsp;<br>&nbsp;</label>
 					<button type="button" id="borme-run" class="btn btn-info" style="height:calc(2.0625rem + 2px);" onclick="bormeRun();" <?php echo (!$has_api_key) ? 'disabled' : ''; ?>>
 						<i class="fa fa-play"></i> <?php echo $button_run; ?>
 					</button>
 				</div>
 				<div>
-					<label class="control-label d-block">&nbsp;<br>&nbsp;</label>
+					<label class="col-form-label text-sm-end pb-0 d-block">&nbsp;<br>&nbsp;</label>
 					<div id="borme-status" class="text-muted"></div>
 				</div>
 			</div>
@@ -71,17 +71,17 @@
 					<?php foreach ($bormes as $borme) { ?>
 					<tr id="borme-row-<?php echo $borme['borme_id']; ?>">
 						<td class="text-center"><input type="checkbox" name="selected[]" value="<?php echo $borme['borme_id']; ?>"></td>
-						<td class="text-left"><?php echo $borme['borme_date']; ?></td>
-						<td class="text-left" data-role="last_search"><?php echo $borme['last_search']; ?></td>
-						<td class="text-left"><?php echo $borme['province']; ?></td>
-						<td class="text-left" data-role="company"><?php echo $borme['company_name']; ?></td>
-						<td class="text-left"><?php echo $borme['city']; ?></td>
-						<td class="text-left" data-role="website"><?php if ($borme['website']) { ?><a href="<?php echo $borme['website']; ?>" target="_blank" rel="noopener"><?php echo $borme['website']; ?></a><?php } ?></td>
-						<td class="text-left" data-role="email"><?php echo $borme['email']; ?></td>
-						<td class="text-left" data-role="status">
+						<td class="text-start"><?php echo $borme['borme_date']; ?></td>
+						<td class="text-start" data-role="last_search"><?php echo $borme['last_search']; ?></td>
+						<td class="text-start"><?php echo $borme['province']; ?></td>
+						<td class="text-start" data-role="company"><?php echo $borme['company_name']; ?></td>
+						<td class="text-start"><?php echo $borme['city']; ?></td>
+						<td class="text-start" data-role="website"><?php if ($borme['website']) { ?><a href="<?php echo $borme['website']; ?>" target="_blank" rel="noopener"><?php echo $borme['website']; ?></a><?php } ?></td>
+						<td class="text-start" data-role="email"><?php echo $borme['email']; ?></td>
+						<td class="text-start" data-role="status">
 							<button type="button" class="badge <?php echo ($borme['status'] == 'found') ? 'bg-success' : 'bg-secondary'; ?> border-0" onclick="bormeEditEmail(<?php echo $borme['borme_id']; ?>, '<?php echo htmlspecialchars($borme['company_name'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars((string)$borme['email'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars((string)$borme['website'], ENT_QUOTES); ?>');"><?php echo ($borme['status'] == 'found') ? $text_status_found : $text_status_not_found; ?></button>
 						</td>
-						<td class="text-left" data-role="action">
+						<td class="text-start" data-role="action">
 							<button type="button" class="btn btn-default btn-sm" onclick="bormeOpenSendEmail(<?php echo $borme['borme_id']; ?>, '<?php echo htmlspecialchars((string)$borme['email'], ENT_QUOTES); ?>', '<?php echo htmlspecialchars($borme['company_name'], ENT_QUOTES); ?>');"><i class="fa fa-envelope"></i> <?php echo $button_email; ?></button>
 						</td>
 					</tr>
@@ -106,16 +106,16 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="borme-email-modal-title"><?php echo $text_edit_email; ?></h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<input type="hidden" id="borme-email-modal-id" value="0">
 				<div class="form-group">
-					<label class="control-label"><?php echo $entry_email; ?></label>
+					<label class="col-form-label text-sm-end pb-0"><?php echo $entry_email; ?></label>
 					<input type="email" id="borme-email-modal-input" class="form-control">
 				</div>
 				<div class="form-group">
-					<label class="control-label"><?php echo $entry_website; ?></label>
+					<label class="col-form-label text-sm-end pb-0"><?php echo $entry_website; ?></label>
 					<input type="text" id="borme-email-modal-website" class="form-control" placeholder="https://...">
 					<div id="borme-email-modal-error" class="text-danger" style="display:none;"></div>
 				</div>
@@ -135,26 +135,26 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="borme-send-email-modal-title"><?php echo $button_email; ?></h5>
-				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<input type="hidden" id="borme-send-email-id" value="0">
 				<div class="form-group row">
-					<label class="control-label col-sm-2" for="borme-send-to"><?php echo $text_to; ?></label>
+					<label class="col-form-label text-sm-end pb-0 col-sm-2" for="borme-send-to"><?php echo $text_to; ?></label>
 					<div class="col-sm-10">
 						<input type="email" id="borme-send-to" class="form-control">
 						<span class="text-danger" id="borme-send-error-to"></span>
 					</div>
 				</div>
 				<div class="form-group row">
-					<label class="control-label col-sm-2" for="borme-send-subject"><?php echo $text_subject; ?></label>
+					<label class="col-form-label text-sm-end pb-0 col-sm-2" for="borme-send-subject"><?php echo $text_subject; ?></label>
 					<div class="col-sm-10">
 						<input type="text" id="borme-send-subject" class="form-control">
 						<span class="text-danger" id="borme-send-error-subject"></span>
 					</div>
 				</div>
 				<div class="form-group row">
-					<label class="control-label col-sm-2" for="borme-send-message"><?php echo $text_message; ?></label>
+					<label class="col-form-label text-sm-end pb-0 col-sm-2" for="borme-send-message"><?php echo $text_message; ?></label>
 					<div class="col-sm-10">
 						<textarea id="borme-send-message" class="ckeditor form-control" spellcheck="false"></textarea>
 						<span class="text-danger" id="borme-send-error-message"></span>

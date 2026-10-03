@@ -1,16 +1,16 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#envelope"/></svg><span class="hidden-xs"> Email</span></button>
-			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="hidden-xs"> Ver</span></button>
-			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('pdf');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="hidden-xs"> PDF</span></button>
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#envelope"/></svg><span class="d-none d-lg-inline"> Email</span></button>
+			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="d-none d-lg-inline"> Ver</span></button>
+			<button class="btn btn-default" type="button" onclick="draftSetPrintFormat('pdf');" data-bs-toggle="modal" data-bs-target="#PrintModal" data-keyboard="true"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="d-none d-lg-inline"> PDF</span></button>
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<div class="tabbable">
 			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-draft" data-bs-toggle="tab"><?php echo $tab_draft; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-bs-toggle="tab"><?php echo $tab_payment; ?></a></li>
 				<?php if ($shipping_method) { ?>
@@ -49,9 +49,9 @@
 						<tr>
 							<td><?php echo $text_total; ?></td>
 							<td><?php if ($credit && $customer) { if (!$credit_total) { ?>
-								<button type="button" class="btn btn-default" id="credit" data-action="add"><b class="badge badge-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_add; ?></span></button>
+								<button type="button" class="btn btn-default" id="credit" data-action="add"><b class="badge bg-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_add; ?></span></button>
 								<?php } else { ?>
-								<button type="button" class="btn btn-default" id="credit" data-action="remove"><b class="badge badge-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_remove; ?></span></button>
+								<button type="button" class="btn btn-default" id="credit" data-action="remove"><b class="badge bg-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_remove; ?></span></button>
 								<?php } } else { echo $total; } ?></td>
 						</tr>
 						<tr>
@@ -140,9 +140,9 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_product; ?></th>
-								<th class="text-right"><?php echo $column_quantity; ?></th>
-								<th class="text-right"><?php echo $column_price; ?></th>
-								<th class="text-right"><?php echo $column_base; ?></th>
+								<th class="text-end"><?php echo $column_quantity; ?></th>
+								<th class="text-end"><?php echo $column_price; ?></th>
+								<th class="text-end"><?php echo $column_base; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -156,15 +156,15 @@
 									<div class="help"><?php echo $option['name']; ?>: <a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></div>
 									<?php } ?>
 									<?php } ?></td>
-								<td class="text-right"><?php echo $product['quantity']; ?></td>
-								<td class="text-right"><?php echo $product['price']; ?></td>
-								<td class="text-right"><?php echo $product['total']; ?></td>
+								<td class="text-end"><?php echo $product['quantity']; ?></td>
+								<td class="text-end"><?php echo $product['price']; ?></td>
+								<td class="text-end"><?php echo $product['total']; ?></td>
 							</tr>
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
-									<td colspan="2" class="text-right"><?php echo $total['title']; ?>:</td>
-									<td class="text-right"><?php echo $total['text']; ?></td>
+									<td colspan="2" class="text-end"><?php echo $total['title']; ?>:</td>
+									<td class="text-end"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
@@ -173,7 +173,7 @@
 				</div>
 				<div id="tab-history" class="tab-pane">
 					<div id="history" data-href="index.php?route=sale/draft/history&token=<?php echo $token; ?>&draft_id=<?php echo $draft_id; ?>"></div>
-					<div class="form-horizontal">
+					<div class="form-classic">
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2" for="notify"><?php echo $entry_notify; ?></label>
 							<div class="col-sm-6">
@@ -191,7 +191,7 @@
 						</div>
 						<div class="form-group row">
 							<div class="col-sm-6">
-								<button type="button" id="button-history" data-action="draft" data-target="sale" data-id="<?php echo $draft_id; ?>" class="btn btn-info"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <?php echo $button_add_history; ?></button>
+								<button type="button" id="button-history" data-action="draft" data-target="sale" data-id="<?php echo $draft_id; ?>" class="btn btn-info"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <?php echo $button_add_history; ?></button>
 							</div>
 						</div>
 					</div>
@@ -212,10 +212,10 @@ function draftSetPrintFormat(format) {
 
 	if (format === 'pdf') {
 		$('#PrintModal .modal-title').text('PDF Select');
-		$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg> PDF').removeClass('btn-success').addClass('btn-default');
+		$('#PrintModal #send').html('<svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg> PDF').removeClass('btn-success').addClass('btn-default');
 	} else {
 		$('#PrintModal .modal-title').text('View Select');
-		$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg> View').removeClass('btn-success').addClass('btn-default');
+		$('#PrintModal #send').html('<svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg> View').removeClass('btn-success').addClass('btn-default');
 	}
 }
 $('#send').on('click',function(e){

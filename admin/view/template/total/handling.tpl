@@ -1,25 +1,25 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'btc'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_total; ?></label>
+				<label class="col-form-label text-sm-end pb-0 col-sm-2"><?php echo $entry_total; ?></label>
 				<div class="control-field col-sm-4">
 					<input type="text" name="handling_total" value="<?php echo $handling_total; ?>" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_fee; ?></label>
+				<label class="col-form-label text-sm-end pb-0 col-sm-2"><?php echo $entry_fee; ?></label>
 				<div class="control-field col-sm-4">
 					<input type="text" name="handling_fee" value="<?php echo $handling_fee; ?>" class="form-control">
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_tax_class; ?></label>
+				<label class="col-form-label text-sm-end pb-0 col-sm-2"><?php echo $entry_tax_class; ?></label>
 				<div class="control-field col-sm-4">
-					<select name="handling_tax_class_id" class="form-control">
+					<select name="handling_tax_class_id" class="form-select">
 						<option value="0"><?php echo $text_none; ?></option>
 						<?php foreach ($tax_classes as $tax_class) { ?>
 						<?php if ($tax_class['tax_class_id'] == $handling_tax_class_id) { ?>
@@ -32,9 +32,9 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_status; ?></label>
+				<label class="col-form-label text-sm-end pb-0 col-sm-2"><?php echo $entry_status; ?></label>
 				<div class="control-field col-sm-4">
-					<select name="handling_status" class="form-control">
+					<select name="handling_status" class="form-select">
 						<?php if ($handling_status) { ?>
 						<option value="1" selected=""><?php echo $text_enabled; ?></option>
 						<option value="0"><?php echo $text_disabled; ?></option>
@@ -46,7 +46,7 @@
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-sm-2"><?php echo $entry_sort_order; ?></label>
+				<label class="col-form-label text-sm-end pb-0 col-sm-2"><?php echo $entry_sort_order; ?></label>
 				<div class="control-field col-sm-4">
 					<input type="text" name="handling_sort_order" value="<?php echo $handling_sort_order; ?>" class="form-control">
 				</div>

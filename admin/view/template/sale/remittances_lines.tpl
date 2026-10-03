@@ -1,32 +1,32 @@
 <?php echo $header ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
+<div class="card page-card">
+	<div class="card-header clearfix">
 		<div class="clearfix">
-			<div class="pull-left h2"><i class="hidden-xs fa fa-shopping-cart"></i> <?php echo $heading_title; ?></div>
-			<div class="pull-right">
-				<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+			<div class="float-start h2"><i class="fa fa-shopping-cart"></i> <?php echo $heading_title; ?></div>
+			<div class="float-end">
+				<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 			</div>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<table class="table table-bordered table-striped table-hover">
 			<thead>
 				<tr>
-					<th class="text-right"><?php echo $column_remittance ?></th>
-					<th class="text-left"><?php echo $column_customer ?></th>
-					<th class="text-right"><?php echo $column_amount ?></th>
-					<th class="text-right"><?php echo $column_date ?></th>
+					<th class="text-end"><?php echo $column_remittance ?></th>
+					<th class="text-start"><?php echo $column_customer ?></th>
+					<th class="text-end"><?php echo $column_amount ?></th>
+					<th class="text-end"><?php echo $column_date ?></th>
 				</tr>
 			</thead>
 			<tbody>
 				<?php if ($remittances_lines): ?>
 					<?php foreach ($remittances_lines as $receipt): ?>
 						<tr>
-							<td class="text-right"><?php echo $receipt['receipt_id'] ?></td>
-							<td class="text-left"><?php echo $receipt['customer'] ?></td>
-							<td class="text-right"><?php echo $receipt['amount'] ?></td>
-							<td class="text-right"><?php echo $receipt['date_vto'] ?></td>
+							<td class="text-end"><?php echo $receipt['receipt_id'] ?></td>
+							<td class="text-start"><?php echo $receipt['customer'] ?></td>
+							<td class="text-end"><?php echo $receipt['amount'] ?></td>
+							<td class="text-end"><?php echo $receipt['date_vto'] ?></td>
 						</tr>
 					<?php endforeach ?>
 				<?php else: ?>

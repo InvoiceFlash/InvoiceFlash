@@ -2,13 +2,13 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="fa fa-server"></i> <?php echo $heading_title; ?></div>
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-server"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
+	<div class="card-body">
 		<div class="table-responsive">
 			<table class="table table-bordered table-striped">
 				<tbody>

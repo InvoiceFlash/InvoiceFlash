@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <base href="<?php echo $base; ?>">
 <link href="view/stylesheet/stylesheet.css" rel="stylesheet">
-<link href="view/stylesheet/main.css" rel="stylesheet">
+<link href="view/stylesheet/main.css?v=<?php echo @filemtime(DIR_APPLICATION . 'view/stylesheet/main.css'); ?>" rel="stylesheet">
 <script src="view\javascript\jquery\jquery-3.7.1.min.js"></script>
 <script src="view\javascript\bootstrap\js\bootstrap.js"></script>
 <style>
@@ -66,7 +66,7 @@
         <tr>
           <th><?php echo $column_product; ?></th>
           <th><?php echo $column_model; ?></th>
-          <th class="text-right"><?php echo $column_quantity; ?></th>
+          <th class="text-end"><?php echo $column_quantity; ?></th>
         </tr>
         <?php foreach ($order['product'] as $product): ?>
           <tr>
@@ -77,7 +77,7 @@
               <?php endforeach ?>
             </td>
             <td><?php echo $product['model'] ?></td>
-            <td class="text-right"><?php echo $product['quantity'] ?></td>
+            <td class="text-end"><?php echo $product['quantity'] ?></td>
           </tr>
         <?php endforeach ?>
         <?php if ($order['comment']): ?>

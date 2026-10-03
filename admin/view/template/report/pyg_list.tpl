@@ -2,24 +2,24 @@
 
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 
-<div class="panel panel-default">
+<div class="card page-card">
 
-	<div class="panel-heading clearfix">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fa fa-file-alt"></i> <?php echo $heading_title; ?></div>
 	</div>
 
-	<div class="panel-body">
-		<div id="filter" class="well">
+	<div class="card-body">
+		<div id="filter">
 			<div class="d-flex flex-wrap align-items-center justify-content-between mb-2" style="gap:.5rem;">
 				<div class="d-flex flex-wrap align-items-center" style="gap:.5rem;">
 					<strong><?php echo $text_period; ?>:</strong>
 					<div class="input-group" style="width:150px;">
 						<input type="text" id="filter-date-start" class="form-control date" value="<?php echo $filter_date_start; ?>" placeholder="<?php echo $entry_from; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 					<div class="input-group" style="width:150px;">
 						<input type="text" id="filter-date-end" class="form-control date" value="<?php echo $filter_date_end; ?>" placeholder="<?php echo $entry_to; ?>">
-						<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+						<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 					</div>
 
 					<div class="form-check mb-0 ms-3">
@@ -38,11 +38,11 @@
 			<div id="fields-compare" class="d-flex flex-wrap align-items-center<?php echo $compare ? '' : ' d-none'; ?>" style="gap:.5rem;">
 				<div class="input-group" style="width:150px;">
 					<input type="text" id="filter-date-start-prev" class="form-control date" value="<?php echo $filter_date_start_prev; ?>" placeholder="<?php echo $entry_from; ?>">
-					<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+					<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 				</div>
 				<div class="input-group" style="width:150px;">
 					<input type="text" id="filter-date-end-prev" class="form-control date" value="<?php echo $filter_date_end_prev; ?>" placeholder="<?php echo $entry_to; ?>">
-					<div class="input-group-append"><div class="input-group-text"><i class="fas fa-calendar"></i></div></div>
+					<div class="input-group-text"><i class="fas fa-calendar"></i></div>
 				</div>
 			</div>
 		</div>
@@ -63,10 +63,10 @@
 					<?php if ($rows) { ?>
 					<?php foreach ($rows as $row) { ?>
 					<tr<?php echo $row['bold'] ? ' class="fw-bold"' : ''; ?>>
-						<td class="text-left" style="padding-left:<?php echo (20 + $row['level'] * 20); ?>px;"><?php echo $row['name']; ?></td>
-						<td class="text-right"><?php echo $row['amount']; ?></td>
+						<td class="text-start" style="padding-left:<?php echo (20 + $row['level'] * 20); ?>px;"><?php echo $row['name']; ?></td>
+						<td class="text-end"><?php echo $row['amount']; ?></td>
 						<?php if ($compare) { ?>
-						<td class="text-right"><?php echo $row['amount_prev']; ?></td>
+						<td class="text-end"><?php echo $row['amount_prev']; ?></td>
 						<?php } ?>
 					</tr>
 					<?php } ?>

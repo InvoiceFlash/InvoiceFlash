@@ -10,16 +10,16 @@
 	.cal-item a { color: #888; cursor: pointer; }
 	@media (max-width: 767px) { #cal-layout { flex-direction: column; } #cal-sidebar { width: 100%; flex: none; } }
 </style>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-calendar"></i> <?php echo $heading_title; ?></div>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-calendar"></i> <?php echo $heading_title; ?></div>
 		<?php if ($can_modify) { ?>
-		<div class="pull-right">
+		<div class="float-end">
 			<button type="button" class="btn btn-primary" id="cal-btn-new"><i class="fa fa-plus"></i> <?php echo $text_new_event; ?></button>
 		</div>
 		<?php } ?>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<div id="cal-layout">
 			<div id="cal-sidebar">
 				<div class="d-flex justify-content-between align-items-center mb-2">
@@ -55,7 +55,7 @@
 				<input type="hidden" id="ev-id">
 				<div class="mb-2"><label class="form-label"><?php echo $entry_title; ?></label><input type="text" id="ev-title" class="form-control"></div>
 				<div class="mb-2"><label class="form-label"><?php echo $entry_calendar; ?></label>
-					<select id="ev-calendar" class="form-control">
+					<select id="ev-calendar" class="form-select">
 						<?php foreach ($calendars as $c) { ?><option value="<?php echo $c['calendar_id']; ?>"><?php echo $c['name']; ?></option><?php } ?>
 					</select>
 				</div>

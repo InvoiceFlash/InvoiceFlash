@@ -1,13 +1,13 @@
 <?php echo $header ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa='shopping-cart';include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="form-group row">
 				<label class="col-form-label col-sm-2"><?php echo $entry_status ?></label>
 				<div class="col-sm-4">
-					<select name="status_id" class="form-control">
+					<select name="status_id" class="form-select">
 						<option value="*">&ndash;</option>
 						<?php foreach ($statuses as $status): ?>
 							<option value="<?php echo $status['status_id'] ?>" <?php echo ($status['status_id'] == $status_id) ? 'selected' : '' ?>><?php echo $status['name'] ?></option>
@@ -18,7 +18,7 @@
 			<div class="form-group row">
 				<label class="col-sm-2 col-form-label"><?php echo $text_bank_cc; ?></label>
 				<div class="col-sm-4">
-					<select name="bank_cc" id="bank_cc" class="form-control">
+					<select name="bank_cc" id="bank_cc" class="form-select">
 						<option value="">&ndash;</option>
 						<?php $bank_cc_matched = false; ?>
 						<?php foreach ($bank_options as $bank_option) { ?>

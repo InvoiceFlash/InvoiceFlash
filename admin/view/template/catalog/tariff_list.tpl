@@ -1,9 +1,9 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'percent'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-bar" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
@@ -11,7 +11,7 @@
 						<th><a href="<?php echo $sort_name; ?>"><?php echo $column_name; echo ($sort == 'name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_percent; ?>"><?php echo $column_percent; echo ($sort == 'percent') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_date_end; ?>"><?php echo $column_date_end; echo ($sort == 'date_end') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
@@ -22,7 +22,7 @@
 						<td><?php echo $tariff['name']; ?></td>
 						<td><?php echo $tariff['percent']; ?></td>
 						<td><?php echo $tariff['date_end']; ?></td>
-						<td class="text-right"><?php foreach ($tariff['action'] as $action) { ?>
+						<td class="text-end"><?php foreach ($tariff['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?><?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>

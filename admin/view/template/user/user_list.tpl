@@ -1,17 +1,17 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'user'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-bar" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th><a href="<?php echo $sort_username; ?>"><?php echo $column_username; echo ($sort == 'username') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
@@ -24,9 +24,9 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $user['user_id']; ?>">
 							<?php } ?></td>
 						<td><?php echo $user['username']; ?></td>
-						<td class="hidden-xs text-<?php echo strtolower($user['status']); ?>"><?php echo $user['status']; ?></td>
-						<td class="hidden-xs"><?php echo $user['date_added']; ?></td>
-						<td class="text-right"><?php foreach ($user['action'] as $action) { ?>
+						<td class="d-none d-lg-table-cell text-<?php echo strtolower($user['status']); ?>"><?php echo $user['status']; ?></td>
+						<td class="d-none d-lg-table-cell"><?php echo $user['date_added']; ?></td>
+						<td class="text-end"><?php foreach ($user['action'] as $action) { ?>
 							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><?php echo $action['icon']; ?> <?php echo $action['text']; ?></a>
 							<?php } ?></td>
 					</tr>

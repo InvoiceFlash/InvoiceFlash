@@ -1,34 +1,34 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
   <?php $fa = 'clock'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
-	<div class="panel-body">
-    <div clasS="panel panel-default" style="max-height:250px;">
-      <div class="panel-heading"><i class="fa fa-question-circle"></i> <?php echo $text_instruction; ?></div>
-      <div class="panel-body">
+	<div class="card-body">
+    <div clasS="card page-card" style="max-height:250px;">
+      <div class="card-header"><i class="fa fa-question-circle"></i> <?php echo $text_instruction; ?></div>
+      <div class="card-body">
         <p><?php echo $text_cron_1; ?></p>
         <p><?php echo $text_cron_2; ?></p>
         <div class="input-group">
-          <div class="input-group-prepend"><span class="input-group-text"><?php echo $entry_cron; ?></span></div>
+          <span class="input-group-text"><?php echo $entry_cron; ?></span>
           <input type="text" value="wget &quot;<?php echo $cron; ?>&quot; --read-timeout=5400" id="input-cron" class="form-control">
         </div>
       </div>
     </div>
-    <div class="panel panel-default mt-2" style="max-height:500px;">
-      <div class="panel-heading"><i class="fa fa-list"></i> <?php echo $text_list; ?></div>
-      <div class="panel-body">
+    <div class="card page-card mt-2" style="max-height:500px;">
+      <div class="card-header"><i class="fa fa-list"></i> <?php echo $text_list; ?></div>
+      <div class="card-body">
         <form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
          
             <table class="table table-bordered table-hover">
               <thead>
                 <tr>
                   <th class="text-center" style="width:40px;"><input type="checkbox" onclick="$('input[name*=\'selected\']').trigger('click');"/></th>
-                  <th class="text-left"><?php if($sort == 'code'){ ?><a href="<?php echo $sort_code; ?>" class="<?php strtolower($order); ?>"><?php echo $column_code; ?></a><?php } else { ?><a href="<?php echo $sort_code; ?>"><?php echo $column_code; ?></a><?php } ?></th>
-                  <th class="text-left"><?php if($sort == 'action'){ ?><a href="<?php echo $sort_action; ?>" class="<?php strtolower($order); ?>"><?php echo $column_action; ?></a><?php } else { ?><a href="<?php echo $sort_action; ?>"><?php echo $column_action; ?></a><?php } ?></th>
-                  <th class="text-left"><?php if($sort == 'status'){ ?><a href="<?php echo $sort_status; ?>" class="<?php strtolower($order); ?>"><?php echo $column_status; ?></a><?php } else { ?><a href="<?php echo $sort_status; ?>"><?php echo $column_status; ?></a><?php } ?></th>
-                  <th class="text-left"><?php if($sort == 'date_last'){ ?><a href="<?php echo $sort_date_last; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_last; ?></a><?php } else { ?><a href="<?php echo $sort_date_last; ?>"><?php echo $column_date_last; ?></a><?php } ?></th>
-                  <th class="text-left"><?php if($sort == 'date_next'){ ?><a href="<?php echo $sort_date_next; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_next; ?></a><?php } else { ?><a href="<?php echo $sort_date_next; ?>"><?php echo $column_date_next; ?></a><?php } ?></th>
-                  <th class="text-right"><?php echo $column_action; ?></th>
+                  <th class="text-start"><?php if($sort == 'code'){ ?><a href="<?php echo $sort_code; ?>" class="<?php strtolower($order); ?>"><?php echo $column_code; ?></a><?php } else { ?><a href="<?php echo $sort_code; ?>"><?php echo $column_code; ?></a><?php } ?></th>
+                  <th class="text-start"><?php if($sort == 'action'){ ?><a href="<?php echo $sort_action; ?>" class="<?php strtolower($order); ?>"><?php echo $column_action; ?></a><?php } else { ?><a href="<?php echo $sort_action; ?>"><?php echo $column_action; ?></a><?php } ?></th>
+                  <th class="text-start"><?php if($sort == 'status'){ ?><a href="<?php echo $sort_status; ?>" class="<?php strtolower($order); ?>"><?php echo $column_status; ?></a><?php } else { ?><a href="<?php echo $sort_status; ?>"><?php echo $column_status; ?></a><?php } ?></th>
+                  <th class="text-start"><?php if($sort == 'date_last'){ ?><a href="<?php echo $sort_date_last; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_last; ?></a><?php } else { ?><a href="<?php echo $sort_date_last; ?>"><?php echo $column_date_last; ?></a><?php } ?></th>
+                  <th class="text-start"><?php if($sort == 'date_next'){ ?><a href="<?php echo $sort_date_next; ?>" class="<?php strtolower($order); ?>"><?php echo $column_date_next; ?></a><?php } else { ?><a href="<?php echo $sort_date_next; ?>"><?php echo $column_date_next; ?></a><?php } ?></th>
+                  <th class="text-end"><?php echo $column_action; ?></th>
                 </tr>
               </thead>
               <tbody>
@@ -36,14 +36,14 @@
                   <?php foreach($crons as $cron) { ?>
                     <tr>
                       <td class="text-center"><input type="checkbox" name="selected[]" value="<?php echo $cron['cron_id']; ?>"<?php echo (in_array($cron['cron_id'], $selected)) ? ' checked="checked"' : ''; ?> ></td>
-                        <td class="text-left"><?php echo $cron['code']; ?></td>
-                        <td class="text-left"><?php echo $cron['action']; ?><input type="hidden"></td>
-                        <td class="text-left"><?php echo $cron['status']; ?></td>
-                        <td class="text-left"><?php echo $cron['date_last']; ?></td>
-                        <td class="text-left"><?php echo $cron['date_next']; ?></td>
-                        <td class="text-right">
+                        <td class="text-start"><?php echo $cron['code']; ?></td>
+                        <td class="text-start"><?php echo $cron['action']; ?><input type="hidden"></td>
+                        <td class="text-start"><?php echo $cron['status']; ?></td>
+                        <td class="text-start"><?php echo $cron['date_last']; ?></td>
+                        <td class="text-start"><?php echo $cron['date_next']; ?></td>
+                        <td class="text-end">
                           <?php echo $cron['edit']; ?>
-                          <a data-toggle="tooltip" id="btn-run" data-title="<?php echo $button_run; ?>" data-id="<?php echo $cron['cron_id']; ?>" class="btn btn-warning"><i class="fa fa-play"></i></a>
+                          <a data-bs-toggle="tooltip" id="btn-run" data-title="<?php echo $button_run; ?>" data-id="<?php echo $cron['cron_id']; ?>" class="btn btn-warning"><i class="fa fa-play"></i></a>
                         </td>
                     </tr>
                   <?php } ?>

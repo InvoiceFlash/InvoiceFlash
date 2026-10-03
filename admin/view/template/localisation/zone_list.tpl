@@ -1,17 +1,17 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'globe'; include(DIR_TEMPLATE . 'common/template-title-list.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-inline" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-bar" action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th><a href="<?php echo $sort_country; ?>"><?php echo $column_country; echo ($sort == 'c.name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_name; ?>"><?php echo $column_name; echo ($sort == 'z.name') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_code; ?>"><?php echo $column_code; echo ($sort == 'z.code') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_code; ?>"><?php echo $column_code; echo ($sort == 'z.code') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
@@ -25,9 +25,9 @@
 							<?php } ?></td>
 						<td><?php echo $zone['country']; ?></td>
 						<td><?php echo $zone['name']; ?></td>
-						<td class="hidden-xs"><?php echo $zone['code']; ?></td>
-						<td class="text-right"><?php foreach ($zone['action'] as $action) { ?>
-							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <span class="hidden-xs"><?php echo $action['text']; ?></span></a>
+						<td class="d-none d-lg-table-cell"><?php echo $zone['code']; ?></td>
+						<td class="text-end"><?php foreach ($zone['action'] as $action) { ?>
+							<a class="btn btn-default" href="<?php echo $action['href']; ?>"><i class="fa fa-edit"></i> <span class="d-none d-lg-inline"><?php echo $action['text']; ?></span></a>
 							<?php } ?></td>
 					</tr>
 					<?php } ?>

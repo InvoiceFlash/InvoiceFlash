@@ -19,13 +19,13 @@
 			</noscript>				
 			
 			<?php if ($success) { ?>
-			<div class="alert alert-success"><?php echo $success; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
+			<div class="alert alert-success"><?php echo $success; ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
 			<?php } ?>
 			<?php if ($error_warning) { ?>
-			<div class="alert alert-danger"><?php echo $error_warning; ?><button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button></div>
+			<div class="alert alert-danger"><?php echo $error_warning; ?><button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
 			<?php } ?>
 			<form action="<?php echo $action; ?>" class="form-signin" method="post" enctype="multipart/form-data" autocomplete="off" id="form">
-			<div class="well well-lg">
+			<div>
 				<p class="lead"><?php echo $text_login; ?></p>
 				<div class="form-group">
 					<div class="input-icon">
@@ -40,9 +40,9 @@
 					</div>
 				</div>
 				
-				<div class="help-block"><a href="<?php echo $forgotten; ?>"><?php echo $text_forgotten; ?></a></div>
+				<div class="form-help"><a href="<?php echo $forgotten; ?>"><?php echo $text_forgotten; ?></a></div>
 			  
-				<button type="submit" class="btn btn-primary btn-block"><?php echo $button_login; ?></button>
+				<button type="submit" class="btn btn-primary d-block w-100"><?php echo $button_login; ?></button>
 				<?php if ($redirect) { ?>
 				<input type="hidden" name="redirect" value="<?php echo $redirect; ?>">
 				<?php } ?>

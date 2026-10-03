@@ -1,17 +1,17 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-text"/></svg> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-code"/></svg><span class="hidden-xs"> Facturae</span></button>
-			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="hidden-xs"> PDF</span></a>
-			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#envelope"/></svg><span class="hidden-xs"> Email</span></button>
-			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="hidden-xs"> View</span></a>
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-text"/></svg> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<button type="button" class="btn btn-default" id="button-facturae" data-href="<?php echo $facturae; ?>"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-code"/></svg><span class="d-none d-lg-inline"> Facturae</span></button>
+			<a class="btn btn-default" href="<?php echo $printPDF; ?>" target="_blank"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="d-none d-lg-inline"> PDF</span></a>
+			<button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#EmailModal" data-keyboard="true"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#envelope"/></svg><span class="d-none d-lg-inline"> Email</span></button>
+			<a class="btn btn-default" href="<?php echo $invoice; ?>" target="_blank"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="d-none d-lg-inline"> View</span></a>
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#slash-circle"/></svg><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<div class="tabbable">
 			<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active"href="#tab-invoice" data-bs-toggle="tab"><?php echo $tab_invoice; ?></a></li><li class="nav-item"><a class="nav-link" href="#tab-payment" data-bs-toggle="tab"><?php echo $tab_payment; ?></a></li>
 				<?php if ($shipping_method) { ?>
@@ -58,9 +58,9 @@
 						<tr>
 							<td><?php echo $text_total; ?></td>
 							<td><?php if ($credit && $customer) { if (!$credit_total) { ?>
-								<button type="button" class="btn btn-default" id="credit" data-action="add"><b class="badge badge-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_add; ?></span></button>
+								<button type="button" class="btn btn-default" id="credit" data-action="add"><b class="badge bg-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_add; ?></span></button>
 								<?php } else { ?>
-								<button type="button" class="btn btn-default" id="credit" data-action="remove"><b class="badge badge-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_remove; ?></span></button>
+								<button type="button" class="btn btn-default" id="credit" data-action="remove"><b class="badge bg-info"><?php echo $total; ?></b>&nbsp;<span><?php echo $text_credit_remove; ?></span></button>
 								<?php } } else { echo $total; } ?></td>
 						</tr>
 						<?php if ($invoice_status) { ?>
@@ -147,10 +147,10 @@
 						<thead>
 							<tr>
 								<th><?php echo $column_product; ?></th>
-								<th class="text-right"><?php echo $column_quantity; ?></th>
-								<th class="text-right"><?php echo $column_price; ?></th>
-								<th class="text-right"><?php echo $column_discount; ?></th>
-								<th class="text-right"><?php echo $column_total; ?></th>
+								<th class="text-end"><?php echo $column_quantity; ?></th>
+								<th class="text-end"><?php echo $column_price; ?></th>
+								<th class="text-end"><?php echo $column_discount; ?></th>
+								<th class="text-end"><?php echo $column_total; ?></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -164,16 +164,16 @@
 									<div class="help"><?php echo $option['name']; ?>: <a href="<?php echo $option['href']; ?>"><?php echo $option['value']; ?></a></div>
 									<?php } ?>
 									<?php } ?></td>
-								<td class="text-right"><?php echo $product['quantity']; ?></td>
-								<td class="text-right" style="word-spacing:6px;"><?php echo $product['price']; ?></td>
-								<td class="text-right" style="word-spacing:6px;"><?php echo $product['discount']; ?></td>
-								<td class="text-right" style="word-spacing:6px;"><?php echo $product['total']; ?></td>
+								<td class="text-end"><?php echo $product['quantity']; ?></td>
+								<td class="text-end" style="word-spacing:6px;"><?php echo $product['price']; ?></td>
+								<td class="text-end" style="word-spacing:6px;"><?php echo $product['discount']; ?></td>
+								<td class="text-end" style="word-spacing:6px;"><?php echo $product['total']; ?></td>
 							</tr>
 							<?php } ?>
 							<?php foreach ($totals as $total) { ?>
 								<tr id="totals">
-									<td colspan="4" class="text-right"><?php echo $total['title']; ?>:</td>
-									<td class="text-right" style="word-spacing:6px;"><?php echo $total['text']; ?></td>
+									<td colspan="4" class="text-end"><?php echo $total['title']; ?>:</td>
+									<td class="text-end" style="word-spacing:6px;"><?php echo $total['text']; ?></td>
 								</tr>
 							<?php } ?>
 						</tbody>
@@ -182,11 +182,11 @@
 				</div>
 				<div id="tab-history" class="tab-pane">
 					<div id="history" data-href="index.php?route=sale/invoice/history&token=<?php echo $token; ?>&invoice_id=<?php echo $invoice_id; ?>"></div>
-					<div class="form-horizontal">
+					<div class="form-classic">
 						<div class="form-group row">
 							<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_invoice_status; ?></label>
 							<div class="col-sm-6">
-								<select name="invoice_status_id" class="form-control">
+								<select name="invoice_status_id" class="form-select">
 									<?php foreach ($invoice_statuses as $invoice_statuses) { ?>
 									<?php if ($invoice_statuses['invoice_status_id'] == $invoice_status_id) { ?>
 									<option value="<?php echo $invoice_statuses['invoice_status_id']; ?>" selected=""><?php echo $invoice_statuses['name']; ?></option>
@@ -214,7 +214,7 @@
 						</div>
 						<div class="form-group row">
 							<div class="col-sm-6">
-								<button type="button" id="button-history" data-action="invoice" data-target="sale" data-id="<?php echo $invoice_id; ?>" class="btn btn-info"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <?php echo $button_add_history; ?></button>
+								<button type="button" id="button-history" data-action="invoice" data-target="sale" data-id="<?php echo $invoice_id; ?>" class="btn btn-info"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg> <?php echo $button_add_history; ?></button>
 							</div>
 						</div>
 					</div>
@@ -245,7 +245,7 @@
 							<td id="aeat-csv"><?php echo $aeat_csv; ?></td>
 						</tr>
 					</table>
-					<button type="button" id="button-aeat-resend" class="btn btn-primary"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#send"/></svg> <?php echo $button_resend_aeat; ?></button>
+					<button type="button" id="button-aeat-resend" class="btn btn-primary"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#send"/></svg> <?php echo $button_resend_aeat; ?></button>
 				</div>
 			</div>
 		</div>

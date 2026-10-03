@@ -1,13 +1,13 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'percent'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+	<div class="card-body">
+		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_status; ?></label>
 				<div class="col-sm-6">
-					<select name="total_status" class="form-control">
+					<select name="total_status" class="form-select">
 						<?php if ($total_status) { ?>
 						<option value="1" selected=""><?php echo $text_enabled; ?></option>
 						<option value="0"><?php echo $text_disabled; ?></option>

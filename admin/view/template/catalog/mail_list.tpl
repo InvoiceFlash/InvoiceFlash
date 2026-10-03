@@ -3,17 +3,17 @@
 <?php if ($error_config) { ?>
 <div class="alert alert-danger"><?php echo $error_config; ?></div>
 <?php } ?>
-<div id="content" class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><i class="hidden-xs fa fa-envelope"> <?php echo $heading_title ?></i></div>
-		<div class="pull-right">
-			<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#NewEmailModal"><i class="fa fa-envelope"></i><span class="hidden-xs"> <?php echo $button_new_email ?></span></button>
-			<a href="<?php echo $getmail ?>" class="btn btn-primary"><i class="fa fa-sync-alt"></i><span class="hidden-xs"> <?php echo $button_reset ?></span></a>
-			<button type="submit" class="btn btn-danger" formaction="<?php echo $delete ?>" id="btn-delete-mail" form="form"><i class="fa fa-trash "></i><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
-			<a href="<?php echo $cancel ?>" class="btn btn-warning"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel ?></span></a>
+<div id="content" class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><i class="fa fa-envelope"> <?php echo $heading_title ?></i></div>
+		<div class="float-end">
+			<button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#NewEmailModal"><i class="fa fa-envelope"></i><span class="d-none d-lg-inline"> <?php echo $button_new_email ?></span></button>
+			<a href="<?php echo $getmail ?>" class="btn btn-primary"><i class="fa fa-sync-alt"></i><span class="d-none d-lg-inline"> <?php echo $button_reset ?></span></a>
+			<button type="submit" class="btn btn-danger" formaction="<?php echo $delete ?>" id="btn-delete-mail" form="form"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_delete; ?></span></button>
+			<a href="<?php echo $cancel ?>" class="btn btn-warning"><i class="fa fa-ban"></i><span class="d-none d-lg-inline"> <?php echo $button_cancel ?></span></a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<ul class="nav nav-tabs">
 			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-inbox" class="nav-link"><?php echo $tab_inbox; ?></a></li>
 			<li class="nav-item"><a data-bs-toggle="tab" href="#tab-out" class="nav-link"><?php echo $tab_out; ?></a></li>
@@ -34,18 +34,18 @@
 								<th class="d-none d-sm-table-cell"><?php echo $column_subject; ?></th>
 								<th class="d-none d-md-table-cell"><?php echo $column_received; ?></th>
 								<th class="text-center"><?php echo $column_rag_indexed; ?></th>
-								<th class="text-right"><?php echo $column_action; ?></th>
+								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
 						<tbody data-link="row" class="rowlink">
 							<tr id="filter" class="info">
-								<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=catalog/mail&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
+								<td class="text-center"><a class="btn btn-default d-block w-100" href="index.php?route=catalog/mail&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><i class="fa fa-power-off fa-fw"></i></a></td>
 								<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" data-target="company" data-url="sale/customer" class="form-control"></td>
 								<td class="d-none d-md-table-cell"><input type="text" name="filter_email" value="<?php echo $filter_email; ?>" class="form-control"></td>
 								<td class="d-none d-sm-table-cell"></td>
 								<td class="d-none d-md-table-cell"></td>
 								<td class="text-center"></td>
-								<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+								<td class="text-end"><button type="button" onclick="filter();" class="btn btn-info"><i class="fa fa-search"></i><span class="d-none d-lg-inline"> <?php echo $button_filter; ?></span></button></td>
 							</tr>
 							<?php if ($mails_ins) { ?>
 								<?php foreach ($mails_ins as $mail_in) { ?>
@@ -58,7 +58,7 @@
 									<td class="d-none d-sm-table-cell"><?php echo $mail_in['title']; ?></td>
 									<td class="d-none d-md-table-cell"><?php echo $mail_in['created']; ?></td>
 									<td class="rowlink-skip text-center"><input type="checkbox" disabled <?php echo ($mail_in['rag_indexed'] ? 'checked' : ''); ?>></td>
-									<td class="text-right"><?php foreach ($mail_in['action'] as $action) { ?>
+									<td class="text-end"><?php foreach ($mail_in['action'] as $action) { ?>
 									<a class="btn btn-info" href="<?php echo $action['href']; ?>"><i class="fas fa-eye"></i><span class="d-none d-md-inline"> <?php echo $action['text']; ?></span></a>
 									<?php } ?></td>
 									</tr>
@@ -95,7 +95,7 @@
 										<td class="d-none d-sm-table-cell"><?php echo $mails_out['subject']; ?></td>
 										<td class="d-none d-md-table-cell"><?php echo $mails_out['date_added']; ?></td>
 										<td class="rowlink-skip text-center"><input type="checkbox" disabled <?php echo ($mails_out['rag_indexed'] ? 'checked' : ''); ?>></td>
-										<td class="text-right"><?php foreach ($mails_out['action'] as $action) { ?>
+										<td class="text-end"><?php foreach ($mails_out['action'] as $action) { ?>
 											<a class="btn btn-info" href="<?php echo $action['href']; ?>"><i class="fas fa-eye"></i><span class="d-none d-md-inline"> <?php echo $action['text']; ?></span></a>
 										<?php } ?></td>
 									</tr>
@@ -120,10 +120,10 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h4 class="modal-title"><?php echo $button_new_email; ?></h4>
-				<button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
 			</div>
 			<div class="modal-body">
-				<div class="form-horizontal" id="form-email">
+				<div class="form-classic" id="form-email">
 					<div class="form-group row">
 						<label for="email" class="col-form-label col-sm-10 col-md-2"><?php echo $entry_to; ?></label>
 						<div class="col-sm-10">
@@ -147,9 +147,7 @@
 						<div class="input-group col-sm-10">
 							<input type="text" name="mask" id="input-file" class="form-control">
 							<input type="hidden" name="filename">
-							<span class="input-group-btn">
 								<button type="button" id="button-upload" class="btn btn-primary"><i class="fa fa-upload"></i> <?php echo $button_upload; ?></button>
-							</span>
 						</div>
 					</div>
 				</div>
@@ -214,7 +212,7 @@ $('#btn-send').on('click',function(e){
 					row.append($('<td class="d-none d-md-table-cell">').text(out.date_added));
 					row.append($('<td class="rowlink-skip text-center">').append($('<input type="checkbox" disabled>')));
 
-					var action = $('<td class="text-right">');
+					var action = $('<td class="text-end">');
 					var link = $('<a class="btn btn-info">').attr('href', out.href);
 					link.append($('<i class="fas fa-eye">'));
 					link.append($('<span class="d-none d-md-inline">').text(' ' + out.text_view));

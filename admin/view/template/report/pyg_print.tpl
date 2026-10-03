@@ -15,7 +15,7 @@ table.lines { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 table.lines th { text-align: left; border-bottom: 1px solid #000000; padding: 3px 4px; font-size: 8px; white-space: nowrap; }
 table.lines td { padding: 2px 4px; font-size: 8px; }
 table.lines tr.bold td { font-weight: bold; }
-.text-right { text-align: right; }
+.text-end, .text-right { text-align: right; }
 </style>
 </head>
 <body>
@@ -33,9 +33,9 @@ table.lines tr.bold td { font-weight: bold; }
 	<thead>
 		<tr>
 			<th><?php echo $column_concept; ?></th>
-			<th class="text-right"><?php echo $column_amount; ?></th>
+			<th class="text-end"><?php echo $column_amount; ?></th>
 			<?php if ($compare) { ?>
-			<th class="text-right"><?php echo $column_amount_prev; ?></th>
+			<th class="text-end"><?php echo $column_amount_prev; ?></th>
 			<?php } ?>
 		</tr>
 	</thead>
@@ -43,9 +43,9 @@ table.lines tr.bold td { font-weight: bold; }
 		<?php foreach ($rows as $row) { ?>
 		<tr<?php echo $row['bold'] ? ' class="bold"' : ''; ?>>
 			<td style="padding-left:<?php echo (4 + $row['level'] * 10); ?>px;"><?php echo $row['name']; ?></td>
-			<td class="text-right"><?php echo $row['amount']; ?></td>
+			<td class="text-end"><?php echo $row['amount']; ?></td>
 			<?php if ($compare) { ?>
-			<td class="text-right"><?php echo $row['amount_prev']; ?></td>
+			<td class="text-end"><?php echo $row['amount_prev']; ?></td>
 			<?php } ?>
 		</tr>
 		<?php } ?>

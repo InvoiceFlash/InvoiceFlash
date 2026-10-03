@@ -15,7 +15,7 @@ table.lines { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
 table.lines th { text-align: left; border-bottom: 1px solid #000000; padding: 3px 4px; font-size: 8px; white-space: nowrap; }
 table.lines td { padding: 2px 4px; font-size: 8px; }
 table.lines tr.bold td { font-weight: bold; }
-.text-right { text-align: right; }
+.text-end, .text-right { text-align: right; }
 </style>
 </head>
 <body>
@@ -31,7 +31,7 @@ table.lines tr.bold td { font-weight: bold; }
 		<tr>
 			<th><?php echo $column_code; ?></th>
 			<th><?php echo $column_name; ?></th>
-			<th class="text-right"><?php echo $column_amount; ?></th>
+			<th class="text-end"><?php echo $column_amount; ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -39,7 +39,7 @@ table.lines tr.bold td { font-weight: bold; }
 		<tr<?php echo $row['bold'] ? ' class="bold"' : ''; ?>>
 			<td><?php echo $row['code']; ?></td>
 			<td><?php echo $row['name']; ?></td>
-			<td class="text-right"><?php echo $row['amount']; ?></td>
+			<td class="text-end"><?php echo $row['amount']; ?></td>
 		</tr>
 		<?php } ?>
 	</tbody>

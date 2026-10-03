@@ -1,24 +1,24 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
+<div class="card page-card">
 	<?php $fa = 'qrcode'; include(DIR_TEMPLATE . 'common/template-title-form.tpl'); ?>
-	<div class="panel-body">
+	<div class="card-body">
 		<ul class="nav nav-tabs"><li class="nav-item"><a class="nav-link active" href="#tab-general" data-bs-toggle="tab"><?php echo $tab_general; ?></a></li></ul>
 		<div class="tab-content mt-2">
-			<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
+			<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 				<div class="form-group row">
 					<label class="col-form-label col-sm-10 col-md-2" for="name"><b class="required">*</b> <?php echo $entry_name; ?></label>
 					<div class="col-sm-6">
 						<input type="text" name="name" value="<?php echo $name; ?>" class="form-control" id="name" class="form-control">
 						<?php if ($error_name) { ?>
-						<div class="help-block error"><?php echo $error_name; ?></div>
+						<div class="form-text error"><?php echo $error_name; ?></div>
 						<?php } ?>
 					</div>
 				</div>
 				<div class="form-group row">
 					<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_store; ?></label>
 					<div class="col-sm-6">
-						<div class="panel panel-default panel-scrollable">
+						<div class="card page-card page-card-scroll">
 							<div class="list-group">
 								<label class="list-group-item">
 									<?php if (in_array(0, $manufacturer_store)) { ?>

@@ -14,7 +14,7 @@ hr { border: none; border-top: 1px solid #000000; margin: 4px 0 8px 0; }
 table.lines { width: 100%; border-collapse: collapse; }
 table.lines th { text-align: left; border-bottom: 1px solid #000000; padding: 3px 4px; font-size: 8px; white-space: nowrap; }
 table.lines td { padding: 2px 4px; font-size: 8px; }
-.text-right { text-align: right; }
+.text-end, .text-right { text-align: right; }
 </style>
 </head>
 <body>
@@ -32,8 +32,8 @@ table.lines td { padding: 2px 4px; font-size: 8px; }
 			<th><?php echo $column_account; ?></th>
 			<th><?php echo $column_description; ?></th>
 			<th><?php echo $column_concept; ?></th>
-			<th class="text-right"><?php echo $column_debit; ?></th>
-			<th class="text-right"><?php echo $column_credit; ?></th>
+			<th class="text-end"><?php echo $column_debit; ?></th>
+			<th class="text-end"><?php echo $column_credit; ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -43,8 +43,8 @@ table.lines td { padding: 2px 4px; font-size: 8px; }
 			<td><?php echo $row['account']; ?></td>
 			<td><?php echo $row['description']; ?></td>
 			<td><?php echo $row['concept']; ?></td>
-			<td class="text-right"><?php echo $row['debit']; ?></td>
-			<td class="text-right"><?php echo $row['credit']; ?></td>
+			<td class="text-end"><?php echo $row['debit']; ?></td>
+			<td class="text-end"><?php echo $row['credit']; ?></td>
 		</tr>
 		<?php } ?>
 	</tbody>

@@ -1,23 +1,23 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2">
-			<i class="hidden-xs fa fa-file-text"></i> <?php echo $heading_title; ?> &mdash; <?php echo $format_name; ?>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2">
+			<i class="fa fa-file-text"></i> <?php echo $heading_title; ?> &mdash; <?php echo $format_name; ?>
 			<?php if ($is_active) { ?>
-			<span id="rf-active-badge" class="label label-success"><?php echo $text_active; ?></span>
+			<span id="rf-active-badge" class="badge bg-success"><?php echo $text_active; ?></span>
 			<?php } else { ?>
-			<span id="rf-active-badge" class="label label-success" style="display:none;"><?php echo $text_active; ?></span>
+			<span id="rf-active-badge" class="badge bg-success" style="display:none;"><?php echo $text_active; ?></span>
 			<?php } ?>
 		</div>
-		<div class="pull-right">
-			<button type="button" id="btnSave" class="btn btn-primary"><i class="fa fa-save"></i><span class="hidden-xs"> <?php echo $button_save; ?></span></button>
-			<button type="button" id="btnActivate" class="btn btn-success"<?php echo ($is_active ? ' disabled' : ''); ?>><i class="fa fa-check"></i><span class="hidden-xs"> <?php echo $button_activate; ?></span></button>
-			<button type="button" id="btnPreview" class="btn btn-info"><i class="fa fa-eye"></i><span class="hidden-xs"> <?php echo $button_preview; ?></span></button>
-			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="hidden-xs"> <?php echo $button_cancel; ?></span></a>
+		<div class="float-end">
+			<button type="button" id="btnSave" class="btn btn-primary"><i class="fa fa-save"></i><span class="d-none d-lg-inline"> <?php echo $button_save; ?></span></button>
+			<button type="button" id="btnActivate" class="btn btn-success"<?php echo ($is_active ? ' disabled' : ''); ?>><i class="fa fa-check"></i><span class="d-none d-lg-inline"> <?php echo $button_activate; ?></span></button>
+			<button type="button" id="btnPreview" class="btn btn-info"><i class="fa fa-eye"></i><span class="d-none d-lg-inline"> <?php echo $button_preview; ?></span></button>
+			<a class="btn btn-warning" href="<?php echo $cancel; ?>"><i class="fa fa-ban"></i><span class="d-none d-lg-inline"> <?php echo $button_cancel; ?></span></a>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<p class="text-muted"><i class="fa fa-info-circle"></i> <?php echo $text_merge_tags_hint; ?></p>
 		<div class="rf-merge-tags">
 			<?php foreach ($merge_tags as $tag) { ?>
@@ -63,7 +63,7 @@ $(document).ready(function() {
 			},
 			success: function(json) {
 				if (json.success) {
-					$('#notification').html('<div class="alert alert-success alert-dismissable">' + json.success + '<button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
+					$('#notification').html('<div class="alert alert-success alert-dismissible">' + json.success + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
 				} else if (json.error) {
 					alert(json.error);
 				}
@@ -81,7 +81,7 @@ $(document).ready(function() {
 				if (json.success) {
 					$('#rf-active-badge').show();
 					$('#btnActivate').prop('disabled', true);
-					$('#notification').html('<div class="alert alert-success alert-dismissable">' + json.success + '<button type="button" class="close" data-bs-dismiss="alert">&times;</button></div>');
+					$('#notification').html('<div class="alert alert-success alert-dismissible">' + json.success + '<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
 				} else if (json.error) {
 					alert(json.error);
 				}

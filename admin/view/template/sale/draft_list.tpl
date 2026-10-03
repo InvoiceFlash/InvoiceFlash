@@ -1,52 +1,48 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
-		<div class="pull-left h2"><svg class="bi hidden-xs" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo $heading_title; ?></div>
-		<div class="pull-right">
-			<button type="button" onclick="draftOpenPrintModal('');" class="btn btn-default btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="hidden-xs"> <?php echo $button_view; ?></span></button>
-			<button type="button" onclick="draftOpenPrintModal('pdf');" class="btn btn-default btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="hidden-xs"> <?php echo $button_print; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#copy"/></svg><span class="hidden-xs"> <?php echo $button_copy; ?></span></button>
-			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-left-right"/></svg><span class="hidden-xs"> <?php echo $button_convert; ?></span></button>
-			<a href="<?php echo $insert; ?>" class="btn btn-primary"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg><span class="hidden-xs"> <?php echo $button_insert; ?></span></a>
-			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#trash3"/></svg><span class="hidden-xs"> <?php echo $button_delete; ?></span></button>
+<div class="card page-card">
+	<div class="card-header clearfix">
+		<div class="float-start h2"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#pencil-square"/></svg> <?php echo $heading_title; ?></div>
+		<div class="float-end">
+			<button type="button" onclick="draftOpenPrintModal('');" class="btn btn-default btn-spacer"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg><span class="d-none d-lg-inline"> <?php echo $button_view; ?></span></button>
+			<button type="button" onclick="draftOpenPrintModal('pdf');" class="btn btn-default btn-spacer"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg><span class="d-none d-lg-inline"> <?php echo $button_print; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $copy; ?>" id="btn-copy" class="btn btn-spacer" style="background-color:#d3f1f7; border-color:#a8d8e8; color:#004085;"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#copy"/></svg><span class="d-none d-lg-inline"> <?php echo $button_copy; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $convert; ?>" onclick="return confirmConvert();" id="btn-convert" class="btn btn-success btn-spacer"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#arrow-left-right"/></svg><span class="d-none d-lg-inline"> <?php echo $button_convert; ?></span></button>
+			<a href="<?php echo $insert; ?>" class="btn btn-primary"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#plus-circle"/></svg><span class="d-none d-lg-inline"> <?php echo $button_insert; ?></span></a>
+			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#trash3"/></svg><span class="d-none d-lg-inline"> <?php echo $button_delete; ?></span></button>
 		</div>
 	</div>
-	<div class="panel-body">
+	<div class="card-body">
 		<form class="foe" action="<?php echo $draft; ?>" method="post" enctype="multipart/form-data" id="form" name="form">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-						<th class="text-right"><a href="<?php echo $sort_draft; ?>"><?php echo $column_draft_id; echo ($sort == 'o.draft_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="text-end"><a href="<?php echo $sort_draft; ?>"><?php echo $column_draft_id; echo ($sort == 'o.draft_id') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_customer; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><?php echo $column_simplified; ?></th>
-						<th class="text-right hidden-xs"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="hidden-xs hidden-sm"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'o.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
-						<th class="text-right"><span class="hidden-xs"><?php echo $column_action; ?></span></th>
+						<th class="d-none d-lg-table-cell"><?php echo $column_simplified; ?></th>
+						<th class="text-end d-none d-lg-table-cell"><a href="<?php echo $sort_total; ?>"><?php echo $column_total; echo ($sort == 'o.total') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'o.date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_date_modified; ?>"><?php echo $column_date_modified; echo ($sort == 'o.date_modified') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
 					</tr>
 				</thead>
 				<tbody data-link="row" class="rowlink">
 					<tr id="filter" class="info">
-						<td class="text-center"><a class="btn btn-default btn-block" href="index.php?route=sale/draft&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#power"/></svg></a></td>
-						<td class="text-right"><input type="text" name="filter_draft_id" value="<?php echo $filter_draft_id; ?>" class="form-control text-right"></td>
+						<td class="text-center"><a class="btn btn-default d-block w-100" href="index.php?route=sale/draft&token=<?php echo $token; ?>" rel="tooltip" title="Reset"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#power"/></svg></a></td>
+						<td class="text-end"><input type="text" name="filter_draft_id" value="<?php echo $filter_draft_id; ?>" class="form-control text-end"></td>
 						<td><input type="text" name="filter_company" value="<?php echo $filter_company; ?>" class="form-control" data-target="company" data-url="sale/customer" class="form-control"></td>
-						<td class="hidden-xs"></td>
-						<td class="text-right hidden-xs"><input type="text" name="filter_total" value="<?php echo $filter_total; ?>" class="form-control text-right"></td>
-						<td class="hidden-xs"><div class="input-group">
+						<td class="d-none d-lg-table-cell"></td>
+						<td class="text-end d-none d-lg-table-cell"><input type="text" name="filter_total" value="<?php echo $filter_total; ?>" class="form-control text-end"></td>
+						<td class="d-none d-lg-table-cell"><div class="input-group">
 							<input type="text" name="filter_date_added" class="form-control date"/>
-							<div class="input-group-append">
-							<div class="input-group-text"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></div>
-							</div>
+							<div class="input-group-text"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></div>
 						</div></td>
-						<td class="hidden-xs"><div class="input-group">
+						<td class="d-none d-lg-table-cell"><div class="input-group">
 							<input type="text" name="filter_date_modified" class="form-control date"/>
-							<div class="input-group-append">
-							<div class="input-group-text"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></div>
-							</div>
+							<div class="input-group-text"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#calendar3"/></svg></div>
 						</div></td>
-						<td class="text-right"><button type="button" onclick="filter();" class="btn btn-info"><svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#search"/></svg><span class="hidden-xs"> <?php echo $button_filter; ?></span></button></td>
+						<td class="text-end"><button type="button" onclick="filter();" class="btn btn-info"><svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#search"/></svg><span class="d-none d-lg-inline"> <?php echo $button_filter; ?></span></button></td>
 					</tr>
 					<?php if ($drafts) { ?>
 					<?php foreach ($drafts as $draft) { ?>
@@ -56,13 +52,13 @@
 							<?php } else { ?>
 							<input type="checkbox" name="selected[]" value="<?php echo $draft['draft_id']; ?>">
 							<?php } ?></td>
-						<td class="text-right"><?php echo $draft['draft_id']; ?></td>
+						<td class="text-end"><?php echo $draft['draft_id']; ?></td>
 						<td><?php echo $draft['company']; ?></td>
-						<td class="hidden-xs"><?php echo ($draft['simplified']) ? $text_simplified : $text_normal; ?></td>
-						<td class="text-right hidden-xs"><?php echo $draft['total']; ?></td>
-						<td class="hidden-xs"><?php echo $draft['date_added']; ?></td>
-						<td class="hidden-xs hidden-sm"><?php echo $draft['date_modified']; ?></td>
-						<td class="text-right"><?php foreach ($draft['action'] as $action) { ?>
+						<td class="d-none d-lg-table-cell"><?php echo ($draft['simplified']) ? $text_simplified : $text_normal; ?></td>
+						<td class="text-end d-none d-lg-table-cell"><?php echo $draft['total']; ?></td>
+						<td class="d-none d-lg-table-cell"><?php echo $draft['date_added']; ?></td>
+						<td class="d-none d-lg-table-cell"><?php echo $draft['date_modified']; ?></td>
+						<td class="text-end"><?php foreach ($draft['action'] as $action) { ?>
 							<a href="<?php echo $action['href']; ?>" class="btn btn-<?php echo $action['color']; ?>"><i class="<?php echo $action['icon']; ?>"></i></a>
 						<?php } ?></td>
 					</tr>
@@ -94,10 +90,10 @@ function draftOpenPrintModal(format) {
 
 		if (format === 'pdf') {
 			$('#PrintModal .modal-title').text('PDF Select');
-			$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg> PDF').removeClass('btn-success').addClass('btn-default');
+			$('#PrintModal #send').html('<svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#file-earmark-pdf"/></svg> PDF').removeClass('btn-success').addClass('btn-default');
 		} else {
 			$('#PrintModal .modal-title').text('View Select');
-			$('#PrintModal #send').html('<svg class="bi " aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg> View').removeClass('btn-success').addClass('btn-default');
+			$('#PrintModal #send').html('<svg class="bi" aria-hidden="true"><use href="view/image/bootstrap-icons.svg#eye"/></svg> View').removeClass('btn-success').addClass('btn-default');
 		}
 
 		bootstrap.Modal.getOrCreateInstance(document.getElementById('PrintModal')).toggle();

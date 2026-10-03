@@ -1,8 +1,8 @@
 <?php echo $header; ?>
 <?php include(DIR_TEMPLATE . 'common/template-header.tpl'); ?>
 <?php if (!empty($import_errors)) { ?>
-<div class="alert alert-danger alert-dismissable">
-	<button type="button" class="close" data-bs-dismiss="alert" aria-hidden="true">&times;</button>
+<div class="alert alert-danger alert-dismissible">
+	<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
 	<ul class="mb-0">
 		<?php foreach ($import_errors as $import_error) { ?>
 		<li><?php echo $import_error; ?></li>
@@ -10,16 +10,16 @@
 	</ul>
 </div>
 <?php } ?>
-<div class="panel panel-default">
-	<div class="panel-heading clearfix">
+<div class="card page-card">
+	<div class="card-header clearfix">
 		<div class="h2"><i class="fas fa-file-import"></i> <?php echo $heading_title; ?></div>
 	</div>
-	<div class="panel-body">
-		<form class="form-horizontal" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-import">
+	<div class="card-body">
+		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-import">
 			<div class="form-group row align-items-center">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_type; ?></label>
 				<div class="col-sm-10">
-					<select name="type" id="import-type" class="form-control">
+					<select name="type" id="import-type" class="form-select">
 						<option value="product"><?php echo $text_type_product; ?></option>
 						<option value="customer"><?php echo $text_type_customer; ?></option>
 						<option value="supplier"><?php echo $text_type_supplier; ?></option>
@@ -31,18 +31,15 @@
 			<div class="form-group row align-items-center" id="import-row-file">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_file; ?></label>
 				<div class="col-sm-10">
-					<div class="custom-file">
-						<input type="file" class="custom-file-input" name="file" accept=".xlsx">
-						<label class="custom-file-label">Browse....</label>
-					</div>
+					<input type="file" class="form-control" name="file" accept=".xlsx">
 				</div>
 			</div>
 			<div class="form-group row align-items-center" id="import-row-path" style="display:none;">
 				<label class="col-sm-2 col-form-label"><?php echo $entry_path; ?></label>
 				<div class="col-sm-10">
 					<input type="text" name="path" class="form-control" placeholder="F:\proyectos\SaConta\SaConta.1.5.9.6\Servidor\DATO\027">
-					<div class="help-block" id="import-path-help-saconta"><?php echo $text_saconta_help; ?></div>
-					<div class="help-block" id="import-path-help-flash-gestion" style="display:none;"><?php echo $text_flash_gestion_help; ?></div>
+					<div class="form-help" id="import-path-help-saconta"><?php echo $text_saconta_help; ?></div>
+					<div class="form-help" id="import-path-help-flash-gestion" style="display:none;"><?php echo $text_flash_gestion_help; ?></div>
 				</div>
 			</div>
 			<div class="form-group row align-items-center" id="import-row-flash-gestion-options" style="display:none;">
