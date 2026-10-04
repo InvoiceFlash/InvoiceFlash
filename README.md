@@ -40,7 +40,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 ### 0.0.17
   - [x] Turn Veri*Factu into a module
   - [x] eInvoicing module compliant with EN 16931 and PEPPOL
-  - [ ] Charts in Accounting
+  - [x] Charts in Accounting
   - [ ] Mail share
 
 ### 0.0.16
