@@ -6,6 +6,7 @@ $_['heading_title']       = 'Importer';
 $_['text_home']           = 'Home';
 $_['text_form']           = 'Import';
 $_['text_success']        = 'Success: %d record(s) imported, %d updated!';
+$_['text_success_saconta_missing'] = '%d sub-accounts were created because they had entries but were not in ctab61.';
 $_['text_success_saconta'] = 'Success: %d chart of accounts lines, %d sub-accounts (%d new customers) and %d journal entry lines imported!';
 $_['text_example']        = 'Excel file example';
 $_['text_example_help']   = 'The first row must be the header and will be ignored. Columns must follow this exact order:';

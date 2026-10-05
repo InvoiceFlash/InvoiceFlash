@@ -17,6 +17,10 @@ class ControllerToolImport extends Controller {
 
 				$this->session->data['success'] = sprintf($this->language->get('text_success_saconta'), $result['ctab6'], $result['ctab61'], $result['customers'], $result['ctab8']);
 
+				if ($result['missing']) {
+					$this->session->data['success'] .= ' ' . sprintf($this->language->get('text_success_saconta_missing'), $result['missing']);
+				}
+
 				if ($result['errors']) {
 					$this->session->data['import_errors'] = $result['errors'];
 				}

@@ -6,6 +6,7 @@ $_['heading_title']       = 'Importador';
 $_['text_home']           = 'Inicio';
 $_['text_form']           = 'Importar';
 $_['text_success']        = 'Éxito: %d registro(s) importado(s), %d actualizado(s)!';
+$_['text_success_saconta_missing'] = 'Se crearon %d subcuentas que tenían apuntes pero no figuraban en ctab61.';
 $_['text_success_saconta'] = 'Éxito: %d cuentas del plan contable, %d subcuentas (%d clientes nuevos) y %d líneas de asientos importadas!';
 $_['text_example']        = 'Ejemplo de fichero Excel';
 $_['text_example_help']   = 'La primera fila debe ser la cabecera y será ignorada. Las columnas deben seguir este orden exacto:';

@@ -201,14 +201,36 @@ class ModelToolImport extends Model {
 			'ctab61'    => 0,
 			'customers' => 0,
 			'ctab8'     => 0,
+			'missing'   => 0,
 			'errors'    => array()
 		);
 
 		$this->importSacontaChart($path, $result);
 		$this->importSacontaSubaccounts($path, $result);
 		$this->importSacontaEntries($path, $result);
+		$this->importSacontaMissingSubaccounts($result);
 
 		return $result;
+	}
+
+	// Los apuntes pueden usar cuentas sin fila en ctab61 (p. ej. un banco 572... que SAConta no
+	// guardo como subcuenta). Sin subcuenta no salen en Contabilidad > Subcuentas y su saldo no
+	// cuadra con Revisar Asientos, asi que se crean con el nombre de la cuenta del plan contable
+	// (ctab6) cuyo codigo es el prefijo mas largo de la cuenta, o con el propio codigo.
+	private function importSacontaMissingSubaccounts(&$result) {
+		$query = $this->db->query("SELECT e.account AS code, (SELECT p.name FROM " . DB_PREFIX . "ctab6 p WHERE e.account LIKE CONCAT(p.code, '%') ORDER BY CHAR_LENGTH(p.code) DESC LIMIT 1) AS title
+			FROM " . DB_PREFIX . "ctab8 e
+			LEFT JOIN " . DB_PREFIX . "ctab61 s ON s.code = e.account
+			WHERE s.code IS NULL AND e.account <> ''
+			GROUP BY e.account");
+
+		foreach ($query->rows as $row) {
+			$title = trim((string)$row['title']) !== '' ? $row['title'] : $row['code'];
+
+			$this->db->query("INSERT INTO " . DB_PREFIX . "ctab61 SET code = '" . $this->db->escape($row['code']) . "', title = '" . $this->db->escape($title) . "'");
+
+			$result['missing']++;
+		}
 	}
 
 	private function importSacontaChart($path, &$result) {
@@ -227,14 +249,14 @@ class ModelToolImport extends Model {
 		}
 
 		foreach ($dbf->rows() as $row) {
-			$code = trim($row['T6CCTA']);
+			$code = trim($this->dbfField($row, 'T6CCTA'));
 
 			if ($code === '') {
 				continue;
 			}
 
-			$name = trim($row['T6CNOM']);
-			$level = (int)$row['T6NNIV'];
+			$name = trim($this->dbfField($row, 'T6CNOM'));
+			$level = (int)$this->dbfField($row, 'T6NNIV');
 
 			$query = $this->db->query("SELECT ctab6_id FROM " . DB_PREFIX . "ctab6 WHERE code = '" . $this->db->escape($code) . "'");
 
@@ -246,6 +268,11 @@ class ModelToolImport extends Model {
 
 			$result['ctab6']++;
 		}
+	}
+
+	// Valor de un campo del DBF como texto; '' si el campo no existe en ese fichero (p. ej. T61CFINT en versiones antiguas de SAConta) o es NULL.
+	private function dbfField($row, $key) {
+		return (isset($row[$key]) && !is_array($row[$key])) ? (string)$row[$key] : '';
 	}
 
 	private function importSacontaSubaccounts($path, &$result) {
@@ -264,28 +291,28 @@ class ModelToolImport extends Model {
 		}
 
 		foreach ($dbf->rows() as $row) {
-			$code = trim($row['T61CCTA']);
+			$code = trim($this->dbfField($row, 'T61CCTA'));
 
 			if ($code === '') {
 				continue;
 			}
 
-			$title       = trim($row['T61CNOM']);
-			$debit       = (float)$row['T61NDEBE'];
-			$credit      = (float)$row['T61NHABER'];
-			$cif         = trim($row['T61CCIF']);
-			$street_type = trim($row['T61CTIPOC']);
-			$street      = trim($row['T61CCALLE']);
-			$number      = trim($row['T61CNUM']);
-			$city        = trim($row['T61CPOB']);
-			$postcode    = trim($row['T61CCP']);
-			$province    = trim($row['T61CPROV']);
-			$country     = trim($row['T61CPAIS']);
-			$vat_regime  = trim($row['T61CREGIVA']);
-			$phone       = trim($row['T61CTF']);
-			$fax         = trim($row['T61CFAX']);
-			$email       = trim($row['T61CEMAIL']);
-			$eu_vat_code = trim($row['T61CFINT']);
+			$title       = trim($this->dbfField($row, 'T61CNOM'));
+			$debit       = (float)$this->dbfField($row, 'T61NDEBE');
+			$credit      = (float)$this->dbfField($row, 'T61NHABER');
+			$cif         = trim($this->dbfField($row, 'T61CCIF'));
+			$street_type = trim($this->dbfField($row, 'T61CTIPOC'));
+			$street      = trim($this->dbfField($row, 'T61CCALLE'));
+			$number      = trim($this->dbfField($row, 'T61CNUM'));
+			$city        = trim($this->dbfField($row, 'T61CPOB'));
+			$postcode    = trim($this->dbfField($row, 'T61CCP'));
+			$province    = trim($this->dbfField($row, 'T61CPROV'));
+			$country     = trim($this->dbfField($row, 'T61CPAIS'));
+			$vat_regime  = trim($this->dbfField($row, 'T61CREGIVA'));
+			$phone       = trim($this->dbfField($row, 'T61CTF'));
+			$fax         = trim($this->dbfField($row, 'T61CFAX'));
+			$email       = trim($this->dbfField($row, 'T61CEMAIL'));
+			$eu_vat_code = trim($this->dbfField($row, 'T61CFINT'));
 
 			$fields = "title = '" . $this->db->escape($title) . "',
 				debit = '" . $debit . "',
@@ -371,17 +398,17 @@ class ModelToolImport extends Model {
 		$count = 0;
 
 		foreach ($dbf->rows() as $row) {
-			$account = trim($row['T8CCTA']);
+			$account = trim($this->dbfField($row, 'T8CCTA'));
 
 			if ($account === '') {
 				continue;
 			}
 
-			$entry_id  = (int)$row['T8NASIEN'];
-			$line_date = $row['T8DFECHA'] ? "'" . $this->db->escape($row['T8DFECHA']) . "'" : 'NULL';
-			$concept   = $this->db->escape(trim($row['T8CCONCEP']));
-			$debit     = (float)$row['T8NDEBE'];
-			$credit    = (float)$row['T8NHABER'];
+			$entry_id  = (int)$this->dbfField($row, 'T8NASIEN');
+			$line_date = $this->dbfField($row, 'T8DFECHA') ? "'" . $this->db->escape($this->dbfField($row, 'T8DFECHA')) . "'" : 'NULL';
+			$concept   = $this->db->escape(trim($this->dbfField($row, 'T8CCONCEP')));
+			$debit     = (float)$this->dbfField($row, 'T8NDEBE');
+			$credit    = (float)$this->dbfField($row, 'T8NHABER');
 
 			$values[] = "(" . $entry_id . ", " . $line_date . ", '" . $this->db->escape($account) . "', '" . $concept . "', '" . $debit . "', '" . $credit . "', '0', '" . $this->db->escape($username) . "', NOW(), NOW())";
 
@@ -468,10 +495,10 @@ class ModelToolImport extends Model {
 		foreach ($dbf->rows() as $row) {
 			// T11CCEN puede venir como campo Numérico (entero, sin ceros a la izquierda) o
 			// Carácter ('006'); se normaliza a entero para comparar sin depender del tipo de campo.
-			$centro = trim((string)$row['T11CCEN']);
+			$centro = trim($this->dbfField($row, 'T11CCEN'));
 
 			if ($centro !== '' && (int)$centro === (int)$company_code) {
-				$clients[trim($row['T11CCLI'])] = true;
+				$clients[trim($this->dbfField($row, 'T11CCLI'))] = true;
 			}
 		}
 
@@ -498,10 +525,10 @@ class ModelToolImport extends Model {
 
 		foreach ($dbf->rows() as $row) {
 			// Mismo motivo que en T11CCEN: CODCEN puede venir como Numérico sin ceros a la izquierda.
-			$centro = trim((string)$row['CODCEN']);
+			$centro = trim($this->dbfField($row, 'CODCEN'));
 
 			if ($centro !== '' && (int)$centro === (int)$company_code) {
-				$almacen = trim($row['CALMACE']);
+				$almacen = trim($this->dbfField($row, 'CALMACE'));
 
 				if ($almacen !== '') {
 					$warehouses[$almacen] = true;
@@ -530,8 +557,8 @@ class ModelToolImport extends Model {
 		$products = array();
 
 		foreach ($dbf->rows() as $row) {
-			if (isset($warehouses[trim($row['T32CALMAC'])])) {
-				$products[trim($row['T32CODART'])] = true;
+			if (isset($warehouses[trim($this->dbfField($row, 'T32CALMAC'))])) {
+				$products[trim($this->dbfField($row, 'T32CODART'))] = true;
 			}
 		}
 
@@ -572,7 +599,7 @@ class ModelToolImport extends Model {
 		$batch_size = 20;
 
 		foreach ($dbf->rows() as $row) {
-			$model = trim($row['T22CODART']);
+			$model = trim($this->dbfField($row, 'T22CODART'));
 
 			if ($model === '') {
 				continue;
@@ -582,13 +609,13 @@ class ModelToolImport extends Model {
 				continue;
 			}
 
-			$name = trim($row['T22NART']);
+			$name = trim($this->dbfField($row, 'T22NART'));
 
 			if ($name === '') {
 				continue;
 			}
 
-			$description = trim($row['T22NARTEXT']);
+			$description = trim($this->dbfField($row, 'T22NARTEXT'));
 
 			if ($description === '') {
 				$description = $name;
@@ -598,7 +625,7 @@ class ModelToolImport extends Model {
 				'model'       => $model,
 				'name'        => $name,
 				'description' => $description,
-				'price'       => (float)$row['T22PVP'],
+				'price'       => (float)$this->dbfField($row, 'T22PVP'),
 				'status'      => (!empty($row['LLSINUSO']) || !empty($row['T22INACTIV'])) ? 0 : 1
 			);
 
@@ -779,13 +806,13 @@ class ModelToolImport extends Model {
 		$locations = array();
 
 		foreach ($dbf->rows() as $row) {
-			$code = trim($row['T29CCP']);
+			$code = trim($this->dbfField($row, 'T29CCP'));
 
 			if ($code !== '') {
 				$locations[$code] = array(
-					'postcode' => trim($row['T29CP']),
-					'city'     => trim($row['T29POBLA']),
-					'province' => trim($row['T29PROV'])
+					'postcode' => trim($this->dbfField($row, 'T29CP')),
+					'city'     => trim($this->dbfField($row, 'T29POBLA')),
+					'province' => trim($this->dbfField($row, 'T29PROV'))
 				);
 			}
 		}
@@ -820,17 +847,17 @@ class ModelToolImport extends Model {
 		$accounts = array();
 
 		foreach ($dbf->rows() as $row) {
-			if ((string)$row['T31ACTIVO'] !== '1') {
+			if ($this->dbfField($row, 'T31ACTIVO') !== '1') {
 				continue;
 			}
 
-			$client_code = trim($row['T31CCLI']);
+			$client_code = trim($this->dbfField($row, 'T31CCLI'));
 
 			if ($client_code === '') {
 				continue;
 			}
 
-			$iban = trim($row['T31CIBAN']) . trim($row['T31CENTBCO']) . trim($row['T31CAGBCO']) . trim($row['T31CDC']) . trim($row['T31CCUENBA']);
+			$iban = trim($this->dbfField($row, 'T31CIBAN')) . trim($this->dbfField($row, 'T31CENTBCO')) . trim($this->dbfField($row, 'T31CAGBCO')) . trim($this->dbfField($row, 'T31CDC')) . trim($this->dbfField($row, 'T31CCUENBA'));
 
 			if (strlen($iban) !== 24) {
 				continue;
@@ -838,7 +865,7 @@ class ModelToolImport extends Model {
 
 			$accounts[$client_code] = array(
 				'iban' => $iban,
-				'bic'  => trim($row['T31SWIFT'])
+				'bic'  => trim($this->dbfField($row, 'T31SWIFT'))
 			);
 		}
 
@@ -941,7 +968,7 @@ class ModelToolImport extends Model {
 		}
 
 		foreach ($dbf->rows() as $row) {
-			$client_code = trim($row['T4CCLI']);
+			$client_code = trim($this->dbfField($row, 'T4CCLI'));
 
 			if ($allowed_clients !== null && !isset($allowed_clients[$client_code])) {
 				continue;
@@ -949,29 +976,29 @@ class ModelToolImport extends Model {
 
 			$bank_account = isset($bank_accounts[$client_code]) ? $bank_accounts[$client_code] : null;
 
-			$contable_account = trim($row['T4CCONTA']);
-			$company = trim($row['T4NOM']);
+			$contable_account = trim($this->dbfField($row, 'T4CCONTA'));
+			$company = trim($this->dbfField($row, 'T4NOM'));
 
 			if ($company === '') {
-				$company = trim($row['T4NOM2']);
+				$company = trim($this->dbfField($row, 'T4NOM2'));
 			}
 
 			if ($company === '') {
 				continue;
 			}
 
-			$nif = trim($row['T4CIF']);
-			$email = trim($row['T4CORREO']);
-			$telephone = trim($row['T4TEL1']);
+			$nif = trim($this->dbfField($row, 'T4CIF'));
+			$email = trim($this->dbfField($row, 'T4CORREO'));
+			$telephone = trim($this->dbfField($row, 'T4TEL1'));
 
 			if ($telephone === '') {
-				$telephone = trim($row['T4TEL2']);
+				$telephone = trim($this->dbfField($row, 'T4TEL2'));
 			}
 
-			$fax = trim($row['T4FAX']);
-			$web = trim($row['T4WEB']);
-			$address_1 = trim($row['T4DOM']);
-			$postcode_code = trim($row['T4CCP']);
+			$fax = trim($this->dbfField($row, 'T4FAX'));
+			$web = trim($this->dbfField($row, 'T4WEB'));
+			$address_1 = trim($this->dbfField($row, 'T4DOM'));
+			$postcode_code = trim($this->dbfField($row, 'T4CCP'));
 			$location = isset($locations[$postcode_code]) ? $locations[$postcode_code] : array('postcode' => '', 'city' => '', 'province' => '');
 			$postcode = $location['postcode'];
 			$city = $location['city'];
@@ -1073,7 +1100,7 @@ class ModelToolImport extends Model {
 		}
 
 		foreach ($dbf->rows() as $row) {
-			$client_code = trim($row['T4CCCLI']);
+			$client_code = trim($this->dbfField($row, 'T4CCCLI'));
 
 			if ($allowed_clients !== null && !isset($allowed_clients[$client_code])) {
 				continue;
@@ -1083,7 +1110,7 @@ class ModelToolImport extends Model {
 				continue;
 			}
 
-			$name = trim($row['T4CCNOMBRE']);
+			$name = trim($this->dbfField($row, 'T4CCNOMBRE'));
 
 			if ($name === '') {
 				continue;
@@ -1103,11 +1130,11 @@ class ModelToolImport extends Model {
 				continue;
 			}
 
-			$contact_code = trim($row['T4CCLINART']);
-			$puesto = trim($row['T4CCARGO']);
-			$email = trim($row['T4CCEMAIL']);
-			$telef1 = trim($row['T4CCTELEF']);
-			$telef2 = trim($row['T4CCTELMOV']);
+			$contact_code = trim($this->dbfField($row, 'T4CCLINART'));
+			$puesto = trim($this->dbfField($row, 'T4CCARGO'));
+			$email = trim($this->dbfField($row, 'T4CCEMAIL'));
+			$telef1 = trim($this->dbfField($row, 'T4CCTELEF'));
+			$telef2 = trim($this->dbfField($row, 'T4CCTELMOV'));
 
 			$contact_id = null;
 
@@ -1144,28 +1171,28 @@ class ModelToolImport extends Model {
 		}
 
 		foreach ($dbf->rows() as $row) {
-			$company = trim($row['T14RAZSOCI']);
+			$company = trim($this->dbfField($row, 'T14RAZSOCI'));
 
 			if ($company === '') {
-				$company = trim($row['T14NPROV']);
+				$company = trim($this->dbfField($row, 'T14NPROV'));
 			}
 
 			if ($company === '') {
 				continue;
 			}
 
-			$tax_id = trim($row['T14CIF']);
-			$email = trim($row['T14CORREO']);
-			$telephone = trim($row['T14TEL1']);
+			$tax_id = trim($this->dbfField($row, 'T14CIF'));
+			$email = trim($this->dbfField($row, 'T14CORREO'));
+			$telephone = trim($this->dbfField($row, 'T14TEL1'));
 
 			if ($telephone === '') {
-				$telephone = trim($row['T14TEL2']);
+				$telephone = trim($this->dbfField($row, 'T14TEL2'));
 			}
 
-			$fax = trim($row['T14FAX']);
-			$web = trim($row['T14WEB']);
-			$address_1 = trim($row['T14DOM']);
-			$postcode = trim($row['T14CCP']);
+			$fax = trim($this->dbfField($row, 'T14FAX'));
+			$web = trim($this->dbfField($row, 'T14WEB'));
+			$address_1 = trim($this->dbfField($row, 'T14DOM'));
+			$postcode = trim($this->dbfField($row, 'T14CCP'));
 			$country_id = $this->resolveCountryId('');
 			$status = (!empty($row['LLSINUSO']) || !empty($row['NINACTIV'])) ? 0 : 1;
 
