@@ -41,7 +41,9 @@ class Captcha {
 
 		imagejpeg($image);
 
-		imagedestroy($image);		
+		if (PHP_VERSION_ID < 80000) {
+			imagedestroy($image);
+		}		
 	}
 }
 ?>

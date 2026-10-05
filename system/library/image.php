@@ -49,7 +49,9 @@ class Image {
 				imagegif($this->image, $file);
 			}
 
-			imagedestroy($this->image);
+			if (PHP_VERSION_ID < 80000) {
+				imagedestroy($this->image);
+			}
 		}
 	}
 
@@ -97,7 +99,9 @@ class Image {
 		imagefilledrectangle($this->image, 0, 0, $width, $height, $background);
 
 		imagecopyresampled($this->image, $image_old, $xpos, $ypos, 0, 0, $new_width, $new_height, $this->info['width'], $this->info['height']);
-		imagedestroy($image_old);
+		if (PHP_VERSION_ID < 80000) {
+			imagedestroy($image_old);
+		}
 
 		$this->info['width']  = $width;
 		$this->info['height'] = $height;
@@ -130,7 +134,9 @@ class Image {
 
 		imagecopy($this->image, $watermark, $watermark_pos_x, $watermark_pos_y, 0, 0, 120, 40);
 
-		imagedestroy($watermark);
+		if (PHP_VERSION_ID < 80000) {
+			imagedestroy($watermark);
+		}
 	}
 
 	public function crop($top_x, $top_y, $bottom_x, $bottom_y) {
@@ -138,7 +144,9 @@ class Image {
 		$this->image = imagecreatetruecolor($bottom_x - $top_x, $bottom_y - $top_y);
 
 		imagecopy($this->image, $image_old, 0, 0, $top_x, $top_y, $this->info['width'], $this->info['height']);
-		imagedestroy($image_old);
+		if (PHP_VERSION_ID < 80000) {
+			imagedestroy($image_old);
+		}
 
 		$this->info['width'] = $bottom_x - $top_x;
 		$this->info['height'] = $bottom_y - $top_y;
