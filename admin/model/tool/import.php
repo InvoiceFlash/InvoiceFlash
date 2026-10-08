@@ -199,6 +199,7 @@ class ModelToolImport extends Model {
 		$result = array(
 			'ctab6'     => 0,
 			'ctab61'    => 0,
+			'pyg'       => 0,
 			'customers' => 0,
 			'ctab8'     => 0,
 			'missing'   => 0,
@@ -206,6 +207,7 @@ class ModelToolImport extends Model {
 		);
 
 		$this->importSacontaChart($path, $result);
+		$this->importSacontaPyg($path, $result);
 		$this->importSacontaSubaccounts($path, $result);
 		$this->importSacontaEntries($path, $result);
 		$this->importSacontaMissingSubaccounts($result);
@@ -268,6 +270,43 @@ class ModelToolImport extends Model {
 
 			$result['ctab6']++;
 		}
+	}
+
+	// Estructura de la Cuenta de Perdidas y Ganancias (ctab7.dbf de SaConta) -> tabla ctab9 del modulo Contabilidad
+	// (accounting/pyg). Sustituye la estructura que hubiera: la de SaConta es la que usa el usuario. Se ignora si el
+	// modulo no esta instalado (no hay tabla ctab9) o si el fichero no existe.
+	private function importSacontaPyg($path, &$result) {
+		$file = $path . '/ctab7.dbf';
+
+		if (!is_readable($file) || !$this->db->query("SHOW TABLES LIKE '" . $this->db->escape(DB_PREFIX . 'ctab9') . "'")->num_rows) {
+			return;
+		}
+
+		try {
+			$dbf = new Dbf($file);
+		} catch (Exception $e) {
+			$result['errors'][] = $e->getMessage();
+			return;
+		}
+
+		$rows = array();
+
+		foreach ($dbf->rows() as $row) {
+			$code = trim($this->dbfField($row, 'T7CCOD'));
+
+			if ($code !== '') {
+				$rows[] = "('" . $this->db->escape($code) . "', '" . $this->db->escape(trim($this->dbfField($row, 'T7CTIT'))) . "', '" . $this->db->escape(trim($this->dbfField($row, 'T7CORDEN'))) . "', '" . $this->db->escape(trim($this->dbfField($row, 'T7CFORMULA'))) . "', '" . (int)$this->dbfField($row, 'T7NNIV') . "', '" . $this->db->escape(trim($this->dbfField($row, 'T7CPRECOD'))) . "')";
+			}
+		}
+
+		if (!$rows) {
+			return;
+		}
+
+		$this->db->query("TRUNCATE TABLE " . DB_PREFIX . "ctab9");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "ctab9 (code, name, order_code, accounts, `level`, list_after) VALUES " . implode(', ', $rows));
+
+		$result['pyg'] = count($rows);
 	}
 
 	// Valor de un campo del DBF como texto; '' si el campo no existe en ese fichero (p. ej. T61CFINT en versiones antiguas de SAConta) o es NULL.
