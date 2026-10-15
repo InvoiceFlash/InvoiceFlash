@@ -24,10 +24,10 @@ InvoiceFlash es un ERP de código abierto y autoalojado para pequeñas y mediana
 
 - **Ventas:** clientes, presupuestos, pedidos, albaranes, facturas, recibos y remesas.
 - **Compras:** proveedores, pedidos de compra, recepciones y facturas de compra.
-- **Contabilidad:** asientos contables automáticos, modelos fiscales y exportación a Sage 50.
+- **Contabilidad:** diario, balance, gráficos, declaraciones a la AEAT, etc.
 - **CRM:** potenciales, contactos, calendario, mailings y seguimiento comercial.
 - **Producción:** escandallos, órdenes de fabricación y tablero Kanban.
-- **Control de presencia:** fichajes y ausencias.
+- **Control de presencia:** fichajes y ausencias, auditoría, versión para móvil y web.
 - **Facturación electrónica:** Facturae (VeriFactu es un módulo opcional).
 - **IA:** búsqueda RAG sobre tus propios documentos, una API REST y un servidor MCP.
 - **Módulos:** añade o personaliza funciones sin tocar el núcleo.

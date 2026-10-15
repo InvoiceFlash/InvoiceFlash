@@ -24,10 +24,10 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 
 - **Sales:** customers, quotes, orders, delivery notes, invoices, receipts and remittances.
 - **Purchases:** suppliers, purchase orders, receptions and purchase invoices.
-- **Accounting:** automatic journal entries, tax models and export to Sage 50.
+- **Accounting:** journal, balance sheet, charts, tax returns to the AEAT (Spanish Tax Agency), etc.
 - **CRM:** leads, contacts, calendar, mailings and sales follow-up.
 - **Production:** bills of materials, manufacturing orders and a Kanban board.
-- **Presence control:** clock-in and absences.
+- **Presence control:** clock-in and absences, audit trail, mobile and web version.
 - **Electronic invoicing:** Facturae (VeriFactu is an optional module).
 - **AI:** RAG search over your own documents, a REST API and an MCP server.
 - **Modules:** add or customize features without touching the core.
