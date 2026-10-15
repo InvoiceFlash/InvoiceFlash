@@ -76,20 +76,6 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
  - [x] Discount on line
  - [x] Payroll
 
-### 0.0.9
- - [x] Export Account Sage 50
- - [x] import from Excel, SaConta, Flash Gestión
- - [x] MCP Server
- - [x] General Discount
-
-### 0.0.8 
-- [x] Upgraded to Boostrap 4.x
-- [x] Compatible php 5 y php 8.3
-- [x] API
-- [x] Modules
-- [x] Facturae
-- [x] VeriFactu (module `Veri_Factu`)
-- [x] IA
 
 ### How to install
 Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=10" target="_blank">read this doc</a>.
