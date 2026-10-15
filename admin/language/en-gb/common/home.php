@@ -54,9 +54,7 @@ $_['text_claude_chat']              = 'AI Chat';
 $_['text_claude_chat_placeholder']  = 'Hi, I\'m the InvoiceFlash assistant. I can answer questions about the app and look up data in your account (invoices, customers, sales...). How can I help?';
 $_['text_claude_chat_input_placeholder'] = 'Type a message...';
 $_['error_claude_chat_connection']  = 'Connection error.';
-$_['error_openai_chat_not_available'] = 'The AI chat is not available with OpenAI yet. Choose Claude or Ollama in Settings > AI.';
-$_['error_nvidia_chat_not_available'] = 'The AI chat is not available with NVIDIA yet. Choose Claude or Ollama in Settings > AI.';
-$_['error_openrouter_chat_not_available'] = 'The AI chat is not available with OpenRouter yet. Choose Claude or Ollama in Settings > AI.';
+$_['error_ai_chat_no_api_key'] = 'No %s API key is configured. Go to Settings > AI to configure it.';
 $_['error_claude_chat_no_api_key']  = 'No Claude API key is configured. Go to Settings > AI to configure it.';
 
 // Actions

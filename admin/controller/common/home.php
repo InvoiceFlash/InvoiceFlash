@@ -803,19 +803,8 @@ class ControllerCommonHome extends Controller {
 			return;
 		}
 
-		// El chat con acceso a la BD aun no esta implementado para OpenAI: no caer a la clave de Claude.
-		if ($provider === 'openai') {
-			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_openai_chat_not_available'))));
-			return;
-		}
-
-		if ($provider === 'nvidia') {
-			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_nvidia_chat_not_available'))));
-			return;
-		}
-
-		if ($provider === 'openrouter') {
-			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_openrouter_chat_not_available'))));
+		if (in_array($provider, array('openai', 'nvidia', 'openrouter'))) {
+			$this->openaiCompatChat($messages, $message, $provider);
 			return;
 		}
 
@@ -830,7 +819,16 @@ class ControllerCommonHome extends Controller {
 
 		$tools = array();
 
-		foreach ($this->getHomeChatToolDefs() as $def) {
+		// Las herramientas de busqueda en documentos (RAG) solo se ofrecen si hay un Ollama con
+		// nomic-embed-text disponible: los embeddings siempre se generan en local.
+		$tool_defs = $this->getHomeChatToolDefs();
+		$with_docs = $this->isOllamaEmbeddingModelAvailable();
+
+		if ($with_docs) {
+			$tool_defs = array_merge($tool_defs, array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
+		}
+
+		foreach ($tool_defs as $def) {
 			$tools[] = array(
 				'name'         => $def['name'],
 				'description'  => $def['description'],
@@ -845,6 +843,12 @@ Puedes responder dudas generales sobre cómo usar la aplicación, y también con
 NO ESTÁS AUTORIZADO PARA modificar ni borrar datos de ningún tipo (nada de INSERT, UPDATE, DELETE, DROP, ALTER...), solo puedes leer. Si el usuario pide modificar o borrar algo, responde que no puedes hacerlo desde este chat.
 
 Responde siempre en español, de forma breve y clara.';
+
+		if ($with_docs) {
+			$system .= '
+
+También dispones de search_product_documents, search_customer_documents y search_supplier_documents para buscar en el contenido de los documentos. Cuando el usuario pregunte por especificaciones técnicas, capacidades o medidas que puedan estar en la ficha en PDF de un producto, usa search_product_documents. Cuando pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer). Cuando pregunte qué dijo o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier). Nunca respondas un dato técnico o textual que no venga literalmente del resultado de estas herramientas.';
+		}
 
 		$content        = array();
 		$stop_reason    = '';
@@ -1051,6 +1055,152 @@ Responde siempre en español, de forma breve y clara.';
 	// llega desde el navegador (ida y vuelta por json_decode/json_encode), así que
 	// se normaliza el array de mensajes completo justo antes de cada envío, no solo
 	// el último mensaje.
+	// Prompt de sistema del chat con herramientas de BD y de busqueda en documentos (Ollama y
+	// proveedores compatibles con OpenAI).
+	private function getHomeChatSystemPrompt() {
+		return 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 6 herramientas: list_tables, describe_table, query_database, search_product_documents, search_customer_documents y search_supplier_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Cuando el usuario pregunte qué dijo, acordó o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier) en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents, search_customer_documents o search_supplier_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.';
+	}
+
+	// Chat con proveedores que hablan el formato chat/completions de OpenAI: OpenAI, NVIDIA y
+	// OpenRouter. Mismo bucle de herramientas que ollamaChat(). Las herramientas de busqueda en
+	// documentos solo se ofrecen si hay un Ollama con nomic-embed-text disponible (los embeddings
+	// siempre se generan en local).
+	private function openaiCompatChat($messages, $message, $provider) {
+		$providers = array(
+			'openai'     => array('https://api.openai.com/v1/chat/completions', 'config_openai_api_key', 'gpt-4o-mini', 'OpenAI'),
+			'nvidia'     => array('https://integrate.api.nvidia.com/v1/chat/completions', 'config_nvidia_api_key', 'meta/llama-3.1-8b-instruct', 'NVIDIA'),
+			'openrouter' => array('https://openrouter.ai/api/v1/chat/completions', 'config_openrouter_api_key', 'openai/gpt-4o-mini', 'OpenRouter')
+		);
+
+		list($url, $key_name, $model, $label) = $providers[$provider];
+
+		$api_key = trim((string)$this->config->get($key_name));
+
+		if ($api_key === '') {
+			$this->response->setOutput(json_encode(array('error' => sprintf($this->language->get('error_ai_chat_no_api_key'), $label))));
+			return;
+		}
+
+		$tool_defs = $this->getHomeChatToolDefs();
+		$with_docs = $this->isOllamaEmbeddingModelAvailable();
+
+		if ($with_docs) {
+			$tool_defs = array_merge($tool_defs, array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
+		}
+
+		// Un historial que no empieza por el mensaje de sistema viene de otro motor (formato distinto): se descarta.
+		if ($messages && (!isset($messages[0]['role']) || $messages[0]['role'] !== 'system')) {
+			$messages = array();
+		}
+
+		if (!$messages) {
+			$prompt = $this->getHomeChatSystemPrompt();
+
+			if (!$with_docs) {
+				$prompt .= ' En esta sesion NO dispones de search_product_documents, search_customer_documents ni search_supplier_documents: si el usuario pregunta por el contenido de documentos, notas o emails, responde que la busqueda en documentos no esta disponible.';
+			}
+
+			$messages[] = array('role' => 'system', 'content' => $prompt);
+		}
+
+		$messages[] = array('role' => 'user', 'content' => $message);
+
+		$tools = array();
+
+		foreach ($tool_defs as $def) {
+			$tools[] = array(
+				'type'     => 'function',
+				'function' => array(
+					'name'        => $def['name'],
+					'description' => $def['description'],
+					'parameters'  => $def['parameters']
+				)
+			);
+		}
+
+		$final_message  = array('content' => '');
+		$max_iterations = 8;
+
+		for ($i = 0; $i < $max_iterations; $i++) {
+			$payload = array(
+				'model'      => $model,
+				'messages'   => $messages,
+				'tools'      => $tools,
+				'max_tokens' => 1024
+			);
+
+			$ch = curl_init($url);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer ' . $api_key));
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+			curl_setopt($ch, CURLOPT_TIMEOUT, 120);
+
+			if (is_file(DIR_SYSTEM . 'cacert.pem')) {
+				curl_setopt($ch, CURLOPT_CAINFO, DIR_SYSTEM . 'cacert.pem');
+			}
+
+			$raw        = curl_exec($ch);
+			$http_code  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			$curl_error = curl_error($ch);
+			if (PHP_VERSION_ID < 80000) {
+				curl_close($ch);
+			}
+
+			if ($raw === false) {
+				$this->response->setOutput(json_encode(array('error' => 'cURL error: ' . $curl_error)));
+				return;
+			}
+
+			$resp = json_decode($raw, true);
+
+			if (($http_code < 200) || ($http_code >= 300)) {
+				$msg = isset($resp['error']['message']) ? $resp['error']['message'] : 'HTTP ' . $http_code . ': ' . substr($raw, 0, 200);
+				$this->response->setOutput(json_encode(array('error' => $label . ': ' . $msg)));
+				return;
+			}
+
+			if (!isset($resp['choices'][0]['message'])) {
+				$this->response->setOutput(json_encode(array('error' => $label . ': ' . substr($raw, 0, 300))));
+				return;
+			}
+
+			$final_message = $resp['choices'][0]['message'];
+			$messages[]    = $final_message;
+
+			if (empty($final_message['tool_calls'])) {
+				break;
+			}
+
+			foreach ($final_message['tool_calls'] as $call) {
+				$name = isset($call['function']['name']) ? $call['function']['name'] : '';
+				$args = isset($call['function']['arguments']) ? json_decode($call['function']['arguments'], true) : array();
+
+				if (!is_array($args)) {
+					$args = array();
+				}
+
+				$messages[] = array(
+					'role'         => 'tool',
+					'tool_call_id' => isset($call['id']) ? $call['id'] : '',
+					'content'      => $this->executeHomeChatTool($name, $args)
+				);
+			}
+		}
+
+		$reply = isset($final_message['content']) ? (string)$final_message['content'] : '';
+
+		if (($reply === '') && !empty($final_message['tool_calls'])) {
+			$reply = 'No he podido completar la respuesta tras varios intentos.';
+		}
+
+		$this->response->setOutput(json_encode(array(
+			'reply'    => $reply,
+			'messages' => $messages
+		)));
+	}
+
 	private function fixEmptyOllamaToolArgs($messages) {
 		foreach ($messages as &$msg) {
 			if (empty($msg['tool_calls'])) {
@@ -1087,7 +1237,7 @@ Responde siempre en español, de forma breve y clara.';
 		if (!$messages) {
 			$messages[] = array(
 				'role'    => 'system',
-				'content' => 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 6 herramientas: list_tables, describe_table, query_database, search_product_documents, search_customer_documents y search_supplier_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Cuando el usuario pregunte qué dijo, acordó o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier) en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents, search_customer_documents o search_supplier_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.'
+				'content' => $this->getHomeChatSystemPrompt()
 			);
 		}
 

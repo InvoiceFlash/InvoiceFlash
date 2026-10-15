@@ -113,6 +113,7 @@ $_['text_import']                     = 'Importer';
 $_['text_cron']						   = 'Scheduled tasks';
 $_['text_draft']                       = 'Drafts';
 $_['text_invoice']                     = 'Invoices';
+$_['text_invoice_summary']             = 'Invoicing Summary';
 $_['text_invoice_design']              = 'Invoice Design';
 $_['text_report_designer']             = 'Configure Reports';
 $_['text_user_logs']                   = 'User Logs';

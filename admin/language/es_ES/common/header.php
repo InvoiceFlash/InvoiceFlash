@@ -22,6 +22,7 @@ $_['text_quote'] = 'Presupuestos';
 $_['text_delivery'] = 'Albaranes';
 $_['text_draft'] = 'Borradores';
 $_['text_invoice'] = 'Facturas';
+$_['text_invoice_summary'] = 'Resumen Facturaci&oacute;n';
 $_['text_receipt'] = 'Recibos';
 $_['text_remmitance'] = 'Remesas';
 $_['text_report_sale_order'] = 'Pedidos';

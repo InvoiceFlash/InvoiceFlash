@@ -54,9 +54,7 @@ $_['text_claude_chat']              = 'Chat con IA';
 $_['text_claude_chat_placeholder']  = 'Hola, soy el asistente de InvoiceFlash. Puedo responder dudas sobre la aplicaci&oacute;n y consultar datos de tu cuenta (facturas, clientes, ventas...). &iquest;En qu&eacute; puedo ayudarte?';
 $_['text_claude_chat_input_placeholder'] = 'Escribe un mensaje...';
 $_['error_claude_chat_connection']  = 'Error de conexi&oacute;n.';
-$_['error_openai_chat_not_available'] = 'El chat de IA todav&iacute;a no est&aacute; disponible con OpenAI. Elige Claude u Ollama en Ajustes &gt; IA.';
-$_['error_nvidia_chat_not_available'] = 'El chat de IA todav&iacute;a no est&aacute; disponible con NVIDIA. Elige Claude u Ollama en Ajustes &gt; IA.';
-$_['error_openrouter_chat_not_available'] = 'El chat de IA todav&iacute;a no est&aacute; disponible con OpenRouter. Elige Claude u Ollama en Ajustes &gt; IA.';
+$_['error_ai_chat_no_api_key'] = 'No hay ninguna API key de %s configurada. Ve a Ajustes &gt; IA para configurarla.';
 $_['error_claude_chat_no_api_key']  = 'No hay ninguna API key de Claude configurada. Ve a Ajustes &gt; IA para configurarla.';
 
 // Actions

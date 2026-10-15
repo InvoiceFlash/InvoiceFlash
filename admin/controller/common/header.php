@@ -333,6 +333,14 @@ class ControllerCommonHeader extends Controller {
 					'children' => array()
 				);
 			}
+			// Sales - Invoicing summary
+			if ($this->user->hasPermission('access', 'sale/invoice_summary')) {
+				$sales[] = array(
+					'name' => $this->language->get('text_invoice_summary'),
+					'href' => $this->url->link('sale/invoice_summary', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
 			// Sales - Receipts
 			if ($this->user->hasPermission('access', 'sale/receipt')) {
 				$sales[] = array(
