@@ -1366,8 +1366,8 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_provider; ?></label>
 						<div class="col-sm-6">
 							<div class="btn-group" id="ai-provider-group" data-toggle="buttons">
-								<label class="btn btn-default<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia')) ? ' active' : ''; ?>">
-									<input type="radio" name="config_ai_provider" id="input-ai-provider-claude" value="claude"<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia')) ? ' checked' : ''; ?>> <?php echo $text_ai_claude; ?>
+								<label class="btn btn-default<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia') && ($config_ai_provider != 'openrouter')) ? ' active' : ''; ?>">
+									<input type="radio" name="config_ai_provider" id="input-ai-provider-claude" value="claude"<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia') && ($config_ai_provider != 'openrouter')) ? ' checked' : ''; ?>> <?php echo $text_ai_claude; ?>
 								</label>
 								<label class="btn btn-default<?php echo ($config_ai_provider == 'ollama') ? ' active' : ''; ?>">
 									<input type="radio" name="config_ai_provider" id="input-ai-provider-ollama" value="ollama"<?php echo ($config_ai_provider == 'ollama') ? ' checked' : ''; ?>> <?php echo $text_ai_ollama; ?>
@@ -1378,18 +1378,23 @@
 								<label class="btn btn-default<?php echo ($config_ai_provider == 'nvidia') ? ' active' : ''; ?>">
 									<input type="radio" name="config_ai_provider" id="input-ai-provider-nvidia" value="nvidia"<?php echo ($config_ai_provider == 'nvidia') ? ' checked' : ''; ?>> <?php echo $text_ai_nvidia; ?>
 								</label>
+								<label class="btn btn-default<?php echo ($config_ai_provider == 'openrouter') ? ' active' : ''; ?>">
+									<input type="radio" name="config_ai_provider" id="input-ai-provider-openrouter" value="openrouter"<?php echo ($config_ai_provider == 'openrouter') ? ' checked' : ''; ?>> <?php echo $text_ai_openrouter; ?>
+								</label>
 							</div>
 							<style>
 								#ai-provider-group > .btn:nth-child(2).active,
 								#ai-provider-group > .btn:nth-child(3).active,
-								#ai-provider-group > .btn:nth-child(4).active {
+								#ai-provider-group > .btn:nth-child(4).active,
+								#ai-provider-group > .btn:nth-child(5).active {
 									background-color: #28a745;
 									border-color: #176128;
 								}
 								#ai-provider-group.ai-provider-disabled > .btn:first-child.active,
 								#ai-provider-group.ai-provider-disabled > .btn:nth-child(2).active,
 								#ai-provider-group.ai-provider-disabled > .btn:nth-child(3).active,
-								#ai-provider-group.ai-provider-disabled > .btn:nth-child(4).active {
+								#ai-provider-group.ai-provider-disabled > .btn:nth-child(4).active,
+								#ai-provider-group.ai-provider-disabled > .btn:nth-child(5).active {
 									background-color: #e9ecef !important;
 									border-color: #ced4da !important;
 									color: #495057 !important;
@@ -1397,7 +1402,7 @@
 							</style>
 						</div>
 					</div>
-					<div class="form-group row" id="ai-claude-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia')) ? ' style="display:none;"' : ''; ?>>
+					<div class="form-group row" id="ai-claude-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter')) ? ' style="display:none;"' : ''; ?>>
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
@@ -1413,6 +1418,12 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_nvidia_api_key; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_nvidia_api_key" value="<?php echo $config_nvidia_api_key; ?>" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row" id="ai-openrouter-group"<?php echo ($config_ai_provider != 'openrouter') ? ' style="display:none;"' : ''; ?>>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_openrouter_api_key; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_openrouter_api_key" value="<?php echo $config_openrouter_api_key; ?>" class="form-control">
 						</div>
 					</div>
 					<div class="form-group row" id="ai-ollama-group"<?php echo ($config_ai_provider != 'ollama') ? ' style="display:none;"' : ''; ?>>
@@ -1462,10 +1473,11 @@
 	$('input[name="config_ai_provider"]').on('change', function() {
 		var provider = $(this).val();
 
-		$('#ai-claude-group').toggle(provider != 'ollama' && provider != 'openai' && provider != 'nvidia');
+		$('#ai-claude-group').toggle(provider != 'ollama' && provider != 'openai' && provider != 'nvidia' && provider != 'openrouter');
 		$('#ai-ollama-group').toggle(provider == 'ollama');
 		$('#ai-openai-group').toggle(provider == 'openai');
 		$('#ai-nvidia-group').toggle(provider == 'nvidia');
+		$('#ai-openrouter-group').toggle(provider == 'openrouter');
 	});
 
 	function aiEnabledUpdateLook() {
@@ -1481,6 +1493,7 @@
 		$('input[name="config_ollama_url"]').prop('disabled', !enabled);
 		$('input[name="config_openai_api_key"]').prop('disabled', !enabled);
 		$('input[name="config_nvidia_api_key"]').prop('disabled', !enabled);
+		$('input[name="config_openrouter_api_key"]').prop('disabled', !enabled);
 		$('#button-ai-test').toggleClass('disabled', !enabled);
 	}
 
@@ -1528,6 +1541,7 @@
 				claude_api_key: $('input[name="config_claude_api_key"]').val(),
 				openai_api_key: $('input[name="config_openai_api_key"]').val(),
 				nvidia_api_key: $('input[name="config_nvidia_api_key"]').val(),
+				openrouter_api_key: $('input[name="config_openrouter_api_key"]').val(),
 				ollama_url: $('input[name="config_ollama_url"]').val()
 			},
 			dataType: 'json',

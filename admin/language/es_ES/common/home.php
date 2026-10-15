@@ -56,6 +56,7 @@ $_['text_claude_chat_input_placeholder'] = 'Escribe un mensaje...';
 $_['error_claude_chat_connection']  = 'Error de conexi&oacute;n.';
 $_['error_openai_chat_not_available'] = 'El chat de IA todav&iacute;a no est&aacute; disponible con OpenAI. Elige Claude u Ollama en Ajustes &gt; IA.';
 $_['error_nvidia_chat_not_available'] = 'El chat de IA todav&iacute;a no est&aacute; disponible con NVIDIA. Elige Claude u Ollama en Ajustes &gt; IA.';
+$_['error_openrouter_chat_not_available'] = 'El chat de IA todav&iacute;a no est&aacute; disponible con OpenRouter. Elige Claude u Ollama en Ajustes &gt; IA.';
 $_['error_claude_chat_no_api_key']  = 'No hay ninguna API key de Claude configurada. Ve a Ajustes &gt; IA para configurarla.';
 
 // Actions

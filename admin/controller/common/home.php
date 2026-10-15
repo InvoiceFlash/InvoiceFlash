@@ -49,7 +49,7 @@ class ControllerCommonHome extends Controller {
 		$this->data['error_claude_chat_connection'] = $this->language->get('error_claude_chat_connection');
 		$this->data['claude_chat_url'] = str_replace('&amp;', '&', $this->url->link('common/home/claudeChat', 'token=' . $this->session->data['token'], 'SSL'));
 		$ai_provider_now = $this->config->get('config_ai_provider');
-		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? 'qwen3:1.7b' : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : 'claude-opus-4-8'));
+		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? 'qwen3:1.7b' : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : (($ai_provider_now == 'openrouter') ? 'openai/gpt-4o-mini' : 'claude-opus-4-8')));
 
 		$this->data['text_view_kanban'] = $this->language->get('text_view_kanban');
 		$this->data['text_kanban'] = $this->language->get('text_kanban');
@@ -811,6 +811,11 @@ class ControllerCommonHome extends Controller {
 
 		if ($provider === 'nvidia') {
 			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_nvidia_chat_not_available'))));
+			return;
+		}
+
+		if ($provider === 'openrouter') {
+			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_openrouter_chat_not_available'))));
 			return;
 		}
 
