@@ -6,7 +6,7 @@ $_['heading_title']        = 'Tareas programadas (Cron)';
 $_['text_success']         = '&Eacute;xito: &iexcl;ha ejecutado las tareas programadas!';
 $_['text_instruction']     = 'Instrucciones de CRON';
 $_['text_list']            = 'Lista de tareas programadas';
-$_['text_cron_1']          = 'Las tareas cron son tareas programadas que se ejecutan peri&oacute;dicamente. Para configurar su servidor y usarlas, lea la p&aacute;gina de <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=9" target="_blank" class="alert-link">documentaci&oacute;n de InvoiceFlash</a>.';
+$_['text_cron_1']          = 'Las tareas cron son tareas programadas que se ejecutan peri&oacute;dicamente. Para configurar su servidor y usarlas, lea la p&aacute;gina de <a href="https://docs.invoiceflash.com/cron/" target="_blank" class="alert-link">documentaci&oacute;n de InvoiceFlash</a>.';
 $_['text_cron_2']          = 'Debe configurar la tarea cron para que se ejecute cada hora.';
 $_['text_hour']            = 'Hora';
 $_['text_day']             = 'D&iacute;a';

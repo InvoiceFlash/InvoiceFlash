@@ -6,7 +6,7 @@ $_['heading_title']        = 'Cron Jobs';
 $_['text_success']         = 'Success: You have executed cron jobs!';
 $_['text_instruction']     = 'CRON Instructions';
 $_['text_list']            = 'Cron List';
-$_['text_cron_1']          = 'Cron Job\'s are scheduled tasks that are run periodically. To setup your servers to use cron job you can read the <a href="https://docs.invoiceflash.com/index.php?route=blog/blog/view&blog_id=9" target="_blank" class="alert-link">InvoiceFlash Documentation</a> page.';
+$_['text_cron_1']          = 'Cron Job\'s are scheduled tasks that are run periodically. To setup your servers to use cron job you can read the <a href="https://docs.invoiceflash.com/en/cron/" target="_blank" class="alert-link">InvoiceFlash Documentation</a> page.';
 $_['text_cron_2']          = 'You need to set your Cron task to run every hour.';
 $_['text_hour']            = 'Hour';
 $_['text_day']             = 'Day';
