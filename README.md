@@ -11,7 +11,7 @@
 [![docs](https://img.shields.io/badge/online-docs-blueviolet)](https://docs.invoiceflash.com)
 
 <p align="center" bgcolor="#429ae1"><b>InvoiceFlash is a self-hosted open source ERP with RAG options.<br>
-For more information try the <a href="https://demo.invoiceflash.com">Demo</a> or <a href="https://www.invoiceflash.com">Web</a>.</b></p>
+For more information try the <a href="https://demo.invoiceflash.com">Demo</a>, the <a href="https://fabricacion.invoiceflash.com">Manufacturing Demo</a> or the <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ## About
 
@@ -37,6 +37,9 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 - MariaDB > 11.7
 - PHP > 5.x
 
+### 0.0.18
+  - [ ] Mail share
+
 ### 0.0.17
   - [x] Turn Veri*Factu into a module
   - [x] eInvoicing module compliant with EN 16931 and PEPPOL
@@ -44,7 +47,6 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
   - [x] Support NVIDIA, OpenAI, OpenRouter
   - [x] Attendance tracking
   - [x] Billing summary
-  - [ ] Mail share
 
 ### 0.0.16
   - [x] Boostrap 5.x
