@@ -34,8 +34,8 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 
 ### Prerequisites
 
-- MariaDB > 11.7
-- PHP > 5.x
+- MariaDB 11.7 or later
+- PHP 5.x to 8.3
 
 ### 0.0.18
   - [ ] Mail share
@@ -49,33 +49,33 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
   - [x] Billing summary
 
 ### 0.0.16
-  - [x] Boostrap 5.x
+  - [x] Bootstrap 5.x
 
 ### 0.0.15
-  - [x] Conciliación bancaria (Norma 43 y CAMT.053)
-  - [x] Module Account
-  - [x] Module Production
+  - [x] Bank reconciliation (Norma 43 and CAMT.053)
+  - [x] Accounting module
+  - [x] Production module
   - [x] Kanban
 
 ### 0.0.14
-  - [x] Creation modules
-  - [x] Module CRM
-  - [x] Module web
-  - [x] Module Presence control
+  - [x] Module creation
+  - [x] CRM module
+  - [x] Web module
+  - [x] Presence control module
   
 ### 0.0.13
-  - [x] Upgrade database a MariaDB
+  - [x] Upgrade database to MariaDB
   - [x] RAG
 
     
 ### 0.0.12
-  - [x] OCR invoice supplier
+  - [x] OCR for supplier invoices
 
 ### 0.0.11
-  - [x] Disegn reports
+  - [x] Design reports
 
 ### 0.0.10
- - [x] Discount on line
+ - [x] Line discounts
  - [x] Payroll
 
 
