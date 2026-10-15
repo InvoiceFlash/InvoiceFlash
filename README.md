@@ -83,7 +83,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 
 
 ### How to install
-Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/installation/" target="_blank">read this doc</a>.
+Please read the installation instructions included in the repository or <a href="https://docs.invoiceflash.com/en/installation/" target="_blank" rel="noopener">read this doc</a>.
 
 ## Credits / Technologies
 
