@@ -1,5 +1,7 @@
 # InvoiceFlash ERP RAG
 
+**English** | [Español](README.es.md)
+
 ![InvoiceFlash](https://www.invoiceflash.com/github/logo/png/screen.gif)
 
 [![CI](https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml/badge.svg)](https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml)
