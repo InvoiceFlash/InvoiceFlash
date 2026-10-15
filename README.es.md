@@ -11,6 +11,7 @@
 [![license](https://img.shields.io/badge/license-GPLv3-green)](LICENSE)
 [![online](https://img.shields.io/badge/online-demo-blueviolet)](https://demo.invoiceflash.com)
 [![docs](https://img.shields.io/badge/online-docs-blueviolet)](https://docs.invoiceflash.com)
+[![manufacturing](https://img.shields.io/badge/online-manufacturing-blueviolet)](https://fabricacion.invoiceflash.com)
 
 <p align="center" bgcolor="#429ae1"><b>InvoiceFlash es un ERP de código abierto y autoalojado con opciones de RAG.<br>
 Para más información prueba la <a href="https://demo.invoiceflash.com">Demo</a>, la <a href="https://fabricacion.invoiceflash.com">Demo de Fabricación</a> o la <a href="https://www.invoiceflash.com">Web</a>.</b></p>
