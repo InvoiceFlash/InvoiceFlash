@@ -53,6 +53,10 @@ class ControllerToolSystem extends Controller {
 
 		if ($this->config->get('config_ai_provider') == 'ollama') {
 			$this->data['ai_model'] = 'Ollama (qwen3:1.7b)';
+		} elseif ($this->config->get('config_ai_provider') == 'openai') {
+			$this->data['ai_model'] = 'OpenAI (gpt-4o-mini)';
+		} elseif ($this->config->get('config_ai_provider') == 'nvidia') {
+			$this->data['ai_model'] = 'NVIDIA (meta/llama-3.1-8b-instruct)';
 		} else {
 			$this->data['ai_model'] = 'Claude (claude-opus-4-8)';
 		}

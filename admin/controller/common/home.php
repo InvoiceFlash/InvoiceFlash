@@ -48,7 +48,8 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_claude_chat_input_placeholder'] = $this->language->get('text_claude_chat_input_placeholder');
 		$this->data['error_claude_chat_connection'] = $this->language->get('error_claude_chat_connection');
 		$this->data['claude_chat_url'] = str_replace('&amp;', '&', $this->url->link('common/home/claudeChat', 'token=' . $this->session->data['token'], 'SSL'));
-		$this->data['ai_chat_model'] = ($this->config->get('config_ai_provider') == 'ollama') ? 'qwen3:1.7b' : 'claude-opus-4-8';
+		$ai_provider_now = $this->config->get('config_ai_provider');
+		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? 'qwen3:1.7b' : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : 'claude-opus-4-8'));
 
 		$this->data['text_view_kanban'] = $this->language->get('text_view_kanban');
 		$this->data['text_kanban'] = $this->language->get('text_kanban');
@@ -799,6 +800,17 @@ class ControllerCommonHome extends Controller {
 
 		if ($provider === 'ollama') {
 			$this->ollamaChat($messages, $message);
+			return;
+		}
+
+		// El chat con acceso a la BD aun no esta implementado para OpenAI: no caer a la clave de Claude.
+		if ($provider === 'openai') {
+			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_openai_chat_not_available'))));
+			return;
+		}
+
+		if ($provider === 'nvidia') {
+			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_nvidia_chat_not_available'))));
 			return;
 		}
 

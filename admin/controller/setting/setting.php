@@ -234,6 +234,10 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_ai_provider'] = $this->language->get('entry_ai_provider');
 		$this->data['text_ai_claude'] = $this->language->get('text_ai_claude');
 		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
+		$this->data['text_ai_openai'] = $this->language->get('text_ai_openai');
+		$this->data['entry_openai_api_key'] = $this->language->get('entry_openai_api_key');
+		$this->data['text_ai_nvidia'] = $this->language->get('text_ai_nvidia');
+		$this->data['entry_nvidia_api_key'] = $this->language->get('entry_nvidia_api_key');
 		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
 		$this->data['entry_ollama_url'] = $this->language->get('entry_ollama_url');
 		$this->data['button_ai_test'] = $this->language->get('button_ai_test');
@@ -630,6 +634,18 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_claude_api_key'] = $this->request->post['config_claude_api_key'];
 		} else {
 			$this->data['config_claude_api_key'] = $this->config->get('config_claude_api_key');
+		}
+
+		if (isset($this->request->post['config_openai_api_key'])) {
+			$this->data['config_openai_api_key'] = $this->request->post['config_openai_api_key'];
+		} else {
+			$this->data['config_openai_api_key'] = $this->config->get('config_openai_api_key');
+		}
+
+		if (isset($this->request->post['config_nvidia_api_key'])) {
+			$this->data['config_nvidia_api_key'] = $this->request->post['config_nvidia_api_key'];
+		} else {
+			$this->data['config_nvidia_api_key'] = $this->config->get('config_nvidia_api_key');
 		}
 
 		if (isset($this->request->post['config_ai_provider'])) {
@@ -1624,8 +1640,10 @@ class ControllerSettingSetting extends Controller {
 			$ai_provider = isset($this->request->post['config_ai_provider']) ? $this->request->post['config_ai_provider'] : 'claude';
 			$ai_claude_key = isset($this->request->post['config_claude_api_key']) ? trim($this->request->post['config_claude_api_key']) : '';
 			$ai_ollama_url = isset($this->request->post['config_ollama_url']) ? trim($this->request->post['config_ollama_url']) : '';
+			$ai_openai_key = isset($this->request->post['config_openai_api_key']) ? trim($this->request->post['config_openai_api_key']) : '';
+			$ai_nvidia_key = isset($this->request->post['config_nvidia_api_key']) ? trim($this->request->post['config_nvidia_api_key']) : '';
 
-			if ((($ai_provider == 'ollama') && ($ai_ollama_url === '')) || (($ai_provider != 'ollama') && ($ai_claude_key === ''))) {
+			if ((($ai_provider == 'ollama') && ($ai_ollama_url === '')) || (($ai_provider == 'openai') && ($ai_openai_key === '')) || (($ai_provider == 'nvidia') && ($ai_nvidia_key === '')) || ((($ai_provider != 'ollama') && ($ai_provider != 'openai') && ($ai_provider != 'nvidia')) && ($ai_claude_key === ''))) {
 				$this->error['ai_enabled'] = $this->language->get('error_ai_enabled');
 				$this->request->post['config_ai_enabled'] = '0';
 			}
@@ -1747,6 +1765,10 @@ class ControllerSettingSetting extends Controller {
 
 		if ($provider == 'ollama') {
 			$ok = $this->testAiOllama();
+		} elseif ($provider == 'openai') {
+			$ok = $this->testAiOpenai();
+		} elseif ($provider == 'nvidia') {
+			$ok = $this->testAiNvidia();
 		} else {
 			$ok = $this->testAiClaude();
 		}
@@ -1794,6 +1816,86 @@ class ControllerSettingSetting extends Controller {
 		$resp = json_decode($raw, true);
 
 		return !empty($resp['content']);
+	}
+
+	private function testAiNvidia() {
+		$api_key = isset($this->request->post['nvidia_api_key']) ? trim($this->request->post['nvidia_api_key']) : '';
+
+		if ($api_key === '') {
+			return false;
+		}
+
+		// API de NVIDIA (compatible con chat/completions de OpenAI): una peticion minima.
+		$payload = array(
+			'model'      => 'meta/llama-3.1-8b-instruct',
+			'messages'   => array(array('role' => 'user', 'content' => 'ping')),
+			'max_tokens' => 16
+		);
+
+		$ch = curl_init('https://integrate.api.nvidia.com/v1/chat/completions');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Content-Type: application/json',
+			'Authorization: Bearer ' . $api_key
+		));
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+		$raw       = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if (PHP_VERSION_ID < 80000) {
+			curl_close($ch);
+		}
+
+		if (($raw === false) || ($http_code < 200) || ($http_code >= 300)) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		return !empty($resp['choices'][0]['message']['content']);
+	}
+
+	private function testAiOpenai() {
+		$api_key = isset($this->request->post['openai_api_key']) ? trim($this->request->post['openai_api_key']) : '';
+
+		if ($api_key === '') {
+			return false;
+		}
+
+		// API Responses de OpenAI: una peticion minima con el modelo barato.
+		$payload = array(
+			'model'             => 'gpt-4o-mini',
+			'input'             => 'ping',
+			'max_output_tokens' => 16
+		);
+
+		$ch = curl_init('https://api.openai.com/v1/responses');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Content-Type: application/json',
+			'Authorization: Bearer ' . $api_key
+		));
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+		$raw       = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if (PHP_VERSION_ID < 80000) {
+			curl_close($ch);
+		}
+
+		if (($raw === false) || ($http_code < 200) || ($http_code >= 300)) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		return !empty($resp['output']);
 	}
 
 	private function testAiOllama() {
