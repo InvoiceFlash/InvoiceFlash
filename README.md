@@ -35,6 +35,10 @@
 
 ## About
 
+<p align="center">
+  <img src="image/invoiceflash_banner.png" alt="InvoiceFlash" width="900">
+</p>
+
 InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. It takes a company from the first quote to the accounting entry in a single application. You install it on your own server, you keep your data, and you extend it with modules.
 
 **What it covers**
