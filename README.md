@@ -18,7 +18,7 @@
 <h1 align="center">InvoiceFlash ERP RAG</h1>
 
 <p align="center">
-  <strong>Open-Source Enterprise Resource Planning for Modern Businesses</strong>
+  <strong>Open-Source Enterprise Resource Planning (ERP) with RAG options</strong>
 </p>
 
 <p align="center">
@@ -31,8 +31,7 @@
   <img src="https://www.invoiceflash.com/github/logo/png/screen.gif" alt="InvoiceFlash">
 </p>
 
-<p align="center" bgcolor="#429ae1"><b>InvoiceFlash is a self-hosted open source ERP with RAG options.<br>
-For more information try the <a href="https://demo.invoiceflash.com">Demo</a>, the <a href="https://fabricacion.invoiceflash.com">Manufacturing Demo</a> or the <a href="https://www.invoiceflash.com">Web</a>.</b></p>
+<p align="center" bgcolor="#429ae1"><b>For more information try the <a href="https://demo.invoiceflash.com">Demo</a>, the <a href="https://fabricacion.invoiceflash.com">Manufacturing Demo</a> or the <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ## About
 

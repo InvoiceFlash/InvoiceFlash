@@ -18,7 +18,7 @@
 <h1 align="center">InvoiceFlash ERP RAG</h1>
 
 <p align="center">
-  <strong>Planificación de Recursos Empresariales de código abierto para negocios modernos</strong>
+  <strong>Planificación de Recursos Empresariales (ERP) de código abierto con opciones de RAG</strong>
 </p>
 
 <p align="center">
@@ -31,8 +31,7 @@
   <img src="https://www.invoiceflash.com/github/logo/png/screen.gif" alt="InvoiceFlash">
 </p>
 
-<p align="center" bgcolor="#429ae1"><b>InvoiceFlash es un ERP de código abierto y autoalojado con opciones de RAG.<br>
-Para más información prueba la <a href="https://demo.invoiceflash.com">Demo</a>, la <a href="https://fabricacion.invoiceflash.com">Demo de Fabricación</a> o la <a href="https://www.invoiceflash.com">Web</a>.</b></p>
+<p align="center" bgcolor="#429ae1"><b>Para más información prueba la <a href="https://demo.invoiceflash.com">Demo</a>, la <a href="https://fabricacion.invoiceflash.com">Demo de Fabricación</a> o la <a href="https://www.invoiceflash.com">Web</a>.</b></p>
 
 ## Acerca de
 
