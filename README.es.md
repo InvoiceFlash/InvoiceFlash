@@ -1,17 +1,35 @@
-# InvoiceFlash ERP RAG
+<p align="center">
+  <a href="https://www.invoiceflash.com">
+    <img src="image/data/logo.png" alt="InvoiceFlash logo" width="360">
+  </a>
+</p>
 
-[English](README.md) | **Español**
+<p align="center">
+<a href="https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml"><img src="https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+<a href="https://github.com/InvoiceFlash/InvoiceFlash/releases"><img src="https://img.shields.io/github/v/release/InvoiceFlash/InvoiceFlash" alt="release"></a>
+<a href="https://www.php.net"><img src="https://img.shields.io/badge/php-5.x%20to%208.3-blue" alt="php"></a>
+<a href="https://mariadb.org"><img src="https://img.shields.io/badge/mariadb-%3E%3D11.7-blue" alt="mariadb"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-GPLv3-green" alt="license"></a>
+<a href="https://demo.invoiceflash.com"><img src="https://img.shields.io/badge/online-demo-blueviolet" alt="demo"></a>
+<a href="https://docs.invoiceflash.com"><img src="https://img.shields.io/badge/online-docs-blueviolet" alt="docs"></a>
+<a href="https://fabricacion.invoiceflash.com"><img src="https://img.shields.io/badge/online-manufacturing-blueviolet" alt="manufacturing"></a>
+</p>
 
-![InvoiceFlash](https://www.invoiceflash.com/github/logo/png/screen.gif)
+<h1 align="center">InvoiceFlash ERP RAG</h1>
 
-[![CI](https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml/badge.svg)](https://github.com/InvoiceFlash/InvoiceFlash/actions/workflows/ci.yml)
-[![release](https://img.shields.io/github/v/release/InvoiceFlash/InvoiceFlash)](https://github.com/InvoiceFlash/InvoiceFlash/releases)
-[![php](https://img.shields.io/badge/php-5.x%20to%208.3-blue)](https://www.php.net)
-[![mariadb](https://img.shields.io/badge/mariadb-%3E%3D11.7-blue)](https://mariadb.org)
-[![license](https://img.shields.io/badge/license-GPLv3-green)](LICENSE)
-[![online](https://img.shields.io/badge/online-demo-blueviolet)](https://demo.invoiceflash.com)
-[![docs](https://img.shields.io/badge/online-docs-blueviolet)](https://docs.invoiceflash.com)
-[![manufacturing](https://img.shields.io/badge/online-manufacturing-blueviolet)](https://fabricacion.invoiceflash.com)
+<p align="center">
+  <strong>Planificación de Recursos Empresariales de código abierto para negocios modernos</strong>
+</p>
+
+<p align="center">
+  Construido con Bootstrap 5 • Funciona con PHP 5 a PHP 8.3
+</p>
+
+<p align="center"><a href="README.md">English</a> | <b>Español</b></p>
+
+<p align="center">
+  <img src="https://www.invoiceflash.com/github/logo/png/screen.gif" alt="InvoiceFlash">
+</p>
 
 <p align="center" bgcolor="#429ae1"><b>InvoiceFlash es un ERP de código abierto y autoalojado con opciones de RAG.<br>
 Para más información prueba la <a href="https://demo.invoiceflash.com">Demo</a>, la <a href="https://fabricacion.invoiceflash.com">Demo de Fabricación</a> o la <a href="https://www.invoiceflash.com">Web</a>.</b></p>
