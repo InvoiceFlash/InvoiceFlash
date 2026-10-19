@@ -629,44 +629,6 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
-			// Blog
-			$blog = array();
-
-			// Blog - Articles
-			if ($this->user->hasPermission('access', 'catalog/blog')) {
-                $blog[] = array(
-                    'name' => $this->language->get('text_blog_articles'),
-                    'href' => $this->url->link('catalog/blog', 'token=' . $this->session->data['token'], 'SSL'),
-                    'children' => array()
-                );
-			}
-
-			// Blog - Comments
-			if ($this->user->hasPermission('access', 'catalog/comment')) {
-                $blog[] = array(
-                    'name' => $this->language->get('text_blog_comments'),
-                    'href' => $this->url->link('catalog/comment', 'token=' . $this->session->data['token'], 'SSL'),
-                    'children' => array()
-                );
-			}
-
-			// Blog - Setting
-			if ($this->user->hasPermission('access', 'catalog/blogsetting')) {
-                $blog[] = array(
-                    'name' => $this->language->get('text_blog_setting'),
-                    'href' => $this->url->link('catalog/blogsetting', 'token=' . $this->session->data['token'], 'SSL'),
-                    'children' => array()
-                );
-			}
-
-			if ($blog) {
-				$tools[] = array(
-					'name' => $this->language->get('text_blog'),
-					'href' => '',
-					'children' => $blog
-				);
-			}
-
 			// Users
 			$users = array();
 
