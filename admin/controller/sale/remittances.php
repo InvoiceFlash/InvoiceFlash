@@ -268,6 +268,9 @@ class ControllerSaleRemittances extends Controller {
 		$this->data['sort'] = $sort;
 		$this->data['order'] = $order;
 
+		$this->data['button_sepa'] = $this->language->get('button_generate');
+		$this->data['sepa_url'] = $this->url->link('sale/remittances/sepa', 'token=' . $this->session->data['token'], 'SSL');
+
 		$this->template = 'sale/remittances_list.tpl';
 		$this->children = array(
 			'common/header',
@@ -451,6 +454,147 @@ class ControllerSaleRemittances extends Controller {
 			'common/footer'
 		);
 		
+		$this->response->setOutput($this->render());
+	}
+
+	// POST selected[] (casillas del listado) o GET remittance_id: descarga el fichero de adeudos SEPA (pain.008.001.02).
+	public function sepa() {
+		$this->load->language('sale/remittances');
+		$this->load->model('sale/remittances');
+
+		require_once(DIR_SYSTEM . 'library/sepa_sdd.php');
+
+		$errors = array();
+		$ids = array();
+
+		if (isset($this->request->post['selected']) && is_array($this->request->post['selected'])) {
+			$ids = $this->request->post['selected'];
+		} elseif (isset($this->request->get['remittance_id'])) {
+			$ids = array($this->request->get['remittance_id']);
+		}
+
+		$ids = array_values(array_unique(array_filter(array_map('intval', $ids))));
+
+		if (!$this->user->hasPermission('modify', 'sale/remittances')) {
+			$errors[] = $this->language->get('error_sepa_permission');
+		} elseif (!$ids || $this->model_sale_remittances->countRemittancesByIds($ids) != count($ids)) {
+			$errors[] = $this->language->get('error_sepa_select');
+		}
+
+		$creditor = array('name' => '', 'iban' => '', 'bic' => '', 'id' => '');
+		$payments = array();
+		$firsts = array();
+
+		if (!$errors) {
+			$banks = $this->config->get('banks');
+			$bank_default = $this->config->get('bank_default');
+
+			if ($banks && isset($banks[$bank_default])) {
+				$creditor['iban'] = $banks[$bank_default]['iban'];
+				$creditor['bic'] = $banks[$bank_default]['bic'];
+			} else {
+				$creditor['iban'] = (string)$this->config->get('iban');
+				$creditor['bic'] = (string)$this->config->get('bic');
+			}
+
+			$creditor['name'] = (string)$this->config->get('config_name');
+			$creditor['id'] = trim((string)$this->config->get('creditor_id'));
+
+			if ($creditor['id'] === '') {
+				$errors[] = $this->language->get('error_sepa_creditor_id');
+			}
+
+			if (!SepaSdd::ibanValid($creditor['iban'])) {
+				$errors[] = $this->language->get('error_sepa_creditor_iban');
+			}
+
+			$default_date = trim((string)$this->config->get('sepa_mandate_date'));
+
+			if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $default_date)) {
+				$default_date = '';
+			}
+
+			$rows = $this->model_sale_remittances->getSepaPayments($ids);
+
+			if (!$rows) {
+				$errors[] = $this->language->get('error_sepa_empty');
+			}
+
+			foreach ($rows as $row) {
+				$label = '#' . (int)$row['receipt_id'] . ' (' . htmlspecialchars(html_entity_decode((string)$row['company'], ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8') . ')';
+
+				if (!$row['customer_id']) {
+					$errors[] = sprintf($this->language->get('error_sepa_line_customer'), $label);
+					continue;
+				}
+
+				if (!SepaSdd::ibanValid($row['bank_cc'])) {
+					$errors[] = sprintf($this->language->get('error_sepa_line_iban'), $label);
+				}
+
+				if ((string)$row['bic'] !== '' && !SepaSdd::bicValid($row['bic'])) {
+					$errors[] = sprintf($this->language->get('error_sepa_line_bic'), $label);
+				}
+
+				if ((float)$row['amount'] <= 0) {
+					$errors[] = sprintf($this->language->get('error_sepa_line_amount'), $label);
+				}
+
+				if ((string)$row['currency_code'] !== '' && $row['currency_code'] != 'EUR') {
+					$errors[] = sprintf($this->language->get('error_sepa_line_currency'), $label);
+				}
+
+				$mandate_date = $default_date !== '' ? $default_date : date('Y-m-d', strtotime($row['customer_date_added']));
+
+				// Mismo identificador que el impreso del mandato (ficha del cliente).
+				$payments[] = array(
+					'ref'          => 'R' . (int)$row['receipt_id'],
+					'amount'       => (float)$row['amount'],
+					'due'          => $row['date_vto'],
+					'debtor_name'  => $row['company'],
+					'iban'         => $row['bank_cc'],
+					'bic'          => (string)$row['bic'],
+					'mandate_id'   => $creditor['id'] . '...' . str_pad($row['customer_id'], 5, '0', STR_PAD_LEFT),
+					'mandate_date' => $mandate_date,
+					'seq'          => $this->model_sale_remittances->getSepaSequence($row['customer_id'], $row['remittance_id']),
+					'info'         => $row['invoice_no']
+				);
+
+				$firsts[$row['customer_id']] = $row['remittance_id'];
+			}
+		}
+
+		if (!$errors) {
+			$result = SepaSdd::build($creditor, $payments, array(
+				'scheme' => $this->config->get('sepa_scheme') == 'CORE' ? 'CORE' : 'B2B',
+				'msg_id' => 'SDD' . date('ymdHis') . 'R' . implode('-', $ids)
+			));
+
+			foreach ($firsts as $customer_id => $remittance_id) {
+				$this->model_sale_remittances->markSepaFirst($customer_id, $remittance_id);
+			}
+
+			$this->response->addHeader('Content-Type: application/xml; charset=utf-8');
+			$this->response->addHeader('Content-Disposition: attachment; filename="remesa_sepa_' . implode('-', $ids) . '_' . date('Y-m-d') . '.xml"');
+			$this->response->setOutput($result['xml']);
+
+			return;
+		}
+
+		$this->document->setTitle($this->language->get('heading_sepa_errors'));
+
+		$this->data['heading_title'] = $this->language->get('heading_sepa_errors');
+		$this->data['text_errors_intro'] = $this->language->get('text_sepa_errors_intro');
+		$this->data['button_back'] = $this->language->get('button_sepa_back');
+		$this->data['errors'] = $errors;
+		$this->data['back'] = $this->url->link('sale/remittances', 'token=' . $this->session->data['token'], 'SSL');
+
+		$this->template = 'sale/remittances_sepa_errors.tpl';
+		$this->children = array(
+			'common/header',
+			'common/footer'
+		);
+
 		$this->response->setOutput($this->render());
 	}
 

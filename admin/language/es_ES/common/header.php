@@ -4,12 +4,12 @@ $_['heading_title'] = 'OpenCart';
 
 // Text
 $_['text_select_warning'] = 'Selecciona primero un elemento.';
-$_['text_dashboard'] = 'Panel de control';
+$_['text_dashboard'] = 'Panel';
 $_['text_catalog'] = 'Ficheros';
 $_['text_sale'] = 'Ventas';
 $_['text_reports'] = 'Informes';
 $_['text_system'] = 'Herramientas';
-$_['text_logged'] = 'Conectado como %s';
+$_['text_logged'] = '%s';
 $_['text_order'] = 'Pedidos';
 $_['text_order_status'] = 'Pedidos';
 $_['text_complete_status'] = 'Completado';

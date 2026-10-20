@@ -36,4 +36,19 @@ $_['column_date']							  = 'Fecha';
 $_['button_generate']                         = 'SEPA SDD';
 $_['button_remittance']						  = 'Imprimir Remesa';
 
+// SEPA
+$_['heading_sepa_errors']        = 'No se pudo generar el fichero SEPA';
+$_['text_sepa_errors_intro']     = 'Corrige lo siguiente y vuelve a intentarlo. No se ha generado ning&uacute;n fichero.';
+$_['button_sepa_back']           = 'Volver a remesas';
+$_['error_sepa_permission']      = 'No tienes permiso para generar ficheros SEPA.';
+$_['error_sepa_select']          = 'Selecciona al menos una remesa existente.';
+$_['error_sepa_empty']           = 'Las remesas seleccionadas no tienen recibos.';
+$_['error_sepa_creditor_id']     = 'Falta el identificador de acreedor SEPA (Ajustes &gt; Banco).';
+$_['error_sepa_creditor_iban']   = 'El IBAN del banco por defecto de tu empresa falta o no es v&aacute;lido (Ajustes &gt; Banco).';
+$_['error_sepa_line_customer']   = 'Recibo %s: no se encuentra el cliente de la factura.';
+$_['error_sepa_line_iban']       = 'Recibo %s: el IBAN del cliente falta o no es v&aacute;lido (ficha del cliente).';
+$_['error_sepa_line_bic']        = 'Recibo %s: el BIC del cliente no es v&aacute;lido (d&eacute;jalo vac&iacute;o si no lo conoces).';
+$_['error_sepa_line_amount']     = 'Recibo %s: el importe debe ser mayor que cero.';
+$_['error_sepa_line_currency']   = 'Recibo %s: los adeudos SEPA solo admiten euros.';
+
 ?>

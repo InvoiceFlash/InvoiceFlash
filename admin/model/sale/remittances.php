@@ -104,6 +104,63 @@ class ModelSaleRemittances extends Model {
 		return $query->rows;
 	}
 
+	private $sepa_ready = false;
+
+	// Tabla de la secuencia SEPA (FRST/RCUR) de cada cliente; tambien esta en install/invoiceflash.sql.
+	private function ensureSepaTable() {
+		if ($this->sepa_ready) {
+			return;
+		}
+
+		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "sepa_mandate` (
+			`customer_id` int(11) NOT NULL,
+			`remittance_id` int(11) NOT NULL,
+			`date_added` datetime NOT NULL,
+			PRIMARY KEY (`customer_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8");
+
+		$this->sepa_ready = true;
+	}
+
+	public function getSepaPayments($remittance_ids) {
+		$ids = implode(',', array_map('intval', $remittance_ids));
+
+		$query = $this->db->query("SELECT rl.remittance_id, rl.receipt_id, rl.amount, rl.date_vto, re.currency_code, c.customer_id, c.company, c.bank_cc, c.bic, c.date_added AS customer_date_added, CONCAT(i.invoice_prefix, i.invoice_id) AS invoice_no
+			FROM `" . DB_PREFIX . "remittances_lines` rl
+			LEFT JOIN `" . DB_PREFIX . "receipt` re ON re.receipt_id = rl.receipt_id
+			LEFT JOIN `" . DB_PREFIX . "invoice` i ON i.invoice_id = re.invoice_id
+			LEFT JOIN `" . DB_PREFIX . "customer` c ON c.customer_id = i.customer_id
+			WHERE rl.remittance_id IN (" . $ids . ")
+			ORDER BY rl.remittance_id, rl.remittance_lines_id");
+
+		return $query->rows;
+	}
+
+	public function countRemittancesByIds($remittance_ids) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM `" . DB_PREFIX . "remittances` WHERE remittance_id IN (" . implode(',', array_map('intval', $remittance_ids)) . ")");
+
+		return (int)$query->row['total'];
+	}
+
+	// FRST la primera vez que se cobra a un cliente (y al volver a descargar esa misma remesa); RCUR despues.
+	public function getSepaSequence($customer_id, $remittance_id) {
+		$this->ensureSepaTable();
+
+		$query = $this->db->query("SELECT remittance_id FROM `" . DB_PREFIX . "sepa_mandate` WHERE customer_id = '" . (int)$customer_id . "'");
+
+		if (!$query->num_rows || (int)$query->row['remittance_id'] === (int)$remittance_id) {
+			return 'FRST';
+		}
+
+		return 'RCUR';
+	}
+
+	public function markSepaFirst($customer_id, $remittance_id) {
+		$this->ensureSepaTable();
+
+		$this->db->query("INSERT IGNORE INTO `" . DB_PREFIX . "sepa_mandate` SET customer_id = '" . (int)$customer_id . "', remittance_id = '" . (int)$remittance_id . "', date_added = NOW()");
+	}
+
 	public function getRemittance($remittance_id) {
 		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "remittances` WHERE remittance_id = $remittance_id");
 

@@ -592,6 +592,19 @@
 						<div class="col-sm-3"><input type="text" name="creditor_id" value="<?php echo $creditor_id ?>" class="form-control"></div>
 					</div>
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_sepa_scheme; ?></label>
+						<div class="col-sm-3">
+							<select name="sepa_scheme" class="form-select">
+								<option value="B2B"<?php echo ($sepa_scheme != 'CORE') ? ' selected' : ''; ?>>B2B (empresas)</option>
+								<option value="CORE"<?php echo ($sepa_scheme == 'CORE') ? ' selected' : ''; ?>>CORE (particulares)</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_sepa_mandate_date; ?> <i class="fa fa-question-circle text-muted" data-bs-toggle="tooltip" title="<?php echo $text_sepa_mandate_date_tooltip; ?>"></i></label>
+						<div class="col-sm-3"><input type="date" name="sepa_mandate_date" value="<?php echo $sepa_mandate_date; ?>" class="form-control"></div>
+					</div>
+					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_conta_ventas_account; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_conta_ventas_account" id="config_conta_ventas_account" value="<?php echo $config_conta_ventas_account; ?>" class="form-control conta-account" placeholder="700000000" style="width: 160px;">

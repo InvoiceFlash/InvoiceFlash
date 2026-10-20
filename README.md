@@ -64,6 +64,7 @@ InvoiceFlash is a self-hosted, open source ERP for small and medium businesses. 
 ### 0.0.18
   - [ ] Mail share
   - [ ] Support DeepSeek, Qwen
+  - [ ] Remesas SEPA
 
 ### 0.0.17
   - [x] Turn Veri*Factu into a module

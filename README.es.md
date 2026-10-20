@@ -60,6 +60,7 @@ InvoiceFlash es un ERP de código abierto y autoalojado para pequeñas y mediana
 ### 0.0.18
   - [ ] Compartir por correo
   - [ ] Soporte DeepSeek, Qwen
+  - [ ] Remesas SEPA
 
 ### 0.0.17
   - [x] Veri*Factu convertido en módulo

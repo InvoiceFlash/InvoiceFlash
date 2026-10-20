@@ -36,4 +36,19 @@ $_['column_date']							  = 'Date';
 $_['button_generate']                         = 'SEPA SDD';
 $_['button_remittance']						  = 'Print Remittance';
 
+// SEPA
+$_['heading_sepa_errors']        = 'The SEPA file could not be generated';
+$_['text_sepa_errors_intro']     = 'Fix the following and try again. No file has been generated.';
+$_['button_sepa_back']           = 'Back to remittances';
+$_['error_sepa_permission']      = 'You do not have permission to generate SEPA files.';
+$_['error_sepa_select']          = 'Select at least one existing remittance.';
+$_['error_sepa_empty']           = 'The selected remittances have no receipts.';
+$_['error_sepa_creditor_id']     = 'The SEPA creditor identifier is missing (Settings &gt; Bank).';
+$_['error_sepa_creditor_iban']   = 'The IBAN of your company\'s default bank is missing or invalid (Settings &gt; Bank).';
+$_['error_sepa_line_customer']   = 'Receipt %s: the customer of the invoice was not found.';
+$_['error_sepa_line_iban']       = 'Receipt %s: the customer\'s IBAN is missing or invalid (customer record).';
+$_['error_sepa_line_bic']        = 'Receipt %s: the customer\'s BIC is not valid (leave it empty if unknown).';
+$_['error_sepa_line_amount']     = 'Receipt %s: the amount must be greater than zero.';
+$_['error_sepa_line_currency']   = 'Receipt %s: SEPA direct debits only accept euros.';
+
 ?>

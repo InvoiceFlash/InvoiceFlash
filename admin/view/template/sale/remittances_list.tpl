@@ -5,6 +5,7 @@
 		<div class="float-start h2"><i class="fa fa-shopping-cart"></i> <?php echo $heading_title; ?></div>
 		<div class="float-end">
 			<button onClick="validate();" class="btn btn-success btn-spacer"><i class="fa fa-print"></i><span class="d-none d-lg-inline"> <?php echo $button_remittance; ?></span></button>
+			<button type="submit" form="form" formaction="<?php echo $sepa_url; ?>" class="btn btn-primary btn-spacer"><i class="fa fa-file-code"></i><span class="d-none d-lg-inline"> <?php echo $button_sepa; ?></span></button>
 			<button type="submit" form="form" formaction="<?php echo $delete; ?>" id="btn-delete" class="btn btn-danger"><i class="fa fa-trash"></i><span class="d-none d-lg-inline"> <?php echo $button_delete; ?></span></button>
 	    </div>
     </div>

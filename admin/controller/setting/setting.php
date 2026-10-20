@@ -1505,6 +1505,22 @@ class ControllerSettingSetting extends Controller {
 			$this->data['creditor_id'] = $this->config->get('creditor_id');
 		}
 
+		$this->data['entry_sepa_scheme'] = $this->language->get('entry_sepa_scheme');
+		$this->data['entry_sepa_mandate_date'] = $this->language->get('entry_sepa_mandate_date');
+		$this->data['text_sepa_mandate_date_tooltip'] = $this->language->get('text_sepa_mandate_date_tooltip');
+
+		if (isset($this->request->post['sepa_scheme'])) {
+			$this->data['sepa_scheme'] = $this->request->post['sepa_scheme'];
+		} else {
+			$this->data['sepa_scheme'] = $this->config->get('sepa_scheme') ? $this->config->get('sepa_scheme') : 'B2B';
+		}
+
+		if (isset($this->request->post['sepa_mandate_date'])) {
+			$this->data['sepa_mandate_date'] = $this->request->post['sepa_mandate_date'];
+		} else {
+			$this->data['sepa_mandate_date'] = (string)$this->config->get('sepa_mandate_date');
+		}
+
 		$this->data['certificado'] = $this->config->get('certificado');
 
 		if (isset($this->request->post['clave'])) {

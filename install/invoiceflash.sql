@@ -8769,6 +8769,14 @@ CREATE TABLE `if_remittances_lines` (
   PRIMARY KEY (`remittance_lines_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+DROP TABLE IF EXISTS `if_sepa_mandate`;
+CREATE TABLE `if_sepa_mandate` (
+  `customer_id` int(11) NOT NULL,
+  `remittance_id` int(11) NOT NULL,
+  `date_added` datetime NOT NULL,
+  PRIMARY KEY (`customer_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 DROP TABLE IF EXISTS `if_log`;
 CREATE TABLE `if_log` (
 log_id int(11) NOT NULL AUTO_INCREMENT,
