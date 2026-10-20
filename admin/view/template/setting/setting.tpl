@@ -1365,44 +1365,17 @@
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_provider; ?></label>
 						<div class="col-sm-6">
-							<div class="btn-group" id="ai-provider-group" data-toggle="buttons">
-								<label class="btn btn-default<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia') && ($config_ai_provider != 'openrouter')) ? ' active' : ''; ?>">
-									<input type="radio" name="config_ai_provider" id="input-ai-provider-claude" value="claude"<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia') && ($config_ai_provider != 'openrouter')) ? ' checked' : ''; ?>> <?php echo $text_ai_claude; ?>
-								</label>
-								<label class="btn btn-default<?php echo ($config_ai_provider == 'ollama') ? ' active' : ''; ?>">
-									<input type="radio" name="config_ai_provider" id="input-ai-provider-ollama" value="ollama"<?php echo ($config_ai_provider == 'ollama') ? ' checked' : ''; ?>> <?php echo $text_ai_ollama; ?>
-								</label>
-								<label class="btn btn-default<?php echo ($config_ai_provider == 'openai') ? ' active' : ''; ?>">
-									<input type="radio" name="config_ai_provider" id="input-ai-provider-openai" value="openai"<?php echo ($config_ai_provider == 'openai') ? ' checked' : ''; ?>> <?php echo $text_ai_openai; ?>
-								</label>
-								<label class="btn btn-default<?php echo ($config_ai_provider == 'nvidia') ? ' active' : ''; ?>">
-									<input type="radio" name="config_ai_provider" id="input-ai-provider-nvidia" value="nvidia"<?php echo ($config_ai_provider == 'nvidia') ? ' checked' : ''; ?>> <?php echo $text_ai_nvidia; ?>
-								</label>
-								<label class="btn btn-default<?php echo ($config_ai_provider == 'openrouter') ? ' active' : ''; ?>">
-									<input type="radio" name="config_ai_provider" id="input-ai-provider-openrouter" value="openrouter"<?php echo ($config_ai_provider == 'openrouter') ? ' checked' : ''; ?>> <?php echo $text_ai_openrouter; ?>
-								</label>
-							</div>
-							<style>
-								#ai-provider-group > .btn:nth-child(2).active,
-								#ai-provider-group > .btn:nth-child(3).active,
-								#ai-provider-group > .btn:nth-child(4).active,
-								#ai-provider-group > .btn:nth-child(5).active {
-									background-color: #28a745;
-									border-color: #176128;
-								}
-								#ai-provider-group.ai-provider-disabled > .btn:first-child.active,
-								#ai-provider-group.ai-provider-disabled > .btn:nth-child(2).active,
-								#ai-provider-group.ai-provider-disabled > .btn:nth-child(3).active,
-								#ai-provider-group.ai-provider-disabled > .btn:nth-child(4).active,
-								#ai-provider-group.ai-provider-disabled > .btn:nth-child(5).active {
-									background-color: #e9ecef !important;
-									border-color: #ced4da !important;
-									color: #495057 !important;
-								}
-							</style>
+							<select name="config_ai_provider" id="input-ai-provider" class="form-select" style="width:auto;max-width:100%;">
+								<option value="claude"<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia') && ($config_ai_provider != 'openrouter') && ($config_ai_provider != 'deepseek')) ? ' selected="selected"' : ''; ?>><?php echo $text_ai_claude; ?></option>
+								<option value="ollama"<?php echo ($config_ai_provider == 'ollama') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_ollama; ?></option>
+								<option value="openai"<?php echo ($config_ai_provider == 'openai') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_openai; ?></option>
+								<option value="nvidia"<?php echo ($config_ai_provider == 'nvidia') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_nvidia; ?></option>
+								<option value="openrouter"<?php echo ($config_ai_provider == 'openrouter') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_openrouter; ?></option>
+								<option value="deepseek"<?php echo ($config_ai_provider == 'deepseek') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_deepseek; ?></option>
+							</select>
 						</div>
 					</div>
-					<div class="form-group row" id="ai-claude-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter')) ? ' style="display:none;"' : ''; ?>>
+					<div class="form-group row" id="ai-claude-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter') || ($config_ai_provider == 'deepseek')) ? ' style="display:none;"' : ''; ?>>
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
@@ -1424,6 +1397,12 @@
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_openrouter_api_key; ?></label>
 						<div class="col-sm-6">
 							<input type="text" name="config_openrouter_api_key" value="<?php echo $config_openrouter_api_key; ?>" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row" id="ai-deepseek-group"<?php echo ($config_ai_provider != 'deepseek') ? ' style="display:none;"' : ''; ?>>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_deepseek_api_key; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_deepseek_api_key" value="<?php echo $config_deepseek_api_key; ?>" class="form-control">
 						</div>
 					</div>
 					<div class="form-group row" id="ai-ollama-group"<?php echo ($config_ai_provider != 'ollama') ? ' style="display:none;"' : ''; ?>>
@@ -1470,30 +1449,26 @@
 		this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
 	});
 
-	$('input[name="config_ai_provider"]').on('change', function() {
+	$('#input-ai-provider').on('change', function() {
 		var provider = $(this).val();
 
-		$('#ai-claude-group').toggle(provider != 'ollama' && provider != 'openai' && provider != 'nvidia' && provider != 'openrouter');
+		$('#ai-claude-group').toggle(provider != 'ollama' && provider != 'openai' && provider != 'nvidia' && provider != 'openrouter' && provider != 'deepseek');
 		$('#ai-ollama-group').toggle(provider == 'ollama');
 		$('#ai-openai-group').toggle(provider == 'openai');
 		$('#ai-nvidia-group').toggle(provider == 'nvidia');
 		$('#ai-openrouter-group').toggle(provider == 'openrouter');
+		$('#ai-deepseek-group').toggle(provider == 'deepseek');
 	});
 
 	function aiEnabledUpdateLook() {
 		var enabled = ($('#input-ai-enabled').val() != '0');
-
-		if (!enabled) {
-			$('#ai-provider-group').addClass('ai-provider-disabled');
-		} else {
-			$('#ai-provider-group').removeClass('ai-provider-disabled');
-		}
 
 		$('input[name="config_claude_api_key"]').prop('disabled', !enabled);
 		$('input[name="config_ollama_url"]').prop('disabled', !enabled);
 		$('input[name="config_openai_api_key"]').prop('disabled', !enabled);
 		$('input[name="config_nvidia_api_key"]').prop('disabled', !enabled);
 		$('input[name="config_openrouter_api_key"]').prop('disabled', !enabled);
+		$('input[name="config_deepseek_api_key"]').prop('disabled', !enabled);
 		$('#button-ai-test').toggleClass('disabled', !enabled);
 	}
 
@@ -1526,7 +1501,7 @@
 	aiDependentRadioGuard('config_product_vector_embeddings', <?php echo json_encode(html_entity_decode($text_product_vector_embeddings_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
 
 	function aiTest() {
-		var provider = $('input[name="config_ai_provider"]:checked').val();
+		var provider = $('#input-ai-provider').val();
 		var $btn = $('#button-ai-test');
 		var $result = $('#ai-test-result');
 
@@ -1542,6 +1517,7 @@
 				openai_api_key: $('input[name="config_openai_api_key"]').val(),
 				nvidia_api_key: $('input[name="config_nvidia_api_key"]').val(),
 				openrouter_api_key: $('input[name="config_openrouter_api_key"]').val(),
+				deepseek_api_key: $('input[name="config_deepseek_api_key"]').val(),
 				ollama_url: $('input[name="config_ollama_url"]').val()
 			},
 			dataType: 'json',

@@ -59,6 +59,8 @@ class ControllerToolSystem extends Controller {
 			$this->data['ai_model'] = 'NVIDIA (meta/llama-3.1-8b-instruct)';
 		} elseif ($this->config->get('config_ai_provider') == 'openrouter') {
 			$this->data['ai_model'] = 'OpenRouter (openai/gpt-4o-mini)';
+		} elseif ($this->config->get('config_ai_provider') == 'deepseek') {
+			$this->data['ai_model'] = 'DeepSeek (deepseek-flash)';
 		} else {
 			$this->data['ai_model'] = 'Claude (claude-opus-4-8)';
 		}

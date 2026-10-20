@@ -49,7 +49,7 @@ class ControllerCommonHome extends Controller {
 		$this->data['error_claude_chat_connection'] = $this->language->get('error_claude_chat_connection');
 		$this->data['claude_chat_url'] = str_replace('&amp;', '&', $this->url->link('common/home/claudeChat', 'token=' . $this->session->data['token'], 'SSL'));
 		$ai_provider_now = $this->config->get('config_ai_provider');
-		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? 'qwen3:1.7b' : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : (($ai_provider_now == 'openrouter') ? 'openai/gpt-4o-mini' : 'claude-opus-4-8')));
+		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? 'qwen3:1.7b' : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : (($ai_provider_now == 'openrouter') ? 'openai/gpt-4o-mini' : (($ai_provider_now == 'deepseek') ? 'deepseek-flash' : 'claude-opus-4-8'))));
 
 		$this->data['text_view_kanban'] = $this->language->get('text_view_kanban');
 		$this->data['text_kanban'] = $this->language->get('text_kanban');
@@ -803,7 +803,7 @@ class ControllerCommonHome extends Controller {
 			return;
 		}
 
-		if (in_array($provider, array('openai', 'nvidia', 'openrouter'))) {
+		if (in_array($provider, array('openai', 'nvidia', 'openrouter', 'deepseek'))) {
 			$this->openaiCompatChat($messages, $message, $provider);
 			return;
 		}
@@ -1061,15 +1061,16 @@ También dispones de search_product_documents, search_customer_documents y searc
 		return 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 6 herramientas: list_tables, describe_table, query_database, search_product_documents, search_customer_documents y search_supplier_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Cuando el usuario pregunte qué dijo, acordó o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier) en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents, search_customer_documents o search_supplier_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.';
 	}
 
-	// Chat con proveedores que hablan el formato chat/completions de OpenAI: OpenAI, NVIDIA y
-	// OpenRouter. Mismo bucle de herramientas que ollamaChat(). Las herramientas de busqueda en
+	// Chat con proveedores que hablan el formato chat/completions de OpenAI: OpenAI, NVIDIA,
+	// OpenRouter y DeepSeek (modelo deepseek-flash = DeepSeek-V4.1-Flash-1017). Mismo bucle de herramientas que ollamaChat(). Las herramientas de busqueda en
 	// documentos solo se ofrecen si hay un Ollama con nomic-embed-text disponible (los embeddings
 	// siempre se generan en local).
 	private function openaiCompatChat($messages, $message, $provider) {
 		$providers = array(
 			'openai'     => array('https://api.openai.com/v1/chat/completions', 'config_openai_api_key', 'gpt-4o-mini', 'OpenAI'),
 			'nvidia'     => array('https://integrate.api.nvidia.com/v1/chat/completions', 'config_nvidia_api_key', 'meta/llama-3.1-8b-instruct', 'NVIDIA'),
-			'openrouter' => array('https://openrouter.ai/api/v1/chat/completions', 'config_openrouter_api_key', 'openai/gpt-4o-mini', 'OpenRouter')
+			'openrouter' => array('https://openrouter.ai/api/v1/chat/completions', 'config_openrouter_api_key', 'openai/gpt-4o-mini', 'OpenRouter'),
+			'deepseek'   => array('https://api.deepseek.com/chat/completions', 'config_deepseek_api_key', 'deepseek-flash', 'DeepSeek')
 		);
 
 		list($url, $key_name, $model, $label) = $providers[$provider];

@@ -240,6 +240,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_nvidia_api_key'] = $this->language->get('entry_nvidia_api_key');
 		$this->data['text_ai_openrouter'] = $this->language->get('text_ai_openrouter');
 		$this->data['entry_openrouter_api_key'] = $this->language->get('entry_openrouter_api_key');
+		$this->data['text_ai_deepseek'] = $this->language->get('text_ai_deepseek');
+		$this->data['entry_deepseek_api_key'] = $this->language->get('entry_deepseek_api_key');
 		$this->data['entry_claude_api_key'] = $this->language->get('entry_claude_api_key');
 		$this->data['entry_ollama_url'] = $this->language->get('entry_ollama_url');
 		$this->data['button_ai_test'] = $this->language->get('button_ai_test');
@@ -654,6 +656,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_openrouter_api_key'] = $this->request->post['config_openrouter_api_key'];
 		} else {
 			$this->data['config_openrouter_api_key'] = $this->config->get('config_openrouter_api_key');
+		}
+
+		if (isset($this->request->post['config_deepseek_api_key'])) {
+			$this->data['config_deepseek_api_key'] = $this->request->post['config_deepseek_api_key'];
+		} else {
+			$this->data['config_deepseek_api_key'] = $this->config->get('config_deepseek_api_key');
 		}
 
 		if (isset($this->request->post['config_ai_provider'])) {
@@ -1651,8 +1659,9 @@ class ControllerSettingSetting extends Controller {
 			$ai_openai_key = isset($this->request->post['config_openai_api_key']) ? trim($this->request->post['config_openai_api_key']) : '';
 			$ai_nvidia_key = isset($this->request->post['config_nvidia_api_key']) ? trim($this->request->post['config_nvidia_api_key']) : '';
 			$ai_openrouter_key = isset($this->request->post['config_openrouter_api_key']) ? trim($this->request->post['config_openrouter_api_key']) : '';
+			$ai_deepseek_key = isset($this->request->post['config_deepseek_api_key']) ? trim($this->request->post['config_deepseek_api_key']) : '';
 
-			if ((($ai_provider == 'ollama') && ($ai_ollama_url === '')) || (($ai_provider == 'openai') && ($ai_openai_key === '')) || (($ai_provider == 'nvidia') && ($ai_nvidia_key === '')) || (($ai_provider == 'openrouter') && ($ai_openrouter_key === '')) || ((($ai_provider != 'ollama') && ($ai_provider != 'openai') && ($ai_provider != 'nvidia') && ($ai_provider != 'openrouter')) && ($ai_claude_key === ''))) {
+			if ((($ai_provider == 'ollama') && ($ai_ollama_url === '')) || (($ai_provider == 'openai') && ($ai_openai_key === '')) || (($ai_provider == 'nvidia') && ($ai_nvidia_key === '')) || (($ai_provider == 'openrouter') && ($ai_openrouter_key === '')) || (($ai_provider == 'deepseek') && ($ai_deepseek_key === '')) || ((($ai_provider != 'ollama') && ($ai_provider != 'openai') && ($ai_provider != 'nvidia') && ($ai_provider != 'openrouter') && ($ai_provider != 'deepseek')) && ($ai_claude_key === ''))) {
 				$this->error['ai_enabled'] = $this->language->get('error_ai_enabled');
 				$this->request->post['config_ai_enabled'] = '0';
 			}
@@ -1780,6 +1789,8 @@ class ControllerSettingSetting extends Controller {
 			$ok = $this->testAiNvidia();
 		} elseif ($provider == 'openrouter') {
 			$ok = $this->testAiOpenrouter();
+		} elseif ($provider == 'deepseek') {
+			$ok = $this->testAiDeepseek();
 		} else {
 			$ok = $this->testAiClaude();
 		}
@@ -1867,6 +1878,50 @@ class ControllerSettingSetting extends Controller {
 		$resp = json_decode($raw, true);
 
 		return !empty($resp['choices'][0]['message']['content']);
+	}
+
+	private function testAiDeepseek() {
+		$api_key = isset($this->request->post['deepseek_api_key']) ? trim($this->request->post['deepseek_api_key']) : '';
+
+		if ($api_key === '') {
+			return false;
+		}
+
+		// API de DeepSeek (compatible con chat/completions de OpenAI): una peticion minima.
+		// DeepSeek-V4.1-Flash-1017 se pide con el id "deepseek-flash".
+		$payload = array(
+			'model'      => 'deepseek-flash',
+			'messages'   => array(array('role' => 'user', 'content' => 'ping')),
+			'max_tokens' => 16,
+			'stream'     => false
+		);
+
+		$ch = curl_init('https://api.deepseek.com/chat/completions');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+			'Content-Type: application/json',
+			'Authorization: Bearer ' . $api_key
+		));
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+		$raw       = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if (PHP_VERSION_ID < 80000) {
+			curl_close($ch);
+		}
+
+		if (($raw === false) || ($http_code < 200) || ($http_code >= 300)) {
+			return false;
+		}
+
+		$resp = json_decode($raw, true);
+
+		// Con el modo de razonamiento el texto puede venir vacio si max_tokens se agota pensando:
+		// una respuesta valida con "choices" basta para saber que la clave funciona.
+		return !empty($resp['choices'][0]['message']);
 	}
 
 	private function testAiNvidia() {
