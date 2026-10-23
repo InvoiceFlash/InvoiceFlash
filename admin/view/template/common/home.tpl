@@ -323,7 +323,7 @@
 	<div class="row mb-3">
 		<div class="col-sm-12">
 			<div class="card page-card" id="claude-chat">
-				<div class="card-header clearfix"><h5><i class="fa fa-robot"></i> <?php echo $text_claude_chat; ?> (<?php echo $ai_chat_model; ?>)</h5></div>
+				<div class="card-header clearfix"><h5><i class="fa fa-robot"></i> <?php echo $text_claude_chat; ?> (<?php echo $ai_chat_model; ?>)<?php if ($chat_rag_active) { ?> <span class="badge bg-success ms-2" style="font-size:11px;"><?php echo $text_chat_rag_active; ?></span><?php } ?></h5></div>
 				<div class="card-body">
 					<div id="claude-chat-messages" style="height:400px; overflow-y:auto; background:#faf9f7; border:1px solid #e5e2da; border-radius:6px; padding:15px; margin-bottom:15px;">
 						<div class="claude-chat-message claude-chat-message-bot" style="background:#fff; border:1px solid #e5e2da; border-radius:8px; padding:10px 14px; max-width:80%; margin-bottom:10px;">
@@ -739,6 +739,53 @@ $(document).on('drop', '.kanban-col', function(e) {
 var claudeChatUrl = '<?php echo addslashes($claude_chat_url); ?>';
 var claudeChatMessages = [];
 var claudeChatBusy = false;
+var chatApproveUrl = '<?php echo addslashes($chat_approve_url); ?>';
+var chatRejectUrl = '<?php echo addslashes($chat_reject_url); ?>';
+var chatProposalTexts = <?php echo json_encode($chat_proposal_texts); ?>;
+
+function claudeChatProposal(p) {
+	var $card = $('<div>').attr('style', 'background:#fffbea; border:1px solid #f0d98a; border-radius:8px; padding:12px 14px; max-width:80%; margin-bottom:10px;');
+	var $tbl = $('<table>').addClass('table table-sm table-bordered mb-2').css('background', '#fff');
+	var $status = $('<div>').css('margin-top', '8px');
+	var $approve = $('<button type="button">').addClass('btn btn-success btn-sm me-2').text(chatProposalTexts.approve);
+	var $reject = $('<button type="button">').addClass('btn btn-default btn-sm').text(chatProposalTexts.reject);
+
+	$card.append($('<div>').css('font-weight', '600').text(chatProposalTexts.title + ': ' + p.label));
+	$card.append($('<div>').css({'font-size': '12px', 'color': '#6b6b6b', 'margin-bottom': '6px'}).text(p.target));
+
+	$.each(p.changes, function(key, value) {
+		$tbl.append($('<tr>').append($('<th>').css('width', '30%').text(key)).append($('<td>').css('white-space', 'pre-wrap').text(value)));
+	});
+
+	function resolve(url, okText) {
+		$approve.prop('disabled', true);
+		$reject.prop('disabled', true);
+
+		fetch(url, {
+			method:  'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body:    JSON.stringify({ proposal_id: p.id })
+		})
+		.then(function(r) { return r.json(); })
+		.then(function(data) {
+			$approve.remove();
+			$reject.remove();
+			$status.css('color', data.ok ? '#28a745' : '#dc3545').text(data.ok ? (data.message || okText) : (data.message || chatProposalTexts.error));
+		})
+		.catch(function() {
+			$approve.prop('disabled', false);
+			$reject.prop('disabled', false);
+			$status.css('color', '#dc3545').text(chatProposalTexts.error);
+		});
+	}
+
+	$approve.on('click', function() { resolve(chatApproveUrl, chatProposalTexts.applied); });
+	$reject.on('click', function() { resolve(chatRejectUrl, chatProposalTexts.rejected); });
+
+	$card.append($tbl).append($approve).append($reject).append($status);
+	$('#claude-chat-messages').append($card);
+	$('#claude-chat-messages').scrollTop($('#claude-chat-messages')[0].scrollHeight);
+}
 
 function claudeChatAppend(role, text) {
 	var css = (role === 'user')
@@ -800,6 +847,10 @@ function claudeChatSend() {
 
 		claudeChatMessages = data.messages || claudeChatMessages;
 		claudeChatAppend('bot', data.reply || '');
+
+		if (data.proposals && data.proposals.length) {
+			$.each(data.proposals, function(i, p) { claudeChatProposal(p); });
+		}
 	})
 	.catch(function() {
 		claudeChatBusy = false;

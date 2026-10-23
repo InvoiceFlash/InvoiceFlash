@@ -1,5 +1,8 @@
 <?php   
 class ControllerCommonHome extends Controller {   
+	// Propuestas de cambio creadas durante la peticion actual del chat (se devuelven al navegador).
+	private $chat_proposals = array();
+
 	public function index() {
 		$this->language->load('common/home');
 
@@ -48,6 +51,19 @@ class ControllerCommonHome extends Controller {
 		$this->data['text_claude_chat_input_placeholder'] = $this->language->get('text_claude_chat_input_placeholder');
 		$this->data['error_claude_chat_connection'] = $this->language->get('error_claude_chat_connection');
 		$this->data['claude_chat_url'] = str_replace('&amp;', '&', $this->url->link('common/home/claudeChat', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['chat_actions_enabled'] = $this->config->get('config_ai_actions_enabled') ? 1 : 0;
+		$this->data['chat_approve_url'] = str_replace('&amp;', '&', $this->url->link('common/home/approveAction', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['chat_reject_url'] = str_replace('&amp;', '&', $this->url->link('common/home/rejectAction', 'token=' . $this->session->data['token'], 'SSL'));
+		$this->data['chat_rag_active'] = ($this->config->get('config_ai_enabled') && $this->config->get('config_product_vector_embeddings')) ? 1 : 0;
+		$this->data['text_chat_rag_active'] = $this->language->get('text_chat_rag_active');
+		$this->data['chat_proposal_texts'] = array(
+			'title'    => html_entity_decode($this->language->get('text_chat_proposal_title'), ENT_QUOTES, 'UTF-8'),
+			'approve'  => html_entity_decode($this->language->get('button_chat_approve'), ENT_QUOTES, 'UTF-8'),
+			'reject'   => html_entity_decode($this->language->get('button_chat_reject'), ENT_QUOTES, 'UTF-8'),
+			'applied'  => html_entity_decode($this->language->get('text_chat_proposal_applied'), ENT_QUOTES, 'UTF-8'),
+			'rejected' => html_entity_decode($this->language->get('text_chat_proposal_rejected'), ENT_QUOTES, 'UTF-8'),
+			'error'    => html_entity_decode($this->language->get('error_chat_proposal'), ENT_QUOTES, 'UTF-8')
+		);
 		$ai_provider_now = $this->config->get('config_ai_provider');
 		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? 'qwen3:1.7b' : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : (($ai_provider_now == 'openrouter') ? 'openai/gpt-4o-mini' : (($ai_provider_now == 'deepseek') ? 'deepseek-flash' : 'claude-opus-4-8'))));
 
@@ -828,6 +844,8 @@ class ControllerCommonHome extends Controller {
 			$tool_defs = array_merge($tool_defs, array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
 		}
 
+		$tool_defs = $this->withActionTools($tool_defs);
+
 		$route     = $this->routeChatMessage($message, $with_docs);
 		$tool_defs = $this->filterToolDefsByRoute($tool_defs, $route);
 
@@ -946,9 +964,309 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		$this->response->setOutput(json_encode(array(
-			'reply'    => $final_text,
-			'messages' => $messages
+			'reply'     => $final_text,
+			'messages'  => $messages,
+			'proposals' => $this->chat_proposals
 		)));
+	}
+
+	// ---------------------------------------------------------------------------------------------
+	// Cambios propuestos desde el chat (aprobar antes de escribir).
+	// El modelo NUNCA escribe: propose_action solo guarda una propuesta en la sesion y la devuelve al
+	// navegador, que la muestra con los botones Aprobar/Rechazar. approveAction() es el unico punto que
+	// ejecuta, usa los datos GUARDADOS (no los que lleguen en la peticion) y comprueba otra vez el permiso
+	// de modificacion del usuario. Solo existe si config_ai_actions_enabled esta activo.
+	// Cada accion: label, help, permission (ruta de permiso 'modify'), prepare($c,$data) -> valida y
+	// describe el cambio, execute($c,$data) -> lo aplica, log($data) -> array(document_type, document_id).
+	// Los modulos pueden anadir acciones con ficheros admin/chat_actions/*.php que devuelvan un array de definiciones.
+	// ---------------------------------------------------------------------------------------------
+	private function getChatActionRegistry() {
+		static $registry = null;
+
+		if ($registry !== null) {
+			return $registry;
+		}
+
+		$registry = array(
+			'customer_add_note' => array(
+				'label'      => 'Añadir una nota a un cliente',
+				'help'       => 'customer_add_note: data = {customer_id (entero, id del cliente), comment (texto de la nota)}',
+				'permission' => 'sale/customer',
+				'prepare'    => function ($c, $data) {
+					$customer_id = isset($data['customer_id']) ? (int)$data['customer_id'] : 0;
+					$comment     = isset($data['comment']) ? trim((string)$data['comment']) : '';
+
+					if ($customer_id <= 0) {
+						return array('error' => 'Falta customer_id: resuélvelo antes con query_database sobre la tabla customer.');
+					}
+
+					if ($comment === '') {
+						return array('error' => 'Falta el texto de la nota (comment).');
+					}
+
+					if (mb_strlen($comment, 'UTF-8') > 2000) {
+						return array('error' => 'La nota es demasiado larga (máximo 2000 caracteres).');
+					}
+
+					$c->load->model('sale/customer');
+
+					$customer = $c->model_sale_customer->getCustomer($customer_id);
+
+					if (!$customer) {
+						return array('error' => 'No existe ningún cliente con ese customer_id.');
+					}
+
+					$name = !empty($customer['company']) ? $customer['company'] : trim((isset($customer['firstname']) ? $customer['firstname'] : '') . ' ' . (isset($customer['lastname']) ? $customer['lastname'] : ''));
+
+					return array(
+						'target'  => 'Cliente #' . $customer_id . ' · ' . $name,
+						'changes' => array('Cliente' => $name, 'Nota nueva' => $comment),
+						'data'    => array('customer_id' => $customer_id, 'comment' => $comment)
+					);
+				},
+				'execute'    => function ($c, $data) {
+					$c->load->model('sale/customer');
+
+					// Igual que insertNote(): el texto se guarda escapado, como llega del formulario.
+					$note_id = $c->model_sale_customer->addCustomerNote(array('comment' => htmlspecialchars($data['comment'], ENT_COMPAT, 'UTF-8')), (int)$data['customer_id']);
+
+					return array('ok' => (bool)$note_id, 'message' => 'Nota añadida al cliente #' . (int)$data['customer_id'] . '.');
+				},
+				'log'        => function ($data) {
+					return array('customer', (int)$data['customer_id']);
+				}
+			)
+		);
+
+		$dir = DIR_APPLICATION . 'chat_actions/';
+
+		if (is_dir($dir)) {
+			foreach (glob($dir . '*.php') as $file) {
+				$defs = include($file);
+
+				if (!is_array($defs)) {
+					continue;
+				}
+
+				foreach ($defs as $name => $def) {
+					if (!isset($registry[$name]) && isset($def['label']) && isset($def['permission']) && isset($def['prepare']) && isset($def['execute'])) {
+						$registry[$name] = $def;
+					}
+				}
+			}
+		}
+
+		return $registry;
+	}
+
+	private function withActionTools($tool_defs) {
+		if (!$this->config->get('config_ai_actions_enabled')) {
+			return $tool_defs;
+		}
+
+		$tool_defs[] = array(
+			'name'        => 'propose_action',
+			'description' => 'Proposes a change to the data (it does NOT execute anything). The user sees the exact change in the chat and must press Approve for it to be applied. Use it when the user asks you to create or change something; never claim the change is done, only that the proposal is waiting for approval.',
+			'parameters'  => array(
+				'type'       => 'object',
+				'properties' => array(
+					'action' => array('type' => 'string', 'enum' => array_keys($this->getChatActionRegistry()), 'description' => 'The action to propose.'),
+					'data'   => array('type' => 'object', 'description' => 'The fields of the action (see the action list in the instructions).')
+				),
+				'required'   => array('action', 'data')
+			)
+		);
+
+		return $tool_defs;
+	}
+
+	private function getActionPromptNote() {
+		$help = array();
+
+		foreach ($this->getChatActionRegistry() as $def) {
+			if (isset($def['help'])) {
+				$help[] = $def['help'];
+			}
+		}
+
+		return ' Si el usuario te pide CAMBIAR algo, no puedes hacerlo directamente: usa propose_action para PROPONER el cambio. La propuesta no se ejecuta hasta que el usuario pulse Aprobar en el chat, así que no digas que ya está hecho: di que has dejado la propuesta pendiente de aprobación. Resuelve antes los ids con query_database. Acciones disponibles: ' . implode(' | ', $help) . '.';
+	}
+
+	private function proposeChatAction($action, $data) {
+		if (!$this->config->get('config_ai_actions_enabled')) {
+			return json_encode(array('error' => 'Las propuestas de cambio desde el chat están desactivadas.'));
+		}
+
+		$registry = $this->getChatActionRegistry();
+
+		if (!isset($registry[$action])) {
+			return json_encode(array('error' => 'Acción desconocida. Acciones válidas: ' . implode(', ', array_keys($registry)) . '.'));
+		}
+
+		$def = $registry[$action];
+
+		if (!$this->user->hasPermission('modify', $def['permission'])) {
+			return json_encode(array('error' => 'El usuario actual no tiene permiso para esta acción.'));
+		}
+
+		$prepare  = $def['prepare'];
+		$prepared = $prepare($this, $data);
+
+		if (!is_array($prepared) || isset($prepared['error'])) {
+			return json_encode(array('error' => (is_array($prepared) && isset($prepared['error'])) ? $prepared['error'] : 'No se ha podido preparar la propuesta.'));
+		}
+
+		$id        = md5(uniqid(mt_rand(), true));
+		$proposals = isset($this->session->data['chat_proposals']) ? $this->session->data['chat_proposals'] : array();
+
+		foreach ($proposals as $key => $old) {
+			if ((time() - $old['created']) > 3600) {
+				unset($proposals[$key]);
+			}
+		}
+
+		while (count($proposals) >= 30) {
+			array_shift($proposals);
+		}
+
+		$proposals[$id] = array(
+			'action'  => $action,
+			'data'    => $prepared['data'],
+			'target'  => $prepared['target'],
+			'changes' => $prepared['changes'],
+			'user_id' => (int)$this->user->getId(),
+			'created' => time(),
+			'status'  => 'pending'
+		);
+
+		$this->session->data['chat_proposals'] = $proposals;
+
+		$this->chat_proposals[] = array(
+			'id'      => $id,
+			'label'   => $def['label'],
+			'target'  => $prepared['target'],
+			'changes' => $prepared['changes']
+		);
+
+		return json_encode(array(
+			'status'      => 'pending_approval',
+			'proposal_id' => $id,
+			'message'     => 'Propuesta mostrada al usuario, pendiente de su aprobación. NO se ha aplicado ningún cambio todavía.'
+		));
+	}
+
+	// Devuelve la propuesta pendiente del usuario actual o un texto de error.
+	private function takePendingProposal($id) {
+		if (!$this->config->get('config_ai_actions_enabled')) {
+			return 'Las propuestas de cambio desde el chat están desactivadas.';
+		}
+
+		$proposals = isset($this->session->data['chat_proposals']) ? $this->session->data['chat_proposals'] : array();
+
+		if (!isset($proposals[$id])) {
+			return 'La propuesta no existe o ha caducado.';
+		}
+
+		$proposal = $proposals[$id];
+
+		if ($proposal['status'] !== 'pending') {
+			return 'La propuesta ya se ha resuelto.';
+		}
+
+		if (((int)$proposal['user_id'] !== (int)$this->user->getId()) || ((time() - $proposal['created']) > 3600)) {
+			return 'La propuesta no existe o ha caducado.';
+		}
+
+		return $proposal;
+	}
+
+	private function readProposalId() {
+		$input = json_decode(file_get_contents('php://input'), true);
+
+		return (is_array($input) && isset($input['proposal_id'])) ? (string)$input['proposal_id'] : '';
+	}
+
+	public function approveAction() {
+		$this->response->addHeader('Content-Type: application/json');
+
+		if ($this->request->server['REQUEST_METHOD'] !== 'POST') {
+			$this->response->setOutput(json_encode(array('ok' => false, 'message' => 'Method not allowed')));
+			return;
+		}
+
+		$id       = $this->readProposalId();
+		$proposal = $this->takePendingProposal($id);
+
+		if (!is_array($proposal)) {
+			$this->response->setOutput(json_encode(array('ok' => false, 'message' => $proposal)));
+			return;
+		}
+
+		$registry = $this->getChatActionRegistry();
+
+		if (!isset($registry[$proposal['action']]) || !$this->user->hasPermission('modify', $registry[$proposal['action']]['permission'])) {
+			$this->response->setOutput(json_encode(array('ok' => false, 'message' => 'El usuario actual no tiene permiso para esta acción.')));
+			return;
+		}
+
+		$def = $registry[$proposal['action']];
+
+		// Se marca como resuelta ANTES de ejecutar: un doble clic nunca aplica el cambio dos veces.
+		$this->session->data['chat_proposals'][$id]['status'] = 'approved';
+
+		try {
+			$execute = $def['execute'];
+			$result  = $execute($this, $proposal['data']);
+		} catch (Exception $e) {
+			$result = array('ok' => false, 'message' => $e->getMessage());
+		} catch (\Throwable $e) {
+			$result = array('ok' => false, 'message' => $e->getMessage());
+		}
+
+		if (!is_array($result) || empty($result['ok'])) {
+			$this->session->data['chat_proposals'][$id]['status'] = 'failed';
+			$this->response->setOutput(json_encode(array('ok' => false, 'message' => (is_array($result) && isset($result['message'])) ? $result['message'] : 'No se ha podido aplicar el cambio.')));
+			return;
+		}
+
+		if (isset($def['log'])) {
+			$log_fn = $def['log'];
+			$log    = $log_fn($proposal['data']);
+
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'edit',
+				'document_type' => $log[0],
+				'document_id'   => (int)$log[1],
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				'cambiado'      => array_merge(array('origen' => 'Chat IA (aprobado por el usuario)', 'accion' => $def['label']), $proposal['changes'])
+			));
+		}
+
+		$this->response->setOutput(json_encode(array('ok' => true, 'message' => isset($result['message']) ? $result['message'] : '')));
+	}
+
+	public function rejectAction() {
+		$this->response->addHeader('Content-Type: application/json');
+
+		if ($this->request->server['REQUEST_METHOD'] !== 'POST') {
+			$this->response->setOutput(json_encode(array('ok' => false, 'message' => 'Method not allowed')));
+			return;
+		}
+
+		$id       = $this->readProposalId();
+		$proposal = $this->takePendingProposal($id);
+
+		if (!is_array($proposal)) {
+			$this->response->setOutput(json_encode(array('ok' => false, 'message' => $proposal)));
+			return;
+		}
+
+		$this->session->data['chat_proposals'][$id]['status'] = 'rejected';
+
+		$this->response->setOutput(json_encode(array('ok' => true, 'message' => '')));
 	}
 
 	// Enrutado de la pregunta (Database Routing): decide si va a la base de datos (SQL), a los
@@ -973,6 +1291,11 @@ También dispones de search_product_documents, search_customer_documents y searc
 
 		$docs = preg_match($docs_re, $text);
 		$data = preg_match($data_re, $text);
+
+		// Una peticion de cambio ("anota...", "apunta...") necesita todas las herramientas (hallar el id y proponer).
+		if ($this->config->get('config_ai_actions_enabled') && preg_match('/\b(anota|anotar|apunta|apuntar|anade|anadir|crea|crear|registra|registrar|guarda|guardar|deja|dejar)\b/u', $text)) {
+			return 'both';
+		}
 
 		if ($docs && !$data) {
 			return 'documents';
@@ -1003,15 +1326,19 @@ También dispones de search_product_documents, search_customer_documents y searc
 	}
 
 	private function getRouteHint($route) {
+		$hint = '';
+
 		if ($route === 'data') {
-			return ' Para ESTA pregunta usa solo list_tables, describe_table y query_database: es una consulta sobre datos estructurados de la base de datos y no dispones de busqueda en documentos.';
+			$hint = ' Para ESTA pregunta usa list_tables, describe_table y query_database: es una consulta sobre datos estructurados de la base de datos y no dispones de busqueda en documentos.';
+		} elseif ($route === 'documents') {
+			$hint = ' Para ESTA pregunta el contenido esta en documentos, notas o emails: usa las herramientas search_product_documents, search_customer_documents o search_supplier_documents. Usa query_database solo para localizar el customer_id, supplier_id o product_id que necesites, no para buscar el contenido.';
 		}
 
-		if ($route === 'documents') {
-			return ' Para ESTA pregunta el contenido esta en documentos, notas o emails: usa las herramientas search_product_documents, search_customer_documents o search_supplier_documents. Usa query_database solo para localizar el customer_id, supplier_id o product_id que necesites, no para buscar el contenido.';
+		if ($this->config->get('config_ai_actions_enabled')) {
+			$hint .= $this->getActionPromptNote();
 		}
 
-		return '';
+		return $hint;
 	}
 
 	// Anade la indicacion de ruta como mensaje de sistema solo para esta peticion (no se guarda en el historial).
@@ -1166,6 +1493,8 @@ También dispones de search_product_documents, search_customer_documents y searc
 			$tool_defs = array_merge($tool_defs, array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
 		}
 
+		$tool_defs  = $this->withActionTools($tool_defs);
+
 		$route      = $this->routeChatMessage($message, $with_docs);
 		$tool_defs  = $this->filterToolDefsByRoute($tool_defs, $route);
 		$route_hint = $this->getRouteHint($route);
@@ -1278,8 +1607,9 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		$this->response->setOutput(json_encode(array(
-			'reply'    => $reply,
-			'messages' => $messages
+			'reply'     => $reply,
+			'messages'  => $messages,
+			'proposals' => $this->chat_proposals
 		)));
 	}
 
@@ -1331,6 +1661,8 @@ También dispones de search_product_documents, search_customer_documents y searc
 		// solo se ofrecen aqui (rama Ollama/qwen3:1.7b), no en claudeChat() — no forman
 		// parte de getHomeChatToolDefs() a proposito.
 		$tool_defs = array_merge($this->getHomeChatToolDefs(), array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
+
+		$tool_defs  = $this->withActionTools($tool_defs);
 
 		$route      = $this->routeChatMessage($message, true);
 		$tool_defs  = $this->filterToolDefsByRoute($tool_defs, $route);
@@ -1410,8 +1742,9 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		$this->response->setOutput(json_encode(array(
-			'reply'    => $reply,
-			'messages' => $messages
+			'reply'     => $reply,
+			'messages'  => $messages,
+			'proposals' => $this->chat_proposals
 		)));
 	}
 
@@ -1540,6 +1873,16 @@ También dispones de search_product_documents, search_customer_documents y searc
 				}
 
 				return $this->formatRagResponse($result);
+
+			case 'propose_action':
+				$action = isset($tool_input['action']) ? trim((string)$tool_input['action']) : '';
+				$data   = isset($tool_input['data']) ? $tool_input['data'] : array();
+
+				if (is_string($data)) {
+					$data = json_decode($data, true);
+				}
+
+				return $this->proposeChatAction($action, is_array($data) ? $data : array());
 
 			default:
 				return json_encode(array('error' => 'Unknown tool: ' . $tool_name));

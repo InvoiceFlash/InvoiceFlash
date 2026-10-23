@@ -55,6 +55,9 @@ $_['entry_review']       	       = '<a data-toggle="tooltip" title="Enable/Disab
 $_['entry_product_vector_embeddings'] = 'Enable RAG';
 $_['text_product_vector_embeddings_tooltip'] = 'If enabled (and an Ollama model with embedding support is available), any PDF attached to a product is automatically indexed into the vector database so the AI can look it up (RAG).';
 $_['error_product_vector_embeddings'] = 'To enable this you must first enable "Use AI" in the AI tab.';
+$_['entry_ai_actions_enabled'] = 'Allow changes from the chat';
+$_['text_ai_actions_enabled_tooltip'] = 'If enabled, the AI chat can PROPOSE changes (for example adding a note to a customer). Nothing is applied until the user clicks Approve in the chat, and it runs with the user\'s own permissions.';
+$_['error_ai_actions_enabled'] = 'To enable this you must first enable "Use AI" in the AI tab.';
 $_['error_import_supplier_invoices_ai'] = 'To enable this you must first enable "Use AI" in the AI tab.';
 $_['entry_download']               = 'Allow Downloads:';
 $_['entry_voucher_min']            = '<a data-toggle="tooltip" title="Minimum amount a customer can purchase a voucher for."><i class="fas fa-question-circle"></i></a> Voucher Min:';

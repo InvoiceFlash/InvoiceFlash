@@ -1449,6 +1449,22 @@
 							<?php } ?>
 						</div>
 					</div>
+
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><a data-bs-toggle="tooltip" title="<?php echo $text_ai_actions_enabled_tooltip; ?>" style="display:inline-block;width:16px;height:16px;line-height:16px;text-align:center;border-radius:50%;background-color:#2e8bcc;color:#fff;font-size:11px;font-weight:bold;text-decoration:none;">?</a> <?php echo $entry_ai_actions_enabled; ?></label>
+						<div class="col-sm-6">
+							<?php if ($config_ai_actions_enabled) { ?>
+							<label class="radio-inline"><input type="radio" name="config_ai_actions_enabled" value="1" checked=""><?php echo $text_yes; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_ai_actions_enabled" value="0"><?php echo $text_no; ?></label>
+							<?php } else { ?>
+							<label class="radio-inline"><input type="radio" name="config_ai_actions_enabled" value="1"><?php echo $text_yes; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_ai_actions_enabled" value="0" checked=""><?php echo $text_no; ?></label>
+							<?php } ?>
+							<?php if ($error_ai_actions_enabled) { ?>
+								<div class="form-text text-danger"><?php echo $error_ai_actions_enabled; ?></div>
+							<?php } ?>
+						</div>
+					</div>
 				</div>
 			</div>
 		</form>
@@ -1512,6 +1528,7 @@
 
 	aiDependentRadioGuard('config_import_supplier_invoices', <?php echo json_encode(html_entity_decode($text_import_supplier_invoices_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
 	aiDependentRadioGuard('config_product_vector_embeddings', <?php echo json_encode(html_entity_decode($text_product_vector_embeddings_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
+	aiDependentRadioGuard('config_ai_actions_enabled', <?php echo json_encode(html_entity_decode($text_ai_actions_enabled_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
 
 	function aiTest() {
 		var provider = $('#input-ai-provider').val();

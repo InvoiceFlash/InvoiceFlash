@@ -54,6 +54,13 @@ $_['text_claude_chat']              = 'AI Chat';
 $_['text_claude_chat_placeholder']  = 'Hi, I\'m the InvoiceFlash assistant. I can answer questions about the app and look up data in your account (invoices, customers, sales...). How can I help?';
 $_['text_claude_chat_input_placeholder'] = 'Type a message...';
 $_['error_claude_chat_connection']  = 'Connection error.';
+$_['text_chat_rag_active'] = 'RAG active';
+$_['text_chat_proposal_title'] = 'Proposed change';
+$_['button_chat_approve'] = 'Approve';
+$_['button_chat_reject'] = 'Reject';
+$_['text_chat_proposal_applied'] = 'Change applied.';
+$_['text_chat_proposal_rejected'] = 'Change rejected. Nothing was modified.';
+$_['error_chat_proposal'] = 'The proposal could not be processed.';
 $_['error_ai_chat_no_api_key'] = 'No %s API key is configured. Go to Settings > AI to configure it.';
 $_['error_claude_chat_no_api_key']  = 'No Claude API key is configured. Go to Settings > AI to configure it.';
 

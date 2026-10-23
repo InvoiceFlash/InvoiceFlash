@@ -130,6 +130,9 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_product_vector_embeddings'] = $this->language->get('entry_product_vector_embeddings');
 		$this->data['text_product_vector_embeddings_tooltip'] = $this->language->get('text_product_vector_embeddings_tooltip');
 		$this->data['text_product_vector_embeddings_ai_warning'] = $this->language->get('error_product_vector_embeddings');
+		$this->data['entry_ai_actions_enabled'] = $this->language->get('entry_ai_actions_enabled');
+		$this->data['text_ai_actions_enabled_tooltip'] = $this->language->get('text_ai_actions_enabled_tooltip');
+		$this->data['text_ai_actions_enabled_ai_warning'] = $this->language->get('error_ai_actions_enabled');
 		$this->data['text_import_supplier_invoices_ai_warning'] = $this->language->get('error_import_supplier_invoices_ai');
 		$this->data['entry_download'] = $this->language->get('entry_download');
 		$this->data['entry_voucher_min'] = $this->language->get('entry_voucher_min');
@@ -487,6 +490,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['error_product_vector_embeddings'] = $this->error['product_vector_embeddings'];
 		} else {
 			$this->data['error_product_vector_embeddings'] = '';
+		}
+
+		if (isset($this->error['ai_actions_enabled'])) {
+			$this->data['error_ai_actions_enabled'] = $this->error['ai_actions_enabled'];
+		} else {
+			$this->data['error_ai_actions_enabled'] = '';
 		}
 
 		if (isset($this->error['import_supplier_invoices_ai'])) {
@@ -895,6 +904,12 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_product_vector_embeddings'] = $this->request->post['config_product_vector_embeddings'];
 		} else {
 			$this->data['config_product_vector_embeddings'] = $this->config->get('config_product_vector_embeddings');
+		}
+
+		if (isset($this->request->post['config_ai_actions_enabled'])) {
+			$this->data['config_ai_actions_enabled'] = $this->request->post['config_ai_actions_enabled'];
+		} else {
+			$this->data['config_ai_actions_enabled'] = $this->config->get('config_ai_actions_enabled');
 		}
 
 		if (isset($this->request->post['config_voucher_min'])) {
@@ -1686,6 +1701,11 @@ class ControllerSettingSetting extends Controller {
 		if (!empty($this->request->post['config_product_vector_embeddings']) && empty($this->request->post['config_ai_enabled'])) {
 			$this->error['product_vector_embeddings'] = $this->language->get('error_product_vector_embeddings');
 			$this->request->post['config_product_vector_embeddings'] = '0';
+		}
+
+		if (!empty($this->request->post['config_ai_actions_enabled']) && empty($this->request->post['config_ai_enabled'])) {
+			$this->error['ai_actions_enabled'] = $this->language->get('error_ai_actions_enabled');
+			$this->request->post['config_ai_actions_enabled'] = '0';
 		}
 
 		if (!empty($this->request->post['config_import_supplier_invoices']) && empty($this->request->post['config_ai_enabled'])) {
