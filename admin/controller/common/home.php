@@ -1461,29 +1461,111 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 	}
 
-	// Embedding de la consulta via Ollama (mismo modelo nomic-embed-text usado por
-	// system/vendor/document_embeddings/document_embeddings.py al ingerir los PDFs) +
-	// busqueda de los chunks mas cercanos en if_document_chunks (VECTOR, MariaDB 11.7+).
+	// Busqueda hibrida sobre if_document_chunks: semantica (embedding de la consulta +
+	// VEC_DISTANCE_COSINE, MariaDB 11.7+) y por palabras (indice FULLTEXT sobre chunk_text),
+	// combinadas con Reciprocal Rank Fusion. La parte por palabras acierta con referencias
+	// exactas (F-2026-0117, nombres propios) que los embeddings no capturan; la semantica
+	// acierta con sinonimos y preguntas en lenguaje natural. $where acota SIEMPRE el alcance
+	// (cliente/proveedor/producto): nunca se construye a partir de la consulta del usuario.
+	private function hybridSearch($columns, $where, $query, $limit) {
+		$this->ensureChunkFulltextIndex();
+
+		$table = DB_PREFIX . 'document_chunks';
+		$pool  = max($limit * 4, 20);
+		$q     = $this->db->escape($query);
+
+		$embedding   = $this->generateEmbedding($query);
+		$distance_sql = '';
+
+		if ($embedding !== false) {
+			$vector_text  = '[' . implode(',', array_map(function ($v) { return (float)$v; }, $embedding)) . ']';
+			$distance_sql = "VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "'))";
+		}
+
+		$semantic = array();
+
+		if ($distance_sql !== '') {
+			$result = $this->safeQuery("SELECT document_chunk_id, " . $columns . ", " . $distance_sql . " AS distance
+				FROM `" . $table . "` WHERE " . $where . " ORDER BY distance ASC LIMIT " . (int)$pool);
+
+			if (isset($result['error'])) {
+				return $result;
+			}
+
+			$semantic = $result['rows'];
+		}
+
+		// Si el indice FULLTEXT no se pudo crear o la consulta no tiene palabras utiles, solo cuenta la semantica.
+		$text_sql = "SELECT document_chunk_id, " . $columns . ", " . ($distance_sql !== '' ? $distance_sql : 'NULL') . " AS distance
+			FROM `" . $table . "` WHERE " . $where . " AND MATCH(chunk_text) AGAINST ('" . $q . "')
+			ORDER BY MATCH(chunk_text) AGAINST ('" . $q . "') DESC LIMIT " . (int)$pool;
+
+		$result = $this->safeQuery($text_sql);
+		$text   = isset($result['error']) ? array() : $result['rows'];
+
+		if ($embedding === false && !$text) {
+			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado) y no hay coincidencias por palabras.');
+		}
+
+		$merged = array();
+
+		foreach (array('semantic' => $semantic, 'text' => $text) as $kind => $rows) {
+			foreach (array_values($rows) as $rank => $row) {
+				$id = $row['document_chunk_id'];
+
+				if (!isset($merged[$id])) {
+					$row['score'] = 0;
+					$row['match'] = array();
+					$merged[$id]  = $row;
+				}
+
+				$merged[$id]['score']  += 1 / (60 + $rank + 1);
+				$merged[$id]['match'][] = $kind;
+			}
+		}
+
+		uasort($merged, function ($x, $y) {
+			if ($x['score'] == $y['score']) {
+				return 0;
+			}
+
+			return ($x['score'] < $y['score']) ? 1 : -1;
+		});
+
+		$out = array();
+
+		foreach (array_slice($merged, 0, $limit) as $row) {
+			unset($row['document_chunk_id']);
+			$row['score'] = round($row['score'], 5);
+			$row['match'] = (count($row['match']) > 1) ? 'both' : $row['match'][0];
+			$out[]        = $row;
+		}
+
+		return array('rows' => $out);
+	}
+
+	// Crea el indice FULLTEXT de chunk_text si no existe (instalaciones anteriores a la busqueda
+	// hibrida). Una sola comprobacion por peticion; si el ALTER falla, la busqueda sigue siendo semantica.
+	private function ensureChunkFulltextIndex() {
+		static $checked = false;
+
+		if ($checked) {
+			return;
+		}
+
+		$checked = true;
+		$table   = DB_PREFIX . 'document_chunks';
+		$result  = $this->safeQuery("SHOW INDEX FROM `" . $table . "` WHERE Key_name = 'ft_chunk_text'");
+
+		if (!isset($result['error']) && !$result['rows']) {
+			$this->safeQuery("ALTER TABLE `" . $table . "` ADD FULLTEXT KEY `ft_chunk_text` (`chunk_text`)");
+		}
+	}
+
 	private function searchProductDocuments($query, $product_id = 0, $limit = 5) {
-		$embedding = $this->generateEmbedding($query);
+		$where = $product_id ? "product_id = '" . (int)$product_id . "'" : '1 = 1';
 
-		if ($embedding === false) {
-			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado).');
-		}
-
-		$vector_text = '[' . implode(',', array_map(function ($v) { return (float)$v; }, $embedding)) . ']';
-
-		$sql = "SELECT document, product_id, product_name, page, chunk_text,
-			VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "')) AS distance
-			FROM `" . DB_PREFIX . "document_chunks`";
-
-		if ($product_id) {
-			$sql .= " WHERE product_id = '" . (int)$product_id . "'";
-		}
-
-		$sql .= " ORDER BY distance ASC LIMIT " . (int)$limit;
-
-		return $this->safeQuery($sql);
+		return $this->hybridSearch('document, product_id, product_name, page, chunk_text', $where, $query, $limit);
 	}
 
 	// Igual que searchProductDocuments() pero acotada a un customer_id concreto
@@ -1492,52 +1574,26 @@ También dispones de search_product_documents, search_customer_documents y searc
 	// ser if_document_chunks un indice compartido por todos los clientes, omitir
 	// el filtro expondria pasajes de otros clientes en la respuesta del chat.
 	private function searchCustomerDocuments($query, $customer_id, $document_type = '', $limit = 5) {
-		$embedding = $this->generateEmbedding($query);
-
-		if ($embedding === false) {
-			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado).');
-		}
-
-		$vector_text = '[' . implode(',', array_map(function ($v) { return (float)$v; }, $embedding)) . ']';
-
-		$sql = "SELECT document, document_type, customer_id, customer_name, page, chunk_text,
-			VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "')) AS distance
-			FROM `" . DB_PREFIX . "document_chunks`
-			WHERE customer_id = '" . (int)$customer_id . "'";
+		$where = "customer_id = '" . (int)$customer_id . "'";
 
 		if ($document_type !== '') {
-			$sql .= " AND document_type = '" . $this->db->escape($document_type) . "'";
+			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
-		$sql .= " ORDER BY distance ASC LIMIT " . (int)$limit;
-
-		return $this->safeQuery($sql);
+		return $this->hybridSearch('document, document_type, customer_id, customer_name, page, chunk_text', $where, $query, $limit);
 	}
 
 	// Igual que searchCustomerDocuments() pero acotada a un supplier_id concreto
 	// (documentos y notas de purchase/supplier). supplier_id NUNCA es opcional aqui,
 	// mismo motivo que customer_id en searchCustomerDocuments().
 	private function searchSupplierDocuments($query, $supplier_id, $document_type = '', $limit = 5) {
-		$embedding = $this->generateEmbedding($query);
-
-		if ($embedding === false) {
-			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado).');
-		}
-
-		$vector_text = '[' . implode(',', array_map(function ($v) { return (float)$v; }, $embedding)) . ']';
-
-		$sql = "SELECT document, document_type, supplier_id, supplier_name, page, chunk_text,
-			VEC_DISTANCE_COSINE(embedding, VEC_FromText('" . $this->db->escape($vector_text) . "')) AS distance
-			FROM `" . DB_PREFIX . "document_chunks`
-			WHERE supplier_id = '" . (int)$supplier_id . "'";
+		$where = "supplier_id = '" . (int)$supplier_id . "'";
 
 		if ($document_type !== '') {
-			$sql .= " AND document_type = '" . $this->db->escape($document_type) . "'";
+			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
-		$sql .= " ORDER BY distance ASC LIMIT " . (int)$limit;
-
-		return $this->safeQuery($sql);
+		return $this->hybridSearch('document, document_type, supplier_id, supplier_name, page, chunk_text', $where, $query, $limit);
 	}
 
 	private function generateEmbedding($text) {

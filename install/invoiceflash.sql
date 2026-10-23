@@ -7961,6 +7961,7 @@ CREATE TABLE `if_document_chunks` (
   KEY `idx_product_id` (`product_id`),
   KEY `idx_customer_id` (`customer_id`),
   KEY `idx_supplier_id` (`supplier_id`),
+  FULLTEXT KEY `ft_chunk_text` (`chunk_text`),
   VECTOR INDEX (`embedding`) M=8 DISTANCE=cosine
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

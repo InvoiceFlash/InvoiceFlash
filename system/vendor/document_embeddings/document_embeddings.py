@@ -142,6 +142,32 @@ def clean_text(text):
 	return text.strip()
 
 
+# Etiqueta que se antepone a cada fragmento segun su tipo ({e} = nombre del cliente,
+# proveedor o producto). El contexto se incluye en el texto que se embebe Y en el que
+# se guarda, para que mejore tanto la busqueda semantica como la de palabras (FULLTEXT).
+CONTEXT_LABELS = {
+	"product_document": "Documento de producto {e}",
+	"customer_document": "Documento de cliente {e}",
+	"customer_note": "Nota de cliente {e}",
+	"supplier_document": "Documento de proveedor {e}",
+	"supplier_note": "Nota de proveedor {e}",
+	"email_sent": "Email enviado a {e}",
+	"email_received": "Email recibido de {e}",
+}
+
+
+def add_context(chunk_text, document_type, display_name, entity_name):
+	label = CONTEXT_LABELS.get(document_type, "Documento {e}")
+	label = label.format(e=(entity_name or "")).strip()
+	title = (display_name or "").strip()
+
+	prefix = label
+	if title and title != (entity_name or ""):
+		prefix += ". Titulo: " + title
+
+	return prefix + ".\n" + chunk_text
+
+
 def create_chunks(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
 	words = text.split()
 
@@ -345,6 +371,7 @@ def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_nam
 		chunks = create_chunks(text)
 
 		for chunk_number, chunk_text in enumerate(chunks, start=1):
+			chunk_text = add_context(chunk_text, document_type, display_name, customer_name or supplier_name or product_name)
 			embedding = generate_embedding(chunk_text)
 
 			if len(embedding) != EMBED_DIMENSIONS:
@@ -384,6 +411,7 @@ def embed_text(conn, document_id, display_name, text, product_id, product_name,
 		chunks = create_chunks(text)
 
 		for chunk_number, chunk_text in enumerate(chunks, start=1):
+			chunk_text = add_context(chunk_text, document_type, display_name, customer_name or supplier_name or product_name)
 			embedding = generate_embedding(chunk_text)
 
 			if len(embedding) != EMBED_DIMENSIONS:
