@@ -850,7 +850,7 @@ Responde siempre en español, de forma breve y clara.';
 		if ($with_docs) {
 			$system .= '
 
-También dispones de search_product_documents, search_customer_documents y search_supplier_documents para buscar en el contenido de los documentos. Cuando el usuario pregunte por especificaciones técnicas, capacidades o medidas que puedan estar en la ficha en PDF de un producto, usa search_product_documents. Cuando pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer). Cuando pregunte qué dijo o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier). Nunca respondas un dato técnico o textual que no venga literalmente del resultado de estas herramientas.';
+También dispones de search_product_documents, search_customer_documents y search_supplier_documents para buscar en el contenido de los documentos. Cuando el usuario pregunte por especificaciones técnicas, capacidades o medidas que puedan estar en la ficha en PDF de un producto, usa search_product_documents. Cuando pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer). Cuando pregunte qué dijo o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier). Nunca respondas un dato técnico o textual que no venga literalmente del resultado de estas herramientas. Cita cada dato de documentos con su referencia ([1], [2]...) y su fuente. Si el resultado trae status insufficient_evidence, responde que no consta esa información en los documentos; no la inventes.';
 		}
 
 		$system .= $this->getRouteHint($route);
@@ -1135,7 +1135,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 	// Prompt de sistema del chat con herramientas de BD y de busqueda en documentos (Ollama y
 	// proveedores compatibles con OpenAI).
 	private function getHomeChatSystemPrompt() {
-		return 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 6 herramientas: list_tables, describe_table, query_database, search_product_documents, search_customer_documents y search_supplier_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Cuando el usuario pregunte qué dijo, acordó o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier) en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents, search_customer_documents o search_supplier_documents. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.';
+		return 'Eres el asistente IA del panel de administración de InvoiceFlash, una aplicación de facturación y gestión (presupuestos, pedidos, albaranes, facturas, clientes, proveedores, contabilidad). Tienes 6 herramientas: list_tables, describe_table, query_database, search_product_documents, search_customer_documents y search_supplier_documents. Cuando el usuario pregunte por sus datos (clientes, facturas, pedidos...), SIEMPRE debes usar list_tables/describe_table/query_database para consultar la base de datos real con datos actuales, nunca preguntes al usuario por nombres de tabla ni respondas sin haber ejecutado una consulta con éxito. Para preguntas de tipo "cuántos/cuántas X tengo", usa directamente query_database con SELECT COUNT(*) FROM <tabla> (no hace falta describe_table para contar filas, solo para saber los nombres de columna cuando vayas a filtrar o mostrar campos concretos). Si una consulta falla porque la tabla no existe, NUNCA le pidas al usuario que compruebe el nombre: llama tú mismo a list_tables, busca el nombre correcto y repite la consulta, sin preguntar nada. Cuando el usuario pregunte por especificaciones técnicas, capacidades, medidas o cualquier dato que pueda estar en la ficha/documentación en PDF de un producto (no en las tablas normales de la base de datos), usa search_product_documents en vez de query_database. Cuando el usuario pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer) en vez de query_database, porque ese contenido no está en columnas estructuradas. Cuando el usuario pregunte qué dijo, acordó o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier) en vez de query_database. Nunca respondas un número que no venga literalmente del resultado de query_database, ni un dato técnico o textual que no venga literalmente del resultado de search_product_documents, search_customer_documents o search_supplier_documents. Cita cada dato de documentos con su referencia ([1], [2]...) y su fuente; si el resultado trae status insufficient_evidence, responde que no consta esa información en los documentos, sin inventarla. No estás autorizado para modificar ni borrar datos. Responde siempre en español, de forma breve y clara.';
 	}
 
 	// Chat con proveedores que hablan el formato chat/completions de OpenAI: OpenAI, NVIDIA,
@@ -1493,7 +1493,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 					return json_encode($result);
 				}
 
-				return json_encode(array('results' => $result['rows']));
+				return $this->formatRagResponse($result);
 
 			case 'search_customer_documents':
 				$query         = isset($tool_input['query']) ? trim((string)$tool_input['query']) : '';
@@ -1516,7 +1516,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 					return json_encode($result);
 				}
 
-				return json_encode(array('results' => $result['rows']));
+				return $this->formatRagResponse($result);
 
 			case 'search_supplier_documents':
 				$query         = isset($tool_input['query']) ? trim((string)$tool_input['query']) : '';
@@ -1539,7 +1539,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 					return json_encode($result);
 				}
 
-				return json_encode(array('results' => $result['rows']));
+				return $this->formatRagResponse($result);
 
 			default:
 				return json_encode(array('error' => 'Unknown tool: ' . $tool_name));
@@ -1715,10 +1715,138 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 	}
 
+	// CRAG (Corrective RAG): evalua lo recuperado y corrige antes de responder.
+	//  1. Cada fragmento recibe una confianza: 'high' si coincide por palabras Y por significado,
+	//     'medium' si coincide por palabras o esta muy cerca en el vector, 'low' en otro caso.
+	//  2. Si no hay ningun fragmento 'high'/'medium', se reintenta UNA vez con la pregunta reducida
+	//     a sus palabras clave (sin palabras vacias), que suele ser mas precisa para el indice.
+	//  3. Si tampoco entonces, no se devuelve relleno: status 'insufficient_evidence' y sin fragmentos.
+	// Solo se conservan los fragmentos 'high'/'medium'. La distancia "muy cerca" (0.35) es ajustable
+	// con config_rag_good_distance; con nomic-embed-text las distancias de lo relevante y lo irrelevante
+	// se solapan, por eso la semantica sola no basta para dar confianza.
+	private function searchWithCorrection($columns, $where, $query, $limit) {
+		$good = (float)$this->config->get('config_rag_good_distance');
+
+		if ($good <= 0) {
+			$good = 0.35;
+		}
+
+		$attempts = 1;
+		$used     = $query;
+		$result   = $this->hybridSearch($columns, $where, $query, $limit);
+
+		if (isset($result['error'])) {
+			return $result;
+		}
+
+		$rows = $this->gradeChunks($result['rows'], $good);
+
+		if (!$rows) {
+			$condensed = $this->condenseQuery($query);
+
+			if ($condensed !== '' && mb_strtolower($condensed, 'UTF-8') !== mb_strtolower(trim($query), 'UTF-8')) {
+				$attempts = 2;
+				$used     = $condensed;
+				$retry    = $this->hybridSearch($columns, $where, $condensed, $limit);
+
+				if (!isset($retry['error'])) {
+					$rows = $this->gradeChunks($retry['rows'], $good);
+				}
+			}
+		}
+
+		return array(
+			'rows'       => $rows,
+			'status'     => $rows ? 'ok' : 'insufficient_evidence',
+			'attempts'   => $attempts,
+			'query_used' => $used
+		);
+	}
+
+	private function gradeChunks($rows, $good_distance) {
+		$out = array();
+
+		foreach ($rows as $row) {
+			$match = isset($row['match']) ? $row['match'] : '';
+
+			if ($match === 'both') {
+				$row['confidence'] = 'high';
+			} elseif ($match === 'text') {
+				$row['confidence'] = 'medium';
+			} elseif (isset($row['distance']) && ($row['distance'] !== null) && ((float)$row['distance'] <= $good_distance)) {
+				$row['confidence'] = 'medium';
+			} else {
+				continue;
+			}
+
+			$out[] = $row;
+		}
+
+		return $out;
+	}
+
+	// La pregunta reducida a palabras clave, sin operadores del modo booleano.
+	private function condenseQuery($query) {
+		return trim(preg_replace('/\s+/', ' ', str_replace(array('+', '"', '*'), ' ', $this->buildFulltextQuery($query))));
+	}
+
+	// Respuesta TIPADA de las herramientas de busqueda en documentos: estructura fija, cada fragmento con
+	// su referencia [n] y su fuente, y un estado explicito. Si no hay evidencia suficiente, el modelo recibe
+	// la orden de decirlo en lugar de inventar. (La validacion de la respuesta final del modelo no es posible
+	// sin otra llamada; aqui se acota lo que el modelo recibe y lo que se le exige.)
+	private function formatRagResponse($result) {
+		if (isset($result['error'])) {
+			return json_encode($result);
+		}
+
+		$labels = array(
+			'customer_document' => 'Documento de cliente', 'customer_note' => 'Nota de cliente',
+			'email_sent' => 'Email enviado', 'email_received' => 'Email recibido',
+			'supplier_document' => 'Documento de proveedor', 'supplier_note' => 'Nota de proveedor'
+		);
+
+		$results = array();
+
+		foreach (array_values($result['rows']) as $i => $row) {
+			$type   = isset($row['document_type']) ? $row['document_type'] : 'product_document';
+			$entity = '';
+
+			foreach (array('customer_name', 'supplier_name', 'product_name') as $k) {
+				if (!empty($row[$k])) {
+					$entity = $row[$k];
+				}
+			}
+
+			$results[] = array(
+				'ref'        => '[' . ($i + 1) . ']',
+				'source'     => array(
+					'type'     => isset($labels[$type]) ? $labels[$type] : 'Documento de producto',
+					'entity'   => $entity,
+					'document' => isset($row['document']) ? $row['document'] : '',
+					'page'     => isset($row['page']) ? (int)$row['page'] : 0
+				),
+				'confidence' => $row['confidence'],
+				'passage'    => $row['chunk_text']
+			);
+		}
+
+		$status = $results ? 'ok' : 'insufficient_evidence';
+
+		return json_encode(array(
+			'status'       => $status,
+			'attempts'     => isset($result['attempts']) ? $result['attempts'] : 1,
+			'query_used'   => isset($result['query_used']) ? $result['query_used'] : '',
+			'results'      => $results,
+			'instructions' => ($status === 'ok')
+				? 'Responde SOLO con lo que digan los fragmentos y cita cada dato con su referencia, p. ej. [1], indicando la fuente. Si los fragmentos no contestan la pregunta, dilo.'
+				: 'No se ha encontrado informacion suficiente en los documentos. Responde que no consta esa informacion; no la inventes ni la deduzcas.'
+		));
+	}
+
 	private function searchProductDocuments($query, $product_id = 0, $limit = 5) {
 		$where = $product_id ? "product_id = '" . (int)$product_id . "'" : '1 = 1';
 
-		return $this->hybridSearch('document, product_id, product_name, page, chunk_text', $where, $query, $limit);
+		return $this->searchWithCorrection('document, product_id, product_name, page, chunk_text', $where, $query, $limit);
 	}
 
 	// Igual que searchProductDocuments() pero acotada a un customer_id concreto
@@ -1733,7 +1861,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
-		return $this->hybridSearch('document, document_type, customer_id, customer_name, page, chunk_text', $where, $query, $limit);
+		return $this->searchWithCorrection('document, document_type, customer_id, customer_name, page, chunk_text', $where, $query, $limit);
 	}
 
 	// Igual que searchCustomerDocuments() pero acotada a un supplier_id concreto
@@ -1746,7 +1874,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
-		return $this->hybridSearch('document, document_type, supplier_id, supplier_name, page, chunk_text', $where, $query, $limit);
+		return $this->searchWithCorrection('document, document_type, supplier_id, supplier_name, page, chunk_text', $where, $query, $limit);
 	}
 
 	private function generateEmbedding($text) {
