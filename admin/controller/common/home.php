@@ -828,6 +828,9 @@ class ControllerCommonHome extends Controller {
 			$tool_defs = array_merge($tool_defs, array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
 		}
 
+		$route     = $this->routeChatMessage($message, $with_docs);
+		$tool_defs = $this->filterToolDefsByRoute($tool_defs, $route);
+
 		foreach ($tool_defs as $def) {
 			$tools[] = array(
 				'name'         => $def['name'],
@@ -849,6 +852,8 @@ Responde siempre en español, de forma breve y clara.';
 
 También dispones de search_product_documents, search_customer_documents y search_supplier_documents para buscar en el contenido de los documentos. Cuando el usuario pregunte por especificaciones técnicas, capacidades o medidas que puedan estar en la ficha en PDF de un producto, usa search_product_documents. Cuando pregunte qué dijo, acordó o preguntó un cliente concreto en una nota, un contrato/documento adjunto o un email (enviado o recibido), usa search_customer_documents con el customer_id de ese cliente (si no lo sabes, resuélvelo antes con query_database sobre la tabla customer). Cuando pregunte qué dijo o se anotó sobre un proveedor concreto en un documento o una nota, usa search_supplier_documents con el supplier_id de ese proveedor (si no lo sabes, resuélvelo antes con query_database sobre la tabla supplier). Nunca respondas un dato técnico o textual que no venga literalmente del resultado de estas herramientas.';
 		}
+
+		$system .= $this->getRouteHint($route);
 
 		$content        = array();
 		$stop_reason    = '';
@@ -944,6 +949,78 @@ También dispones de search_product_documents, search_customer_documents y searc
 			'reply'    => $final_text,
 			'messages' => $messages
 		)));
+	}
+
+	// Enrutado de la pregunta (Database Routing): decide si va a la base de datos (SQL), a los
+	// documentos (RAG) o a ambos, y solo ofrece al modelo las herramientas de esa ruta. Un modelo
+	// pequeno elige mal entre SQL y busqueda en documentos cuando tiene las seis a la vez. Reglas
+	// por palabras, sin llamada extra al modelo: si hay senales de las dos o de ninguna, la ruta es
+	// 'both' (todas las herramientas, como antes), asi que un fallo del enrutado nunca quita una
+	// herramienta que haga falta.
+	//   'data'      -> list_tables, describe_table, query_database
+	//   'documents' -> todas, con la indicacion de usar search_* (query_database solo para hallar el id)
+	//   'both'      -> todas, sin indicacion
+	private function routeChatMessage($message, $with_docs) {
+		if (!$with_docs) {
+			return 'data';
+		}
+
+		$text = mb_strtolower((string)$message, 'UTF-8');
+		$text = strtr($text, array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n'));
+
+		$docs_re = '/\b(dijo|dijeron|dice|dicen|dije|acordo|acordaron|acordamos|pacto|pactamos|pactado|comento|comentaron|escribio|escribieron|respondio|pregunto|preguntaron|pidio|pidieron|prometio|menciono|mencionaron|nota|notas|email|emails|correo|correos|mail|mails|contrato|contratos|clausula\w*|documento|documentos|pdf|adjunto\w*|ficha|fichas|tecnica|tecnicas|especificacion\w*|capacidad|medidas|dimension\w*|garantia|condiciones|manual)\b/u';
+		$data_re = '/\b(cuantos|cuantas|cuanto|cuanta|total\w*|suma|sumar|importe\w*|facturad\w*|pendiente\w*|vencid\w*|cobrad\w*|impagad\w*|listado|lista|listar|top|mejores|peores|mayor\w*|menor\w*|media|promedio|ranking|ventas|compras|ingresos|gastos|saldo|stock|existencias|precio\w*|factura|facturas|pedido|pedidos|albaran|albaranes|presupuesto|presupuestos|clientes|proveedores|productos|por\s+(mes|ano|trimestre|cliente|producto))\b/u';
+
+		$docs = preg_match($docs_re, $text);
+		$data = preg_match($data_re, $text);
+
+		if ($docs && !$data) {
+			return 'documents';
+		}
+
+		if ($data && !$docs) {
+			return 'data';
+		}
+
+		return 'both';
+	}
+
+	// En la ruta 'data' se retiran las herramientas de busqueda en documentos.
+	private function filterToolDefsByRoute($tool_defs, $route) {
+		if ($route !== 'data') {
+			return $tool_defs;
+		}
+
+		$out = array();
+
+		foreach ($tool_defs as $def) {
+			if (strpos($def['name'], 'search_') !== 0) {
+				$out[] = $def;
+			}
+		}
+
+		return $out;
+	}
+
+	private function getRouteHint($route) {
+		if ($route === 'data') {
+			return ' Para ESTA pregunta usa solo list_tables, describe_table y query_database: es una consulta sobre datos estructurados de la base de datos y no dispones de busqueda en documentos.';
+		}
+
+		if ($route === 'documents') {
+			return ' Para ESTA pregunta el contenido esta en documentos, notas o emails: usa las herramientas search_product_documents, search_customer_documents o search_supplier_documents. Usa query_database solo para localizar el customer_id, supplier_id o product_id que necesites, no para buscar el contenido.';
+		}
+
+		return '';
+	}
+
+	// Anade la indicacion de ruta como mensaje de sistema solo para esta peticion (no se guarda en el historial).
+	private function withRouteHint($messages, $hint) {
+		if ($hint !== '') {
+			$messages[] = array('role' => 'system', 'content' => trim($hint));
+		}
+
+		return $messages;
 	}
 
 	// Definiciones de las 3 herramientas de solo-lectura sobre la BD, compartidas
@@ -1089,6 +1166,10 @@ También dispones de search_product_documents, search_customer_documents y searc
 			$tool_defs = array_merge($tool_defs, array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
 		}
 
+		$route      = $this->routeChatMessage($message, $with_docs);
+		$tool_defs  = $this->filterToolDefsByRoute($tool_defs, $route);
+		$route_hint = $this->getRouteHint($route);
+
 		// Un historial que no empieza por el mensaje de sistema viene de otro motor (formato distinto): se descarta.
 		if ($messages && (!isset($messages[0]['role']) || $messages[0]['role'] !== 'system')) {
 			$messages = array();
@@ -1125,7 +1206,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 		for ($i = 0; $i < $max_iterations; $i++) {
 			$payload = array(
 				'model'      => $model,
-				'messages'   => $messages,
+				'messages'   => $this->withRouteHint($messages, $route_hint),
 				'tools'      => $tools,
 				'max_tokens' => 1024
 			);
@@ -1251,6 +1332,10 @@ También dispones de search_product_documents, search_customer_documents y searc
 		// parte de getHomeChatToolDefs() a proposito.
 		$tool_defs = array_merge($this->getHomeChatToolDefs(), array($this->getDocumentSearchToolDef(), $this->getCustomerDocumentSearchToolDef(), $this->getSupplierDocumentSearchToolDef()));
 
+		$route      = $this->routeChatMessage($message, true);
+		$tool_defs  = $this->filterToolDefsByRoute($tool_defs, $route);
+		$route_hint = $this->getRouteHint($route);
+
 		foreach ($tool_defs as $def) {
 			$tools[] = array(
 				'type'     => 'function',
@@ -1268,7 +1353,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 		for ($i = 0; $i < $max_iterations; $i++) {
 			$payload = array(
 				'model'    => 'qwen3:1.7b',
-				'messages' => $this->fixEmptyOllamaToolArgs($messages),
+				'messages' => $this->fixEmptyOllamaToolArgs($this->withRouteHint($messages, $route_hint)),
 				'tools'    => $tools,
 				'options'  => array('num_predict' => 1024),
 				'think'    => true,
@@ -1472,7 +1557,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 
 		$table = DB_PREFIX . 'document_chunks';
 		$pool  = max($limit * 4, 20);
-		$q     = $this->db->escape($query);
+		$q     = $this->buildFulltextQuery($query);
 
 		$embedding   = $this->generateEmbedding($query);
 		$distance_sql = '';
@@ -1492,16 +1577,33 @@ También dispones de search_product_documents, search_customer_documents y searc
 				return $result;
 			}
 
-			$semantic = $result['rows'];
+			// Umbral: los fragmentos demasiado lejos de la consulta no son una respuesta, son relleno.
+			// Solo afecta a la parte semantica; una coincidencia por palabras se conserva siempre.
+			$max_distance = (float)$this->config->get('config_rag_max_distance');
+
+			if ($max_distance <= 0) {
+				$max_distance = 0.5;
+			}
+
+			foreach ($result['rows'] as $row) {
+				if ((float)$row['distance'] <= $max_distance) {
+					$semantic[] = $row;
+				}
+			}
 		}
 
 		// Si el indice FULLTEXT no se pudo crear o la consulta no tiene palabras utiles, solo cuenta la semantica.
-		$text_sql = "SELECT document_chunk_id, " . $columns . ", " . ($distance_sql !== '' ? $distance_sql : 'NULL') . " AS distance
-			FROM `" . $table . "` WHERE " . $where . " AND MATCH(chunk_text) AGAINST ('" . $q . "')
-			ORDER BY MATCH(chunk_text) AGAINST ('" . $q . "') DESC LIMIT " . (int)$pool;
+		$text = array();
 
-		$result = $this->safeQuery($text_sql);
-		$text   = isset($result['error']) ? array() : $result['rows'];
+		if ($q !== '') {
+			$q_sql = $this->db->escape($q);
+
+			$result = $this->safeQuery("SELECT document_chunk_id, " . $columns . ", " . ($distance_sql !== '' ? $distance_sql : 'NULL') . " AS distance
+				FROM `" . $table . "` WHERE " . $where . " AND MATCH(chunk_text) AGAINST ('" . $q_sql . "' IN BOOLEAN MODE)
+				ORDER BY MATCH(chunk_text) AGAINST ('" . $q_sql . "' IN BOOLEAN MODE) DESC LIMIT " . (int)$pool);
+
+			$text = isset($result['error']) ? array() : $result['rows'];
+		}
 
 		if ($embedding === false && !$text) {
 			return array('error' => 'No se ha podido generar el embedding de la consulta (Ollama no disponible o modelo nomic-embed-text no descargado) y no hay coincidencias por palabras.');
@@ -1542,6 +1644,57 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		return array('rows' => $out);
+	}
+
+	// Convierte la pregunta del usuario en una consulta FULLTEXT en modo booleano:
+	//  - quita palabras vacias ("que", "cual", "dijo"...) y las de menos de 3 letras (el indice las ignora);
+	//  - las referencias tipo F-2026-0117 se buscan como frase obligatoria (+"..."), porque el indice
+	//    parte los guiones en trozos y sin comillas casaria cualquiera de ellos por separado;
+	//  - el resto de palabras son opcionales (ordenan por relevancia) y llevan * al final para casar
+	//    variantes (factura -> facturas, facturacion).
+	// Devuelve '' si no queda nada util. Solo salen letras, numeros y los operadores que anade esta funcion.
+	private function buildFulltextQuery($query) {
+		static $stop = null;
+
+		if ($stop === null) {
+			$stop = array_flip(explode(' ', 'el la los las un una unos unas lo al del de y e o u a en con sin por para sobre entre hasta desde que cual cuales quien quienes como cuando donde cuanto cuanta cuantos cuantas cuyo es son fue fueron era ser sido esta este esto estos estas ese esa eso esos esas hay han has ha he tiene tienen tenia tener tengo dijo dice dicen dijeron decir pidio pide piden quiero quiere queria puede pueden podria mas menos muy tambien pero porque pues si no ni mi mis tu tus su sus nos nuestro nuestra me te se les le the and for with what which who when where how was were are has have had did does said says about from that this those these'));
+		}
+
+		$query = (string)$query;
+		$terms = array();
+
+		// Referencias: letras/numeros unidos por - / o . con al menos un digito (F-2026-0117, 2026/15, A.123).
+		if (preg_match_all('/[\p{L}\p{N}]+(?:[-\/.][\p{L}\p{N}]+)+/u', $query, $m)) {
+			foreach ($m[0] as $ref) {
+				if (preg_match('/\d/', $ref)) {
+					$terms[] = '+"' . str_replace('"', '', $ref) . '"';
+					$query   = str_replace($ref, ' ', $query);
+				}
+			}
+		}
+
+		if (preg_match_all('/[\p{L}\p{N}]+/u', $query, $m)) {
+			$seen = array();
+
+			foreach ($m[0] as $word) {
+				$plain = strtr(mb_strtolower($word, 'UTF-8'), array('á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u'));
+
+				if (mb_strlen($word, 'UTF-8') < 3 || isset($stop[$plain]) || isset($seen[$plain])) {
+					continue;
+				}
+
+				$seen[$plain] = true;
+
+				// Plural sencillo: plazos -> plazo* (casa plazo, plazos, plazos...)
+				if (mb_strlen($word, 'UTF-8') > 4 && mb_substr($word, -1, 1, 'UTF-8') == 's' && !ctype_digit($word)) {
+					$word = mb_substr($word, 0, -1, 'UTF-8');
+				}
+
+				$terms[] = $word . '*';
+			}
+		}
+
+		return implode(' ', $terms);
 	}
 
 	// Crea el indice FULLTEXT de chunk_text si no existe (instalaciones anteriores a la busqueda
