@@ -54,6 +54,7 @@
 				</div>
 			</div>
 			<div class="card-body">
+			<style>@media (min-width: 576px) { .home-search-product { margin-left: 5cm; } }</style>
 			<div class="d-flex flex-column flex-sm-row gap-2">
 				<div class="flex-fill">
 					<div class="input-group">
@@ -62,7 +63,7 @@
 						<button class="btn btn-info" id="button-search-customer"><?php echo $button_search; ?></button>
 					</div>
 				</div>
-				<div class="flex-fill" style="margin-left: 5cm;">
+				<div class="flex-fill home-search-product">
 					<div class="input-group">
 						<span class="input-group-text"><?php echo $text_search_product; ?></span>
 						<input type="text" id="search-product" class="form-control">
@@ -243,24 +244,39 @@
 </div>
 </div>
 <div id="kanban-view" style="display:none;">
+	<style>
+		.kanban-move { display: none; }
+		/* Movil / tactil: el tablero se apila en vertical (proyectos arriba, columnas una debajo de otra) y las tarjetas
+		   se cambian de columna con las flechas, porque arrastrar y soltar no funciona con el dedo. */
+		@media (max-width: 767px), (pointer: coarse) { .kanban-move { display: inline; } }
+		@media (max-width: 767px) {
+			#kanban-view .card-body.kanban-layout { flex-direction: column; align-items: stretch !important; padding: .75rem; gap: 12px !important; }
+			#kanban-view .kanban-side { width: 100% !important; }
+			#kanban-view #kanban-projects { max-height: 170px !important; }
+			#kanban-view .kanban-main { flex: none !important; width: 100%; }
+			#kanban-view #kanban-add-row { max-width: none !important; }
+			#kanban-view .kanban-board { flex-direction: column; align-items: stretch !important; }
+			#kanban-view .kanban-column { flex: none !important; width: 100%; }
+		}
+	</style>
 	<div class="row mb-3">
 		<div class="col-sm-12">
 			<div class="card page-card">
 				<div class="card-header clearfix"><h5><i class="fa fa-columns"></i> <?php echo $text_kanban; ?></h5></div>
-				<div class="card-body d-flex" style="gap:16px; align-items:flex-start;">
-				<div style="width:260px; flex:none; border:1px solid #e5e2da; border-radius:6px;">
+				<div class="card-body d-flex kanban-layout" style="gap:16px; align-items:flex-start;">
+				<div class="kanban-side" style="width:260px; flex:none; border:1px solid #e5e2da; border-radius:6px;">
 					<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #e5e2da; font-weight:600;">
 						<span><i class="fa fa-briefcase"></i> <?php echo $text_kanban_projects; ?></span>
 						<button type="button" class="btn btn-info btn-sm" id="kanban-project-new"><i class="fa fa-plus"></i></button>
 					</div>
 					<div id="kanban-projects" style="max-height:560px; overflow-y:auto;"></div>
 				</div>
-				<div style="flex:1; min-width:0;">
+				<div class="kanban-main" style="flex:1; min-width:0;">
 					<div id="kanban-add-row" class="input-group mb-3" style="max-width:500px;">
 						<input type="text" id="kanban-new-title" class="form-control" placeholder="<?php echo $text_kanban_new_placeholder; ?>">
 						<button type="button" class="btn btn-info" id="kanban-add"><?php echo $text_kanban_add; ?></button>
 					</div>
-					<div class="d-flex" style="gap:12px; align-items:flex-start;">
+					<div class="d-flex kanban-board" style="gap:12px; align-items:flex-start;">
 						<?php
 						$kanban_icons = array(
 							'pending'     => '<circle cx="12" cy="12" r="9"/>',
@@ -268,7 +284,7 @@
 							'done'        => '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/>'
 						);
 						foreach ($kanban_columns as $status => $label) { ?>
-						<div style="flex:1; min-width:0; background:#f4f5f7; border-radius:6px; padding:10px;">
+						<div class="kanban-column" style="flex:1; min-width:0; background:#f4f5f7; border-radius:6px; padding:10px;">
 							<div style="font-weight:600; margin-bottom:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px; margin-right:6px;"><?php echo $kanban_icons[$status]; ?></svg><?php echo $label; ?> <span class="badge bg-secondary kanban-count" data-status="<?php echo $status; ?>">0</span></div>
 							<div class="kanban-col" data-status="<?php echo $status; ?>" style="min-height:120px;"></div>
 						</div>
@@ -534,6 +550,13 @@ function kanbanRender(cards) {
 		if (c.photos) { $icons.append($('<a href="#" class="kanban-open-files" data-type="photo">').html('<i class="fa fa-image"></i> ' + c.photos)); }
 		if (c.docs) { $icons.append($('<a href="#" class="kanban-open-files" data-type="document">').html('<i class="fa fa-file"></i> ' + c.docs)); }
 		var $tools = $('<span style="margin-left:auto; display:flex; gap:10px;">');
+	if (c.can_manage) {
+		// Mover de columna con un toque (movil/tactil): arriba = estado anterior, abajo = siguiente.
+		var statuses = $('.kanban-col').map(function() { return $(this).data('status'); }).get();
+		var pos = $.inArray(c.status, statuses);
+		if (pos > 0) { $tools.append($('<a href="#" class="kanban-move text-muted" data-dir="-1">').html('<i class="fa fa-arrow-up"></i>')); }
+		if (pos >= 0 && pos < statuses.length - 1) { $tools.append($('<a href="#" class="kanban-move text-muted" data-dir="1">').html('<i class="fa fa-arrow-down"></i>')); }
+	}
 		if (c.is_owner) { $tools.append($('<a href="#" class="kanban-share text-muted">').attr('title', kanbanLabels.share).html('<i class="fa fa-share-alt' + (c.shares ? ' text-info' : '') + '"></i>')); }
 		if (c.can_manage) { $tools.append($('<a href="#" class="kanban-attach text-muted">').attr('title', kanbanLabels.attach).html('<i class="fa fa-paperclip"></i>')); }
 		$icons.append($tools);
@@ -712,6 +735,17 @@ $(document).on('click', '.kanban-del', function(e) {
 	if (confirm('<?php echo addslashes(html_entity_decode($text_kanban_delete_confirm, ENT_QUOTES, 'UTF-8')); ?>')) {
 		kanbanCall({action: 'delete', id: $(this).closest('.kanban-card').data('id')});
 	}
+});
+
+$(document).on('click', '.kanban-move', function(e) {
+	e.preventDefault();
+	var id = $(this).closest('.kanban-card').data('id');
+	var statuses = $('.kanban-col').map(function() { return $(this).data('status'); }).get();
+	var idx = $.inArray($(this).closest('.kanban-col').data('status'), statuses) + parseInt($(this).data('dir'), 10);
+	if ((idx < 0) || (idx >= statuses.length)) { return; }
+	var order = $('.kanban-col[data-status="' + statuses[idx] + '"]').children('.kanban-card').map(function() { return $(this).data('id'); }).get();
+	order.push(id);
+	kanbanCall({action: 'move', id: id, status: statuses[idx], order: order});
 });
 
 $(document).on('dragstart', '.kanban-card', function(e) {

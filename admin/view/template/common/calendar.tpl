@@ -8,7 +8,17 @@
 	.cal-item .cal-dot { width: 14px; height: 14px; border-radius: 3px; flex: 0 0 14px; }
 	.cal-item label { flex: 1 1 auto; margin: 0; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 	.cal-item a { color: #888; cursor: pointer; }
-	@media (max-width: 767px) { #cal-layout { flex-direction: column; } #cal-sidebar { width: 100%; flex: none; } }
+	@media (max-width: 767px) {
+		#cal-layout { flex-direction: column; align-items: stretch; }
+		#cal-sidebar { width: 100%; flex: none; }
+		#cal-main { flex: none; width: 100%; }
+		/* Movil: cabecera del calendario en dos filas (navegacion + titulo / vistas) y letra algo menor */
+		#calendar .fc-toolbar.fc-header-toolbar { flex-wrap: wrap; gap: .4rem; margin-bottom: .75rem; }
+		#calendar .fc-toolbar-title { font-size: 1.1rem; }
+		#calendar .fc-footer-toolbar { margin-top: .75rem; justify-content: center; }
+		#calendar .fc-button { padding: .3rem .55rem; font-size: .85rem; }
+		#calendar .fc-list-event-title, #calendar .fc-list-event-time { font-size: .9rem; }
+	}
 </style>
 <div class="card page-card">
 	<div class="card-header clearfix">
@@ -122,7 +132,14 @@ $(function() {
 	function fmtDate(d) { return fmtLocal(d).substr(0, 10); }
 	function toInput(d, allDay) { return d ? (allDay ? fmtDate(d) + 'T00:00' : fmtLocal(d)) : ''; }
 
+	// En movil el calendario se ve en vertical: agenda por meses (lista) en lugar de la rejilla del mes.
+	var mobileQuery = window.matchMedia('(max-width: 767px)');
+	var desktopBar = { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' };
+	var mobileBar = { left: 'prev,next', center: 'title', right: 'today' };
+	var mobileFooter = { center: 'listMonth,timeGridDay,dayGridMonth' };
+
 	var calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
+		initialView: mobileQuery.matches ? 'listMonth' : 'dayGridMonth',
 		locale: <?php echo json_encode($locale); ?>,
 		timeZone: 'local',
 		firstDay: 1,
@@ -132,7 +149,9 @@ $(function() {
 		selectable: canModify,
 		editable: canModify,
 		dayMaxEvents: true,
-		headerToolbar: { left: 'prev,next today', center: 'title', right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek' },
+		headerToolbar: mobileQuery.matches ? mobileBar : desktopBar,
+		footerToolbar: mobileQuery.matches ? mobileFooter : false,
+		views: { listMonth: { buttonText: <?php echo json_encode($text_list); ?> } },
 		buttonText: { today: <?php echo json_encode($text_today); ?>, month: <?php echo json_encode($text_month); ?>, week: <?php echo json_encode($text_week); ?>, day: <?php echo json_encode($text_day); ?>, list: <?php echo json_encode($text_list); ?> },
 		events: function(info, ok, fail) {
 			$.getJSON(urls.events, { start: info.startStr, end: info.endStr }, function(list) {
@@ -146,6 +165,22 @@ $(function() {
 		eventResize: moved
 	});
 	calendar.render();
+
+	// Al girar el movil o cambiar el ancho de la ventana, cambia entre la disposicion de movil y la de escritorio.
+	if (mobileQuery.addEventListener) { mobileQuery.addEventListener('change', applyLayout); } else { mobileQuery.addListener(applyLayout); }
+
+	function applyLayout() {
+		var mobile = mobileQuery.matches;
+
+		calendar.setOption('headerToolbar', mobile ? mobileBar : desktopBar);
+		calendar.setOption('footerToolbar', mobile ? mobileFooter : false);
+
+		if (mobile && (calendar.view.type === 'dayGridMonth' || calendar.view.type === 'timeGridWeek' || calendar.view.type === 'listWeek')) {
+			calendar.changeView('listMonth');
+		} else if (!mobile && calendar.view.type === 'listMonth') {
+			calendar.changeView('dayGridMonth');
+		}
+	}
 
 	function moved(info) {
 		var e = info.event;

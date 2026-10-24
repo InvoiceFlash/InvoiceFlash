@@ -792,6 +792,9 @@ class ControllerCommonHome extends Controller {
 	public function claudeChat() {
 		set_time_limit(0);
 
+		// Esta accion se llama aparte de index(): sin cargar el idioma aqui, get() devuelve el nombre de la clave.
+		$this->load->language('common/home');
+
 		$this->response->addHeader('Content-Type: application/json');
 
 		if ($this->request->server['REQUEST_METHOD'] !== 'POST') {
@@ -827,7 +830,7 @@ class ControllerCommonHome extends Controller {
 		$api_key = (string)$this->config->get('config_claude_api_key');
 
 		if (!$api_key) {
-			$this->response->setOutput(json_encode(array('error' => $this->language->get('error_claude_chat_no_api_key'))));
+			$this->response->setOutput(json_encode(array('error' => html_entity_decode($this->language->get('error_claude_chat_no_api_key'), ENT_QUOTES, 'UTF-8'))));
 			return;
 		}
 
@@ -1482,7 +1485,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 		$api_key = trim((string)$this->config->get($key_name));
 
 		if ($api_key === '') {
-			$this->response->setOutput(json_encode(array('error' => sprintf($this->language->get('error_ai_chat_no_api_key'), $label))));
+			$this->response->setOutput(json_encode(array('error' => html_entity_decode(sprintf($this->language->get('error_ai_chat_no_api_key'), $label), ENT_QUOTES, 'UTF-8'))));
 			return;
 		}
 

@@ -61,8 +61,8 @@ $_['button_chat_reject'] = 'Reject';
 $_['text_chat_proposal_applied'] = 'Change applied.';
 $_['text_chat_proposal_rejected'] = 'Change rejected. Nothing was modified.';
 $_['error_chat_proposal'] = 'The proposal could not be processed.';
-$_['error_ai_chat_no_api_key'] = 'No %s API key is configured. Go to Settings > AI to configure it.';
-$_['error_claude_chat_no_api_key']  = 'No Claude API key is configured. Go to Settings > AI to configure it.';
+$_['error_ai_chat_no_api_key'] = 'The %s API key is missing. Enter it in Settings (AI tab).';
+$_['error_claude_chat_no_api_key']  = 'The Claude API key is missing. Enter it in Settings (AI tab).';
 
 // Actions
 $_['text_actions']                  = 'Quick Actions';

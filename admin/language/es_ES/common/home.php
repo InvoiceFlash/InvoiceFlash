@@ -61,8 +61,8 @@ $_['button_chat_reject'] = 'Rechazar';
 $_['text_chat_proposal_applied'] = 'Cambio aplicado.';
 $_['text_chat_proposal_rejected'] = 'Cambio rechazado. No se ha modificado nada.';
 $_['error_chat_proposal'] = 'No se ha podido procesar la propuesta.';
-$_['error_ai_chat_no_api_key'] = 'No hay ninguna API key de %s configurada. Ve a Ajustes &gt; IA para configurarla.';
-$_['error_claude_chat_no_api_key']  = 'No hay ninguna API key de Claude configurada. Ve a Ajustes &gt; IA para configurarla.';
+$_['error_ai_chat_no_api_key'] = 'Falta la API key de %s. Ind&iacute;quela en Configuraci&oacute;n (pesta&ntilde;a IA).';
+$_['error_claude_chat_no_api_key']  = 'Falta la API key de Claude. Ind&iacute;quela en Configuraci&oacute;n (pesta&ntilde;a IA).';
 
 // Actions
 $_['text_actions']                  = 'Acciones R&aacute;pidas';
