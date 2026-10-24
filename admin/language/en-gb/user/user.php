@@ -7,6 +7,7 @@ $_['text_success']      = 'Success: You have modified users!';
 
 // Column
 $_['column_username']   = 'Username';
+$_['column_user_group'] = 'Group';
 $_['column_status']     = 'Status';
 $_['column_date_added'] = 'Date Added';
 $_['column_action']     = 'Action';
@@ -20,6 +21,14 @@ $_['entry_lastname']   = 'Last Name:';
 $_['entry_email']      = 'E-Mail:';
 $_['entry_signature']  = 'Email Signature:';
 $_['entry_cost_per_hour'] = 'Cost per hour:';
+$_['text_mail_account']        = 'Mail account';
+$_['text_mail_account_help']   = 'Login and password of the user\'s mailbox. The mail server is the same for everyone and is set in Settings > Mail. The password is stored encrypted.';
+$_['text_mail_password_saved'] = 'A password is saved. Leave empty to keep it.';
+$_['entry_mail_username']      = 'Mail username:';
+$_['entry_mail_password']      = 'Mail password:';
+$_['error_mail_username']      = 'The mail username is too long (255 characters maximum).';
+$_['error_mail_username_required'] = 'Enter the mail username to save its password.';
+$_['error_mail_encryption']    = 'The server does not have the PHP OpenSSL extension: the password cannot be stored securely.';
 $_['entry_user_group'] = 'User Group:';
 $_['entry_status']     = 'Status:';
 $_['entry_captcha']    = 'Enter the code in the box below:';

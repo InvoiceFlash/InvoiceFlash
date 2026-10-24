@@ -22,6 +22,12 @@ class ControllerUserUser extends Controller {
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_user_user->addUser($this->request->post);
 
+			$new_user = $this->model_user_user->getUserByUsername($this->request->post['username']);
+
+			if ($new_user) {
+				$this->saveMailAccount($new_user['user_id']);
+			}
+
 			$this->session->data['success'] = $this->language->get('text_success');
 
 			$url = '';
@@ -53,6 +59,8 @@ class ControllerUserUser extends Controller {
 
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
 			$this->model_user_user->editUser($this->request->get['user_id'], $this->request->post);
+
+			$this->saveMailAccount($this->request->get['user_id']);
 
 			$this->session->data['success'] = $this->language->get('text_success');
 
@@ -86,6 +94,9 @@ class ControllerUserUser extends Controller {
 		if (isset($this->request->post['selected']) && $this->validateDelete()) {
 			foreach ($this->request->post['selected'] as $user_id) {
 				$this->model_user_user->deleteUser($user_id);
+
+				$this->load->model('user/mail_account');
+				$this->model_user_mail_account->deleteAccount($user_id);
 			}
 
 			$this->session->data['success'] = $this->language->get('text_success');
@@ -185,6 +196,7 @@ class ControllerUserUser extends Controller {
 			$this->data['users'][] = array(
 				'user_id'    => $result['user_id'],
 				'username'   => $result['username'],
+				'user_group' => $result['user_group_name'],
 				'status'     => ($result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled')),
 				'date_added' => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
 				'selected'   => isset($this->request->post['selected']) && in_array($result['user_id'], $this->request->post['selected']),
@@ -197,6 +209,7 @@ class ControllerUserUser extends Controller {
 		$this->data['text_no_results'] = $this->language->get('text_no_results');
 
 		$this->data['column_username'] = $this->language->get('column_username');
+		$this->data['column_user_group'] = $this->language->get('column_user_group');
 		$this->data['column_status'] = $this->language->get('column_status');
 		$this->data['column_date_added'] = $this->language->get('column_date_added');
 		$this->data['column_action'] = $this->language->get('column_action');
@@ -231,6 +244,7 @@ class ControllerUserUser extends Controller {
 		}
 
 		$this->data['sort_username'] = $this->url->link('user/user', 'token=' . $this->session->data['token'] . '&sort=username' . $url, 'SSL');
+		$this->data['sort_user_group'] = $this->url->link('user/user', 'token=' . $this->session->data['token'] . '&sort=user_group' . $url, 'SSL');
 		$this->data['sort_status'] = $this->url->link('user/user', 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
 		$this->data['sort_date_added'] = $this->url->link('user/user', 'token=' . $this->session->data['token'] . '&sort=date_added' . $url, 'SSL');
 
@@ -279,6 +293,11 @@ class ControllerUserUser extends Controller {
 		$this->data['entry_email'] = $this->language->get('entry_email');
 		$this->data['entry_signature'] = $this->language->get('entry_signature');
 		$this->data['entry_cost_per_hour'] = $this->language->get('entry_cost_per_hour');
+		$this->data['text_mail_account'] = $this->language->get('text_mail_account');
+		$this->data['text_mail_account_help'] = $this->language->get('text_mail_account_help');
+		$this->data['text_mail_password_saved'] = $this->language->get('text_mail_password_saved');
+		$this->data['entry_mail_username'] = $this->language->get('entry_mail_username');
+		$this->data['entry_mail_password'] = $this->language->get('entry_mail_password');
 		$this->data['entry_user_group'] = $this->language->get('entry_user_group');
 		$this->data['entry_status'] = $this->language->get('entry_status');
 		$this->data['entry_captcha'] = $this->language->get('entry_captcha');
@@ -293,6 +312,9 @@ class ControllerUserUser extends Controller {
 		} else {
 			$this->data['error_warning'] = '';
 		}
+
+		$this->data['error_mail_username'] = isset($this->error['mail_username']) ? $this->error['mail_username'] : '';
+		$this->data['error_mail_password'] = isset($this->error['mail_password']) ? $this->error['mail_password'] : '';
 
 		if (isset($this->error['username'])) {
 			$this->data['error_username'] = $this->error['username'];
@@ -363,6 +385,18 @@ class ControllerUserUser extends Controller {
 		if (isset($this->request->get['user_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$user_info = $this->model_user_user->getUser($this->request->get['user_id']);
 		}
+
+		// Cuenta de correo: la contrasena nunca se vuelve a mostrar, solo si hay una guardada.
+		$this->load->model('user/mail_account');
+
+		$mail_account = array('mail_username' => '', 'has_password' => false);
+
+		if (isset($this->request->get['user_id'])) {
+			$mail_account = $this->model_user_mail_account->getAccount($this->request->get['user_id']);
+		}
+
+		$this->data['mail_username'] = isset($this->request->post['mail_username']) ? $this->request->post['mail_username'] : htmlspecialchars($mail_account['mail_username'], ENT_QUOTES, 'UTF-8');
+		$this->data['mail_password_saved'] = $mail_account['has_password'];
 
 		if (isset($this->request->post['username'])) {
 			$this->data['username'] = $this->request->post['username'];
@@ -524,11 +558,41 @@ class ControllerUserUser extends Controller {
 			}
 		}
 
+		$mail_username = html_entity_decode(isset($this->request->post['mail_username']) ? $this->request->post['mail_username'] : '', ENT_QUOTES, 'UTF-8');
+		$mail_password = html_entity_decode(isset($this->request->post['mail_password']) ? $this->request->post['mail_password'] : '', ENT_QUOTES, 'UTF-8');
+
+		if (utf8_strlen($mail_username) > 255) {
+			$this->error['mail_username'] = $this->language->get('error_mail_username');
+		}
+
+		if (($mail_password !== '') && (trim($mail_username) === '')) {
+			$this->error['mail_username'] = $this->language->get('error_mail_username_required');
+		}
+
+		if ($mail_password !== '') {
+			$this->load->model('user/mail_account');
+
+			if (!$this->model_user_mail_account->isEncryptionAvailable()) {
+				$this->error['mail_password'] = $this->language->get('error_mail_encryption');
+			}
+		}
+
 		if (!$this->error) {
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	// Guarda el login y la contrasena de correo del usuario (el texto llega con entidades HTML: se decodifica antes de cifrar).
+	protected function saveMailAccount($user_id) {
+		$this->load->model('user/mail_account');
+
+		$this->model_user_mail_account->saveAccount(
+			$user_id,
+			html_entity_decode(isset($this->request->post['mail_username']) ? $this->request->post['mail_username'] : '', ENT_QUOTES, 'UTF-8'),
+			html_entity_decode(isset($this->request->post['mail_password']) ? $this->request->post['mail_password'] : '', ENT_QUOTES, 'UTF-8')
+		);
 	}
 
 	protected function validateDelete() {

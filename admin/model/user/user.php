@@ -43,18 +43,20 @@ class ModelUserUser extends Model {
 	}
 
 	public function getUsers($data = array()) {
-		$sql = "SELECT * FROM `" . DB_PREFIX . "user`";
+		// Se une el grupo para mostrar su nombre en el listado (user_group_name).
+		$sql = "SELECT u.*, ug.name AS user_group_name FROM `" . DB_PREFIX . "user` u LEFT JOIN `" . DB_PREFIX . "user_group` ug ON (ug.user_group_id = u.user_group_id)";
 
 		$sort_data = array(
-			'username',
-			'status',
-			'date_added'
+			'username'   => 'u.username',
+			'user_group' => 'ug.name',
+			'status'     => 'u.status',
+			'date_added' => 'u.date_added'
 		);	
 
-		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
-			$sql .= " ORDER BY " . $data['sort'];	
+		if (isset($data['sort']) && isset($sort_data[$data['sort']])) {
+			$sql .= " ORDER BY " . $sort_data[$data['sort']];	
 		} else {
-			$sql .= " ORDER BY username";	
+			$sql .= " ORDER BY u.username";	
 		}
 
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {

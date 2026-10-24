@@ -66,6 +66,8 @@ $_['column_email']          = 'Emails';
 $_['column_email_subject']  = 'Subject';
 
 $_['column_email_sender']     = 'Sender';
+$_['column_email_user']       = 'User';
+$_['button_attachments']      = 'Attachments';
 
 $_['column_product_id']     = 'ID';
 

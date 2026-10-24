@@ -10,6 +10,7 @@ $_['text_edit'] = 'Editar usuario';
 
 // Columna
 $_['column_username'] = 'nombre de usuario';
+$_['column_user_group'] = 'Grupo';
 $_['column_status'] = 'Estado';
 $_['column_date_added'] = 'Fecha Alta';
 $_['column_action'] = 'Acci&oacute;n';
@@ -24,6 +25,14 @@ $_['entry_lastname'] = 'apellido';
 $_['entry_email'] = 'E-Mail';
 $_['entry_signature'] = 'Firma de email';
 $_['entry_cost_per_hour'] = 'Coste x hora';
+$_['text_mail_account']        = 'Cuenta de correo';
+$_['text_mail_account_help']   = 'Login y contrase&ntilde;a de su buz&oacute;n. El servidor de correo es el mismo para todos y se configura en Ajustes &gt; Correo. La contrase&ntilde;a se guarda cifrada.';
+$_['text_mail_password_saved'] = 'Hay una contrase&ntilde;a guardada. D&eacute;jelo vac&iacute;o para conservarla.';
+$_['entry_mail_username']      = 'Usuario de correo:';
+$_['entry_mail_password']      = 'Contrase&ntilde;a de correo:';
+$_['error_mail_username']      = 'El usuario de correo es demasiado largo (m&aacute;ximo 255 caracteres).';
+$_['error_mail_username_required'] = 'Indique el usuario de correo para guardar su contrase&ntilde;a.';
+$_['error_mail_encryption']    = 'El servidor no tiene la extensi&oacute;n OpenSSL de PHP: no se puede guardar la contrase&ntilde;a de forma segura.';
 $_['entry_image'] = 'Imagen';
 $_['entry_language'] = 'Idioma';
 $_['entry_status'] = 'Estado';

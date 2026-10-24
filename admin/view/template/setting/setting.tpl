@@ -486,6 +486,38 @@
 						</div>
 					</div>
 					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_user_mail_pop_host; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_user_mail_pop_host" value="<?php echo $config_user_mail_pop_host; ?>" class="form-control">
+							<small class="text-muted"><?php echo $text_user_mail_pop_note; ?></small>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_user_mail_pop_port; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_user_mail_pop_port" value="<?php echo $config_user_mail_pop_port; ?>" class="form-control">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_user_mail_pop_ssl; ?></label>
+						<div class="col-sm-6">
+							<?php if ($config_user_mail_pop_ssl) { ?>
+							<label class="radio-inline"><input type="radio" name="config_user_mail_pop_ssl" value="1" checked=""><?php echo $text_yes; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_user_mail_pop_ssl" value="0"><?php echo $text_no; ?></label>
+							<?php } else { ?>
+							<label class="radio-inline"><input type="radio" name="config_user_mail_pop_ssl" value="1"><?php echo $text_yes; ?></label>
+							<label class="radio-inline"><input type="radio" name="config_user_mail_pop_ssl" value="0" checked=""><?php echo $text_no; ?></label>
+							<?php } ?>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_user_mail_max_days; ?></label>
+						<div class="col-sm-6">
+							<input type="number" min="0" name="config_user_mail_max_days" value="<?php echo (int)$config_user_mail_max_days; ?>" class="form-control">
+							<div class="form-text"><?php echo $text_user_mail_max_days_note; ?></div>
+						</div>
+					</div>
+					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_alert_mail; ?></label>
 						<div class="col-sm-6">
 							<?php if ($config_alert_mail) { ?>

@@ -53,13 +53,23 @@
 									<td class="rowlink-skip text-center">
 										<input type="checkbox" name="sel_mail_in[]" value="<?php echo $mail_in['mail_id']; ?>" <?php echo ($mail_in['sel_mail_in'] ? 'checked' : '')?>>
 									</td>
-									<td><?php echo $mail_in['company']; ?></td>
+									<td><?php echo $mail_in['company']; ?><?php if ($mail_in['unknown']) { ?><span class="badge bg-warning text-dark"><?php echo $text_unknown_sender; ?></span><?php } ?></td>
 									<td class="d-none d-md-table-cell"><?php echo $mail_in['mailfrom']; ?></td>
 									<td class="d-none d-sm-table-cell"><?php echo $mail_in['title']; ?></td>
 									<td class="d-none d-md-table-cell"><?php echo $mail_in['created']; ?></td>
 									<td class="rowlink-skip text-center"><input type="checkbox" disabled <?php echo ($mail_in['rag_indexed'] ? 'checked' : ''); ?>></td>
 									<td class="text-end"><?php foreach ($mail_in['action'] as $action) { ?>
 									<a class="btn btn-info" href="<?php echo $action['href']; ?>"><i class="fas fa-eye"></i><span class="d-none d-md-inline"> <?php echo $action['text']; ?></span></a>
+									<?php } ?>
+									<?php if ($mail_in['unknown']) { ?>
+									<div class="btn-group rowlink-skip">
+										<button type="button" class="btn btn-warning dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-user-plus"></i></button>
+										<ul class="dropdown-menu dropdown-menu-end">
+											<?php if ($can_add_potential) { ?><li><a class="dropdown-item sender-act" href="#" data-act="potential" data-mail="<?php echo $mail_in['mail_id']; ?>"><?php echo $text_add_potential; ?></a></li><?php } ?>
+											<li><a class="dropdown-item sender-assign" href="#" data-mail="<?php echo $mail_in['mail_id']; ?>"><?php echo $text_assign_sender; ?></a></li>
+											<li><a class="dropdown-item sender-act text-danger" href="#" data-act="delete" data-mail="<?php echo $mail_in['mail_id']; ?>"><?php echo $text_delete_sender; ?></a></li>
+										</ul>
+									</div>
 									<?php } ?></td>
 									</tr>
 								<?php } ?>
@@ -159,6 +169,88 @@
 		</div>
 	</div>
 </div>
+<!-- Asignar remitente -->
+<div id="AssignSenderModal" class="modal fade" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title"><?php echo $text_assign_sender; ?></h4>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+			</div>
+			<div class="modal-body">
+				<input type="hidden" id="assign-mail-id" value="">
+				<input type="text" id="assign-search" class="form-control" list="assign-list" autocomplete="off" placeholder="<?php echo $text_assign_search; ?>">
+				<datalist id="assign-list"></datalist>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" id="btn-assign"><?php echo $button_assign; ?></button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+(function() {
+	var senderUrl = '<?php echo str_replace('&amp;', '&', $sender_url); ?>';
+	var findUrl   = '<?php echo str_replace('&amp;', '&', $find_contact_url); ?>';
+	var options   = {};
+
+	function resolve(data) {
+		$.ajax({
+			url: senderUrl, type: 'post', dataType: 'json', data: data,
+			success: function(json) {
+				if (json['error']) {
+					alertMessage('danger', json['error']);
+				} else if (json['success']) {
+					window.location.reload();
+				}
+			}
+		});
+	}
+
+	$(document).on('click', '.sender-act', function(e) {
+		e.preventDefault();
+
+		if (($(this).data('act') == 'delete') && !confirm('<?php echo addslashes(html_entity_decode($text_confirm_delete_sender, ENT_QUOTES, 'UTF-8')); ?>')) {
+			return;
+		}
+
+		resolve({mail_id: $(this).data('mail'), act: $(this).data('act')});
+	});
+
+	$(document).on('click', '.sender-assign', function(e) {
+		e.preventDefault();
+
+		$('#assign-mail-id').val($(this).data('mail'));
+		$('#assign-search').val('');
+		bootstrap.Modal.getOrCreateInstance(document.getElementById('AssignSenderModal')).show();
+	});
+
+	$('#assign-search').on('input', function() {
+		var q = $(this).val();
+
+		if (q.length < 2 || options[q]) {
+			return;
+		}
+
+		$.getJSON(findUrl + '&q=' + encodeURIComponent(q), function(list) {
+			$('#assign-list').empty();
+
+			$.each(list, function(i, item) {
+				options[item.label] = item.value;
+				$('#assign-list').append($('<option>').val(item.label));
+			});
+		});
+	});
+
+	$('#btn-assign').on('click', function() {
+		var target = options[$('#assign-search').val()];
+
+		if (target) {
+			resolve({mail_id: $('#assign-mail-id').val(), act: 'assign', target: target});
+		}
+	});
+})();
+</script>
 <script>
 $('#btn-send').on('click',function(e){
 	var to = $('#email').val();

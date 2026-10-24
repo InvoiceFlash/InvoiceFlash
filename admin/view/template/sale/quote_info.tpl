@@ -84,6 +84,12 @@
 							<td><?php echo $company; ?></td>
 						</tr>
 						<?php } ?>
+						<?php if ($email) { ?>
+						<tr>
+							<td><?php echo $text_email; ?></td>
+							<td><a href="mailto:<?php echo $email; ?>"><?php echo $email; ?></a></td>
+						</tr>
+						<?php } ?>
 						<?php if ($customer_group) { ?>
 						<tr>
 							<td><?php echo $text_customer_group; ?></td>

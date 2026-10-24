@@ -567,7 +567,7 @@ class IncomingMessage
             $options = FT_UID;
         }
 
-        return imap_fetch_overview($this->imapStream, $sequence, $options);
+        return imap_fetch_overview($this->imapStream, $sequence, (int)$options);
     }
 
     /**

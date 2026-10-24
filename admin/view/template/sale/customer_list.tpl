@@ -11,12 +11,12 @@
 	</div>
 	<div class="card-body">
 		<form class="form-bar" method="post" enctype="multipart/form-data" id="form">
-		<div class="table-responsive">
+		<div class="table-responsive w-100">
 			<table class="table table-bordered table-striped table-hover">
 				<thead>
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
-						<th><a href="<?php echo $sort_company; ?>"><?php echo $column_company; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th style="width:40%; min-width:240px;"><a href="<?php echo $sort_company; ?>"><?php echo $column_company; echo ($sort == 'company') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_email; ?>"><?php echo $column_email; echo ($sort == 'c.email') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th><a href="<?php echo $sort_telephone; ?>"><?php echo $column_telephone; echo ($sort == 'telephone') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_customer_group; ?>"><?php echo $column_customer_group; echo ($sort == 'customer_group') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>

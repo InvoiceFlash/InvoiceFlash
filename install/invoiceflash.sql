@@ -3465,6 +3465,15 @@ CREATE TABLE `if_user` (
 -- Table structure for table `if_user_group`
 --
 
+DROP TABLE IF EXISTS `if_user_mail_account`;
+CREATE TABLE `if_user_mail_account` (
+  `user_id` int(11) NOT NULL,
+  `mail_username` varchar(255) NOT NULL DEFAULT '',
+  `mail_password` text,
+  `date_modified` datetime DEFAULT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 DROP TABLE IF EXISTS `if_user_group`;
 CREATE TABLE `if_user_group` (
   `user_group_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -8709,7 +8718,8 @@ CREATE TABLE `if_cron` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT INTO `if_cron` (`code`, `action`, `cycle`, `status`, `date_last`, `date_next`) VALUES
-('supplier_invoice_import', 'supplier_invoice_import.php', 720, 1, NOW(), NOW());
+('supplier_invoice_import', 'supplier_invoice_import.php', 720, 1, NOW(), NOW()),
+('user_mail_download', 'user_mail_download.php', 10, 1, NOW(), NOW());
 
 DROP TABLE IF EXISTS `if_delivery_option`;
 CREATE TABLE `if_delivery_option` (

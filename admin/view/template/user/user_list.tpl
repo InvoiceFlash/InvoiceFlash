@@ -9,6 +9,7 @@
 					<tr>
 						<th width="40" class="text-center"><input type="checkbox" data-toggle="selected"></th>
 						<th><a href="<?php echo $sort_username; ?>"><?php echo $column_username; echo ($sort == 'username') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
+						<th class="d-none d-md-table-cell"><a href="<?php echo $sort_user_group; ?>"><?php echo $column_user_group; echo ($sort == 'user_group') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_status; ?>"><?php echo $column_status; echo ($sort == 'status') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="d-none d-lg-table-cell"><a href="<?php echo $sort_date_added; ?>"><?php echo $column_date_added; echo ($sort == 'date_added') ? '<i class="caret caret-' . strtolower($order) . '"></i>' : ''; ?></a></th>
 						<th class="text-end"><span class="d-none d-lg-inline"><?php echo $column_action; ?></span></th>
@@ -24,6 +25,7 @@
 							<input type="checkbox" name="selected[]" value="<?php echo $user['user_id']; ?>">
 							<?php } ?></td>
 						<td><?php echo $user['username']; ?></td>
+						<td class="d-none d-md-table-cell"><?php echo $user['user_group']; ?></td>
 						<td class="d-none d-lg-table-cell text-<?php echo strtolower($user['status']); ?>"><?php echo $user['status']; ?></td>
 						<td class="d-none d-lg-table-cell"><?php echo $user['date_added']; ?></td>
 						<td class="text-end"><?php foreach ($user['action'] as $action) { ?>
@@ -33,7 +35,7 @@
 					<?php } ?>
 					<?php } else { ?>
 					<tr>
-						<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
+						<td class="text-center" colspan="6"><?php echo $text_no_results; ?></td>
 					</tr>
 					<?php } ?>
 				</tbody>

@@ -246,6 +246,18 @@ abstract class Controller {
         $mail->setTo($to);
         $mail->setFrom($this->config->get('config_email'));
         $mail->setSender($this->config->get('config_title'));
+
+		// Si el usuario tiene su cuenta de correo (ficha de usuario), se envia con ella por el mismo servidor SMTP:
+		// el remitente es el propio usuario y por tanto las respuestas del cliente le llegan a el.
+		$own = $this->getUserMailSender();
+
+		if ($own) {
+			$mail->protocol = 'smtp';
+			$mail->username = $own['username'];
+			$mail->password = $own['password'];
+			$mail->setFrom($own['from']);
+			$mail->setSender($own['name']);
+		}
         $mail->setSubject($subject);
 
 		$mail->setHTML(html_entity_decode($text, ENT_QUOTES, 'UTF-8'));
@@ -271,6 +283,44 @@ abstract class Controller {
 		return null;
     }
 	//end
+
+	// Datos para enviar con la cuenta del usuario conectado, o null si no tiene (entonces se usa la cuenta general).
+	// Hace falta el servidor SMTP de Ajustes y una direccion valida: el login si es un email, si no el email de su ficha.
+	private function getUserMailSender() {
+		$user_id = (int)$this->user->getId();
+
+		if (!$user_id || !$this->config->get('config_smtp_host')) {
+			return null;
+		}
+
+		$this->load->model('user/mail_account');
+
+		$credentials = $this->model_user_mail_account->getCredentials($user_id);
+
+		if (!$credentials) {
+			return null;
+		}
+
+		$query = $this->db->query("SELECT firstname, lastname, email FROM " . DB_PREFIX . "user WHERE user_id = '" . $user_id . "'");
+
+		$from = filter_var($credentials['username'], FILTER_VALIDATE_EMAIL) ? $credentials['username'] : '';
+
+		if (($from === '') && $query->num_rows && filter_var(html_entity_decode($query->row['email'], ENT_QUOTES, 'UTF-8'), FILTER_VALIDATE_EMAIL)) {
+			$from = html_entity_decode($query->row['email'], ENT_QUOTES, 'UTF-8');
+		}
+
+		if ($from === '') {
+			return null;
+		}
+
+		$name = $query->num_rows ? trim(html_entity_decode($query->row['firstname'] . ' ' . $query->row['lastname'], ENT_QUOTES, 'UTF-8')) : '';
+
+		if ($name === '') {
+			$name = $this->config->get('config_title');
+		}
+
+		return array('username' => $credentials['username'], 'password' => $credentials['password'], 'from' => $from, 'name' => $name);
+	}
 
 	// Firma de email del usuario que envia (user.signature, pestaña
 	// user/user/update) - ya viene escapada como entidades HTML (Request::clean()),

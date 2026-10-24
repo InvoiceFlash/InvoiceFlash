@@ -970,7 +970,8 @@ class ModelSaleCustomer extends Model {
 	
 	public function getEmailsByCustomerId($customer_id) {
 
-		$query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "mails` WHERE bleido != 2 AND customer_id=" . (int)$customer_id . " ORDER BY date_added DESC");
+		// nusuario = usuario que envio el correo (ver ModelCatalogMail::addMailSended()); se muestra su nombre en la ficha.
+		$query = $this->db->query("SELECT m.*, u.username AS user_name FROM `" . DB_PREFIX . "mails` m LEFT JOIN `" . DB_PREFIX . "user` u ON (u.user_id = m.nusuario) WHERE m.bleido != 2 AND m.customer_id=" . (int)$customer_id . " ORDER BY m.date_added DESC");
 
 		return $query->rows;
 	}

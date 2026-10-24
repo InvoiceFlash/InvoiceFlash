@@ -664,6 +664,8 @@ class ControllerSaleCustomer extends Controller {
 		$this->data['column_email'] = $this->language->get('column_email');
 		$this->data['column_email_subject'] = $this->language->get('column_email_subject');
 		$this->data['column_email_sender'] = $this->language->get('column_email_sender');
+		$this->data['column_email_user'] = $this->language->get('column_email_user');
+		$this->data['button_attachments'] = $this->language->get('button_attachments');
 		$this->data['column_quote'] = $this->language->get('column_quote');
 		$this->data['column_quote'] = $this->language->get('column_quote');
 		$this->data['column_delivery'] = $this->language->get('column_delivery');
@@ -961,6 +963,8 @@ class ControllerSaleCustomer extends Controller {
 			// Emails
 			$this->data['emails'] = array();
 			if (isset($customer_info)) {
+				$this->load->model('catalog/mail');
+
 				$results = $this->model_sale_customer->getEmailsByCustomerId($this->request->get['customer_id']);
 
 				foreach ($results as $result) {
@@ -996,6 +1000,8 @@ class ControllerSaleCustomer extends Controller {
 					$this->data['emails'][] = array(
 						'mail_id'   => $result['mail_id'],
 						'sender'	 => $sender,
+						'user'       => isset($result['user_name']) ? $result['user_name'] : '',
+						'attachments' => $this->getMailAttachmentLinks($result['mail_id'], $this->request->get['customer_id']),
 						'subject'    => $result['title'],
 						'text'       => $message,
 						'date_added' => date($this->language->get('datetime_format'), strtotime($result['date_added']))
@@ -2929,6 +2935,80 @@ class ControllerSaleCustomer extends Controller {
 		}
 		
 		$this->response->setOutput(json_encode($json));
+	}
+
+	// Enlaces a los adjuntos de un correo de la ficha (vacio si no tiene).
+	private function getMailAttachmentLinks($mail_id, $customer_id) {
+		$links = array();
+
+		foreach ($this->model_catalog_mail->getMailAttachments($mail_id) as $name) {
+			$links[] = array(
+				'name' => $name,
+				'href' => $this->url->link('sale/customer/mailAttachment', 'token=' . $this->session->data['token'] . '&customer_id=' . (int)$customer_id . '&mail_id=' . (int)$mail_id . '&name=' . rawurlencode($name), 'SSL')
+			);
+		}
+
+		return $links;
+	}
+
+	// Descarga/visualiza un adjunto de un correo de la ficha del cliente. Solo sirve ficheros del directorio del correo
+	// y solo si el correo pertenece a ese cliente (no se puede pedir el adjunto de otro cliente cambiando el mail_id).
+	public function mailAttachment() {
+		if (!$this->user->hasPermission('access', 'sale/customer')) {
+			http_response_code(403);
+			exit('Permission denied');
+		}
+
+		$customer_id = isset($this->request->get['customer_id']) ? (int)$this->request->get['customer_id'] : 0;
+		$mail_id     = isset($this->request->get['mail_id']) ? (int)$this->request->get['mail_id'] : 0;
+		$name        = isset($this->request->get['name']) ? basename(html_entity_decode($this->request->get['name'], ENT_QUOTES, 'UTF-8')) : '';
+
+		if (!$customer_id || !$mail_id || ($name === '')) {
+			http_response_code(400);
+			exit('Bad request');
+		}
+
+		$check = $this->db->query("SELECT mail_id FROM `" . DB_PREFIX . "mails` WHERE mail_id = '" . $mail_id . "' AND customer_id = '" . $customer_id . "' AND bleido != 2");
+
+		$this->load->model('catalog/mail');
+
+		$file = $this->model_catalog_mail->getMailAttachmentsDir($mail_id) . $name;
+
+		if (!$check->num_rows || !in_array($name, $this->model_catalog_mail->getMailAttachments($mail_id), true) || !is_file($file)) {
+			http_response_code(404);
+			exit('Attachment not found');
+		}
+
+		$ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+
+		// Solo se muestran en el navegador los tipos inofensivos; el resto (html, svg...) se descarga.
+		$inline = array(
+			'pdf'  => 'application/pdf',
+			'jpg'  => 'image/jpeg',
+			'jpeg' => 'image/jpeg',
+			'png'  => 'image/png',
+			'gif'  => 'image/gif',
+			'txt'  => 'text/plain'
+		);
+
+		if (isset($inline[$ext])) {
+			header('Content-Type: ' . $inline[$ext]);
+			header('Content-Disposition: inline; filename="' . str_replace('"', '', $name) . '"');
+		} else {
+			header('Content-Type: application/octet-stream');
+			header('Content-Disposition: attachment; filename="' . str_replace('"', '', $name) . '"');
+		}
+
+		header('X-Content-Type-Options: nosniff');
+		header('Content-Length: ' . filesize($file));
+		header('Cache-Control: private');
+
+		if (ob_get_level()) {
+			ob_end_clean();
+		}
+
+		readfile($file);
+		exit;
 	}
 
 	public function country() {

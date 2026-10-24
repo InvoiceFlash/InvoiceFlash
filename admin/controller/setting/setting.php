@@ -190,6 +190,12 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_smtp_password'] = $this->language->get('entry_smtp_password');
 		$this->data['entry_smtp_port'] = $this->language->get('entry_smtp_port');
 		$this->data['entry_smtp_timeout'] = $this->language->get('entry_smtp_timeout');
+		$this->data['entry_user_mail_pop_host'] = $this->language->get('entry_user_mail_pop_host');
+		$this->data['entry_user_mail_pop_port'] = $this->language->get('entry_user_mail_pop_port');
+		$this->data['entry_user_mail_pop_ssl'] = $this->language->get('entry_user_mail_pop_ssl');
+		$this->data['entry_user_mail_max_days'] = $this->language->get('entry_user_mail_max_days');
+		$this->data['text_user_mail_max_days_note'] = $this->language->get('text_user_mail_max_days_note');
+		$this->data['text_user_mail_pop_note'] = $this->language->get('text_user_mail_pop_note');
 		$this->data['entry_alert_mail'] = $this->language->get('entry_alert_mail');
 		$this->data['entry_account_mail'] = $this->language->get('entry_account_mail');
 		$this->data['entry_alert_emails'] = $this->language->get('entry_alert_emails');
@@ -1355,6 +1361,32 @@ class ControllerSettingSetting extends Controller {
 		} else {
 			$this->data['config_smtp_timeout'] = 5;	
 		}	
+
+		// Servidor POP comun a todos los usuarios (la cuenta de cada uno va en su ficha de usuario).
+		if (isset($this->request->post['config_user_mail_pop_host'])) {
+			$this->data['config_user_mail_pop_host'] = $this->request->post['config_user_mail_pop_host'];
+		} else {
+			$this->data['config_user_mail_pop_host'] = $this->config->get('config_user_mail_pop_host');
+		}
+
+		if (isset($this->request->post['config_user_mail_pop_port'])) {
+			$this->data['config_user_mail_pop_port'] = $this->request->post['config_user_mail_pop_port'];
+		} else {
+			$this->data['config_user_mail_pop_port'] = $this->config->get('config_user_mail_pop_port') ? $this->config->get('config_user_mail_pop_port') : '995';
+		}
+
+		if (isset($this->request->post['config_user_mail_max_days'])) {
+			$this->data['config_user_mail_max_days'] = $this->request->post['config_user_mail_max_days'];
+		} else {
+			$this->data['config_user_mail_max_days'] = (int)$this->config->get('config_user_mail_max_days');
+		}
+
+		if (isset($this->request->post['config_user_mail_pop_ssl'])) {
+			$this->data['config_user_mail_pop_ssl'] = $this->request->post['config_user_mail_pop_ssl'];
+		} else {
+			$user_pop_ssl = $this->config->get('config_user_mail_pop_ssl');
+			$this->data['config_user_mail_pop_ssl'] = ($user_pop_ssl === null) ? '1' : $user_pop_ssl;
+		}
 
 		if (isset($this->request->post['config_alert_mail'])) {
 			$this->data['config_alert_mail'] = $this->request->post['config_alert_mail'];

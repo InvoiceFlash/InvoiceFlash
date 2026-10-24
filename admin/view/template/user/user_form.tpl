@@ -50,6 +50,33 @@
 				</div>
 			</div>
 			<div class="form-group row">
+				<div class="col-sm-10 offset-md-2">
+					<strong><?php echo $text_mail_account; ?></strong>
+					<div class="form-text"><?php echo $text_mail_account_help; ?></div>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_mail_username; ?></label>
+				<div class="col-sm-6">
+					<input type="text" name="mail_username" value="<?php echo $mail_username; ?>" class="form-control" autocomplete="off" maxlength="255">
+					<?php if ($error_mail_username) { ?>
+					<div class="form-text text-danger"><?php echo $error_mail_username; ?></div>
+					<?php } ?>
+				</div>
+			</div>
+			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_mail_password; ?></label>
+				<div class="col-sm-6">
+					<input type="password" name="mail_password" value="" class="form-control" autocomplete="new-password" placeholder="<?php echo $mail_password_saved ? '&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;' : ''; ?>">
+					<?php if ($mail_password_saved) { ?>
+					<div class="form-text"><?php echo $text_mail_password_saved; ?></div>
+					<?php } ?>
+					<?php if ($error_mail_password) { ?>
+					<div class="form-text text-danger"><?php echo $error_mail_password; ?></div>
+					<?php } ?>
+				</div>
+			</div>
+			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_user_group; ?></label>
 				<div class="col-sm-6">
 					<select name="user_group_id" class="form-select">

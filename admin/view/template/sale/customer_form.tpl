@@ -604,6 +604,7 @@
 								<th class="d-none d-lg-table-cell"><?php echo $column_date; ?></th>
 								<th class="text-start"><?php echo $column_email_subject; ?></th>
 								<th class="text-start"><?php echo $column_email_sender; ?></th>
+								<th class="text-start"><?php echo $column_email_user; ?></th>
 								<th class="text-end"><?php echo $column_action; ?></th>
 							</tr>
 						</thead>
@@ -614,8 +615,19 @@
 								<td class="text-start"><?php echo $email['date_added']; ?></td>
 								<td class="text-start"><?php echo $email['subject']; ?></td>
 								<td class="text-start"><?php echo $email['sender']; ?></td>
+								<td class="text-start"><?php echo $email['user']; ?></td>
 								<td class="d-none" id="mail-<?php echo $email['mail_id']; ?>"><?php echo $email['text']; ?></td>
 								<td class="text-end">
+									<?php if ($email['attachments']) { ?>
+									<div class="btn-group">
+										<button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" title="<?php echo $button_attachments; ?>"><i class="fa fa-paperclip"></i> <?php echo count($email['attachments']); ?></button>
+										<ul class="dropdown-menu dropdown-menu-end">
+											<?php foreach ($email['attachments'] as $attachment) { ?>
+											<li><a class="dropdown-item" href="<?php echo $attachment['href']; ?>" target="_blank"><i class="fa fa-file"></i> <?php echo htmlspecialchars($attachment['name']); ?></a></li>
+											<?php } ?>
+										</ul>
+									</div>
+									<?php } ?>
 									<button type="button" class="btn btn-info" onclick="viewMessage(<?php echo $email['mail_id']; ?>);">
 										<i class="fa fa-eye"></i> <?php echo $text_view; ?>
 									</button>
@@ -624,7 +636,7 @@
 							<?php } ?>
 						<?php } else { ?>
 							<tr>
-								<td class="text-center" colspan="4"><?php echo $text_no_results; ?></td>
+								<td class="text-center" colspan="5"><?php echo $text_no_results; ?></td>
 							</tr>
 						<?php } ?>
 						</tbody>

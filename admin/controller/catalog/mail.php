@@ -55,11 +55,20 @@ class ControllerCatalogMail extends Controller {
 		
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
+		} elseif (isset($this->session->data['warning'])) {
+			$this->data['error_warning'] = $this->session->data['warning'];
+			unset($this->session->data['warning']);
 		} else {
 			$this->data['error_warning'] = '';
 		}
 		
-		if (empty($this->config->get('config_smtp_host')) || empty($this->config->get('config_smtp_username')) || empty($this->config->get('config_smtp_password'))){
+		// El servidor de correo es comun: basta con que este el host; el usuario y la contrasena van en la ficha de cada usuario
+		// (si el usuario no tiene la suya, el envio usa la cuenta general de Ajustes, que entonces debe estar completa).
+		$this->load->model('user/mail_account');
+
+		$own_account = $this->model_user_mail_account->getCredentials($this->user->getId());
+
+		if (empty($this->config->get('config_smtp_host')) || (!$own_account && (empty($this->config->get('config_smtp_username')) || empty($this->config->get('config_smtp_password'))))){
 			$this->data['error_config'] = $this->language->get('error_config') ;
 		} else {
 			$this->data['error_config'] = '';
@@ -163,6 +172,7 @@ class ControllerCatalogMail extends Controller {
 				'created'     => date($this->language->get('datetime_format'), strtotime($result['date_added'])),
 				'sel_mail_in'    => isset($this->request->post['sel_mail_in']) && in_array($result['mail_id'], $this->request->post['sel_mail_in']),
 				'unread'      => ((int)$result['bleido'] === 0),
+				'unknown'     => $this->model_catalog_mail->isUnknownSender($result),
 				'rag_indexed' => !empty($result['rag_indexed']),
 				'action'      => $action
 			);
@@ -230,6 +240,14 @@ class ControllerCatalogMail extends Controller {
 		$this->data['pag_mail_out'] = $pag_mail_out->render();
 
 		$this->data['filter_company'] = $filter_company;
+
+		$this->data['can_add_potential'] = $this->model_catalog_mail->canAddPotential();
+		$this->data['sender_url']        = $this->url->link('catalog/mail/resolveSender', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['find_contact_url']  = $this->url->link('catalog/mail/findContact', 'token=' . $this->session->data['token'], 'SSL');
+
+		foreach (array('text_unknown_sender', 'text_add_potential', 'text_assign_sender', 'text_delete_sender', 'text_assign_search', 'text_confirm_delete_sender', 'button_assign') as $key) {
+			$this->data[$key] = $this->language->get($key);
+		}
 		$this->data['filter_email'] = $filter_email;
 		
 		$this->template = 'catalog/mail_list.tpl';		
@@ -272,23 +290,94 @@ class ControllerCatalogMail extends Controller {
 
 	}
 	
-	public function getmails() {
+	// Remitente desconocido: lo da de alta como potencial, lo asigna a un cliente o proveedor existente, o borra el correo.
+	public function resolveSender() {
+		$this->load->language('catalog/mail');
 
 		$this->load->model('catalog/mail');
-		
-		if (extension_loaded('imap')) {
-			if ($this->config->get('config_smtp_host')!= null && $this->config->get('config_smtp_username')!= null && $this->config->get('config_smtp_password')!= null){
-				require_once(DIR_SYSTEM . 'vendor/imap/ImapConnect.php');
-				require_once(DIR_SYSTEM . 'vendor/imap/ImapClient.php'); 
-				require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessage.php');
-				require_once(DIR_SYSTEM . 'vendor/imap/TypeAttachments.php');
-				require_once(DIR_SYSTEM . 'vendor/imap/Section.php');
-				require_once(DIR_SYSTEM . 'vendor/imap/SubtypeBody.php');
-				require_once(DIR_SYSTEM . 'vendor/imap/TypeBody.php');
-				require_once(DIR_SYSTEM . 'vendor/imap/IncomingMessageAttachment.php');
-				
-				$this->model_catalog_mail->getmails();
+
+		$json = array();
+
+		if (!$this->user->hasPermission('modify', 'catalog/mail')) {
+			$json['error'] = $this->language->get('error_permis');
+		} else {
+			$mail = $this->model_catalog_mail->getOwnReceivedMail(isset($this->request->post['mail_id']) ? $this->request->post['mail_id'] : 0);
+			$act  = isset($this->request->post['act']) ? $this->request->post['act'] : '';
+
+			if (!$mail) {
+				$json['error'] = $this->language->get('error_sender_mail');
+			} elseif ($act == 'delete') {
+				$this->model_catalog_mail->deleteMails($mail['mail_id']);
+				$json['success'] = $this->language->get('text_sender_deleted');
+			} elseif ($act == 'potential') {
+				if ($this->model_catalog_mail->addSenderAsPotential($mail)) {
+					$json['success'] = $this->language->get('text_sender_potential');
+				} else {
+					$json['error'] = $this->language->get('error_sender_potential');
+				}
+			} elseif ($act == 'assign') {
+				$target = explode(':', isset($this->request->post['target']) ? $this->request->post['target'] : '');
+
+				if ((count($target) == 2) && $this->model_catalog_mail->assignSender($mail, $target[0], $target[1])) {
+					$json['success'] = $this->language->get('text_sender_assigned');
+				} else {
+					$json['error'] = $this->language->get('error_sender_target');
+				}
+			} else {
+				$json['error'] = $this->language->get('error_sender_mail');
 			}
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
+	// Autocompletado de clientes y proveedores para asignar un remitente.
+	public function findContact() {
+		$this->load->model('catalog/mail');
+
+		$json = array();
+
+		if (isset($this->request->get['q']) && (utf8_strlen($this->request->get['q']) >= 2)) {
+			$json = $this->model_catalog_mail->searchContacts(html_entity_decode($this->request->get['q'], ENT_QUOTES, 'UTF-8'));
+		}
+
+		$this->response->setOutput(json_encode($json));
+	}
+
+	// "Descargar": baja el correo del usuario actual con su propia cuenta (ver ModelCatalogMail::downloadUserMails()).
+	public function getmails() {
+		$this->language->load('catalog/mail');
+
+		$this->load->model('catalog/mail');
+
+		$result = $this->model_catalog_mail->downloadUserMails();
+
+		if ($result['error'] !== '') {
+			$parts = explode(':', $result['error'], 2);
+			$key   = 'error_download_' . $parts[0];
+			$text  = $this->language->get($key);
+
+			if ($text == $key) {
+				$text = $this->language->get('error_download_connect');
+			}
+
+			if (isset($parts[1]) && ($parts[1] !== '')) {
+				$text .= ' (' . htmlspecialchars($parts[1], ENT_QUOTES, 'UTF-8') . ')';
+			}
+
+			$this->session->data['warning'] = $text;
+		} else {
+			$text = sprintf($this->language->get('text_download_done'), $result['downloaded']);
+
+			if ($result['remaining'] > 0) {
+				$text .= ' ' . sprintf($this->language->get('text_download_more'), $result['remaining']);
+			}
+
+			if (!empty($result['skipped'])) {
+				$text .= ' ' . sprintf($this->language->get('text_download_skipped'), $result['skipped']);
+			}
+
+			$this->session->data['success'] = $text;
 		}
 
 		$this->redirect($this->url->link('catalog/mail', 'token=' . $this->session->data['token'], 'SSL'));
@@ -420,7 +509,7 @@ class ControllerCatalogMail extends Controller {
 		$this->data['action'] = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$this->data['cancel'] = $this->url->link('catalog/mail', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		
-		$mail_id = $this->request->get['mail_id'] ;
+		$mail_id = (int)$this->request->get['mail_id'];
 		
 		$this->load->model('catalog/mail');
 		
