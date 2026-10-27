@@ -3,6 +3,12 @@ class ControllerCommonHome extends Controller {
 	// Propuestas de cambio creadas durante la peticion actual del chat (se devuelven al navegador).
 	private $chat_proposals = array();
 
+	// Comprobacion de grounding: lo recuperado por las herramientas de busqueda en documentos durante
+	// ESTA peticion (llamadas, mayor referencia [n] repartida y numeros presentes en los fragmentos).
+	private $rag_calls = 0;
+	private $rag_max_ref = 0;
+	private $rag_numbers = array();
+
 	public function index() {
 		$this->language->load('common/home');
 
@@ -817,6 +823,8 @@ class ControllerCommonHome extends Controller {
 			$provider = 'claude';
 		}
 
+		$this->logChatActivity('ai_chat', array('pregunta' => mb_substr($message, 0, 2000, 'UTF-8')), array('proveedor' => $provider));
+
 		if ($provider === 'ollama') {
 			$this->ollamaChat($messages, $message);
 			return;
@@ -967,7 +975,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		$this->response->setOutput(json_encode(array(
-			'reply'     => $final_text,
+			'reply'     => $this->groundReply($final_text),
 			'messages'  => $messages,
 			'proposals' => $this->chat_proposals
 		)));
@@ -1610,7 +1618,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		$this->response->setOutput(json_encode(array(
-			'reply'     => $reply,
+			'reply'     => $this->groundReply($reply),
 			'messages'  => $messages,
 			'proposals' => $this->chat_proposals
 		)));
@@ -1745,13 +1753,74 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		$this->response->setOutput(json_encode(array(
-			'reply'     => $reply,
+			'reply'     => $this->groundReply($reply),
 			'messages'  => $messages,
 			'proposals' => $this->chat_proposals
 		)));
 	}
 
+	// Registro de auditoria: cada herramienta que el modelo ejecuta queda en user_activity_log
+	// (action 'ai_query'), con la consulta/parametros y un resumen del resultado, no su contenido.
 	private function executeHomeChatTool($tool_name, $tool_input) {
+		$raw = $this->runHomeChatTool($tool_name, $tool_input);
+
+		$summary = array();
+		$decoded = json_decode($raw, true);
+
+		if (is_array($decoded)) {
+			if (isset($decoded['error'])) {
+				$summary['error'] = mb_substr((string)$decoded['error'], 0, 300, 'UTF-8');
+			}
+
+			if (isset($decoded['row_count'])) {
+				$summary['filas'] = (int)$decoded['row_count'];
+			}
+
+			if (isset($decoded['results']) && is_array($decoded['results'])) {
+				$summary['fragmentos'] = count($decoded['results']);
+			}
+
+			if (isset($decoded['status'])) {
+				$summary['estado'] = (string)$decoded['status'];
+			}
+		}
+
+		$this->logChatActivity('ai_tool', array('herramienta' => (string)$tool_name, 'parametros' => $this->truncateLogValue($tool_input)), $summary ? $summary : array('resultado' => 'ok'));
+
+		return $raw;
+	}
+
+	private function truncateLogValue($value) {
+		if (is_array($value)) {
+			foreach ($value as $k => $v) {
+				$value[$k] = $this->truncateLogValue($v);
+			}
+
+			return $value;
+		}
+
+		return is_string($value) ? mb_substr($value, 0, 1000, 'UTF-8') : $value;
+	}
+
+	private function logChatActivity($document_type, $original, $changed) {
+		try {
+			$this->load->model('tool/user_logs');
+			$this->model_tool_user_logs->addLog(array(
+				'user_id'       => $this->user->getId(),
+				'username'      => $this->user->getUserName(),
+				'action'        => 'ai_query',
+				'document_type' => $document_type,
+				'document_id'   => 0,
+				'ip'            => isset($this->request->server['REMOTE_ADDR']) ? $this->request->server['REMOTE_ADDR'] : '',
+				'original'      => $original,
+				'cambiado'      => $changed
+			));
+		} catch (\Throwable $e) {
+			// La auditoria nunca debe romper el chat.
+		}
+	}
+
+	private function runHomeChatTool($tool_name, $tool_input) {
 		switch ($tool_name) {
 			case 'list_tables':
 				$result = $this->safeQuery('SHOW TABLES');
@@ -1763,7 +1832,11 @@ También dispones de search_product_documents, search_customer_documents y searc
 				$tables = array();
 
 				foreach ($result['rows'] as $row) {
-					$tables[] = array_values($row)[0];
+					$name = array_values($row)[0];
+
+					if (!$this->isBlockedTable($name)) {
+						$tables[] = $name;
+					}
 				}
 
 				return json_encode(array('tables' => $tables));
@@ -1787,6 +1860,10 @@ También dispones de search_product_documents, search_customer_documents y searc
 					$validTables[] = array_values($row)[0];
 				}
 
+				if ($this->isBlockedTable($table)) {
+					return json_encode(array('error' => 'Table "' . $table . '" is not accessible from the chat.'));
+				}
+
 				if (!in_array($table, $validTables)) {
 					return json_encode(array('error' => 'Table "' . $table . '" does not exist.'));
 				}
@@ -1800,7 +1877,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 				$safe = $this->sanitizeReadOnlySql($sql);
 
 				if ($safe === false) {
-					return json_encode(array('error' => 'Only single SELECT/SHOW/DESCRIBE statements are allowed, no write keywords.'));
+					return json_encode(array('error' => 'Only single SELECT/SHOW/DESCRIBE statements are allowed, no write keywords, and no access to restricted tables or columns (users, settings, credentials, emails, document index).'));
 				}
 
 				$result = $this->safeQuery($safe);
@@ -1821,6 +1898,10 @@ También dispones de search_product_documents, search_customer_documents y searc
 
 				if ($query === '') {
 					return json_encode(array('error' => 'Missing query.'));
+				}
+
+				if (!$this->user->hasPermission('access', 'catalog/product')) {
+					return json_encode(array('error' => 'El usuario actual no tiene permiso para consultar documentos de productos.'));
 				}
 
 				$result = $this->searchProductDocuments($query, $product_id, $limit);
@@ -1846,6 +1927,10 @@ También dispones de search_product_documents, search_customer_documents y searc
 					return json_encode(array('error' => 'Missing or invalid customer_id.'));
 				}
 
+				if (!$this->user->hasPermission('access', 'sale/customer')) {
+					return json_encode(array('error' => 'El usuario actual no tiene permiso para consultar documentos, notas ni emails de clientes.'));
+				}
+
 				$result = $this->searchCustomerDocuments($query, $customer_id, $document_type, $limit);
 
 				if (isset($result['error'])) {
@@ -1867,6 +1952,10 @@ También dispones de search_product_documents, search_customer_documents y searc
 
 				if ($supplier_id <= 0) {
 					return json_encode(array('error' => 'Missing or invalid supplier_id.'));
+				}
+
+				if (!$this->user->hasPermission('access', 'purchase/supplier')) {
+					return json_encode(array('error' => 'El usuario actual no tiene permiso para consultar documentos ni notas de proveedores.'));
 				}
 
 				$result = $this->searchSupplierDocuments($query, $supplier_id, $document_type, $limit);
@@ -2136,6 +2225,79 @@ También dispones de search_product_documents, search_customer_documents y searc
 		return trim(preg_replace('/\s+/', ' ', str_replace(array('+', '"', '*'), ' ', $this->buildFulltextQuery($query))));
 	}
 
+	// Cifras, fechas y referencias de un texto, normalizadas a solo digitos ("1.200,50" -> "120050",
+	// "F-2026-0117" -> "20260117"). Se ignoran los numeros de 1 digito sueltos (listas, "1 de 2") y las
+	// citas [n]. Sirve igual para el texto recuperado y para la respuesta, asi que la comparacion es simetrica.
+	private function extractNumberTokens($text) {
+		$text   = preg_replace('/\[\d+\]/', ' ', (string)$text);
+		$tokens = array();
+
+		if (preg_match_all('/\d[\d.,\/\-]*\d|\d{2,}/', $text, $m)) {
+			foreach ($m[0] as $tok) {
+				$norm = preg_replace('/\D/', '', $tok);
+
+				if (strlen($norm) >= 2) {
+					$tokens[$norm] = true;
+				}
+			}
+		}
+
+		return array_keys($tokens);
+	}
+
+	// Comprobacion de grounding DETERMINISTA de la respuesta final (sin otra llamada al modelo). Solo se
+	// aplica si en esta peticion se uso una busqueda en documentos. Detecta: citas [n] que no existen,
+	// respuesta con datos pero sin ninguna cita, y cifras/fechas/referencias que no aparecen en ningun
+	// fragmento recuperado. No bloquea: anade un aviso visible al final y lo deja en el registro de auditoria.
+	private function groundReply($reply) {
+		if ($this->rag_calls < 1 || trim((string)$reply) === '') {
+			return $reply;
+		}
+
+		$issues = array();
+
+		if (preg_match_all('/\[(\d+)\]/', $reply, $m)) {
+			$bad = array();
+
+			foreach ($m[1] as $n) {
+				if ((int)$n < 1 || (int)$n > $this->rag_max_ref) {
+					$bad[$n] = '[' . $n . ']';
+				}
+			}
+
+			if ($bad) {
+				$issues[] = 'cita(s) a fragmentos que no existen: ' . implode(', ', $bad);
+			}
+		}
+
+		$numbers = $this->extractNumberTokens($reply);
+		$missing = array();
+
+		foreach ($numbers as $tok) {
+			if (!isset($this->rag_numbers[$tok])) {
+				$missing[] = $tok;
+			}
+		}
+
+		if ($missing) {
+			$issues[] = count($missing) . ' cifra(s), fecha(s) o referencia(s) de la respuesta no constan en los documentos recuperados';
+		}
+
+		if ($numbers && !preg_match('/\[\d+\]/', $reply)) {
+			$issues[] = 'la respuesta aporta datos sin citar ningun fragmento';
+		}
+
+		if (!$issues) {
+			return $reply;
+		}
+
+		$this->logChatActivity('ai_grounding', array('problemas' => $issues), array('cifras_sin_respaldo' => array_slice($missing, 0, 20)));
+
+		return $reply . "
+
+⚠ Verificación automática: " . implode('; ', $issues) . '. Contrasta estos datos con el documento original antes de fiarte de ellos.';
+	}
+
 	// Respuesta TIPADA de las herramientas de busqueda en documentos: estructura fija, cada fragmento con
 	// su referencia [n] y su fuente, y un estado explicito. Si no hay evidencia suficiente, el modelo recibe
 	// la orden de decirlo en lugar de inventar. (La validacion de la respuesta final del modelo no es posible
@@ -2178,6 +2340,15 @@ También dispones de search_product_documents, search_customer_documents y searc
 
 		$status = $results ? 'ok' : 'insufficient_evidence';
 
+		$this->rag_calls++;
+		$this->rag_max_ref = max($this->rag_max_ref, count($results));
+
+		foreach ($results as $r) {
+			foreach ($this->extractNumberTokens($r['passage']) as $tok) {
+				$this->rag_numbers[$tok] = true;
+			}
+		}
+
 		return json_encode(array(
 			'status'       => $status,
 			'attempts'     => isset($result['attempts']) ? $result['attempts'] : 1,
@@ -2201,7 +2372,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 	// ser if_document_chunks un indice compartido por todos los clientes, omitir
 	// el filtro expondria pasajes de otros clientes en la respuesta del chat.
 	private function searchCustomerDocuments($query, $customer_id, $document_type = '', $limit = 5) {
-		$where = "customer_id = '" . (int)$customer_id . "'";
+		$where = "customer_id = '" . (int)$customer_id . "'" . $this->mailOwnerClause();
 
 		if ($document_type !== '') {
 			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
@@ -2214,13 +2385,31 @@ También dispones de search_product_documents, search_customer_documents y searc
 	// (documentos y notas de purchase/supplier). supplier_id NUNCA es opcional aqui,
 	// mismo motivo que customer_id en searchCustomerDocuments().
 	private function searchSupplierDocuments($query, $supplier_id, $document_type = '', $limit = 5) {
-		$where = "supplier_id = '" . (int)$supplier_id . "'";
+		$where = "supplier_id = '" . (int)$supplier_id . "'" . $this->mailOwnerClause();
 
 		if ($document_type !== '') {
 			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
 		return $this->searchWithCorrection('document, document_type, supplier_id, supplier_name, page, chunk_text', $where, $query, $limit);
+	}
+
+	// Control de acceso por usuario: los fragmentos de EMAIL (document_id 'mail_<mail_id>') solo se
+	// devuelven si el correo es del usuario logueado o no tiene dueño (nusuario NULL/0), el mismo
+	// criterio que ModelCatalogMail::ownerFilter() usa en catalog/mail. El resto de tipos
+	// (documentos, notas) no tienen dueño y siguen siendo visibles, igual que en las fichas.
+	// Se añade al $where del alcance; nunca depende de lo que escriba el usuario en el chat.
+	private function mailOwnerClause() {
+		$uid = (int)$this->user->getId();
+
+		// El administrador (grupo 1, "Top Administrator") ve los correos de todos los usuarios.
+		$group = $this->db->query("SELECT user_group_id FROM `" . DB_PREFIX . "user` WHERE user_id = '" . $uid . "'");
+
+		if ($group->num_rows && (int)$group->row['user_group_id'] === 1) {
+			return '';
+		}
+
+		return " AND (document_type NOT IN ('email_sent', 'email_received') OR EXISTS (SELECT 1 FROM `" . DB_PREFIX . "mails` mo WHERE CONCAT('mail_', mo.mail_id) = document_id AND (mo.nusuario = '" . $uid . "' OR mo.nusuario IS NULL OR mo.nusuario = 0)))";
 	}
 
 	private function generateEmbedding($text) {
@@ -2261,6 +2450,31 @@ También dispones de search_product_documents, search_customer_documents y searc
 		return $resp['embeddings'][0];
 	}
 
+	// Tablas que el chat nunca debe leer: credenciales y permisos, ajustes (API keys, clave de cifrado),
+	// cuentas de correo, correo completo (se consulta solo por RAG, filtrado por usuario), el indice
+	// vectorial (saltaria ese filtro), cron, API y afiliados. Sin el prefijo de BD.
+	private function blockedTables() {
+		return array('user', 'user_group', 'user_mail_account', 'setting', 'session', 'api', 'affiliate',
+			'mails', 'mail_files', 'mail_out', 'document_chunks', 'document_embedding_log', 'cron');
+	}
+
+	private function isBlockedTable($name) {
+		$name = (string)$name;
+
+		if (DB_PREFIX !== '' && strpos($name, DB_PREFIX) === 0) {
+			$name = substr($name, strlen(DB_PREFIX));
+		}
+
+		return in_array(strtolower($name), $this->blockedTables());
+	}
+
+	private function sqlMentionsBlockedTable($sql) {
+		$prefix = (DB_PREFIX !== '') ? '(?:' . preg_quote(DB_PREFIX, '/') . ')?' : '';
+		$names  = implode('|', array_map(function ($t) { return preg_quote($t, '/'); }, $this->blockedTables()));
+
+		return (bool)preg_match('/(?<![A-Za-z0-9_])' . $prefix . '(?:' . $names . ')(?![A-Za-z0-9_])/i', $sql);
+	}
+
 	// Only single SELECT/SHOW/DESCRIBE statements, no write keywords — returns false if it doesn't qualify.
 	private function sanitizeReadOnlySql($sql) {
 		$sql = trim($sql);
@@ -2276,6 +2490,23 @@ También dispones de search_product_documents, search_customer_documents y searc
 		}
 
 		if (preg_match('/\b(INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE|CREATE|GRANT|REVOKE|REPLACE|CALL|EXEC|OUTFILE|LOAD_FILE|INFILE)\b/i', $sql)) {
+			return false;
+		}
+
+		if (preg_match('/^SHOW\s/i', $sql) && !preg_match('/^SHOW\s+(FULL\s+)?(TABLES|COLUMNS|INDEX|KEYS)\b/i', $sql)) {
+			return false;
+		}
+
+		if (preg_match('/\bINTO\b|\b(information_schema|performance_schema|mysql|sys)\s*\.|\/\*|--|#/i', $sql)) {
+			return false;
+		}
+
+		// Columnas con credenciales (customer, potenciales, affiliate...) y vectores de embeddings.
+		if (preg_match('/\b(password|salt|token|embedding|secret)\b/i', $sql)) {
+			return false;
+		}
+
+		if ($this->sqlMentionsBlockedTable($sql)) {
 			return false;
 		}
 

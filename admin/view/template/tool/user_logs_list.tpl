@@ -55,6 +55,7 @@
 							<option value="create" <?php echo ($filter_action == 'create') ? 'selected' : ''; ?>><?php echo $text_create; ?></option>
 							<option value="edit"   <?php echo ($filter_action == 'edit')   ? 'selected' : ''; ?>><?php echo $text_edit; ?></option>
 							<option value="delete" <?php echo ($filter_action == 'delete') ? 'selected' : ''; ?>><?php echo $text_delete; ?></option>
+							<option value="ai_query" <?php echo ($filter_action == 'ai_query') ? 'selected' : ''; ?>><?php echo $text_ai_query; ?></option>
 						</select>
 					</td>
 					<td></td>

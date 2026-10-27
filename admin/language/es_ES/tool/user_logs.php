@@ -11,6 +11,7 @@ $_['text_login']         = 'Login';
 $_['text_create']        = 'Crear';
 $_['text_edit']          = 'Modificar';
 $_['text_delete']        = 'Eliminar';
+$_['text_ai_query']      = 'Consulta IA';
 $_['text_sale_invoice']  = 'Ventas/Factura';
 $_['text_purchase_invoice'] = 'Compras/Factura';
 $_['text_quote']         = 'Ventas/Presupuesto';

@@ -58,6 +58,7 @@ class ControllerToolUserLogs extends Controller {
 				case 'create': $action_label = $this->language->get('text_create'); break;
 				case 'edit':   $action_label = $this->language->get('text_edit');   break;
 				case 'delete': $action_label = $this->language->get('text_delete'); break;
+				case 'ai_query': $action_label = $this->language->get('text_ai_query'); break;
 				default:       $action_label = $row['action'];
 			}
 
@@ -146,6 +147,7 @@ class ControllerToolUserLogs extends Controller {
 		$this->data['text_create']      = $this->language->get('text_create');
 		$this->data['text_edit']        = $this->language->get('text_edit');
 		$this->data['text_delete']      = $this->language->get('text_delete');
+		$this->data['text_ai_query']    = $this->language->get('text_ai_query');
 		$this->data['column_date_from']  = $this->language->get('column_date_from');
 		$this->data['column_date_to']    = $this->language->get('column_date_to');
 		$this->data['column_username']  = $this->language->get('column_username');
