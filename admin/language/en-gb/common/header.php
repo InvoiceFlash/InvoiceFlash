@@ -78,7 +78,6 @@ $_['text_tax']                         = 'Taxes';
 $_['text_tax_class']                   = 'Tax Classes';
 $_['text_tax_rate']                    = 'Tax Rates';
 $_['text_total']                       = 'Totals';
-$_['text_agent']                       = 'Agents';
 $_['text_user']                        = 'Users';
 $_['text_documentation']               = 'Documentation';
 $_['text_users']                       = 'Users';

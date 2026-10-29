@@ -33,9 +33,41 @@ class ModelCatalogAgent extends Model {
 			PRIMARY KEY (`agent_id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8");
 
-		// Instalaciones con la tabla creada antes de existir el modo de acceso: por defecto, solo lectura.
-		if (!$this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "agent` LIKE 'access'")->num_rows) {
-			$this->db->query("ALTER TABLE `" . DB_PREFIX . "agent` ADD `access` varchar(5) NOT NULL DEFAULT 'read' AFTER `description`");
+		// Si la tabla `agent` ya existia con otro esquema (p. ej. el esqueleto antiguo name/status/date_added, o una version
+		// anterior de esta funcionalidad), se completan las columnas que falten. Por defecto, los agentes son de solo lectura.
+		$columns = array(
+			'name'          => "varchar(128) NOT NULL",
+			'description'   => "longtext NOT NULL",
+			'access'        => "varchar(5) NOT NULL DEFAULT 'read'",
+			'schedule_type' => "varchar(8) NOT NULL DEFAULT 'time'",
+			'run_time'      => "varchar(5) NOT NULL DEFAULT '08:00'",
+			'status'        => "tinyint(1) NOT NULL DEFAULT '1'",
+			'last_run'      => "datetime DEFAULT NULL",
+			'date_added'    => "datetime NOT NULL",
+			'date_modified' => "datetime NOT NULL"
+		);
+
+		$existing = array();
+		$types    = array();
+
+		foreach ($this->db->query("SHOW COLUMNS FROM `" . DB_PREFIX . "agent`")->rows as $row) {
+			$existing[]          = $row['Field'];
+			$types[$row['Field']] = strtolower($row['Type']);
+		}
+
+		foreach ($columns as $column => $definition) {
+			if (!in_array($column, $existing)) {
+				$this->db->query("ALTER TABLE `" . DB_PREFIX . "agent` ADD `" . $column . "` " . $definition);
+			}
+		}
+
+		// Columnas que existian con un tamano insuficiente (la descripcion no tiene limite de longitud).
+		if (isset($types['name']) && $types['name'] != 'varchar(128)') {
+			$this->db->query("ALTER TABLE `" . DB_PREFIX . "agent` MODIFY `name` varchar(128) NOT NULL");
+		}
+
+		if (isset($types['description']) && $types['description'] != 'longtext') {
+			$this->db->query("ALTER TABLE `" . DB_PREFIX . "agent` MODIFY `description` longtext NOT NULL");
 		}
 
 		$this->db->query("CREATE TABLE IF NOT EXISTS `" . DB_PREFIX . "agent_run` (
@@ -181,7 +213,7 @@ class ModelCatalogAgent extends Model {
 		}
 
 		foreach ($this->getAgents(true) as $agent) {
-			if ($this->isDue($agent) && !$this->isRunning($agent['agent_id'])) {
+			if (trim($agent['description']) !== '' && $this->isDue($agent) && !$this->isRunning($agent['agent_id'])) {
 				$results[$agent['agent_id']] = $this->runAgent($agent['agent_id'], 'cron');
 			}
 		}

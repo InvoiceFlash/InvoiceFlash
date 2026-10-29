@@ -22,9 +22,9 @@ $_['column_url'] = 'URL tienda';
 $_['column_action'] = 'Acci&oacute;n';
 
 // Entry
-$_['entry_url'] = 'URL tienda';
+$_['entry_url'] = 'URL Empresa';
 $_['entry_ssl'] = 'URL SSL';
-$_['entry_name'] = 'Nombre de la tienda';
+$_['entry_name'] = 'Nombre de la Empresa';
 $_['entry_owner'] = 'Propietario de la tienda';
 $_['entry_address'] = 'Direcci&oacute;n';
 $_['entry_geocode'] = 'Geocode';

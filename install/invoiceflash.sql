@@ -8833,15 +8833,6 @@ date_added datetime DEFAULT NULL,
 PRIMARY KEY (log_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-DROP TABLE IF EXISTS `if_agent`;
-CREATE TABLE `if_agent` (
-  `agent_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) NOT NULL,
-  `status` tinyint(1) NOT NULL,
-  `date_added` datetime NOT NULL,
-  PRIMARY KEY (`agent_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-
 DROP TABLE IF EXISTS `if_api`;
 CREATE TABLE `if_api` (
   `api_id` INT(11) NOT NULL AUTO_INCREMENT,

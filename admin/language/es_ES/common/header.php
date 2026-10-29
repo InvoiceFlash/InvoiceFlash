@@ -88,7 +88,6 @@ $_['text_attribute'] = 'Atributos';
 $_['text_attribute_group'] = 'Grupos de Atributos';
 $_['text_download'] = 'Descargas';
 $_['text_total'] = 'Totales';
-$_['text_agent'] = 'Agentes';
 $_['text_stock'] = 'Agotado';
 $_['text_return'] = 'Devoluciones';
 $_['text_affiliate'] = 'Afiliados';
