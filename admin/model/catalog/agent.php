@@ -120,7 +120,7 @@ class ModelCatalogAgent extends Model {
 			'nvidia'     => array('NVIDIA', 'https://integrate.api.nvidia.com/v1/chat/completions', 'meta/llama-3.1-8b-instruct', 'config_nvidia_api_key'),
 			'openrouter' => array('OpenRouter', 'https://openrouter.ai/api/v1/chat/completions', 'openai/gpt-4o-mini', 'config_openrouter_api_key'),
 			'deepseek'   => array('DeepSeek', 'https://api.deepseek.com/chat/completions', 'deepseek-flash', 'config_deepseek_api_key'),
-			'ollama'     => array('Ollama', '', 'qwen3:1.7b', 'config_ollama_url')
+			'ollama'     => array('Ollama', '', $this->config->getOllamaModel(), 'config_ollama_url')
 		);
 	}
 
@@ -526,7 +526,8 @@ REGLAS:
 
 		// Busqueda en Internet (herramienta de servidor de Claude: la ejecuta Anthropic, sin bucle propio).
 		if ($provider == 'claude' && !empty($agent['web_access'])) {
-			$tools[] = array('type' => self::WEB_SEARCH_TOOL, 'name' => 'web_search', 'max_uses' => self::MAX_WEB_SEARCHES);
+			// La version con filtrado dinamico (20260209) no la admite Haiku: ahi se usa la basica.
+			$tools[] = array('type' => (strpos($auth['model'], 'haiku') !== false ? 'web_search_20250305' : self::WEB_SEARCH_TOOL), 'name' => 'web_search', 'max_uses' => self::MAX_WEB_SEARCHES);
 
 			$system .= '
 

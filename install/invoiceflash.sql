@@ -3229,7 +3229,8 @@ INSERT INTO `if_setting` (`setting_id`, `store_id`, `group`, `key`, `value`, `se
 (139, 0, 'config', 'config_conta_iva_soportado_account', '4720000021', 0),
 (140, 0, 'config', 'config_ai_actions_enabled', '0', 0),
 (141, 0, 'config', 'config_ai_provider', 'claude', 0),
-(142, 0, 'config', 'config_claude_model', 'claude-opus-5-5', 0);
+(142, 0, 'config', 'config_claude_model', 'claude-opus-5-5', 0),
+(143, 0, 'config', 'config_ollama_model', 'qwen3:1.7b', 0);
 
 -- --------------------------------------------------------
 

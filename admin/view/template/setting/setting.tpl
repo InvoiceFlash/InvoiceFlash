@@ -1468,6 +1468,16 @@
 							<input type="text" name="config_ollama_url" value="<?php echo $config_ollama_url; ?>" placeholder="http://127.0.0.1:11434/api/chat" class="form-control">
 						</div>
 					</div>
+					<div class="form-group row" id="ai-ollama-model-group"<?php echo ($config_ai_provider != 'ollama') ? ' style="display:none;"' : ''; ?>>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ollama_model; ?></label>
+						<div class="col-sm-6">
+							<select name="config_ollama_model" id="input-ollama-model" class="form-select" style="width:auto;max-width:100%;">
+								<?php foreach ($ollama_models as $ollama_model_id => $ollama_model_name) { ?>
+									<option value="<?php echo $ollama_model_id; ?>"<?php echo ($ollama_model_id == $config_ollama_model) ? ' selected="selected"' : ''; ?>><?php echo $ollama_model_name; ?> (<?php echo $ollama_model_id; ?>)</option>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
 
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_provider_2; ?></label>
@@ -1545,11 +1555,15 @@
 		$('#input-ai-provider option[value="claude"], #input-ai-provider-2 option[value="claude"]').text(text);
 	});
 
+	$('#input-ollama-model').on('change', function() {
+		$('#input-ai-provider option[value="ollama"], #input-ai-provider-2 option[value="ollama"]').text('Ollama (' + $(this).val() + ')');
+	});
+
 	$('#input-ai-provider').on('change', function() {
 		var provider = $(this).val();
 
 		$('#ai-claude-group, #ai-claude-model-group').toggle(provider != 'ollama' && provider != 'openai' && provider != 'nvidia' && provider != 'openrouter' && provider != 'deepseek');
-		$('#ai-ollama-group').toggle(provider == 'ollama');
+		$('#ai-ollama-group, #ai-ollama-model-group').toggle(provider == 'ollama');
 		$('#ai-openai-group').toggle(provider == 'openai');
 		$('#ai-nvidia-group').toggle(provider == 'nvidia');
 		$('#ai-openrouter-group').toggle(provider == 'openrouter');
@@ -1639,7 +1653,8 @@
 				nvidia_api_key: $('input[name="config_nvidia_api_key"]').val(),
 				openrouter_api_key: $('input[name="config_openrouter_api_key"]').val(),
 				deepseek_api_key: $('input[name="config_deepseek_api_key"]').val(),
-				ollama_url: $('input[name="config_ollama_url"]').val()
+				ollama_url: $('input[name="config_ollama_url"]').val(),
+				ollama_model: $('select[name="config_ollama_model"]').val()
 			};
 		}
 

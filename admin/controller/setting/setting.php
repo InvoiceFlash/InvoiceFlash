@@ -255,7 +255,17 @@ class ControllerSettingSetting extends Controller {
 		$this->data['claude_models'] = $claude_models;
 		$this->data['entry_claude_model'] = $this->language->get('entry_claude_model');
 		$this->data['text_ai_claude'] = sprintf($this->language->get('text_ai_claude'), $this->data['config_claude_model']);
-		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
+		$ollama_models = $this->config->ollamaModels();
+
+		if (isset($this->request->post['config_ollama_model']) && isset($ollama_models[$this->request->post['config_ollama_model']])) {
+			$this->data['config_ollama_model'] = $this->request->post['config_ollama_model'];
+		} else {
+			$this->data['config_ollama_model'] = $this->config->getOllamaModel();
+		}
+
+		$this->data['ollama_models'] = $ollama_models;
+		$this->data['entry_ollama_model'] = $this->language->get('entry_ollama_model');
+		$this->data['text_ai_ollama'] = sprintf($this->language->get('text_ai_ollama'), $this->data['config_ollama_model']);
 		$this->data['text_ai_openai'] = $this->language->get('text_ai_openai');
 		$this->data['entry_openai_api_key'] = $this->language->get('entry_openai_api_key');
 		$this->data['text_ai_nvidia'] = $this->language->get('text_ai_nvidia');
@@ -2107,8 +2117,11 @@ class ControllerSettingSetting extends Controller {
 			$url = 'http://127.0.0.1:11434/api/chat';
 		}
 
+		$ollama_models = $this->config->ollamaModels();
+		$ollama_model  = (isset($this->request->post['ollama_model']) && isset($ollama_models[$this->request->post['ollama_model']])) ? $this->request->post['ollama_model'] : $this->config->getOllamaModel();
+
 		$payload = array(
-			'model'    => 'qwen3:1.7b',
+			'model'    => $ollama_model,
 			'messages' => array(array('role' => 'user', 'content' => 'ping')),
 			'think'    => false,
 			'stream'   => false,

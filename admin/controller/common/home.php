@@ -71,7 +71,7 @@ class ControllerCommonHome extends Controller {
 			'error'    => html_entity_decode($this->language->get('error_chat_proposal'), ENT_QUOTES, 'UTF-8')
 		);
 		$ai_provider_now = $this->config->get('config_ai_provider');
-		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? 'qwen3:1.7b' : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : (($ai_provider_now == 'openrouter') ? 'openai/gpt-4o-mini' : (($ai_provider_now == 'deepseek') ? 'deepseek-flash' : $this->config->getClaudeModel()))));
+		$this->data['ai_chat_model'] = ($ai_provider_now == 'ollama') ? $this->config->getOllamaModel() : (($ai_provider_now == 'openai') ? 'gpt-4o-mini' : (($ai_provider_now == 'nvidia') ? 'meta/llama-3.1-8b-instruct' : (($ai_provider_now == 'openrouter') ? 'openai/gpt-4o-mini' : (($ai_provider_now == 'deepseek') ? 'deepseek-flash' : $this->config->getClaudeModel()))));
 
 		$this->data['text_view_kanban'] = $this->language->get('text_view_kanban');
 		$this->data['text_kanban'] = $this->language->get('text_kanban');
@@ -1695,7 +1695,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 
 		for ($i = 0; $i < $max_iterations; $i++) {
 			$payload = array(
-				'model'    => 'qwen3:1.7b',
+				'model'    => $this->config->getOllamaModel(),
 				'messages' => $this->fixEmptyOllamaToolArgs($this->withRouteHint($messages, $route_hint)),
 				'tools'    => $tools,
 				'options'  => array('num_predict' => 1024),

@@ -22,6 +22,22 @@ class Config {
 		);
 	}
 
+	// Modelos de Ollama que se pueden elegir en Ajustes > IA (id => nombre).
+	public function ollamaModels() {
+		return array(
+			'qwen3:1.7b' => 'Qwen3 1.7B',
+			'qwen3:4b'   => 'Qwen3 4B'
+		);
+	}
+
+	// Modelo de Ollama a usar (setting config_ollama_model); qwen3:1.7b si no hay uno valido guardado.
+	public function getOllamaModel() {
+		$model  = $this->get('config_ollama_model');
+		$models = $this->ollamaModels();
+
+		return (is_string($model) && isset($models[$model])) ? $model : 'qwen3:1.7b';
+	}
+
 	// Modelo de Claude a usar en todas las llamadas (setting config_claude_model); Opus 5.5 si no hay uno valido guardado.
 	public function getClaudeModel() {
 		$model  = $this->get('config_claude_model');
