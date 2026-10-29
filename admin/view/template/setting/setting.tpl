@@ -1409,7 +1409,7 @@
 					</div>
 					<div class="form-group row">
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_provider; ?></label>
-						<div class="col-sm-6">
+						<div class="col-sm-6 d-flex flex-wrap align-items-center gap-2">
 							<select name="config_ai_provider" id="input-ai-provider" class="form-select" style="width:auto;max-width:100%;">
 								<option value="claude"<?php echo (($config_ai_provider != 'ollama') && ($config_ai_provider != 'openai') && ($config_ai_provider != 'nvidia') && ($config_ai_provider != 'openrouter') && ($config_ai_provider != 'deepseek')) ? ' selected="selected"' : ''; ?>><?php echo $text_ai_claude; ?></option>
 								<option value="ollama"<?php echo ($config_ai_provider == 'ollama') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_ollama; ?></option>
@@ -1418,6 +1418,8 @@
 								<option value="openrouter"<?php echo ($config_ai_provider == 'openrouter') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_openrouter; ?></option>
 								<option value="deepseek"<?php echo ($config_ai_provider == 'deepseek') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_deepseek; ?></option>
 							</select>
+							<a onclick="aiTest();" id="button-ai-test" class="btn btn-default"><i class="fa fa-bolt"></i> <?php echo $button_ai_test; ?></a>
+							<span id="ai-test-result"></span>
 						</div>
 					</div>
 					<div class="form-group row" id="ai-claude-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter') || ($config_ai_provider == 'deepseek')) ? ' style="display:none;"' : ''; ?>>
@@ -1456,11 +1458,27 @@
 							<input type="text" name="config_ollama_url" value="<?php echo $config_ollama_url; ?>" placeholder="http://127.0.0.1:11434/api/chat" class="form-control">
 						</div>
 					</div>
+
 					<div class="form-group row">
-						<label class="col-form-label col-sm-10 col-md-2"></label>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_provider_2; ?></label>
+						<div class="col-sm-6 d-flex flex-wrap align-items-center gap-2">
+							<select name="config_ai_provider_2" id="input-ai-provider-2" class="form-select" style="width:auto;max-width:100%;">
+								<option value=""<?php echo ($config_ai_provider_2 == '') ? ' selected="selected"' : ''; ?>><?php echo $text_none; ?></option>
+								<option value="claude"<?php echo ($config_ai_provider_2 == 'claude') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_claude; ?></option>
+								<option value="ollama"<?php echo ($config_ai_provider_2 == 'ollama') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_ollama; ?></option>
+								<option value="openai"<?php echo ($config_ai_provider_2 == 'openai') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_openai; ?></option>
+								<option value="nvidia"<?php echo ($config_ai_provider_2 == 'nvidia') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_nvidia; ?></option>
+								<option value="openrouter"<?php echo ($config_ai_provider_2 == 'openrouter') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_openrouter; ?></option>
+								<option value="deepseek"<?php echo ($config_ai_provider_2 == 'deepseek') ? ' selected="selected"' : ''; ?>><?php echo $text_ai_deepseek; ?></option>
+							</select>
+							<a onclick="aiTest(true);" id="button-ai-test-2" class="btn btn-default"><i class="fa fa-bolt"></i> <?php echo $button_ai_test; ?></a>
+							<span id="ai-test-result-2"></span>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_ai_api_key_2; ?></label>
 						<div class="col-sm-6">
-							<a onclick="aiTest();" id="button-ai-test" class="btn btn-default"><i class="fa fa-bolt"></i> <?php echo $button_ai_test; ?></a>
-							<span id="ai-test-result" style="margin-left:10px;"></span>
+							<input type="text" name="config_ai_api_key_2" id="input-ai-api-key-2" value="<?php echo $config_ai_api_key_2; ?>" class="form-control">
 						</div>
 					</div>
 
@@ -1531,7 +1549,19 @@
 		$('input[name="config_openrouter_api_key"]').prop('disabled', !enabled);
 		$('input[name="config_deepseek_api_key"]').prop('disabled', !enabled);
 		$('#button-ai-test').toggleClass('disabled', !enabled);
+		$('#button-ai-test-2').toggleClass('disabled', !enabled);
 	}
+
+	// IA secundaria: el campo es la API KEY del proveedor elegido (o la URL, en Ollama).
+	function aiProvider2UpdateLook() {
+		var provider = $('#input-ai-provider-2').val();
+
+		$('#input-ai-api-key-2').attr('placeholder', provider == 'ollama' ? 'http://127.0.0.1:11434/api/chat' : '');
+	}
+
+	$('#input-ai-provider-2').on('change', aiProvider2UpdateLook);
+
+	aiProvider2UpdateLook();
 
 	$('#input-ai-enabled').on('change', aiEnabledUpdateLook);
 
@@ -1562,18 +1592,29 @@
 	aiDependentRadioGuard('config_product_vector_embeddings', <?php echo json_encode(html_entity_decode($text_product_vector_embeddings_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
 	aiDependentRadioGuard('config_ai_actions_enabled', <?php echo json_encode(html_entity_decode($text_ai_actions_enabled_ai_warning, ENT_QUOTES, 'UTF-8')); ?>);
 
-	function aiTest() {
-		var provider = $('#input-ai-provider').val();
-		var $btn = $('#button-ai-test');
-		var $result = $('#ai-test-result');
+	function aiTest(secondary) {
+		var provider = secondary ? $('#input-ai-provider-2').val() : $('#input-ai-provider').val();
+		var $btn = secondary ? $('#button-ai-test-2') : $('#button-ai-test');
+		var $result = secondary ? $('#ai-test-result-2') : $('#ai-test-result');
+		var data;
 
-		$btn.addClass('disabled');
-		$result.removeClass('text-success text-danger').html('<i class="fa fa-spinner fa-spin"></i>');
+		if ($btn.hasClass('disabled')) {
+			return;
+		}
 
-		$.ajax({
-			url: '<?php echo $ai_test_url; ?>',
-			type: 'post',
-			data: {
+		$result.removeClass('text-success text-danger');
+
+		if (secondary) {
+			if (provider == '') {
+				$result.addClass('text-danger').html('<i class="fa fa-times-circle"></i> <?php echo $text_ai_test_no_response; ?>');
+				return;
+			}
+
+			// La API KEY (o URL) de la secundaria se envia con el nombre que espera la prueba de cada proveedor.
+			data = {provider: provider};
+			data[provider == 'ollama' ? 'ollama_url' : provider + '_api_key'] = $('#input-ai-api-key-2').val();
+		} else {
+			data = {
 				provider: provider,
 				claude_api_key: $('input[name="config_claude_api_key"]').val(),
 				openai_api_key: $('input[name="config_openai_api_key"]').val(),
@@ -1581,7 +1622,16 @@
 				openrouter_api_key: $('input[name="config_openrouter_api_key"]').val(),
 				deepseek_api_key: $('input[name="config_deepseek_api_key"]').val(),
 				ollama_url: $('input[name="config_ollama_url"]').val()
-			},
+			};
+		}
+
+		$btn.addClass('disabled');
+		$result.html('<i class="fa fa-spinner fa-spin"></i>');
+
+		$.ajax({
+			url: '<?php echo $ai_test_url; ?>',
+			type: 'post',
+			data: data,
 			dataType: 'json',
 			success: function(json) {
 				$btn.removeClass('disabled');
@@ -1656,7 +1706,7 @@
 				if(data.search('Error')!=-1){
 					alertMessage('danger', data); 
 				} else {
-					alertMessage('success', 'Test Mail sent. Check your inbox.');
+					alertMessage('success', <?php echo json_encode(html_entity_decode($text_success_mail, ENT_QUOTES, 'UTF-8')); ?>);
 				}
 			}, "text"
 		);

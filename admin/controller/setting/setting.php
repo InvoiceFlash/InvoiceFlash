@@ -80,6 +80,7 @@ class ControllerSettingSetting extends Controller {
 
 		$this->data['text_select'] = $this->language->get('text_select');
 		$this->data['text_none'] = $this->language->get('text_none');
+		$this->data['text_success_mail'] = $this->language->get('text_success_mail');
 		$this->data['text_yes'] = $this->language->get('text_yes');
 		$this->data['text_no'] = $this->language->get('text_no');
 		$this->data['text_option_general'] = $this->language->get('text_option_general');
@@ -241,6 +242,8 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_clave'] = $this->language->get('entry_clave');
 		$this->data['entry_ai_enabled'] = $this->language->get('entry_ai_enabled');
 		$this->data['entry_ai_provider'] = $this->language->get('entry_ai_provider');
+		$this->data['entry_ai_provider_2'] = $this->language->get('entry_ai_provider_2');
+		$this->data['entry_ai_api_key_2'] = $this->language->get('entry_ai_api_key_2');
 		$this->data['text_ai_claude'] = $this->language->get('text_ai_claude');
 		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
 		$this->data['text_ai_openai'] = $this->language->get('text_ai_openai');
@@ -683,6 +686,18 @@ class ControllerSettingSetting extends Controller {
 			$this->data['config_ai_provider'] = $this->request->post['config_ai_provider'];
 		} else {
 			$this->data['config_ai_provider'] = $this->config->get('config_ai_provider') ?: 'claude';
+		}
+
+		if (isset($this->request->post['config_ai_provider_2'])) {
+			$this->data['config_ai_provider_2'] = $this->request->post['config_ai_provider_2'];
+		} else {
+			$this->data['config_ai_provider_2'] = (string)$this->config->get('config_ai_provider_2');
+		}
+
+		if (isset($this->request->post['config_ai_api_key_2'])) {
+			$this->data['config_ai_api_key_2'] = $this->request->post['config_ai_api_key_2'];
+		} else {
+			$this->data['config_ai_api_key_2'] = (string)$this->config->get('config_ai_api_key_2');
 		}
 
 		if (isset($this->request->post['config_ollama_url'])) {
@@ -1874,7 +1889,7 @@ class ControllerSettingSetting extends Controller {
 		}
 
 		$payload = array(
-			'model'      => 'claude-opus-4-8',
+			'model'      => 'claude-opus-5-5',
 			'max_tokens' => 5,
 			'messages'   => array(array('role' => 'user', 'content' => 'ping'))
 		);

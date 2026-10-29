@@ -5,6 +5,23 @@
 	<div class="card-body">
 		<form class="form-classic" action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form">
 			<div class="form-group row">
+				<label class="col-form-label col-sm-10 col-md-2"><span class="required">*</span> <?php echo $entry_ai_provider; ?></label>
+				<div class="col-sm-6">
+					<select name="agent_ai_provider" class="form-select" style="max-width:420px;">
+						<?php if ($ai_provider_missing) { ?>
+							<option value="<?php echo htmlspecialchars($agent_ai_provider, ENT_QUOTES, 'UTF-8'); ?>" selected><?php echo htmlspecialchars($ai_provider_missing, ENT_QUOTES, 'UTF-8'); ?> - <?php echo $text_no_key_suffix; ?></option>
+						<?php } ?>
+						<?php foreach ($ai_providers as $provider => $provider_name) { ?>
+							<option value="<?php echo $provider; ?>"<?php echo ($provider == $agent_ai_provider) ? ' selected' : ''; ?>><?php echo htmlspecialchars($provider_name, ENT_QUOTES, 'UTF-8'); ?></option>
+						<?php } ?>
+					</select>
+					<div class="form-text"><?php echo $text_help_ai_provider; ?></div>
+					<?php if ($error_ai_provider) { ?>
+						<div class="form-text text-danger"><?php echo $error_ai_provider; ?></div>
+					<?php } ?>
+				</div>
+			</div>
+			<div class="form-group row">
 				<label class="col-form-label col-sm-10 col-md-2"><span class="required">*</span> <?php echo $entry_name; ?></label>
 				<div class="col-sm-6">
 					<input type="text" name="agent_name" maxlength="128" class="form-control" value="<?php echo $agent_name; ?>">

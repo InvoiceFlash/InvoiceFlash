@@ -120,6 +120,34 @@ class ControllerCatalogAgent extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+	// Borra entradas del log de un agente: las marcadas o, con clear=1, todas.
+	public function deleteRuns() {
+		$this->load->language('catalog/agent');
+		$this->load->model('catalog/agent');
+
+		$agent_id = isset($this->request->get['agent_id']) ? (int)$this->request->get['agent_id'] : 0;
+
+		if (!$this->model_catalog_agent->getAgent($agent_id)) {
+			$this->redirect($this->url->link('catalog/agent', 'token=' . $this->session->data['token'], 'SSL'));
+		}
+
+		if (!$this->user->hasPermission('modify', 'catalog/agent')) {
+			$this->session->data['error'] = $this->language->get('error_permission');
+		} elseif (isset($this->request->get['clear'])) {
+			$this->model_catalog_agent->deleteRuns($agent_id);
+
+			$this->session->data['success'] = $this->language->get('text_success_runs');
+		} elseif (!empty($this->request->post['selected_runs']) && is_array($this->request->post['selected_runs'])) {
+			$this->model_catalog_agent->deleteRuns($agent_id, $this->request->post['selected_runs']);
+
+			$this->session->data['success'] = $this->language->get('text_success_runs');
+		} else {
+			$this->session->data['error'] = $this->language->get('error_no_runs_selected');
+		}
+
+		$this->redirect($this->url->link('catalog/agent/runs', 'agent_id=' . $agent_id . '&token=' . $this->session->data['token'], 'SSL'));
+	}
+
 	// Historial de ejecuciones de un agente.
 	public function runs() {
 		$this->load->language('catalog/agent');
@@ -137,8 +165,26 @@ class ControllerCatalogAgent extends Controller {
 
 		$this->data['heading_title'] = $this->language->get('heading_title') . ': ' . $agent['name'];
 		$this->data['cancel']        = $this->url->link('catalog/agent', 'token=' . $this->session->data['token'], 'SSL');
+		$this->data['delete_runs']   = $this->url->link('catalog/agent/deleteRuns', 'agent_id=' . $agent_id . '&token=' . $this->session->data['token'], 'SSL');
+		$this->data['clear_runs']    = $this->url->link('catalog/agent/deleteRuns', 'agent_id=' . $agent_id . '&clear=1&token=' . $this->session->data['token'], 'SSL');
 
-		foreach (array('button_cancel', 'text_runs_title', 'text_no_runs', 'column_started', 'column_finished', 'column_run_status', 'column_trigger', 'column_summary', 'column_changes', 'text_run_status_ok', 'text_run_status_error', 'text_run_status_running', 'text_trigger_cron', 'text_trigger_manual', 'text_no_changes') as $key) {
+		if (isset($this->session->data['success'])) {
+			$this->data['success'] = $this->session->data['success'];
+
+			unset($this->session->data['success']);
+		} else {
+			$this->data['success'] = '';
+		}
+
+		if (isset($this->session->data['error'])) {
+			$this->data['error_warning'] = $this->session->data['error'];
+
+			unset($this->session->data['error']);
+		} else {
+			$this->data['error_warning'] = '';
+		}
+
+		foreach (array('button_cancel', 'button_delete', 'text_email_sent', 'button_clear_log', 'text_confirm_delete_runs', 'text_confirm_clear_runs', 'text_runs_title', 'text_no_runs', 'column_started', 'column_finished', 'column_run_status', 'column_trigger', 'column_summary', 'column_changes', 'text_run_status_ok', 'text_run_status_error', 'text_run_status_running', 'text_trigger_cron', 'text_trigger_manual', 'text_no_changes') as $key) {
 			$this->data[$key] = $this->language->get($key);
 		}
 
@@ -162,6 +208,7 @@ class ControllerCatalogAgent extends Controller {
 			$changes = json_decode($run['actions'], true);
 
 			$this->data['runs'][] = array(
+				'run_id'        => $run['run_id'],
 				'status'        => $run['status'],
 				'trigger'       => $run['trigger_by'],
 				'date_started'  => date($this->language->get('datetime_format'), strtotime($run['date_started'])),
@@ -269,11 +316,11 @@ class ControllerCatalogAgent extends Controller {
 	private function getForm() {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
-		foreach (array('entry_name', 'entry_description', 'entry_schedule', 'entry_access', 'text_access_read', 'text_access_write', 'text_help_access', 'entry_run_time', 'entry_status', 'text_schedule_time_opt', 'text_schedule_always_opt', 'text_help_description', 'text_help_always', 'text_enabled', 'text_disabled', 'button_save', 'button_cancel') as $key) {
+		foreach (array('entry_ai_provider', 'text_help_ai_provider', 'text_no_key_suffix', 'entry_name', 'entry_description', 'entry_schedule', 'entry_access', 'text_access_read', 'text_access_write', 'text_help_access', 'entry_run_time', 'entry_status', 'text_schedule_time_opt', 'text_schedule_always_opt', 'text_help_description', 'text_help_always', 'text_enabled', 'text_disabled', 'button_save', 'button_cancel') as $key) {
 			$this->data[$key] = $this->language->get($key);
 		}
 
-		foreach (array('warning', 'name', 'description', 'run_time') as $key) {
+		foreach (array('warning', 'name', 'description', 'run_time', 'ai_provider') as $key) {
 			$this->data['error_' . $key] = isset($this->error[$key]) ? $this->error[$key] : '';
 		}
 
@@ -306,6 +353,7 @@ class ControllerCatalogAgent extends Controller {
 		}
 
 		$fields = array(
+			'agent_ai_provider' => array('ai_provider', ''),
 			'agent_name'        => array('name', ''),
 			'agent_description' => array('description', ''),
 			'agent_access'      => array('access', 'read'),
@@ -324,6 +372,21 @@ class ControllerCatalogAgent extends Controller {
 			}
 		}
 
+		// Combo de IA: solo las que tienen API KEY. Un agente ya guardado con una IA que ahora no la tiene la conserva marcada.
+		$this->data['ai_providers'] = $this->model_catalog_agent->getAvailableProviders();
+
+		if ($this->data['agent_ai_provider'] === '' || $this->data['agent_ai_provider'] === null) {
+			$primary = (string)$this->config->get('config_ai_provider');
+
+			$this->data['agent_ai_provider'] = isset($this->data['ai_providers'][$primary]) ? $primary : (isset($this->data['ai_providers']['claude']) ? 'claude' : key($this->data['ai_providers']));
+		}
+
+		$this->data['ai_provider_missing'] = '';
+
+		if (!isset($this->data['ai_providers'][$this->data['agent_ai_provider']])) {
+			$this->data['ai_provider_missing'] = $this->model_catalog_agent->getProviderLabel($this->data['agent_ai_provider']);
+		}
+
 		$this->template = 'catalog/agent_form.tpl';
 		$this->children = array(
 			'common/header',
@@ -336,6 +399,12 @@ class ControllerCatalogAgent extends Controller {
 	private function validateForm() {
 		if (!$this->user->hasPermission('modify', 'catalog/agent')) {
 			$this->error['warning'] = $this->language->get('error_permission');
+		}
+
+		$providers = $this->model_catalog_agent->getAvailableProviders();
+
+		if (!isset($this->request->post['agent_ai_provider']) || !isset($providers[$this->request->post['agent_ai_provider']])) {
+			$this->error['ai_provider'] = $this->language->get('error_ai_provider');
 		}
 
 		$name = isset($this->request->post['agent_name']) ? trim($this->request->post['agent_name']) : '';
