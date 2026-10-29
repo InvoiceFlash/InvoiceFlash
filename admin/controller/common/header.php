@@ -238,6 +238,15 @@ class ControllerCommonHeader extends Controller {
 				);
 			}
 
+			// Files - Agents
+			if ($this->user->hasPermission('access', 'catalog/agent')) {
+				$files[] = array(
+					'name' => $this->language->get('text_agent'),
+					'href' => $this->url->link('catalog/agent', 'token=' . $this->session->data['token'], 'SSL'),
+					'children' => array()
+				);
+			}
+
 			if ($files) {
 				$this->data['menus'][] = array(
 					'id' => 'catalog',
