@@ -19,6 +19,16 @@ $_['text_run_ok']               = 'Agent executed. Check the history for the res
 $_['text_run_error']            = 'The agent run failed.';
 $_['text_runs_title']           = 'Latest runs';
 $_['text_no_runs']              = 'This agent has not run yet.';
+$_['button_stop']               = 'STOP (panic button)';
+$_['text_stop_ok']              = 'Stop requested: the agent stops as soon as its current step ends (a few seconds at most) and is disabled. To re-enable it, edit it (&laquo;Show all&raquo; if you cannot see it).';
+$_['text_stop_idle']            = 'The agent was not running; it is now disabled so it will not start.';
+$_['text_run_status_stopped']   = 'Stopped';
+$_['text_run_status_stopping']  = 'Stopping';
+$_['entry_web_access']          = 'Internet:';
+$_['text_web_access']           = 'Can search the Internet';
+$_['text_help_web_access']      = 'Claude or DeepSeek only. What it finds is treated as data, not instructions, and searches are recorded in the log. Up to 5 per request.';
+$_['error_web_access']          = 'Internet search is only available with Claude or DeepSeek.';
+$_['text_web_badge']            = 'Internet';
 $_['entry_ai_provider']         = 'AI to use:';
 $_['text_help_ai_provider']     = 'Only the AIs that have an API KEY in Settings &gt; AI are listed.';
 $_['text_no_key_suffix']        = 'no API KEY';
@@ -42,6 +52,7 @@ $_['text_help_access']          = 'A read-only agent queries data but cannot cha
 
 // Column
 $_['column_access']             = 'Access';
+$_['column_model']              = 'AI / Model';
 $_['column_name']               = 'Name';
 $_['column_description']        = 'Activity';
 $_['column_schedule']           = 'Execution';

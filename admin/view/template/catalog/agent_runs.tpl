@@ -35,6 +35,8 @@
 							<td class="text-start">
 								<?php if ($run['status'] == 'ok') { ?><span class="badge bg-success"><?php echo $text_run_status_ok; ?></span>
 								<?php } elseif ($run['status'] == 'error') { ?><span class="badge bg-danger"><?php echo $text_run_status_error; ?></span>
+								<?php } elseif ($run['status'] == 'stopped') { ?><span class="badge bg-secondary"><?php echo $text_run_status_stopped; ?></span>
+								<?php } elseif ($run['status'] == 'stopping') { ?><span class="badge bg-warning"><?php echo $text_run_status_stopping; ?></span>
 								<?php } else { ?><span class="badge bg-warning"><?php echo $text_run_status_running; ?></span><?php } ?>
 							</td>
 							<td class="text-start"><?php echo ($run['trigger'] == 'manual') ? $text_trigger_manual : $text_trigger_cron; ?></td>
@@ -45,8 +47,11 @@
 										<?php if (isset($action['sql'])) { ?>
 											<div class="mb-1"><code><?php echo htmlspecialchars($action['sql'], ENT_QUOTES, 'UTF-8'); ?></code>
 											<?php if (isset($action['error'])) { ?><span class="badge bg-danger"><?php echo htmlspecialchars($action['error'], ENT_QUOTES, 'UTF-8'); ?></span><?php } else { ?><span class="badge bg-secondary"><?php echo (int)$action['rows']; ?></span><?php } ?></div>
+										<?php } elseif (isset($action['search'])) { ?>
+											<div class="mb-1"><i class="fa fa-globe"></i> <?php echo htmlspecialchars($action['search'], ENT_QUOTES, 'UTF-8'); ?>
+											<?php if (isset($action['error'])) { ?><span class="badge bg-danger"><?php echo htmlspecialchars($action['error'], ENT_QUOTES, 'UTF-8'); ?></span><?php } ?></div>
 										<?php } elseif (isset($action['email'])) { ?>
-											<div class="mb-1"><i class="fa fa-envelope"></i> <?php echo htmlspecialchars($action['email'], ENT_QUOTES, 'UTF-8'); ?>: <?php echo htmlspecialchars($action['subject'], ENT_QUOTES, 'UTF-8'); ?>
+											<div class="mb-1"><i class="fa fa-envelope"></i> <?php echo htmlspecialchars($action['email'], ENT_QUOTES, 'UTF-8'); ?>: <?php echo htmlspecialchars($action['subject'], ENT_QUOTES, 'UTF-8'); ?><?php if (!empty($action['html'])) { ?> <span class="badge bg-info">HTML</span><?php } ?>
 											<?php if (isset($action['error'])) { ?><span class="badge bg-danger"><?php echo htmlspecialchars($action['error'], ENT_QUOTES, 'UTF-8'); ?></span><?php } else { ?><span class="badge bg-success"><?php echo $text_email_sent; ?></span><?php } ?></div>
 										<?php } elseif (isset($action['note'])) { ?>
 											<div class="mb-1 text-muted"><?php echo htmlspecialchars($action['note'], ENT_QUOTES, 'UTF-8'); ?></div>

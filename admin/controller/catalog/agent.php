@@ -91,6 +91,10 @@ class ControllerCatalogAgent extends Controller {
 	public function run() {
 		set_time_limit(0);
 
+		// La sesion de PHP bloquea las peticiones del mismo usuario mientras esta abierta: se libera para que el boton
+		// antipanico (otra peticion) pueda atenderse mientras el agente trabaja.
+		session_write_close();
+
 		$this->load->language('catalog/agent');
 		$this->load->model('catalog/agent');
 
@@ -114,6 +118,29 @@ class ControllerCatalogAgent extends Controller {
 			} else {
 				$json['error'] = $this->language->get('text_run_error') . ' ' . htmlspecialchars($result['error'], ENT_QUOTES, 'UTF-8');
 			}
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	// BOTON ANTIPANICO (AJAX): para lo que esté haciendo el agente y lo desactiva.
+	public function stop() {
+		$this->load->language('catalog/agent');
+		$this->load->model('catalog/agent');
+
+		$json = array();
+
+		$agent_id = isset($this->request->get['agent_id']) ? (int)$this->request->get['agent_id'] : 0;
+
+		if (!$this->user->hasPermission('modify', 'catalog/agent')) {
+			$json['error'] = $this->language->get('error_permission');
+		} elseif (!$this->model_catalog_agent->getAgent($agent_id)) {
+			$json['error'] = $this->language->get('error_not_found');
+		} else {
+			$count = $this->model_catalog_agent->stopAgent($agent_id);
+
+			$json['success'] = $this->language->get($count ? 'text_stop_ok' : 'text_stop_idle');
 		}
 
 		$this->response->addHeader('Content-Type: application/json');
@@ -184,7 +211,7 @@ class ControllerCatalogAgent extends Controller {
 			$this->data['error_warning'] = '';
 		}
 
-		foreach (array('button_cancel', 'button_delete', 'text_email_sent', 'button_clear_log', 'text_confirm_delete_runs', 'text_confirm_clear_runs', 'text_runs_title', 'text_no_runs', 'column_started', 'column_finished', 'column_run_status', 'column_trigger', 'column_summary', 'column_changes', 'text_run_status_ok', 'text_run_status_error', 'text_run_status_running', 'text_trigger_cron', 'text_trigger_manual', 'text_no_changes') as $key) {
+		foreach (array('button_cancel', 'button_delete', 'text_run_status_stopped', 'text_run_status_stopping', 'text_email_sent', 'button_clear_log', 'text_confirm_delete_runs', 'text_confirm_clear_runs', 'text_runs_title', 'text_no_runs', 'column_started', 'column_finished', 'column_run_status', 'column_trigger', 'column_summary', 'column_changes', 'text_run_status_ok', 'text_run_status_error', 'text_run_status_running', 'text_trigger_cron', 'text_trigger_manual', 'text_no_changes') as $key) {
 			$this->data[$key] = $this->language->get($key);
 		}
 
@@ -231,7 +258,7 @@ class ControllerCatalogAgent extends Controller {
 	private function getList() {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
-		foreach (array('button_insert', 'button_delete', 'button_run', 'button_history', 'button_edit', 'text_list', 'text_no_results', 'text_show_all', 'text_enabled', 'text_disabled', 'text_always', 'text_run_confirm', 'text_run_error', 'column_name', 'column_description', 'column_schedule', 'column_access', 'text_access_read', 'text_access_write', 'column_status', 'column_last_run', 'column_last_result', 'column_action', 'text_cron_note') as $key) {
+		foreach (array('button_insert', 'button_delete', 'button_run', 'button_stop', 'button_history', 'button_edit', 'text_list', 'text_no_results', 'text_show_all', 'text_enabled', 'text_disabled', 'text_always', 'text_run_confirm', 'text_run_error', 'column_name', 'column_description', 'column_schedule', 'column_access', 'column_model', 'text_access_read', 'text_access_write', 'column_status', 'column_last_run', 'column_last_result', 'column_action', 'text_cron_note') as $key) {
 			$this->data[$key] = $this->language->get($key);
 		}
 
@@ -277,6 +304,7 @@ class ControllerCatalogAgent extends Controller {
 				'agent_id'     => $agent['agent_id'],
 				'name'         => $agent['name'],
 				'description'  => htmlspecialchars($description, ENT_QUOTES, 'UTF-8'),
+				'model'        => $this->model_catalog_agent->getProviderLabel(!empty($agent['ai_provider']) ? $agent['ai_provider'] : 'claude') . (!empty($agent['web_access']) ? ' + ' . $this->language->get('text_web_badge') : ''),
 				'access'       => ($agent['access'] == 'write') ? 'write' : 'read',
 				'schedule'     => ($agent['schedule_type'] == 'always') ? $this->language->get('text_schedule_always') : sprintf($this->language->get('text_schedule_time'), $agent['run_time']),
 				'status'       => $agent['status'],
@@ -289,6 +317,7 @@ class ControllerCatalogAgent extends Controller {
 		}
 
 		$this->data['run_url'] = html_entity_decode($this->url->link('catalog/agent/run', 'token=' . $this->session->data['token'], 'SSL'), ENT_QUOTES, 'UTF-8');
+		$this->data['stop_url'] = html_entity_decode($this->url->link('catalog/agent/stop', 'token=' . $this->session->data['token'], 'SSL'), ENT_QUOTES, 'UTF-8');
 
 		if (isset($this->error['warning'])) {
 			$this->data['error_warning'] = $this->error['warning'];
@@ -316,11 +345,11 @@ class ControllerCatalogAgent extends Controller {
 	private function getForm() {
 		$this->data['heading_title'] = $this->language->get('heading_title');
 
-		foreach (array('entry_ai_provider', 'text_help_ai_provider', 'text_no_key_suffix', 'entry_name', 'entry_description', 'entry_schedule', 'entry_access', 'text_access_read', 'text_access_write', 'text_help_access', 'entry_run_time', 'entry_status', 'text_schedule_time_opt', 'text_schedule_always_opt', 'text_help_description', 'text_help_always', 'text_enabled', 'text_disabled', 'button_save', 'button_cancel') as $key) {
+		foreach (array('entry_web_access', 'text_web_access', 'text_help_web_access', 'entry_ai_provider', 'text_help_ai_provider', 'text_no_key_suffix', 'entry_name', 'entry_description', 'entry_schedule', 'entry_access', 'text_access_read', 'text_access_write', 'text_help_access', 'entry_run_time', 'entry_status', 'text_schedule_time_opt', 'text_schedule_always_opt', 'text_help_description', 'text_help_always', 'text_enabled', 'text_disabled', 'button_save', 'button_cancel') as $key) {
 			$this->data[$key] = $this->language->get($key);
 		}
 
-		foreach (array('warning', 'name', 'description', 'run_time', 'ai_provider') as $key) {
+		foreach (array('warning', 'name', 'description', 'run_time', 'ai_provider', 'web_access') as $key) {
 			$this->data['error_' . $key] = isset($this->error[$key]) ? $this->error[$key] : '';
 		}
 
@@ -354,6 +383,7 @@ class ControllerCatalogAgent extends Controller {
 
 		$fields = array(
 			'agent_ai_provider' => array('ai_provider', ''),
+			'agent_web_access'  => array('web_access', '0'),
 			'agent_name'        => array('name', ''),
 			'agent_description' => array('description', ''),
 			'agent_access'      => array('access', 'read'),
@@ -415,6 +445,10 @@ class ControllerCatalogAgent extends Controller {
 
 		if (!isset($this->request->post['agent_description']) || trim($this->request->post['agent_description']) === '') {
 			$this->error['description'] = $this->language->get('error_description');
+		}
+
+		if (!empty($this->request->post['agent_web_access']) && (!isset($this->request->post['agent_ai_provider']) || !$this->model_catalog_agent->providerHasWeb($this->request->post['agent_ai_provider']))) {
+			$this->error['web_access'] = $this->language->get('error_web_access');
 		}
 
 		if (!isset($this->request->post['agent_access']) || $this->request->post['agent_access'] != 'write') {

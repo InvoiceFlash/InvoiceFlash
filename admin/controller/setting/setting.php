@@ -244,7 +244,17 @@ class ControllerSettingSetting extends Controller {
 		$this->data['entry_ai_provider'] = $this->language->get('entry_ai_provider');
 		$this->data['entry_ai_provider_2'] = $this->language->get('entry_ai_provider_2');
 		$this->data['entry_ai_api_key_2'] = $this->language->get('entry_ai_api_key_2');
-		$this->data['text_ai_claude'] = $this->language->get('text_ai_claude');
+		$claude_models = $this->config->claudeModels();
+
+		if (isset($this->request->post['config_claude_model']) && isset($claude_models[$this->request->post['config_claude_model']])) {
+			$this->data['config_claude_model'] = $this->request->post['config_claude_model'];
+		} else {
+			$this->data['config_claude_model'] = $this->config->getClaudeModel();
+		}
+
+		$this->data['claude_models'] = $claude_models;
+		$this->data['entry_claude_model'] = $this->language->get('entry_claude_model');
+		$this->data['text_ai_claude'] = sprintf($this->language->get('text_ai_claude'), $this->data['config_claude_model']);
 		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
 		$this->data['text_ai_openai'] = $this->language->get('text_ai_openai');
 		$this->data['entry_openai_api_key'] = $this->language->get('entry_openai_api_key');
@@ -1888,8 +1898,11 @@ class ControllerSettingSetting extends Controller {
 			return false;
 		}
 
+		$claude_models = $this->config->claudeModels();
+		$claude_model  = (isset($this->request->post['claude_model']) && isset($claude_models[$this->request->post['claude_model']])) ? $this->request->post['claude_model'] : $this->config->getClaudeModel();
+
 		$payload = array(
-			'model'      => 'claude-opus-5-5',
+			'model'      => $claude_model,
 			'max_tokens' => 5,
 			'messages'   => array(array('role' => 'user', 'content' => 'ping'))
 		);

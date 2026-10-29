@@ -19,6 +19,7 @@
 						<th class="text-start"><?php echo $column_name; ?></th>
 						<th class="text-start"><?php echo $column_description; ?></th>
 						<th class="text-start"><?php echo $column_schedule; ?></th>
+						<th class="text-start"><?php echo $column_model; ?></th>
 						<th class="text-start"><?php echo $column_access; ?></th>
 						<th class="text-start"><?php echo $column_status; ?></th>
 						<th class="text-start"><?php echo $column_last_run; ?></th>
@@ -34,23 +35,25 @@
 								<td class="text-start"><?php echo $agent['name']; ?></td>
 								<td class="text-start"><?php echo $agent['description']; ?></td>
 								<td class="text-start"><?php echo $agent['schedule']; ?></td>
+								<td class="text-start"><?php echo htmlspecialchars($agent['model'], ENT_QUOTES, 'UTF-8'); ?></td>
 								<td class="text-start"><?php if ($agent['access'] == 'write') { ?><span class="badge bg-warning text-dark"><?php echo $text_access_write; ?></span><?php } else { ?><span class="badge bg-secondary"><?php echo $text_access_read; ?></span><?php } ?></td>
 								<td class="text-start"><?php echo $agent['status'] ? $text_enabled : $text_disabled; ?></td>
 								<td class="text-start"><?php echo $agent['last_run']; ?></td>
 								<td class="text-start">
-									<?php if ($agent['last_status'] == 'error') { ?><span class="badge bg-danger">ERROR</span><?php } elseif ($agent['last_status'] == 'ok') { ?><span class="badge bg-success">OK</span><?php } elseif ($agent['last_status'] == 'running') { ?><span class="badge bg-warning">...</span><?php } ?>
+									<?php if ($agent['last_status'] == 'error') { ?><span class="badge bg-danger">ERROR</span><?php } elseif ($agent['last_status'] == 'ok') { ?><span class="badge bg-success">OK</span><?php } elseif ($agent['last_status'] == 'stopped' || $agent['last_status'] == 'stopping') { ?><span class="badge bg-secondary">STOP</span><?php } elseif ($agent['last_status'] == 'running') { ?><span class="badge bg-warning">...</span><?php } ?>
 									<?php echo $agent['last_result']; ?>
 								</td>
 								<td class="text-end" style="white-space:nowrap;">
 									<a href="<?php echo $agent['edit']; ?>" class="btn btn-default" title="<?php echo $button_edit; ?>"><i class="fas fa-edit"></i></a>
 									<a href="#" class="btn btn-warning btn-agent-run" data-id="<?php echo $agent['agent_id']; ?>" title="<?php echo $button_run; ?>"><i class="fa fa-play"></i></a>
+									<a href="#" class="btn btn-danger btn-agent-stop" data-id="<?php echo $agent['agent_id']; ?>" title="<?php echo $button_stop; ?>"><i class="fa fa-stop-circle"></i></a>
 									<a href="<?php echo $agent['history']; ?>" class="btn btn-info" title="<?php echo $button_history; ?>"><i class="fa fa-list-alt"></i><span class="d-none d-lg-inline"> <?php echo $button_history; ?></span></a>
 								</td>
 							</tr>
 						<?php } ?>
 					<?php } else { ?>
 						<tr>
-							<td colspan="9" class="text-center"><?php echo $text_no_results; ?></td>
+							<td colspan="10" class="text-center"><?php echo $text_no_results; ?></td>
 						</tr>
 					<?php } ?>
 				</tbody>
@@ -59,6 +62,34 @@
 	</div>
 </div>
 <script>
+// Antipanico: sin confirmacion (tiene que ser inmediato). Para la ejecucion en curso y desactiva el agente.
+$('.btn-agent-stop').click(function(e) {
+	e.preventDefault();
+
+	var $btn = $(this);
+
+	$btn.addClass('disabled');
+
+	$.ajax({
+		url: <?php echo json_encode($stop_url); ?> + '&agent_id=' + $btn.attr('data-id'),
+		type: 'get',
+		dataType: 'json',
+		success: function(json) {
+			if (json['error']) {
+				alertMessage('danger', json['error']);
+			} else {
+				alertMessage('success', json['success']);
+			}
+		},
+		error: function() {
+			alertMessage('danger', <?php echo json_encode(html_entity_decode($text_run_error, ENT_QUOTES, 'UTF-8')); ?>);
+		},
+		complete: function() {
+			$btn.removeClass('disabled');
+		}
+	});
+});
+
 $('.btn-agent-run').click(function(e) {
 	e.preventDefault();
 

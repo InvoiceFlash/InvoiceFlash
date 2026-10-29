@@ -16,6 +16,14 @@
 						<?php } ?>
 					</select>
 					<div class="form-text"><?php echo $text_help_ai_provider; ?></div>
+					<div class="form-check mt-2">
+						<input type="checkbox" class="form-check-input" name="agent_web_access" id="agent-web-access" value="1"<?php echo !empty($agent_web_access) ? ' checked' : ''; ?>>
+						<label class="form-check-label" for="agent-web-access"><?php echo $text_web_access; ?></label>
+					</div>
+					<div class="form-text"><?php echo $text_help_web_access; ?></div>
+					<?php if ($error_web_access) { ?>
+						<div class="form-text text-danger"><?php echo $error_web_access; ?></div>
+					<?php } ?>
 					<?php if ($error_ai_provider) { ?>
 						<div class="form-text text-danger"><?php echo $error_ai_provider; ?></div>
 					<?php } ?>
@@ -86,6 +94,21 @@
 	</div>
 </div>
 <script>
+// La busqueda en Internet existe con Claude y DeepSeek: con otra IA la casilla se desactiva.
+function agentWebToggle() {
+	var provider = $('select[name="agent_ai_provider"]').val();
+	var web = (provider == 'claude' || provider == 'deepseek');
+
+	$('#agent-web-access').prop('disabled', !web);
+
+	if (!web) {
+		$('#agent-web-access').prop('checked', false);
+	}
+}
+
+$('select[name="agent_ai_provider"]').change(agentWebToggle);
+agentWebToggle();
+
 function agentScheduleToggle() {
 	$('#agent-time-group').toggle($('input[name="agent_schedule"]:checked').val() != 'always');
 }

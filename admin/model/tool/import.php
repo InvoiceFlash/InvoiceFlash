@@ -773,7 +773,7 @@ class ModelToolImport extends Model {
 			$values = array_values($chunk);
 
 			$payload = array(
-				'model'      => 'claude-opus-5-5',
+				'model'      => $this->config->getClaudeModel(),
 				'max_tokens' => 4096,
 				'system'     => 'Traduce cada texto del array JSON de español a inglés. Son nombres y descripciones de productos de un catálogo. Devuelve ÚNICAMENTE un array JSON de strings, en el mismo orden y con la misma longitud que el array recibido, sin explicaciones ni texto adicional ni bloques de código. Si un texto ya está en inglés, o es un código/referencia no traducible, devuélvelo tal cual.',
 				'messages'   => array(

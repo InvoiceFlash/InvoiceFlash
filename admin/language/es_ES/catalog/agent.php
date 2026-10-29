@@ -19,6 +19,16 @@ $_['text_run_ok']               = 'Agente ejecutado. Consulte el historial para 
 $_['text_run_error']            = 'La ejecuci&oacute;n del agente ha fallado.';
 $_['text_runs_title']           = '&Uacute;ltimas ejecuciones';
 $_['text_no_runs']              = 'Este agente todav&iacute;a no se ha ejecutado.';
+$_['button_stop']               = 'PARAR (antip&aacute;nico)';
+$_['text_stop_ok']              = 'Parada solicitada: el agente se detiene en cuanto termine el paso actual (como mucho unos segundos) y queda desactivado. Para reactivarlo, ed&iacute;telo (&laquo;Mostrar todos&raquo; si no lo ve).';
+$_['text_stop_idle']            = 'El agente no estaba ejecut&aacute;ndose; queda desactivado para que no se lance.';
+$_['text_run_status_stopped']   = 'Detenido';
+$_['text_run_status_stopping']  = 'Deteniendo';
+$_['entry_web_access']          = 'Internet:';
+$_['text_web_access']           = 'Puede buscar en Internet';
+$_['text_help_web_access']      = 'Solo con Claude o DeepSeek. Lo que encuentre se trata como datos, no como instrucciones, y las b&uacute;squedas quedan en el log. M&aacute;ximo 5 por consulta.';
+$_['error_web_access']          = 'La b&uacute;squeda en Internet solo est&aacute; disponible con Claude o DeepSeek.';
+$_['text_web_badge']            = 'Internet';
 $_['entry_ai_provider']         = 'IA a utilizar:';
 $_['text_help_ai_provider']     = 'Solo aparecen las IA que tienen API KEY en Ajustes &gt; IA.';
 $_['text_no_key_suffix']        = 'sin API KEY';
@@ -42,6 +52,7 @@ $_['text_help_access']          = 'Un agente de solo lectura consulta datos pero
 
 // Column
 $_['column_access']             = 'Acceso';
+$_['column_model']              = 'IA / Modelo';
 $_['column_name']               = 'Nombre';
 $_['column_description']        = 'Actividad';
 $_['column_schedule']           = 'Ejecuci&oacute;n';

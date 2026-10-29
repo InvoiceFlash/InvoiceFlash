@@ -276,7 +276,7 @@ Responde siempre en español.';
 
 		for ($i = 0; $i < $max_iterations; $i++) {
 			$payload = array(
-				'model'      => 'claude-opus-5-5',
+				'model'      => $this->config->getClaudeModel(),
 				'max_tokens' => 4096,
 				'system'     => $system,
 				'tools'      => $tools,

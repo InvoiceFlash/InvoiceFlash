@@ -62,7 +62,7 @@ class ControllerToolSystem extends Controller {
 		} elseif ($this->config->get('config_ai_provider') == 'deepseek') {
 			$this->data['ai_model'] = 'DeepSeek (deepseek-flash)';
 		} else {
-			$this->data['ai_model'] = 'Claude (claude-opus-5-5)';
+			$this->data['ai_model'] = 'Claude (' . $this->config->getClaudeModel() . ')';
 		}
 
 		$this->data['ai_enabled'] = $this->config->get('config_ai_enabled') !== '0';

@@ -1428,6 +1428,16 @@
 							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
 						</div>
 					</div>
+					<div class="form-group row" id="ai-claude-model-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter') || ($config_ai_provider == 'deepseek')) ? ' style="display:none;"' : ''; ?>>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_model; ?></label>
+						<div class="col-sm-6">
+							<select name="config_claude_model" id="input-claude-model" class="form-select" style="width:auto;max-width:100%;">
+								<?php foreach ($claude_models as $claude_model_id => $claude_model_name) { ?>
+									<option value="<?php echo $claude_model_id; ?>"<?php echo ($claude_model_id == $config_claude_model) ? ' selected="selected"' : ''; ?>><?php echo $claude_model_name; ?> (<?php echo $claude_model_id; ?>)</option>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
 					<div class="form-group row" id="ai-openai-group"<?php echo ($config_ai_provider != 'openai') ? ' style="display:none;"' : ''; ?>>
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_openai_api_key; ?></label>
 						<div class="col-sm-6">
@@ -1528,10 +1538,17 @@
 		this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
 	});
 
+	// El texto de la opcion "Claude (...)" de los combos sigue al modelo elegido.
+	$('#input-claude-model').on('change', function() {
+		var text = 'Claude (' + $(this).val() + ')';
+
+		$('#input-ai-provider option[value="claude"], #input-ai-provider-2 option[value="claude"]').text(text);
+	});
+
 	$('#input-ai-provider').on('change', function() {
 		var provider = $(this).val();
 
-		$('#ai-claude-group').toggle(provider != 'ollama' && provider != 'openai' && provider != 'nvidia' && provider != 'openrouter' && provider != 'deepseek');
+		$('#ai-claude-group, #ai-claude-model-group').toggle(provider != 'ollama' && provider != 'openai' && provider != 'nvidia' && provider != 'openrouter' && provider != 'deepseek');
 		$('#ai-ollama-group').toggle(provider == 'ollama');
 		$('#ai-openai-group').toggle(provider == 'openai');
 		$('#ai-nvidia-group').toggle(provider == 'nvidia');
@@ -1617,6 +1634,7 @@
 			data = {
 				provider: provider,
 				claude_api_key: $('input[name="config_claude_api_key"]').val(),
+				claude_model: $('select[name="config_claude_model"]').val(),
 				openai_api_key: $('input[name="config_openai_api_key"]').val(),
 				nvidia_api_key: $('input[name="config_nvidia_api_key"]').val(),
 				openrouter_api_key: $('input[name="config_openrouter_api_key"]').val(),
