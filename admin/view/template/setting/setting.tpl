@@ -1422,12 +1422,6 @@
 							<span id="ai-test-result"></span>
 						</div>
 					</div>
-					<div class="form-group row" id="ai-claude-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter') || ($config_ai_provider == 'deepseek')) ? ' style="display:none;"' : ''; ?>>
-						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
-						<div class="col-sm-6">
-							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
-						</div>
-					</div>
 					<div class="form-group row" id="ai-claude-model-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter') || ($config_ai_provider == 'deepseek')) ? ' style="display:none;"' : ''; ?>>
 						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_model; ?></label>
 						<div class="col-sm-6">
@@ -1436,6 +1430,12 @@
 									<option value="<?php echo $claude_model_id; ?>"<?php echo ($claude_model_id == $config_claude_model) ? ' selected="selected"' : ''; ?>><?php echo $claude_model_name; ?> (<?php echo $claude_model_id; ?>)</option>
 								<?php } ?>
 							</select>
+						</div>
+					</div>
+					<div class="form-group row" id="ai-claude-group"<?php echo (($config_ai_provider == 'ollama') || ($config_ai_provider == 'openai') || ($config_ai_provider == 'nvidia') || ($config_ai_provider == 'openrouter') || ($config_ai_provider == 'deepseek')) ? ' style="display:none;"' : ''; ?>>
+						<label class="col-form-label col-sm-10 col-md-2"><?php echo $entry_claude_api_key; ?></label>
+						<div class="col-sm-6">
+							<input type="text" name="config_claude_api_key" value="<?php echo $config_claude_api_key; ?>" class="form-control">
 						</div>
 					</div>
 					<div class="form-group row" id="ai-openai-group"<?php echo ($config_ai_provider != 'openai') ? ' style="display:none;"' : ''; ?>>
@@ -1546,17 +1546,6 @@
 <script>
 	$('#input-vat-id').on('input', function() {
 		this.value = this.value.replace(/[^A-Za-z0-9]/g, '');
-	});
-
-	// El texto de la opcion "Claude (...)" de los combos sigue al modelo elegido.
-	$('#input-claude-model').on('change', function() {
-		var text = 'Claude (' + $(this).val() + ')';
-
-		$('#input-ai-provider option[value="claude"], #input-ai-provider-2 option[value="claude"]').text(text);
-	});
-
-	$('#input-ollama-model').on('change', function() {
-		$('#input-ai-provider option[value="ollama"], #input-ai-provider-2 option[value="ollama"]').text('Ollama (' + $(this).val() + ')');
 	});
 
 	$('#input-ai-provider').on('change', function() {

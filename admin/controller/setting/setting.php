@@ -254,7 +254,7 @@ class ControllerSettingSetting extends Controller {
 
 		$this->data['claude_models'] = $claude_models;
 		$this->data['entry_claude_model'] = $this->language->get('entry_claude_model');
-		$this->data['text_ai_claude'] = sprintf($this->language->get('text_ai_claude'), $this->data['config_claude_model']);
+		$this->data['text_ai_claude'] = $this->language->get('text_ai_claude');
 		$ollama_models = $this->config->ollamaModels();
 
 		if (isset($this->request->post['config_ollama_model']) && isset($ollama_models[$this->request->post['config_ollama_model']])) {
@@ -265,7 +265,7 @@ class ControllerSettingSetting extends Controller {
 
 		$this->data['ollama_models'] = $ollama_models;
 		$this->data['entry_ollama_model'] = $this->language->get('entry_ollama_model');
-		$this->data['text_ai_ollama'] = sprintf($this->language->get('text_ai_ollama'), $this->data['config_ollama_model']);
+		$this->data['text_ai_ollama'] = $this->language->get('text_ai_ollama');
 		$this->data['text_ai_openai'] = $this->language->get('text_ai_openai');
 		$this->data['entry_openai_api_key'] = $this->language->get('entry_openai_api_key');
 		$this->data['text_ai_nvidia'] = $this->language->get('text_ai_nvidia');
