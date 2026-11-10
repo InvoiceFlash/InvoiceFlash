@@ -156,7 +156,7 @@ CONTEXT_LABELS = {
 }
 
 
-def add_context(chunk_text, document_type, display_name, entity_name):
+def add_context(chunk_text, document_type, display_name, entity_name, section=None):
 	label = CONTEXT_LABELS.get(document_type, "Documento {e}")
 	label = label.format(e=(entity_name or "")).strip()
 	title = (display_name or "").strip()
@@ -165,7 +165,73 @@ def add_context(chunk_text, document_type, display_name, entity_name):
 	if title and title != (entity_name or ""):
 		prefix += ". Titulo: " + title
 
+	if section:
+		prefix += ". Seccion: " + section
+
 	return prefix + ".\n" + chunk_text
+
+
+# ============================================================
+# SECCION DE CADA PAGINA (indice del PDF o, si no tiene, el titulo mas grande de la pagina)
+# ============================================================
+
+SECTION_MAX_LENGTH = 250
+
+
+def toc_section_for_page(toc, page_number):
+	"""Ruta de secciones ('Capitulo > Apartado') vigente en una pagina, segun el indice
+	(marcadores) del PDF. toc = doc.get_toc(simple=True) = [[nivel, titulo, pagina], ...]."""
+	stack = []
+
+	for level, title, page in toc:
+		if page < 1 or page > page_number:
+			continue
+
+		stack = stack[:max(int(level) - 1, 0)]
+		stack.append(re.sub(r"\s+", " ", str(title)).strip())
+
+	return " > ".join(t for t in stack if t)[:SECTION_MAX_LENGTH]
+
+
+def detect_heading(page):
+	"""Titulo de una pagina sin indice: la primera linea corta cuya letra sea claramente
+	mayor que la del cuerpo (>= 1.25 veces la mas frecuente). Devuelve '' si no hay."""
+	try:
+		blocks = page.get_text("dict").get("blocks", [])
+	except Exception:
+		return ""
+
+	lines = []
+	weight = {}
+
+	for block in blocks:
+		for line in block.get("lines", []):
+			spans = [s for s in line.get("spans", []) if s.get("text", "").strip()]
+
+			if not spans:
+				continue
+
+			text = re.sub(r"\s+", " ", "".join(s["text"] for s in spans)).strip()
+			size = round(max(s.get("size", 0) for s in spans), 1)
+			lines.append((size, text))
+			weight[size] = weight.get(size, 0) + len(text)
+
+	if not lines:
+		return ""
+
+	body = max(weight, key=weight.get)
+	candidates = [(size, text) for size, text in lines if size >= body * 1.25 and 3 <= len(text) <= 100]
+
+	if not candidates:
+		return ""
+
+	largest = max(size for size, text in candidates)
+
+	for size, text in candidates:
+		if size == largest:
+			return text[:SECTION_MAX_LENGTH]
+
+	return ""
 
 
 def create_chunks(text, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP):
@@ -199,14 +265,29 @@ def pdf_page_to_image(page):
 # BASE DE DATOS
 # ============================================================
 
+def ensure_section_column(conn):
+	"""Anade document_chunks.section en instalaciones anteriores (una sola comprobacion)."""
+	cur = conn.cursor()
+	cur.execute(f"SHOW COLUMNS FROM {table('document_chunks')} LIKE 'section'")
+
+	if not cur.fetchall():
+		cur.execute(f"ALTER TABLE {table('document_chunks')} ADD COLUMN `section` varchar(500) DEFAULT NULL AFTER `page`")
+		conn.commit()
+
+	cur.close()
+
+
 def get_connection():
-	return mariadb.connect(
+	conn = mariadb.connect(
 		host=DB_HOST,
 		port=DB_PORT,
 		user=DB_USER,
 		password=DB_PASSWORD,
 		database=DB_NAME,
 	)
+	ensure_section_column(conn)
+
+	return conn
 
 
 def find_product(conn, stem):
@@ -305,7 +386,8 @@ def delete_existing_chunks(conn, document_id):
 
 
 def insert_chunk(conn, document_id, filename, product_id, product_name, customer_id, customer_name,
-				  page, chunk_number, text, embedding, document_type, supplier_id=None, supplier_name=None):
+				  page, chunk_number, text, embedding, document_type, supplier_id=None, supplier_name=None,
+				  section=None):
 	vector_text = "[" + ",".join(str(float(x)) for x in embedding) + "]"
 
 	cur = conn.cursor()
@@ -313,8 +395,8 @@ def insert_chunk(conn, document_id, filename, product_id, product_name, customer
 		f"""
 		INSERT INTO {table('document_chunks')}
 		(document_id, document, product_id, product_name, customer_id, customer_name,
-		 supplier_id, supplier_name, page, chunk_number, chunk_text, document_type, embedding)
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, VEC_FromText(?))
+		 supplier_id, supplier_name, page, section, chunk_number, chunk_text, document_type, embedding)
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, VEC_FromText(?))
 		""",
 		(
 			document_id,
@@ -326,6 +408,7 @@ def insert_chunk(conn, document_id, filename, product_id, product_name, customer
 			supplier_id,
 			supplier_name,
 			page,
+			section,
 			chunk_number,
 			text,
 			document_type,
@@ -355,6 +438,13 @@ def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_nam
 
 	total_chunks = 0
 
+	try:
+		toc = doc.get_toc(simple=True) or []
+	except Exception:
+		toc = []
+
+	current_section = ""
+
 	for page_number, page in enumerate(doc, start=1):
 		progress["current_page"] = page_number
 		write_status(progress)
@@ -364,6 +454,10 @@ def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_nam
 		if len(text) < MIN_TEXT_LENGTH:
 			image_bytes = pdf_page_to_image(page)
 			text = extract_text_with_vision(image_bytes)
+		elif toc:
+			current_section = toc_section_for_page(toc, page_number) or current_section
+		else:
+			current_section = detect_heading(page) or current_section
 
 		if not text:
 			continue
@@ -371,7 +465,7 @@ def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_nam
 		chunks = create_chunks(text)
 
 		for chunk_number, chunk_text in enumerate(chunks, start=1):
-			chunk_text = add_context(chunk_text, document_type, display_name, customer_name or supplier_name or product_name)
+			chunk_text = add_context(chunk_text, document_type, display_name, customer_name or supplier_name or product_name, current_section)
 			embedding = generate_embedding(chunk_text)
 
 			if len(embedding) != EMBED_DIMENSIONS:
@@ -383,7 +477,7 @@ def embed_pdf(conn, document_id, display_name, pdf_path, product_id, product_nam
 			insert_chunk(
 				conn, document_id, display_name, product_id, product_name, customer_id, customer_name,
 				page_number, chunk_number, chunk_text, embedding, document_type,
-				supplier_id=supplier_id, supplier_name=supplier_name,
+				supplier_id=supplier_id, supplier_name=supplier_name, section=current_section or None,
 			)
 			total_chunks += 1
 

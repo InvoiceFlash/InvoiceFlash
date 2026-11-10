@@ -2148,6 +2148,13 @@ También dispones de search_product_documents, search_customer_documents y searc
 		if (!isset($result['error']) && !$result['rows']) {
 			$this->safeQuery("ALTER TABLE `" . $table . "` ADD FULLTEXT KEY `ft_chunk_text` (`chunk_text`)");
 		}
+
+		// Columna con la seccion del documento a la que pertenece cada fragmento.
+		$result = $this->safeQuery("SHOW COLUMNS FROM `" . $table . "` LIKE 'section'");
+
+		if (!isset($result['error']) && !$result['rows']) {
+			$this->safeQuery("ALTER TABLE `" . $table . "` ADD COLUMN `section` varchar(500) DEFAULT NULL AFTER `page`");
+		}
 	}
 
 	// CRAG (Corrective RAG): evalua lo recuperado y corrige antes de responder.
@@ -2363,7 +2370,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 	private function searchProductDocuments($query, $product_id = 0, $limit = 5) {
 		$where = $product_id ? "product_id = '" . (int)$product_id . "'" : '1 = 1';
 
-		return $this->searchWithCorrection('document, product_id, product_name, page, chunk_text', $where, $query, $limit);
+		return $this->searchWithCorrection('document, product_id, product_name, page, section, chunk_text', $where, $query, $limit);
 	}
 
 	// Igual que searchProductDocuments() pero acotada a un customer_id concreto
@@ -2378,7 +2385,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
-		return $this->searchWithCorrection('document, document_type, customer_id, customer_name, page, chunk_text', $where, $query, $limit);
+		return $this->searchWithCorrection('document, document_type, customer_id, customer_name, page, section, chunk_text', $where, $query, $limit);
 	}
 
 	// Igual que searchCustomerDocuments() pero acotada a un supplier_id concreto
@@ -2391,7 +2398,7 @@ También dispones de search_product_documents, search_customer_documents y searc
 			$where .= " AND document_type = '" . $this->db->escape($document_type) . "'";
 		}
 
-		return $this->searchWithCorrection('document, document_type, supplier_id, supplier_name, page, chunk_text', $where, $query, $limit);
+		return $this->searchWithCorrection('document, document_type, supplier_id, supplier_name, page, section, chunk_text', $where, $query, $limit);
 	}
 
 	// Control de acceso por usuario: los fragmentos de EMAIL (document_id 'mail_<mail_id>') solo se

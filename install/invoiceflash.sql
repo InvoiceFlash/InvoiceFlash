@@ -7964,6 +7964,7 @@ CREATE TABLE `if_document_chunks` (
   `supplier_name` varchar(500) DEFAULT NULL,
   `product_name` varchar(500) DEFAULT NULL,
   `page` int(11) NOT NULL,
+  `section` varchar(500) DEFAULT NULL,
   `chunk_number` int(11) NOT NULL,
   `chunk_text` text NOT NULL,
   `document_type` varchar(100) DEFAULT NULL,
